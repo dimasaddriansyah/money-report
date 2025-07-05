@@ -48,36 +48,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ✅ Get Data Transactions
   function getDataTransactions(selectedPayment = "") {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
 
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      let filteredRows = data.values || [];
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        let filteredRows = data.values || [];
 
-      // 🔎 Filter jika payment dipilih (selain All Payments)
-      if (selectedPayment) {
-        filteredRows = filteredRows.filter((row) => row[4] === selectedPayment);
-      }
+        // 🔎 Filter jika payment dipilih (selain All Payments)
+        if (selectedPayment) {
+          filteredRows = filteredRows.filter(
+            (row) => row[4] === selectedPayment
+          );
+        }
 
-      // 🔎 Sort by date desc & ambil 5 terbaru
-      const rows = filteredRows
-        .sort((a, b) => {
-          const aDate = parseCustomDate(a[2]); // index 2 = Date
-          const bDate = parseCustomDate(b[2]);
-          return bDate - aDate;
-        })
-        .slice(0, 5);
+        // 🔎 Sort by date desc & ambil 5 terbaru
+        const rows = filteredRows
+          .sort((a, b) => {
+            const aDate = parseCustomDate(a[2]); // index 2 = Date
+            const bDate = parseCustomDate(b[2]);
+            return bDate - aDate;
+          })
+          .slice(0, 6);
 
-      // ✅ Render ke table
-      const tableBody = document.getElementById("custom-table-body");
-      let html = "";
+        // ✅ Render ke table
+        const tableBody = document.getElementById("list-last-transaction");
+        let html = "";
 
-      rows.forEach((row) => {
-        const payment = row[4] || "Unknown";
-        const logoSrc = getLogoUrl(payment);
+        rows.forEach((row) => {
+          const payment = row[4] || "Unknown";
+          const logoSrc = getLogoUrl(payment);
 
-        html += `
+          html += `
           <li class="list-group-item bg-transparent border-bottom py-3 px-0">
             <div class="row align-items-center">
               <div class="col-auto">
@@ -107,13 +109,12 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
           </li>
         `;
-      });
+        });
 
-      tableBody.innerHTML = html;
-    })
-    .catch((err) => console.error("Fetch error:", err));
-}
-
+        tableBody.innerHTML = html;
+      })
+      .catch((err) => console.error("Fetch error:", err));
+  }
 
   // ✅ Utility get logo URL by payment
   function getLogoUrl(payment) {
@@ -225,7 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         });
 
-        return allPayments; // ✅ penting untuk renderCustomChart()
+        return allPayments; // ✅ penting untuk renderDailyExpensesChart()
       })
       .catch((err) => {
         console.error("Fetch error:", err);
@@ -336,8 +337,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((err) => console.error("Error:", err));
   }
 
-  // ✅ Render custom chart
-  function renderCustomChart(filterPayment = "", allPayments = []) {
+  // ✅ Render daily expenses chart
+  function renderDailyExpensesChart(filterPayment = "", allPayments = []) {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
 
     fetch(url)
@@ -352,9 +353,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let series = [];
         let colors = [];
-
-        // console.log("🔎 Filter payment:", filterPayment);
-        // console.log("🔎 Available payments (master):", allPayments);
 
         if (filterPayment) {
           // ✅ Jika filter diisi, hanya payment tersebut
@@ -383,22 +381,239 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const options = {
-          chart: { type: "line", height: 300, toolbar: { show: false } },
+          chart: {
+            type: "line",
+            height: 400,
+            toolbar: {
+              show: false,
+            },
+          },
           series: series,
           colors: colors,
-          xaxis: { categories: dates, title: { text: "Date" } },
-          yaxis: {
-            title: { text: "Amount (Rp)" },
-            labels: { formatter: (val) => val.toLocaleString("en-US") },
+          stroke: {
+            curve: "smooth",
           },
-          legend: { position: "bottom" },
+          grid: {
+            show: true,
+            borderColor: "#F1F1F1",
+            strokeDashArray: 1,
+          },
+          xaxis: {
+            categories: dates,
+          },
+          yaxis: {
+            labels: {
+              formatter: (val) => val.toLocaleString("en-US"),
+            },
+          },
+          legend: {
+            position: "bottom",
+            height: 60,
+          },
           tooltip: {
-            y: { formatter: (val) => "Rp " + val.toLocaleString("en-US") },
+            y: {
+              formatter: (val) => "Rp " + val.toLocaleString("en-US"),
+            },
           },
         };
 
         const chartContainer = document.querySelector("#daily-expenses-chart");
-        chartContainer.innerHTML = ""; // clear previous chart
+        chartContainer.innerHTML = "";
+        const chart = new ApexCharts(chartContainer, options);
+        chart.render();
+      })
+      .catch((err) => console.error("Fetch error:", err));
+  }
+
+  // ✅ Render top expenses chart
+  function renderTopExpensesChart(filterPayment = "", allPayments = []) {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const rows = data.values;
+
+        const expenses = {};
+
+        rows.forEach((row) => {
+          const type = row[3]; // Type
+          const payment = row[4]; // Payment
+          const remark = row[6]; // Remark
+          const nominal = parseFloat(row[7].replace(/[^\d.-]/g, "")) || 0; // Nominal
+
+          // ✅ Filter hanya Expenses
+          if (type === "Expenses") {
+            // ✅ Jika filterPayment diisi, cek payment match
+            if (filterPayment) {
+              if (payment === filterPayment) {
+                if (!expenses[remark]) expenses[remark] = 0;
+                expenses[remark] += nominal;
+              }
+            } else {
+              // ✅ Jika filterPayment kosong, masukkan semua payment
+              if (!expenses[remark]) expenses[remark] = 0;
+              expenses[remark] += nominal;
+            }
+          }
+        });
+
+        // ✅ Convert to array & sort desc
+        const sortedExpenses = Object.entries(expenses)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 10); // ambil top 5
+
+        const categories = sortedExpenses.map((item) => item[0]);
+        const dataSeries = sortedExpenses.map((item) => item[1]);
+
+        const options = {
+          chart: {
+            type: "bar",
+            height: 540,
+            toolbar: { show: false },
+          },
+          series: [
+            {
+              name: "Expenses",
+              data: dataSeries,
+            },
+          ],
+          colors: ["#1F2937"],
+          fill: {
+            opacity: 1,
+          },
+          plotOptions: {
+            bar: {
+              horizontal: true,
+              borderRadius: 6,
+            },
+          },
+          dataLabels: {
+            enabled: true,
+            formatter: (val) => val.toLocaleString("en-US"),
+            style: {
+              colors: ["#FFFFFF"],
+            },
+          },
+          grid: {
+            show: true,
+            borderColor: "#F1F1F1",
+            strokeDashArray: 1,
+          },
+          xaxis: {
+            categories: categories,
+            labels: {
+              formatter: (val) => "Rp " + val.toLocaleString("en-US"),
+            },
+          },
+          yaxis: {
+            labels: {
+              style: {
+                fontSize: "12px",
+                fontWeight: 500,
+              },
+            },
+          },
+          tooltip: {
+            x: {
+              formatter: (val) => val,
+            },
+            y: {
+              formatter: (val) => "Rp " + val.toLocaleString("en-US"),
+            },
+          },
+          legend: {
+            show: false,
+          },
+        };
+
+        const chartContainer = document.querySelector("#top-expenses-chart");
+        chartContainer.innerHTML = "";
+
+        const chart = new ApexCharts(chartContainer, options);
+        chart.render();
+      })
+      .catch((err) => console.error("Fetch error:", err));
+  }
+
+  // ✅ Render category expenses chart
+  function renderCategoryExpensesChart(filterPayment = "", allPayments = []) {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const rows = data.values;
+
+        const expenses = {};
+
+        rows.forEach((row) => {
+          const type = row[3]; // Type
+          const payment = row[4]; // Payment
+          const category = row[5]; // Category with default
+          const nominal = parseFloat(row[7].replace(/[^\d.-]/g, "")) || 0; // Clean nominal
+
+          // ✅ Filter hanya Expenses
+          if (type === "Expenses") {
+            if (filterPayment) {
+              if (payment === filterPayment) {
+                if (!expenses[category]) expenses[category] = 0;
+                expenses[category] += nominal;
+              }
+            } else {
+              if (!expenses[category]) expenses[category] = 0;
+              expenses[category] += nominal;
+            }
+          }
+        });
+        const categories = Object.keys(expenses);
+        const dataSeries = Object.values(expenses);
+
+        const options = {
+          chart: {
+            type: "pie",
+            height: 414,
+          },
+          labels: categories,
+          series: dataSeries,
+          colors: [
+            "#4D4AE8",
+            "#FD8E7A",
+            "#06A77D",
+            "#51449E",
+            "#FACC15",
+            "#F97316",
+            "#10B981",
+            "#3B82F6",
+            "#6366F1",
+            "#EC4899",
+          ],
+          dataLabels: {
+            enabled: true,
+            formatter: (val, opts) => {
+              const nominal = dataSeries[opts.seriesIndex];
+              return (
+                opts.w.config.labels[opts.seriesIndex] +
+                ": Rp " +
+                nominal.toLocaleString("en-US")
+              );
+            },
+          },
+          legend: {
+            position: "right",
+          },
+          tooltip: {
+            y: {
+              formatter: (val) => "Rp " + val.toLocaleString("en-US"),
+            },
+          },
+        };
+
+        const chartContainer = document.querySelector(
+          "#category-expenses-chart"
+        );
+        chartContainer.innerHTML = "";
+
         const chart = new ApexCharts(chartContainer, options);
         chart.render();
       })
@@ -410,7 +625,9 @@ document.addEventListener("DOMContentLoaded", function () {
   getDataCategories();
 
   getDataAccountPayments().then((allPayments) => {
-    renderCustomChart("", allPayments);
+    renderDailyExpensesChart("", allPayments);
+    renderTopExpensesChart("", allPayments);
+    renderCategoryExpensesChart("", allPayments);
     calculateIncomeExpenses();
 
     // ✅ Add event listener filter change
@@ -418,7 +635,9 @@ document.addEventListener("DOMContentLoaded", function () {
       .getElementById("paymentFilter")
       .addEventListener("change", function () {
         const selectedPayment = this.value;
-        renderCustomChart(selectedPayment, allPayments);
+        renderDailyExpensesChart(selectedPayment, allPayments);
+        renderTopExpensesChart(selectedPayment, allPayments);
+        renderCategoryExpensesChart(selectedPayment, allPayments);
         calculateIncomeExpenses();
         getDataTransactions(selectedPayment); // 🔎 update Last Transactions sesuai filter
       });

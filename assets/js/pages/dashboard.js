@@ -478,7 +478,7 @@ document.addEventListener("DOMContentLoaded", function () {
               data: dataSeries,
             },
           ],
-          colors: ["#1F2937"],
+          colors: ["#E11D484D"],
           fill: {
             opacity: 1,
           },
@@ -486,13 +486,14 @@ document.addEventListener("DOMContentLoaded", function () {
             bar: {
               horizontal: true,
               borderRadius: 6,
+              barHeight: "85%",
             },
           },
           dataLabels: {
             enabled: true,
             formatter: (val) => val.toLocaleString("en-US"),
             style: {
-              colors: ["#FFFFFF"],
+              colors: ["#E11D48"],
             },
           },
           grid: {

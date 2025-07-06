@@ -29878,9 +29878,10 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
     z-index: 9999
 }
 
-/* =========================================================================================== */
-/* = Card Dashboard = */
-/* =========================================================================================== */
+/* 
+=========================================================================================== 
+Card Dashboard
+=========================================================================================== */
 .stat-card-success {
     border-left: 0.5rem solid var(--bs-success) !important;
     position: relative;
@@ -29896,7 +29897,7 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
     position: relative;
 }
 
-.stat-card-blue {
-    border-left: 0.5rem solid var(--bs-blue) !important;
+.stat-card-info {
+    border-left: 0.5rem solid var(--bs-info) !important;
     position: relative;
 }

@@ -1,8 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // ✅ Global variables
-  let dataTableInstance = null;
-  let rows = []; // menyimpan data transaksi
-
   // ✅ Init Choices.js
   const incomeExpensesSelect = new Choices("#incomeExpensesSelect", {
     searchEnabled: true,
@@ -76,8 +72,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let html = "";
 
         rows.forEach((row) => {
-          const payment = row[4] || "Unknown";
-          const logoSrc = getLogoUrl(payment);
+          const category = row[5] || "Unknown";
+          const logoSrc = getLogoUrl(category);
 
           html += `
           <li class="list-group-item bg-transparent border-bottom py-3 px-0">
@@ -94,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
                           ? row[6].substring(0, 22) + "..."
                           : row[6]
                         : ""
-                    } <span class="small text-gray-500">(${payment})</span>
+                    } <span class="small text-gray-500">(${row[4]})</span>
                   </a>
                 </h4>
                 <span class="small">${row[2] || ""}</span>
@@ -114,28 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
         tableBody.innerHTML = html;
       })
       .catch((err) => console.error("Fetch error:", err));
-  }
-
-  // ✅ Utility get logo URL by payment
-  function getLogoUrl(payment) {
-    const logos = {
-      BCA: "https://www.bca.co.id/-/media/...",
-      Mandiri: "https://www.bankmandiri.co.id/image/...",
-      Seabank: "https://upload.wikimedia.org/...",
-      Gopay: "https://gopay.co.id/assets/img/logo/gopay.png",
-      Jago: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Logo-jago.svg/1200px-Logo-jago.svg.png",
-      "Top Up": "https://png.pngtree.com/...",
-      Gasoline: "https://cdn-icons-png.flaticon.com/512/6352/6352837.png",
-      "Laundry and Gallon":
-        "https://cdn-icons-png.flaticon.com/512/11261/11261734.png",
-      Loan: "https://cdn-icons-png.flaticon.com/512/5256/5256228.png",
-      Emergency: "https://cdn-icons-png.flaticon.com/512/709/709114.png",
-      Saving: "https://cdn-icons-png.flaticon.com/512/914/914233.png",
-      Investment:
-        "https://iixglobal.com/wp-content/uploads/2023/02/invest-edited-1.png",
-      "e-Money Mandiri": "https://www.static-src.com/...",
-    };
-    return logos[payment] || "../assets/img/team-2.jpg";
   }
 
   // ✅ Get Data Categories
@@ -400,6 +374,14 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           xaxis: {
             categories: dates,
+            labels: {
+              formatter: (value) => {
+                const date = new Date(value);
+                const day = ("0" + date.getDate()).slice(-2); // menambahkan leading zero
+                const month = date.toLocaleString("en-US", { month: "long" }); // "July"
+                return `${day} ${month}`;
+              },
+            },
           },
           yaxis: {
             labels: {
@@ -444,6 +426,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // ✅ Filter hanya Expenses
           if (type === "Expenses") {
+            // ✅ Skip jika remark mengandung "Transfer to" (case-insensitive)
+            if (remark && remark.includes("Transfer to")) {
+              return;
+            }
+
             // ✅ Jika filterPayment diisi, cek payment match
             if (filterPayment) {
               if (payment === filterPayment) {
@@ -461,7 +448,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // ✅ Convert to array & sort desc
         const sortedExpenses = Object.entries(expenses)
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 10); // ambil top 5
+          .slice(0, 10); // ambil top 10
 
         const categories = sortedExpenses.map((item) => item[0]);
         const dataSeries = sortedExpenses.map((item) => item[1]);
@@ -504,7 +491,19 @@ document.addEventListener("DOMContentLoaded", function () {
           xaxis: {
             categories: categories,
             labels: {
-              formatter: (val) => "Rp " + val.toLocaleString("en-US"),
+              formatter: (val) => {
+                if (val >= 1000000000) {
+                  return (
+                    (val / 1000000000).toFixed(1).replace(/\.0$/, "") + "B"
+                  );
+                } else if (val >= 1000000) {
+                  return (val / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+                } else if (val >= 1000) {
+                  return (val / 1000).toFixed(0) + "k";
+                } else {
+                  return val;
+                }
+              },
             },
           },
           yaxis: {
@@ -572,7 +571,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const options = {
           chart: {
-            type: "pie",
+            type: "donut",
             height: 414,
           },
           labels: categories,
@@ -593,11 +592,7 @@ document.addEventListener("DOMContentLoaded", function () {
             enabled: true,
             formatter: (val, opts) => {
               const nominal = dataSeries[opts.seriesIndex];
-              return (
-                opts.w.config.labels[opts.seriesIndex] +
-                ": Rp " +
-                nominal.toLocaleString("en-US")
-              );
+              return nominal.toLocaleString("en-US");
             },
           },
           legend: {
@@ -606,6 +601,13 @@ document.addEventListener("DOMContentLoaded", function () {
           tooltip: {
             y: {
               formatter: (val) => "Rp " + val.toLocaleString("en-US"),
+            },
+          },
+          plotOptions: {
+            pie: {
+              donut: {
+                size: "45%", // ✅ ukuran lubang tengah, sesuaikan dengan desainmu
+              },
             },
           },
         };

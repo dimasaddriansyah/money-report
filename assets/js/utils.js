@@ -107,3 +107,27 @@ function groupByDateAndPayment(rows) {
   }
   return result;
 }
+
+// ✅ Utility get logo URL by payment
+function getLogoUrl(category) {
+  const logos = {
+    "Foods and Beverages": "assets/img/icons/fast-food.png",
+    Grocery: "assets/img/icons/grocery.png",
+    "Top Up": "assets/img/icons/top-up.png",
+    "Electricity Token": "assets/img/icons/lightning.png",
+    Quota: "assets/img/icons/sim.png",
+    Gasoline: "assets/img/icons/gas.png",
+    Transportation: "assets/img/icons/3d-car.png",
+    Parking: "assets/img/icons/parking.png",
+    Gallon: "assets/img/icons/water.png",
+    Laundry: "assets/img/icons/washing-machine.png",
+    Investation: "assets/img/icons/invest.png",
+    "Self Rewards": "assets/img/icons/achievement.png",
+    Kost: "assets/img/icons/house.png",
+    Service: "assets/img/icons/tools.png",
+    Transfer: "assets/img/icons/transfer.png",
+    Others: "assets/img/icons/menu.png",
+    Remaining: "assets/img/icons/saving.png",
+  };
+  return logos[category] || "../assets/img/team-2.jpg";
+}

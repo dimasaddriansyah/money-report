@@ -108,18 +108,22 @@
         <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
 
         <li class="nav-item nav-link">
-          <span class="sidebar-text text-gray-400">Reporting</span>
+          <span class="sidebar-text text-gray-400">Transaction & Budget</span>
         </li>
         <li class="nav-item active">
           <a href="transactions.html" class="nav-link d-flex align-items-center">
             <span class="sidebar-icon">
-              <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                  d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                  clip-rule="evenodd"></path>
-              </svg>
+              <i class="fa-solid fa-circle-dollar-to-slot me-2"></i>
             </span>
             <span class="sidebar-text">Transactions</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="budget.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-wand-sparkles me-2"></i>
+            </span>
+            <span class="sidebar-text">Budgets</span>
           </a>
         </li>
 
@@ -286,7 +290,7 @@
               </select>
             </div>
             <div class="row">
-              <div class="col-6">
+              <div class="col-12 col-lg-6">
                 <div class="form-group mb-3">
                   <label for="paymentSelect">Payment Method</label>
                   <select id="paymentSelect" class="form-select" required>
@@ -294,7 +298,7 @@
                   </select>
                 </div>
               </div>
-              <div class="col-6">
+              <div class="col-12 col-lg-6">
                 <div class="form-group mb-3">
                   <label for="categorySelect">Category</label>
                   <select id="categorySelect" class="form-select" required>
@@ -304,13 +308,13 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-6">
+              <div class="col-12 col-lg-6">
                 <div class="form-group mb-3">
                   <label for="remark">Remark</label>
                   <input type="text" class="form-control" id="remark" placeholder="Remark" required>
                 </div>
               </div>
-              <div class="col-6">
+              <div class="col-12 col-lg-6">
                 <div class="form-group mb-3">
                   <label for="nominal">Nominal</label>
                   <input type="text" class="form-control" id="nominal" placeholder="Nominal" required>
@@ -400,33 +404,41 @@
             rows.forEach(row => {
               let logoSrc = '';
 
-              // Cek value row[4] untuk menentukan logo
-              if (row[4] === 'BCA') {
-                logoSrc = "https://www.bca.co.id/-/media/Feature/Card/List-Card/Tentang-BCA/Brand-Assets/Logo-BCA/Logo-BCA_Biru.png";
-              } else if (row[4] === 'Mandiri') {
-                logoSrc = "https://www.bankmandiri.co.id/image/layout_set_logo?img_id=31567&t=1742789528482";
-              } else if (row[4] === 'Seabank') {
-                logoSrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/SeaBank.svg/2560px-SeaBank.svg.png";
-              } else if (row[4] === 'Gopay') {
-                logoSrc = "https://gopay.co.id/assets/img/logo/gopay.png";
-              } else if (row[4] === 'Jago') {
-                logoSrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Logo-jago.svg/1200px-Logo-jago.svg.png";
-              } else if (row[4] === 'Top Up') {
-                logoSrc = "https://png.pngtree.com/png-vector/20220720/ourmid/pngtree-top-up-add-your-money-balance-vector-illustration-on-mobile-phone-png-image_6025976.png";
-              } else if (row[4] === 'Gasoline') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/6352/6352837.png";
-              } else if (row[4] === 'Laundry and Gallon') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/11261/11261734.png";
-              } else if (row[4] === 'Loan') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/5256/5256228.png";
-              } else if (row[4] === 'Emergency') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/709/709114.png";
-              } else if (row[4] === 'Saving') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/914/914233.png";
-              } else if (row[4] === 'Investment') {
-                logoSrc = "https://iixglobal.com/wp-content/uploads/2023/02/invest-edited-1.png";
-              } else if (row[4] === 'e-Money Mandiri') {
-                logoSrc = "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/mlogo/MAE-28323-70e23f69-1cb6-4602-80a6-b62258f2fbff.jpg";
+              // Cek value row[5] untuk menentukan logo
+              if (row[5] === 'Foods and Beverages') {
+                logoSrc = "assets/img/icons/fast-food.png";
+              } else if (row[5] === 'Grocery') {
+                logoSrc = "assets/img/icons/grocery.png";
+              } else if (row[5] === 'Top Up') {
+                logoSrc = "assets/img/icons/top-up.png";
+              } else if (row[5] === 'Electricity Token') {
+                logoSrc = "assets/img/icons/lightning.png";
+              } else if (row[5] === 'Quota') {
+                logoSrc = "assets/img/icons/sim.png";
+              } else if (row[5] === 'Gasoline') {
+                logoSrc = "assets/img/icons/gas.png";
+              } else if (row[5] === 'Transportation') {
+                logoSrc = "assets/img/icons/3d-car.png";
+              } else if (row[5] === 'Parking') {
+                logoSrc = "assets/img/icons/parking.png";
+              } else if (row[5] === 'Gallon') {
+                logoSrc = "assets/img/icons/water.png";
+              } else if (row[5] === 'Laundry') {
+                logoSrc = "assets/img/icons/washing-machine.png";
+              } else if (row[5] === 'Investation') {
+                logoSrc = "assets/img/icons/invest.png";
+              } else if (row[5] === 'Self Rewards') {
+                logoSrc = "assets/img/icons/achievement.png";
+              } else if (row[5] === 'Kost') {
+                logoSrc = "assets/img/icons/house.png";
+              } else if (row[5] === 'Service') {
+                logoSrc = "assets/img/icons/tools.png";
+              } else if (row[5] === 'Transfer') {
+                logoSrc = "assets/img/icons/transfer.png";
+              } else if (row[5] === 'Others') {
+                logoSrc = "assets/img/icons/menu.png";
+              } else if (row[5] === 'Remaining') {
+                logoSrc = "assets/img/icons/saving.png";
               } else {
                 logoSrc = "../assets/img/team-2.jpg";
               }

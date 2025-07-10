@@ -1,5 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // ✅ Init Choices.js
+  // ✅ Format nominal input realtime
+  const nominalInput = document.getElementById("nominal");
+  nominalInput.addEventListener("input", function () {
+    let value = this.value.replace(/,/g, "").replace(/\D/g, "");
+    this.value = value ? parseInt(value, 10).toLocaleString("en-US") : "";
+  });
+
   const incomeExpensesSelect = new Choices("#incomeExpensesSelect", {
     searchEnabled: true,
     itemSelectText: "",
@@ -15,31 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const paymentFilterChoices = new Choices("#paymentFilter", {
     searchEnabled: true,
     itemSelectText: "",
-  });
-
-  // ✅ Payment colors (untuk chart)
-  const paymentColors = {
-    BCA: "#1976d2",
-    Mandiri: "#f9a825",
-    Seabank: "#512da8",
-    Gopay: "#00bcd4",
-    Jago: "#fb8c00",
-    "Top Up": "#ff7043",
-    Gasoline: "#4caf50",
-    "Laundry and Gallon": "#039be5",
-    Loan: "#f57c00",
-    Investment: "#43a047",
-    Emergency: "#e53935",
-    Saving: "#8e24aa",
-    "e-Money Mandiri": "#6d4c41",
-    Unknown: "#9e9e9e",
-  };
-
-  // ✅ Format nominal input realtime
-  const nominalInput = document.getElementById("nominal");
-  nominalInput.addEventListener("input", function () {
-    let value = this.value.replace(/,/g, "").replace(/\D/g, "");
-    this.value = value ? parseInt(value, 10).toLocaleString("en-US") : "";
   });
 
   // ✅ Get Data Transactions
@@ -544,54 +525,50 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((res) => res.json())
       .then((data) => {
         const rows = data.values;
-
         const expenses = {};
 
         rows.forEach((row) => {
           const type = row[3]; // Type
           const payment = row[4]; // Payment
-          const category = row[5]; // Category with default
+          const category = row[5]; // Category
           const nominal = parseFloat(row[7].replace(/[^\d.-]/g, "")) || 0; // Clean nominal
 
-          // ✅ Filter hanya Expenses
-          if (type === "Expenses") {
-            if (filterPayment) {
-              if (payment === filterPayment) {
-                if (!expenses[category]) expenses[category] = 0;
-                expenses[category] += nominal;
-              }
-            } else {
-              if (!expenses[category]) expenses[category] = 0;
-              expenses[category] += nominal;
-            }
+          // ✅ Filter hanya Expenses dan sesuai filterPayment jika ada
+          if (
+            type === "Expenses" &&
+            (!filterPayment || payment === filterPayment)
+          ) {
+            if (!expenses[category]) expenses[category] = 0;
+            expenses[category] += nominal;
           }
         });
-        const categories = Object.keys(expenses);
-        const dataSeries = Object.values(expenses);
+
+        // ✅ Convert to array & sort descending
+        const combined = Object.entries(expenses)
+          .map(([category, value]) => ({ category, value }))
+          .sort((a, b) => b.value - a.value);
+
+        const sortedCategories = combined.map((item) => item.category);
+        const sortedDataSeries = combined.map((item) => item.value);
+
+        // ✅ Mapping colors sesuai sortedCategories
+        const colors = sortedCategories.map((category) => {
+          return categoryColors[category] || categoryColors["Unknown"];
+        });
 
         const options = {
           chart: {
             type: "donut",
             height: 414,
           },
-          labels: categories,
-          series: dataSeries,
-          colors: [
-            "#4D4AE8",
-            "#FD8E7A",
-            "#06A77D",
-            "#51449E",
-            "#FACC15",
-            "#F97316",
-            "#10B981",
-            "#3B82F6",
-            "#6366F1",
-            "#EC4899",
-          ],
+          labels: sortedCategories,
+          series: sortedDataSeries,
+          colors: colors,
           dataLabels: {
             enabled: true,
+            style: { colors: ["#FFFFFF"] }, // memastikan label terlihat di slice gelap
             formatter: (val, opts) => {
-              const nominal = dataSeries[opts.seriesIndex];
+              const nominal = sortedDataSeries[opts.seriesIndex];
               return nominal.toLocaleString("en-US");
             },
           },
@@ -606,7 +583,7 @@ document.addEventListener("DOMContentLoaded", function () {
           plotOptions: {
             pie: {
               donut: {
-                size: "45%", // ✅ ukuran lubang tengah, sesuaikan dengan desainmu
+                size: "45%",
               },
             },
           },

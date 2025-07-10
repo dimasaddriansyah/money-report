@@ -4,16 +4,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ✅ Fetch and render table
   function fetchAndRenderTable() {
-    const url = `https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/categories!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
 
-    fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify({ action: "accountPayment_get" }),
-    })
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        rows = data.data || [];
+        rows = data.values || []; // ✅ update global rows
 
         let html = "";
 
@@ -171,13 +167,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
 
-    modalEl.querySelector(".modal-title").innerText = "New Account Payment";
-    modalEl.querySelector("#btn-submit-modal").innerText =
-      "Add Account Payment";
+    modalEl.querySelector(".modal-title").innerText = "New Category";
+    modalEl.querySelector("#btn-submit-modal").innerText = "Add Category";
     const form = document.getElementById("modalForm");
     form.reset();
 
-    const idInput = form.querySelector('input[name="accountPayment_id"]');
+    const idInput = form.querySelector('input[name="category_id"]');
     if (idInput) idInput.remove();
   });
 
@@ -186,29 +181,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const btn = e.target.closest(".edit-modal-btn");
     if (!btn) return;
 
-    const accountPaymentId = btn.getAttribute("data-id");
-    const accountPayment = rows.find((row) => row[0] === accountPaymentId);
-    if (!accountPayment) return;
+    const categoryId = btn.getAttribute("data-id");
+    const category = rows.find((row) => row[0] === categoryId);
+    if (!category) return;
 
     const modalEl = document.getElementById("componentModal");
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
 
-    modalEl.querySelector(".modal-title").innerText = "Edit Account Payment";
-    modalEl.querySelector("#btn-submit-modal").innerText =
-      "Edit Account Payment";
+    modalEl.querySelector(".modal-title").innerText = "Edit Category";
+    modalEl.querySelector("#btn-submit-modal").innerText = "Edit Category";
     const form = document.getElementById("modalForm");
 
-    form.querySelector("#name").value = accountPayment[1] || "";
+    form.querySelector("#name").value = category[1] || "";
 
-    let idInput = form.querySelector('input[name="accountPayment_id"]');
+    let idInput = form.querySelector('input[name="category_id"]');
     if (!idInput) {
       idInput = document.createElement("input");
       idInput.type = "hidden";
-      idInput.name = "accountPayment_id";
+      idInput.name = "category_id";
       form.appendChild(idInput);
     }
-    idInput.value = accountPaymentId;
+    idInput.value = categoryId;
   });
 
   // ✅ Delete Modal button
@@ -216,7 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btn = e.target.closest(".delete-modal-btn");
     if (!btn) return;
 
-    const accountPaymentId = btn.getAttribute("data-id");
+    const categoryId = btn.getAttribute("data-id");
 
     Swal.fire({
       title: "Are you sure?",
@@ -234,8 +228,8 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           method: "POST",
           body: JSON.stringify({
-            action: "accountPayment_delete",
-            accountPayment_id: accountPaymentId,
+            action: "category_delete",
+            category_id: categoryId,
           }),
           headers: { "Content-Type": "text/plain" },
         }
@@ -243,15 +237,15 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((res) => res.json())
         .then((response) => {
           if (response.result === "success") {
-            localStorage.setItem("accountPaymentSaved", "deleted");
+            localStorage.setItem("categorySaved", "deleted");
             location.reload();
           } else {
-            Swal.fire("Error", "Failed to delete accountPayment.", "error");
+            Swal.fire("Error", "Failed to delete category.", "error");
           }
         })
         .catch((err) => {
           console.error("Error:", err);
-          Swal.fire("Error", "Error deleting accountPayment.", "error");
+          Swal.fire("Error", "Error deleting category.", "error");
         });
     });
   });
@@ -261,32 +255,33 @@ document.addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
     const form = e.target;
 
-    let AccPayIdInput = form.querySelector('input[name="accountPayment_id"]');
-    let AccPayId;
+    let catIdInput = form.querySelector('input[name="category_id"]');
+    let catId;
 
-    if (AccPayIdInput) {
-      AccPayId = AccPayIdInput.value;
+    if (catIdInput) {
+      catId = catIdInput.value;
     } else {
       let maxId = 0;
       rows.forEach((row) => {
-        if (row[0] && row[0].startsWith("ACC-")) {
+        if (row[0] && row[0].startsWith("CAT-")) {
           const num = parseInt(row[0].split("-")[1], 10);
           if (!isNaN(num) && num > maxId) maxId = num;
         }
       });
       const nextIdNum = maxId + 1;
-      AccPayId = "ACC-" + String(nextIdNum).padStart(3, "0");
+      catId = "CAT-" + String(nextIdNum).padStart(3, "0");
     }
 
     const now = new Date().toISOString();
 
     const data = {
-      action: AccPayIdInput ? "accountPayment_update" : "accountPayment_create",
-      accountPayment_id: AccPayId,
+      action: catIdInput ? "category_update" : "category_create",
+      category_id: catId,
       name: form.name.value,
       inserted_date: now,
-      updated_date: AccPayIdInput ? now : now,
+      updated_date: catIdInput ? now : now,
     };
+
     fetch(
       "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
       {
@@ -303,15 +298,15 @@ document.addEventListener("DOMContentLoaded", function () {
           bootstrap.Modal.getInstance(modalEl).hide();
 
           localStorage.setItem(
-            "accountPaymentSaved",
-            AccPayIdInput ? "edited" : "saved"
+            "categorySaved",
+            catIdInput ? "edited" : "saved"
           );
           location.reload();
         } else {
           const msg =
             response.result === "not_found"
-              ? "Account Payment not found."
-              : "Failed to save accountPayment.";
+              ? "Category not found."
+              : "Failed to save category.";
           Swal.fire("Error", msg, "error");
         }
       })
@@ -322,15 +317,15 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ✅ Toast on page load
-  const status = localStorage.getItem("accountPaymentSaved");
+  const status = localStorage.getItem("categorySaved");
   if (status) {
     const messages = {
-      saved: "Account Payment saved successfully",
-      edited: "Account Payment edited successfully",
-      deleted: "Account Payment deleted successfully",
+      saved: "Category saved successfully",
+      edited: "Category edited successfully",
+      deleted: "Category deleted successfully",
     };
     showToast("success", messages[status] || "Operation completed");
-    localStorage.removeItem("accountPaymentSaved");
+    localStorage.removeItem("categorySaved");
   }
 
   // ✅ Initial fetch

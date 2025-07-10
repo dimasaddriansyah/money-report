@@ -6,19 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Overview</title>
 
-  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, FontAwesome) -->
+  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, FontAwesome, Datatable) -->
   <link rel="stylesheet" href="assets/vendor/choices.js/public/assets/styles/choices.min.css">
   <link type="text/css" href="assets/vendor/apexcharts/dist/apexcharts.css" rel="stylesheet">
   <link type="text/css" href="assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <!-- Datatable -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
   <!-- ✅ Custom CSS -->
   <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
+
+  <style>
+    tfoot {
+      display: table-header-group;
+    }
+  </style>
 </head>
 
 <body>
@@ -258,61 +263,28 @@
 
     <div class="card mb-4">
       <div class="table-responsive py-4">
-        <table class="table table-flush" id="custom-datatable">
-          <thead class="thead-light">
+        <table id="custom-datatable" class="table table-striped table-bordered table-hover">
+          <thead class="table-dark">
             <tr>
+              <th class="text-center" style="width: 1%">
+                <input type="checkbox" id="select-all">
+              </th>
               <th>Category Name</th>
               <th>Inserted Date</th>
               <th>Updated Date</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody id="custom-table-body">
-            <!-- Data will be inserted here -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card mb-4">
-      <div class="table-responsive py-4">
-        <table id="example" class="table table-striped table-bordered">
-          <thead class="table-dark">
+          <tfoot>
             <tr>
-              <th>Name</th>
-              <th>Position</th>
-              <th>Office</th>
-              <th>Age</th>
-              <th>Start date</th>
-              <th>Salary</th>
+              <th></th>
+              <th><input type="text" placeholder="Search category name" class="form-control" /></th>
+              <th><input type="text" placeholder="Search inserted date" class="form-control" /></th>
+              <th><input type="text" placeholder="Search updated date" class="form-control" /></th>
+              <th></th>
             </tr>
-          </thead>
+          </tfoot>
           <tbody>
-            <tr>
-              <td>Airi Satou</td>
-              <td>Accountant</td>
-              <td>Tokyo</td>
-              <td>33</td>
-              <td>2008-11-28</td>
-              <td>$162,700</td>
-            </tr>
-            <tr>
-              <td>Angelica Ramos</td>
-              <td>CEO</td>
-              <td>London</td>
-              <td>47</td>
-              <td>2009-10-09</td>
-              <td>$1,200,000</td>
-            </tr>
-            <tr>
-              <td>Ashton Cox</td>
-              <td>Junior Technical Author</td>
-              <td>San Francisco</td>
-              <td>66</td>
-              <td>2009-01-12</td>
-              <td>$86,000</td>
-            </tr>
-            <!-- Tambah data lainnya -->
           </tbody>
         </table>
       </div>
@@ -359,248 +331,11 @@
   <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
-  <script>
-    $(document).ready(function () {
-      $('#example').DataTable({
-        responsive: true
-      });
-    });
-  </script>
-
   <!-- ✅ Custom JS (Cleaned) -->
   <script src="assets/js/volt.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/pages/categories.js"></script>
 
-      // ✅ Global variables
-      let dataTableInstance = null;
-      let rows = []; // untuk menyimpan data transaksi
-
-      // ✅ Utility: parse custom date
-      function parseCustomDate(dateStr) {
-        if (!dateStr) return null;
-
-        const parts = dateStr.split(' ');
-
-        if (parts.length < 4) return null; // minimal ada tanggal dan jam
-
-        const day = parseInt(parts[0], 10);
-        const monthName = parts[1];
-        const year = parseInt(parts[2], 10);
-
-        const timeParts = parts[3].split(':');
-        const hour = parseInt(timeParts[0], 10) || 0;
-        const minute = parseInt(timeParts[1], 10) || 0;
-        const second = parseInt(timeParts[2], 10) || 0;
-
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const month = monthNames.indexOf(monthName);
-
-        return month < 0 ? null : new Date(year, month, day, hour, minute, second);
-      }
-
-      // ✅ Fetch and render table
-      function fetchAndRenderTable() {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/categories!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
-
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            rows = data.values;
-            rows.sort((a, b) => {
-              const aDate = parseCustomDate(a[3]);
-              const bDate = parseCustomDate(b[3]);
-              return bDate - aDate;
-            });
-
-            const tableBody = document.getElementById("custom-table-body");
-            let html = "";
-
-            rows.forEach(row => {
-              html += `
-                <tr>
-                    <td class="text-sm text-dark fw-bold">${row[1] || '-'}</td>
-                    <td class="text-sm text-dark">${row[2] || '-'}</td>
-                    <td class="text-sm text-dark">${row[3] || '-'}</td>
-                    <td class="align-middle">
-                        <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${row[0]}" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                        </a>
-                        <a href="javascript:;" class="delete-modal-btn" data-id="${row[0]}" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
-                            <i class="fa-regular fa-trash-can text-danger"></i>
-                        </a>
-                    </td>
-                </tr>
-              `;
-            });
-
-            tableBody.innerHTML = html;
-
-            if (dataTableInstance) dataTableInstance.destroy();
-            dataTableInstance = new simpleDatatables.DataTable("#custom-datatable", { searchable: true, fixedHeight: true });
-          })
-          .catch(err => console.error('Fetch error:', err));
-      }
-
-      // ✅ Utility: show SweetAlert toast
-      function showToast(icon, message) { Swal.fire({ toast: true, position: 'top-end', icon, title: message, showConfirmButton: false, timer: 1500, timerProgressBar: true }); }
-
-      // ✅ New Modal button
-      document.querySelector('.new-modal-btn').addEventListener('click', () => {
-        const modalEl = document.getElementById('componentModal');
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
-
-        modalEl.querySelector('.modal-title').innerText = 'New Category';
-        modalEl.querySelector('#btn-submit-modal').innerText = 'Add Category';
-        const form = document.getElementById('modalForm');
-        form.reset();
-
-        const idInput = form.querySelector('input[name="category_id"]');
-        if (idInput) idInput.remove();
-      });
-
-      // ✅ Edit Modal button
-      document.addEventListener('click', function (e) {
-        const btn = e.target.closest('.edit-modal-btn');
-        if (!btn) return;
-
-        const categoryId = btn.getAttribute('data-id');
-        const category = rows.find(row => row[0] === categoryId);
-        if (!category) return;
-
-        const modalEl = document.getElementById('componentModal');
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
-
-        modalEl.querySelector('.modal-title').innerText = 'Edit Category';
-        modalEl.querySelector('#btn-submit-modal').innerText = 'Edit Category';
-        const form = document.getElementById('modalForm');
-
-        form.querySelector('#name').value = category[1] || '';
-
-        let idInput = form.querySelector('input[name="category_id"]');
-        if (!idInput) {
-          idInput = document.createElement('input');
-          idInput.type = 'hidden';
-          idInput.name = 'category_id';
-          form.appendChild(idInput);
-        }
-        idInput.value = categoryId;
-      });
-
-      // ✅ Delete Modal button
-      document.addEventListener('click', function (e) {
-        const btn = e.target.closest('.delete-modal-btn');
-        if (!btn) return;
-
-        const categoryId = btn.getAttribute('data-id');
-
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "This action cannot be undone!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: "#E11D48",
-          confirmButtonText: 'Yes, delete it!',
-          cancelButtonText: 'Cancel',
-        }).then(result => {
-          if (!result.isConfirmed) return;
-
-          fetch('https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec', {
-            method: 'POST',
-            body: JSON.stringify({ action: 'category_delete', category_id: categoryId }),
-            headers: { "Content-Type": "text/plain" },
-          })
-            .then(res => res.json())
-            .then(response => {
-              if (response.result === "success") {
-                localStorage.setItem('categorySaved', 'deleted');
-                location.reload();
-              } else {
-                Swal.fire('Error', 'Failed to delete category.', 'error');
-              }
-            })
-            .catch(err => {
-              console.error('Error:', err);
-              Swal.fire('Error', 'Error deleting category.', 'error');
-            });
-        });
-      });
-
-      // ✅ Form submit (insert & update)
-      document.getElementById('modalForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const form = e.target;
-
-        let catIdInput = form.querySelector('input[name="category_id"]');
-        let catId;
-
-        if (catIdInput) {
-          catId = catIdInput.value;
-        } else {
-          let maxId = 0;
-          rows.forEach(row => {
-            if (row[0] && row[0].startsWith('CAT-')) {
-              const num = parseInt(row[0].split('-')[1], 10);
-              if (!isNaN(num) && num > maxId) maxId = num;
-            }
-          });
-          const nextIdNum = maxId + 1;
-          catId = 'CAT-' + String(nextIdNum).padStart(3, '0');
-        }
-
-        const now = new Date().toISOString();
-
-        const data = {
-          action: catIdInput ? 'category_update' : 'category_create',
-          category_id: catId,
-          name: form.name.value,
-          inserted_date: now,
-          updated_date: catIdInput ? now : now
-        };
-
-        fetch('https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec', {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "text/plain" },
-        })
-          .then(res => res.json())
-          .then(response => {
-            if (response.result === "success") {
-              form.reset();
-              const modalEl = document.getElementById('componentModal');
-              bootstrap.Modal.getInstance(modalEl).hide();
-
-              localStorage.setItem('categorySaved', catIdInput ? 'edited' : 'saved');
-              location.reload();
-            } else {
-              const msg = response.result === "not_found" ? 'Category not found.' : 'Failed to save category.';
-              Swal.fire('Error', msg, 'error');
-            }
-          })
-          .catch(err => {
-            console.error('Error:', err);
-            Swal.fire('Error', 'Failed to communicate with server.', 'error');
-          });
-      });
-
-      // ✅ Toast on page load
-      const status = localStorage.getItem('categorySaved');
-      if (status) {
-        const messages = {
-          saved: 'Category saved successfully',
-          edited: 'Category edited successfully',
-          deleted: 'Category deleted successfully'
-        };
-        showToast('success', messages[status] || 'Operation completed');
-        localStorage.removeItem('categorySaved');
-      }
-
-      // ✅ Initial fetch
-      fetchAndRenderTable();
-    });
-  </script>
 </body>
 
 </html>

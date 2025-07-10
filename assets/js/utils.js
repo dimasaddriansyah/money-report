@@ -1,3 +1,39 @@
+// ✅ Payment colors (untuk chart)
+const paymentColors = {
+  BCA: "#1976d2",
+  Mandiri: "#f9a825",
+  Seabank: "#512da8",
+  Gopay: "#00bcd4",
+  Jago: "#fb8c00",
+  "Top Up": "#ff7043",
+  Gasoline: "#E11D48",
+  "Laundry and Gallon": "#039be5",
+  Loan: "#f57c00",
+  Investment: "#43a047",
+  Emergency: "#e53935",
+  Saving: "#8e24aa",
+  "e-Money Mandiri": "#6d4c41",
+  Unknown: "#9e9e9e",
+};
+
+// ✅ Category colors (untuk chart)
+const categoryColors = {
+  Transfer: "#1E88E5",
+  "Electricity Token": "#f9a825",
+  "Foods and Beverages": "#FDD835",
+  Gallon: "#00bcd4",
+  Grocery: "#fb8c00",
+  "Top Up": "#ff7043",
+  Gasoline: "#E11D48",
+  Laundry: "#039be5",
+  Parking: "#31316A",
+  Investation: "#43A047",
+  "Self Rewards": "#EF4682",
+  Kost: "#3949AB",
+  Others: "#6d4c41",
+  Unknown: "#9e9e9e",
+};
+
 // ✅ parseCustomDate
 function parseCustomDate(dateStr) {
   if (!dateStr) return null;
@@ -108,7 +144,7 @@ function groupByDateAndPayment(rows) {
   return result;
 }
 
-// ✅ Utility get logo URL by payment
+// ✅ Utility get logo URL by category
 function getLogoUrl(category) {
   const logos = {
     "Foods and Beverages": "assets/img/icons/fast-food.png",

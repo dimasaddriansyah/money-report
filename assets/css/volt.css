@@ -27863,6 +27863,13 @@ label {
     opacity: 1
 }
 
+.dataTables_length select {
+    padding: 0.375rem 2.5rem 0.375rem 0.75rem;
+    margin: 0 5px;
+    display: inline-block;
+    width: auto;
+}
+
 .h1,
 .h2,
 .h3,

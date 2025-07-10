@@ -1,3 +1,15 @@
+// ✅ Current Date Now
+function getCurrentDateInfo() {
+  const today = new Date();
+
+  return {
+    day: today.toLocaleString("en-US", { weekday: "long" }),
+    date: today.getDate(),
+    month: today.toLocaleString("en-US", { month: "long" }),
+    year: today.getFullYear()
+  };
+}
+
 // ✅ Payment colors (untuk chart)
 const paymentColors = {
   BCA: "#1976d2",

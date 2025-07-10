@@ -243,15 +243,18 @@
       </nav>
       <div class="d-flex justify-content-between w-100 flex-wrap">
         <div class="mb-3 mb-lg-0">
-          <h1 class="h4">Budgets</h1>
+          <h1 class="h4">Budgets in <span class="text-success" id="currentDate"></span></h1>
         </div>
         <div>
           <button type="button" class="btn btn-block btn-primary new-transaction-btn">
-            <i class="fa-solid fa-plus me-2"></i> New Transaction
+            <i class="fa-solid fa-plus me-2"></i> New Budget
           </button>
         </div>
       </div>
     </div>
+
+    <div class="card mb-4">
+      <div class="accordion" id="accordionBudgets"></div>
   </main>
 
 
@@ -266,6 +269,8 @@
 
   <!-- ✅ Custom JS (Cleaned) -->
   <script src="assets/js/volt.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/pages/budgets.js"></script>
 </body>
 
 </html>

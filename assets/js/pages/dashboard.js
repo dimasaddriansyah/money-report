@@ -626,8 +626,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     payments.forEach((payment) => {
       const logoSrc = getPaymentLogo(payment);
-      console.log("Payment:", payment);
-      console.log("LogoSrc:", logoSrc);
       
       const totalExpense = paymentExpenses[payment] || 0;
       const totalIncome = paymentIncomes[payment] || 0;

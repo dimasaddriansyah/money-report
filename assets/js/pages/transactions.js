@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         rows.forEach((row) => {
           // ✅ Mapping logo berdasarkan kategori
-          const logoSrc = getLogoUrl(row[5]);
+          const logoSrc = getCategoryIcon(row[5]);
 
           html += `
           <tr>

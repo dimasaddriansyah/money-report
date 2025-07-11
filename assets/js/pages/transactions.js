@@ -34,31 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let html = "";
 
         rows.forEach((row) => {
-          let logoSrc = "";
-
           // ✅ Mapping logo berdasarkan kategori
-          const logos = {
-            "Foods and Beverages": "fast-food.png",
-            Grocery: "grocery.png",
-            "Top Up": "top-up.png",
-            "Electricity Token": "lightning.png",
-            Quota: "sim.png",
-            Gasoline: "gas.png",
-            Transportation: "3d-car.png",
-            Parking: "parking.png",
-            Gallon: "water.png",
-            Laundry: "washing-machine.png",
-            Investation: "invest.png",
-            "Self Rewards": "achievement.png",
-            Kost: "house.png",
-            Service: "tools.png",
-            Transfer: "transfer.png",
-            Others: "menu.png",
-            Remaining: "saving.png",
-          };
-          logoSrc = `assets/img/icons/${
-            logos[row[5]] || "../assets/img/team-2.jpg"
-          }`;
+          const logoSrc = getLogoUrl(row[5]);
 
           html += `
           <tr>

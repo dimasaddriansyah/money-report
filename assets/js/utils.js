@@ -6,7 +6,7 @@ function getCurrentDateInfo() {
     day: today.toLocaleString("en-US", { weekday: "long" }),
     date: today.getDate(),
     month: today.toLocaleString("en-US", { month: "long" }),
-    year: today.getFullYear()
+    year: today.getFullYear(),
   };
 }
 
@@ -157,8 +157,8 @@ function groupByDateAndPayment(rows) {
 }
 
 // ✅ Utility get logo URL by category
-function getLogoUrl(category) {
-  const logos = {
+function getCategoryIcon(category) {
+  const icons = {
     "Foods and Beverages": "assets/img/icons/fast-food.png",
     Grocery: "assets/img/icons/grocery.png",
     "Top Up": "assets/img/icons/top-up.png",
@@ -176,6 +176,26 @@ function getLogoUrl(category) {
     Transfer: "assets/img/icons/transfer.png",
     Others: "assets/img/icons/menu.png",
     Remaining: "assets/img/icons/saving.png",
+    Subscription: "assets/img/icons/subscription-active.png",
   };
-  return logos[category] || "../assets/img/team-2.jpg";
+  return icons[category] || "../assets/img/team-2.jpg";
+}
+
+function getPaymentLogo(payment) {
+  const logos = {
+    BCA: "assets/img/logos/" + payment + ".png",
+    Mandiri: "assets/img/logos/" + payment + ".png",
+    Seabank: "assets/img/logos/" + payment + ".svg",
+    Gopay: "assets/img/logos/" + payment + ".webp",
+    Jago: "assets/img/logos/" + payment + ".svg",
+    "Top Up": "assets/img/logos/jago.svg",
+    Gasoline: "assets/img/logos/jago.svg",
+    "Laundry and Gallon": "assets/img/logos/jago.svg",
+    Loan: "assets/img/logos/jago.svg",
+    Investment: "assets/img/logos/jago.svg",
+    Emergency: "assets/img/logos/jago.svg",
+    Saving: "assets/img/logos/jago.svg",
+    "e-Money Mandiri": "assets/img/logos/" + payment + ".png",
+  };
+  return logos[payment] || "../assets/img/team-2.jpg";
 }

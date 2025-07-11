@@ -243,7 +243,7 @@
       </nav>
       <div class="d-flex justify-content-between w-100 flex-wrap">
         <div class="mb-3 mb-lg-0">
-          <h1 class="h4">Budgets in <span class="text-success" id="currentDate"></span></h1>
+          <h1 class="h4">Budgets in <span class="text-success fw-bolder" id="currentDate"></span></h1>
         </div>
         <div>
           <button type="button" class="btn btn-block btn-primary new-transaction-btn">
@@ -253,8 +253,79 @@
       </div>
     </div>
 
+    <!-- ✅ Overview Cards (Budget, Spend, Saving) -->
+    <div class="row">
+      <!-- ✅ Overview Cards (Budget) -->
+      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
+        <div class="card stat-card-info border-0 shadow">
+          <div class="card-body">
+            <div class="stat-icon">
+              <i class="bi bi-download"></i>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <p class="text-gray-500 mb-0">Budget</p>
+                <h3 class="fw-extrabold" id="totalBudget"></h3>
+              </div>
+              <div class="icon-shape icon-sm icon-shape-info rounded">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+              </div>
+            </div>
+            <p class="stat-change mt-3 mb-0">
+              <span class="up">↑ 3%</span> from last month
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- ✅ Overview Cards (Spend) -->
+      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
+        <div class="card stat-card-danger border-0 shadow">
+          <div class="card-body">
+            <div class="stat-icon">
+              <i class="bi bi-download"></i>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <p class="text-gray-500 mb-0">Spend</p>
+                <h3 class="fw-extrabold" id="totalSpend"></h3>
+              </div>
+              <div class="icon-shape icon-sm icon-shape-danger rounded">
+                <i class="fa-solid fa-arrow-trend-down"></i>
+              </div>
+            </div>
+            <p class="stat-change mt-3 mb-0">
+              <span class="up">↑ 3%</span> from last month
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- ✅ Overview Cards (Saving) -->
+      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
+        <div class="card stat-card-success border-0 shadow">
+          <div class="card-body">
+            <div class="stat-icon">
+              <i class="bi bi-download"></i>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <p class="text-gray-500 mb-0">Saving</p>
+                <h3 class="fw-extrabold" id="totalSaving"></h3>
+              </div>
+              <div class="icon-shape icon-sm icon-shape-success rounded">
+                <i class="fa-solid fa-sack-dollar"></i>
+              </div>
+            </div>
+            <p class="stat-change mt-3 mb-0">
+              <span class="up">↑ 3%</span> from last month
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card mb-4">
       <div class="accordion" id="accordionBudgets"></div>
+    </div>
   </main>
 
 

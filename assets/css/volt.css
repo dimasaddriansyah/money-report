@@ -10071,6 +10071,12 @@ fieldset:disabled .btn {
     width: 100% !important
 }
 
+@media (max-width:576px) {
+    .mwm-75 {
+        max-width: 7.5rem !important
+    }
+}
+
 .w-auto {
     width: auto !important
 }
@@ -27559,7 +27565,8 @@ label {
     top: 0
 }
 
-.table thead th, .table tfoot th {
+.table thead th,
+.table tfoot th {
     padding-top: .75rem;
     padding-bottom: .75rem;
     font-size: .75rem;

@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const bDate = parseCustomDate(b[2]);
             return bDate - aDate;
           })
-          .slice(0, 6);
+          .slice(0, 13);
 
         // ✅ Render ke table
         const tableBody = document.getElementById("list-last-transaction");
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         rows.forEach((row) => {
           const category = row[5] || "Unknown";
-          const logoSrc = getLogoUrl(category);
+          const logoSrc = getCategoryIcon(category);
 
           html += `
           <li class="list-group-item bg-transparent border-bottom py-3 px-0">
@@ -62,26 +62,20 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="col-auto">
                 <img class="img-fluid me-2" alt="logo" src="${logoSrc}" height="35" width="35">
               </div>
-              <div class="col-auto px-0">
-                <h4 class="fs-6 text-dark mb-0">
-                  <a href="#">
-                    ${
-                      row[6]
-                        ? row[6].length > 22
-                          ? row[6].substring(0, 22) + "..."
-                          : row[6]
-                        : ""
-                    } <span class="small text-gray-500">(${row[4]})</span>
-                  </a>
-                </h4>
-                <span class="small">${row[2] || ""}</span>
+              <div class="col px-0">
+                <div class="d-flex flex-column">
+                  <h4 class="fs-6 text-dark mb-0">${row[6]}</h4>
+                  <span class="small text-gray-500">${row[4]}</span>
+                </div>
               </div>
               <div class="col text-end">
-                <span class="fs-6 fw-bolder ${
-                  row[3] === "Expenses" ? "text-danger" : "text-success"
-                }">
-                  ${row[3] === "Expenses" ? "-" : "+"} ${row[7] || ""}
-                </span>
+                <div class="d-flex flex-column">
+                  <span class="fs-6 fw-bolder 
+                    ${row[3] === "Expenses" ? "text-danger" : "text-success"}">
+                    ${row[3] === "Expenses" ? "-" : "+"} ${row[7] || ""}
+                  </span>
+                  <span class="small">${row[2] || ""}</span>
+                </div>
               </div>
             </div>
           </li>
@@ -559,7 +553,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const options = {
           chart: {
             type: "donut",
-            height: 414,
+            height: 555,
           },
           labels: sortedCategories,
           series: sortedDataSeries,
@@ -573,7 +567,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
           },
           legend: {
-            position: "right",
+            position: "bottom",
           },
           tooltip: {
             y: {
@@ -600,9 +594,116 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((err) => console.error("Fetch error:", err));
   }
 
+  // ✅ Render list summary payment
+  async function listSummaryPayment() {
+    const payments = await getDataAccountPayments();
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+
+    const paymentExpenses = {};
+    const paymentIncomes = {};
+
+    rows.forEach((row) => {
+      const type = row[3];
+      const payment = row[4];
+      const nominalStr = row[7] || "0";
+      const nominal =
+        parseInt(nominalStr.replace(/Rp\s?/g, "").replace(/,/g, ""), 10) || 0;
+
+      if (type === "Expenses") {
+        if (!paymentExpenses[payment]) paymentExpenses[payment] = 0;
+        paymentExpenses[payment] += nominal;
+      } else if (type === "Income") {
+        if (!paymentIncomes[payment]) paymentIncomes[payment] = 0;
+        paymentIncomes[payment] += nominal;
+      }
+    });
+
+    let html = "";
+
+    payments.forEach((payment) => {
+      const logoSrc = getPaymentLogo(payment);
+      console.log("Payment:", payment);
+      console.log("LogoSrc:", logoSrc);
+      
+      const totalExpense = paymentExpenses[payment] || 0;
+      const totalIncome = paymentIncomes[payment] || 0;
+      const saving = totalIncome - totalExpense;
+      let percentUsed = 0;
+
+      if (totalIncome > 0) {
+        percentUsed = (totalExpense / totalIncome) * 100;
+        if (percentUsed > 100) percentUsed = 100; // ✅ Maksimum 100% agar progress bar tidak overflow
+      }
+
+      let progressClass = "bg-success";
+      let textClass = "text-success";
+
+      if (percentUsed === 0) {
+        textClass = "text-gray-500";
+      } else if (percentUsed < 0) {
+        progressClass = "bg-danger";
+        textClass = "text-danger";
+      } else if (percentUsed > 90) {
+        progressClass = "bg-danger";
+        textClass = "text-danger";
+      } else if (percentUsed > 80) {
+        progressClass = "bg-warning";
+        textClass = "text-warning";
+      }
+
+      html += `
+        <div class="row mb-4">
+          <div class="col-auto">
+            <img src="${logoSrc}" alt="${payment}" class="img-fluid" width="50" height="50">
+          </div>
+          <div class="col">
+            <div class="progress-wrapper">
+              <div class="progress-info">
+                <div class="d-flex flex-column">
+                  <h6 class="mb-0">${payment}</h6>
+                  <span class="small fw-bold ${textClass}">
+                    Rp ${saving.toLocaleString("en-US")}
+                  </span>
+                </div>
+                <div class="d-flex flex-column small text-end">
+                <span class="fw-bolder ${textClass}">${percentUsed.toFixed(
+        2
+      )}%</span>
+                <div class="text-gray-500">
+                  <span>(</span>
+                  <span>${totalExpense.toLocaleString("en-US")}</span>
+                  <span>/</span>
+                  <span>${totalIncome.toLocaleString("en-US")}</span>
+                  <span>)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="progress mb-0">
+                <div class="progress-bar ${progressClass}" role="progressbar"
+                aria-valuenow="${percentUsed.toFixed(2)}" aria-valuemin="0"
+                  aria-valuemax="100" style="width: ${percentUsed.toFixed(
+                    2
+                  )}%;">
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    const tableBody = document.getElementById("list-summary-payment");
+    tableBody.innerHTML = html;
+  }
+
   // ✅ Initial fetch
   getDataTransactions();
   getDataCategories();
+  listSummaryPayment();
 
   getDataAccountPayments().then((allPayments) => {
     renderDailyExpensesChart("", allPayments);

@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // ✅ Loop sorted data to generate accordion
         const accordionContainer = document.getElementById("accordionBudgets");
         groupedArray.forEach((group, index) => {
+          const logoSrc = getPaymentLogo(group.paymentType);
           const collapseId = `collapse${index}`;
           const headingId = `heading${index}`;
 
@@ -53,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
               (item) => `
         <tr>
           <td>${item[2]}</td>
-          <td>${item[3]}</td>
+          <td class="text-sm-end text-lg-end fw-bolder pe-sm-5 pe-lg-6">${item[3]}</td>
         </tr>
       `
             )
@@ -69,8 +70,11 @@ document.addEventListener("DOMContentLoaded", function () {
               data-bs-target="#${collapseId}" aria-expanded="${
             index === 0 ? "true" : "false"
           }" aria-controls="${collapseId}">
-              <span class="fw-extrabold">${group.paymentType}</span>
-              <span class="fw-extrabold text-success position-absolute end-0 top-50 translate-middle-y" style="margin-right:4rem">${formattedTotal}</span>
+              <div class="d-none d-sm-block">
+                <img src="${logoSrc}" alt="${group.paymentType}" class="img-fluid me-2" width="50" height="50">
+              </div>
+              <span>${group.paymentType}</span>
+              <span class="fw-extrabold text-success position-absolute end-0 me-5 me-lg-6">${formattedTotal}</span>
             </button>
           </h2>
           <div id="${collapseId}" class="accordion-collapse collapse ${
@@ -83,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   <thead class="table-dark">
                     <tr>
                       <th>Allocation</th>
-                      <th>Nominal</th>
+                      <th class="text-sm-end text-lg-end pe-sm-5 pe-lg-6">Nominal</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -92,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   <tfoot class="table-dark">
                     <tr>
                       <th>Allocation</th>
-                      <th>Nominal</th>
+                      <th class="text-sm-end text-lg-end pe-sm-5 pe-lg-6">Nominal</th>
                     </tr>
                   </tfoot>
                 </table>

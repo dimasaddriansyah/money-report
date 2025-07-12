@@ -6,13 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Overview</title>
 
-  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, FontAwesome) -->
+  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, Font Awesome, Date Range Picker) -->
   <link rel="stylesheet" href="assets/vendor/choices.js/public/assets/styles/choices.min.css">
   <link type="text/css" href="assets/vendor/apexcharts/dist/apexcharts.css" rel="stylesheet">
   <link type="text/css" href="assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
   <!-- ✅ Custom CSS -->
   <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
@@ -247,10 +248,16 @@
           <h1 class="h4 mb-0">Overview</h1>
           <p class="mb-0 text-gray-500">Transaction this month</p>
         </div>
-        <div class="w-25">
-          <select id="paymentFilter" class="form-select">
-            <option value="">All Payments</option>
-          </select>
+        <div class="d-flex gap-3">
+          <div class="input-group w-auto">
+            <span class="input-group-text" id="inputGroup-sizing-default"><i class="fa-regular fa-calendar"></i></span>
+            <input id="dateRange" class="form-control" placeholder="Select date range">
+          </div>
+          <div class="w-filter icon-payment">
+            <select id="paymentFilter" class="form-select icon-payment">
+              <option value="">All Payments</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -387,11 +394,8 @@
       <!-- ✅ List Last Transactions -->
       <div class="col-12 col-xl-6 mb-4">
         <div class="card h-100 border-0 shadow">
-          <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+          <div class="card-header border-bottom">
             <h2 class="fs-5 fw-bold mb-0">Last Transactions</h2>
-            <button type="button" class="btn btn-block btn-primary new-transaction-btn">
-              <i class="fa-solid fa-plus me-2"></i> New Transaction
-            </button>
           </div>
           <div class="card-body py-0">
             <ul class="list-group list-group-flush" id="list-last-transaction"></ul>
@@ -410,64 +414,6 @@
         </div>
       </div>
     </div>
-
-    <!-- ✅ Component Modal -->
-    <div class="modal fade" id="componentModal" tabindex="-1" aria-labelledby="componentModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="componentModalLabel">Modal Title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form id="modalForm">
-            <div class="modal-body">
-              <div class="form-group mb-3">
-                <label for="incomeExpensesSelect">Income/Expenses</label>
-                <select id="incomeExpensesSelect" class="form-select" required>
-                  <option value="">-- Select Income/Expenses --</option>
-                </select>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group mb-3">
-                    <label for="paymentSelect">Payment Method</label>
-                    <select id="paymentSelect" class="form-select" required>
-                      <option value="">-- Select Payment Method --</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group mb-3">
-                    <label for="categorySelect">Category</label>
-                    <select id="categorySelect" class="form-select" required>
-                      <option value="">-- Select Category --</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group mb-3">
-                    <label for="remark">Remark</label>
-                    <input type="text" class="form-control" id="remark" placeholder="Remark" required>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group mb-3">
-                    <label for="nominal">Nominal</label>
-                    <input type="text" class="form-control" id="nominal" placeholder="Nominal" required>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-link text-gray" data-bs-dismiss="modal">Close</button>
-              <button type="submit" id="btn-submit-modal" class="btn btn-primary">Add Transaction</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
   </main>
 
   <!-- ✅ JS Vendors -->
@@ -482,6 +428,16 @@
   <script src="assets/js/volt.js"></script>
   <script src="assets/js/utils.js"></script>
   <script src="assets/js/pages/dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <script>
+    $(function () {
+
+      
+
+    });
+  </script>
 
 </body>
 

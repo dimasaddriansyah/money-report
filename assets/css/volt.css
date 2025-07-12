@@ -10071,6 +10071,10 @@ fieldset:disabled .btn {
     width: 100% !important
 }
 
+.w-filter {
+    width: 15rem !important
+}
+
 @media (max-width:576px) {
     .mwm-75 {
         max-width: 7.5rem !important
@@ -27447,14 +27451,51 @@ label {
 .choices__inner {
     background-color: #fff;
     border-color: #d1d5db;
-    border-radius: .5rem
+    border-radius: .5rem;
+    position: relative;
+    padding-left : 2rem;
+}
+
+.icon-payment .choices__inner::before{
+    content: "\f09d";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 500;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.icon-category .choices__inner::before{
+    content: "\f15c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 500;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.icon-type .choices__inner::before{
+    content: "\f0c5";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 500;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
 }
 
 .choices__list.choices__list--dropdown {
     border-color: #d1d5db;
     margin-top: .5rem;
     border-radius: .5rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06)
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+    min-width: 100%;
+    white-space: nowrap;
 }
 
 .choices .is-open .choices__inner,

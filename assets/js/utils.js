@@ -90,13 +90,13 @@ function showToast(icon, message) {
 }
 
 // ✅ animateCountUp manual
-function animateCountUp(
+function animateCountUp({
   elementId,
   targetValue,
   duration = 1000,
   prefix = "Rp ",
-  classCondition = null
-) {
+  classCondition = null,
+}) {
   const el = document.getElementById(elementId);
   if (!el) return;
 
@@ -181,6 +181,7 @@ function getCategoryIcon(category) {
   return icons[category] || "../assets/img/team-2.jpg";
 }
 
+// ✅ Utility get logo URL by payment
 function getPaymentLogo(payment) {
   const logos = {
     BCA: "assets/img/logos/" + payment + ".png",
@@ -198,4 +199,10 @@ function getPaymentLogo(payment) {
     "e-Money Mandiri": "assets/img/logos/" + payment + ".png",
   };
   return logos[payment] || "../assets/img/team-2.jpg";
+}
+
+// 🔧 Helper format Rupiah
+function formatRupiah(angka) {
+  const numberString = angka.toString();
+  return "Rp " + numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

@@ -402,7 +402,6 @@ document.addEventListener("DOMContentLoaded", function () {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (!result.isConfirmed) return;
-
       fetch(
         "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
         {

@@ -27453,10 +27453,10 @@ label {
     border-color: #d1d5db;
     border-radius: .5rem;
     position: relative;
-    padding-left : 2rem;
+    padding-left: 2rem;
 }
 
-.icon-payment .choices__inner::before{
+.icon-payment .choices__inner::before {
     content: "\f09d";
     font-family: "Font Awesome 6 Free";
     font-weight: 500;
@@ -27467,7 +27467,7 @@ label {
     color: #9ca3af;
 }
 
-.icon-category .choices__inner::before{
+.icon-category .choices__inner::before {
     content: "\f15c";
     font-family: "Font Awesome 6 Free";
     font-weight: 500;
@@ -27478,7 +27478,7 @@ label {
     color: #9ca3af;
 }
 
-.icon-type .choices__inner::before{
+.icon-type .choices__inner::before {
     content: "\f0c5";
     font-family: "Font Awesome 6 Free";
     font-weight: 500;
@@ -29955,4 +29955,46 @@ Card Dashboard
 .stat-card-info {
     border-left: 0.5rem solid var(--bs-info) !important;
     position: relative;
+}
+
+/* 
+=========================================================================================== 
+Card Budgets
+=========================================================================================== */
+
+.card-collapse {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.card-collapse.show {
+    max-height: 1000px;
+}
+
+input#nominal.form-control.nominal-budget {
+    height: 2.75rem;
+}
+
+.masonry-columns {
+    column-count: 1;
+    column-gap: 1rem;
+}
+
+@media (min-width: 1200px) {
+    .masonry-columns {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1400px) {
+    .masonry-columns {
+        column-count: 3;
+    }
+}
+
+.masonry-columns .card {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1rem;
 }

@@ -16,6 +16,9 @@
 
   <!-- ✅ Custom CSS -->
   <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
+  <style>
+
+  </style>
 </head>
 
 <body>
@@ -228,6 +231,7 @@
       </div>
     </nav>
 
+    <!-- ✅ Header Text -->
     <div class="py-4">
       <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -246,7 +250,7 @@
           <h1 class="h4">Budgets in <span class="text-success fw-bolder" id="currentDate"></span></h1>
         </div>
         <div>
-          <button type="button" class="btn btn-block btn-primary new-transaction-btn">
+          <button type="button" class="btn btn-block btn-primary new-modal-btn">
             <i class="fa-solid fa-plus me-2"></i> New Budget
           </button>
         </div>
@@ -323,11 +327,51 @@
       </div>
     </div>
 
-    <div class="card mb-4">
-      <div class="accordion" id="accordionBudgets"></div>
+    <!-- ✅ Budget Cards -->
+    <div id="budgetsCard" class="masonry-columns"></div>
+
+    <!-- Component Modal -->
+    <div class="modal fade" id="componentModal" tabindex="-1" aria-labelledby="componentModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="componentModalLabel">Modal Title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="modalForm">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12 col-lg-6">
+                  <div class="form-group icon-payment mb-3">
+                    <label for="paymentSelect">Payment Method</label>
+                    <select id="paymentSelect" class="form-select" required>
+                      <option value="">-- Select Payment Method --</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <div class="form-group mb-3">
+                    <label for="nominal">Nominal</label>
+                    <input type="text" class="form-control nominal-budget" id="nominal" placeholder="Nominal" required>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group icon-category mb-3">
+                  <label for="note">Note</label>
+                  <textarea name="note" id="note" class="form-control" placeholder="Input note..." required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-link text-gray" data-bs-dismiss="modal">Close</button>
+              <button type="submit" id="btn-submit-modal" class="btn btn-primary">Add Transaction</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </main>
-
 
   <!-- ✅ JS Vendors -->
   <script src="assets/vendor/@popperjs/core/dist/umd/popper.min.js"></script>

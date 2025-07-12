@@ -167,11 +167,19 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    animateCountUp("totalIncome", sumIncome);
-    animateCountUp("totalExpenses", sumExpenses);
-    animateCountUp("totalSaving", sumIncome - sumExpenses, 1000, "Rp ", (val) =>
-      val < 0 ? "text-danger" : "text-success"
-    );
+    animateCountUp({
+      elementId: "totalIncome",
+      targetValue: sumIncome,
+    });
+    animateCountUp({
+      elementId: "totalExpenses",
+      targetValue: sumExpenses,
+    });
+    animateCountUp({
+      elementId: "totalSaving",
+      targetValue: sumIncome - sumExpenses,
+      classCondition: (val) => (val < 0 ? "text-danger" : "text-success"),
+    });
   }
 
   function renderDailyExpensesChart(filterPayment = "") {

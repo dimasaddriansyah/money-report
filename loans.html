@@ -6,18 +6,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Overview</title>
 
-  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, FontAwesome) -->
+  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, FontAwesome, Datatable) -->
   <link rel="stylesheet" href="assets/vendor/choices.js/public/assets/styles/choices.min.css">
   <link type="text/css" href="assets/vendor/apexcharts/dist/apexcharts.css" rel="stylesheet">
   <link type="text/css" href="assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
   <!-- ✅ Custom CSS -->
   <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
-  <style>
 
+  <style>
+    tfoot {
+      display: table-header-group;
+    }
   </style>
 </head>
 
@@ -80,11 +85,7 @@
             data-bs-target="#submenu-dashboard">
             <span>
               <span class="sidebar-icon">
-                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                  <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                </svg>
+                <i class="fa-solid fa-chart-pie me-2"></i>
               </span>
               <span class="sidebar-text">Dashboard</span>
             </span>
@@ -116,15 +117,15 @@
         <li class="nav-item">
           <a href="transactions.html" class="nav-link d-flex align-items-center">
             <span class="sidebar-icon">
-              <i class="fa-solid fa-circle-dollar-to-slot me-2"></i>
+              <i class="fa-solid fa-arrow-right-arrow-left me-3"></i>
             </span>
             <span class="sidebar-text">Transactions</span>
           </a>
         </li>
-        <li class="nav-item active">
-          <a href="budget.html" class="nav-link d-flex align-items-center">
+        <li class="nav-item">
+          <a href="budgets.html" class="nav-link d-flex align-items-center">
             <span class="sidebar-icon">
-              <i class="fa-solid fa-wand-sparkles me-2"></i>
+              <i class="fa-solid fa-cart-shopping me-3"></i>
             </span>
             <span class="sidebar-text">Budgets</span>
           </a>
@@ -137,26 +138,26 @@
         </li>
         <li class="nav-item">
           <a href="categories.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon"><svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                <path fill-rule="evenodd"
-                  d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
-                  clip-rule="evenodd"></path>
-              </svg> </span>
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-table-list me-3"></i>
+            </span>
             <span class="sidebar-text">Categories</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="account-payments.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon"><svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
-                <path fill-rule="evenodd"
-                  d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
-                  clip-rule="evenodd"></path>
-              </svg> </span>
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-credit-card me-3"></i>
+            </span>
             <span class="sidebar-text">Payments</span>
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a href="loans.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-sack-dollar me-3"></i>
+            </span>
+            <span class="sidebar-text">Loans</span>
           </a>
         </li>
       </ul>
@@ -231,7 +232,6 @@
       </div>
     </nav>
 
-    <!-- ✅ Header Text -->
     <div class="py-4">
       <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -241,137 +241,111 @@
                   d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
                 </path>
               </svg></a></li>
-          <li class="breadcrumb-item active" aria-current="page">Transaction & Budget</li>
-          <li class="breadcrumb-item active" aria-current="page">Budgets</li>
+          <li class="breadcrumb-item active" aria-current="page">Master Data</li>
+          <li class="breadcrumb-item active" aria-current="page">Loans</li>
         </ol>
       </nav>
       <div class="d-flex justify-content-between w-100 flex-wrap">
         <div class="mb-3 mb-lg-0">
-          <h1 class="h4">Budgets in <span class="text-success fw-bolder" id="currentDate"></span></h1>
+          <h1 class="h4">Loans</h1>
         </div>
         <div>
           <button type="button" class="btn btn-block btn-primary new-modal-btn">
-            <i class="fa-solid fa-plus me-2"></i> New Budget
+            <i class="fa-solid fa-plus me-2"></i> New Loan
           </button>
         </div>
       </div>
     </div>
 
-    <!-- ✅ Overview Cards (Budget, Spend, Saving) -->
-    <div class="row">
-      <!-- ✅ Overview Cards (Budget) -->
-      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
-        <div class="card stat-card-info border-0 shadow">
-          <div class="card-body">
-            <div class="stat-icon">
-              <i class="bi bi-download"></i>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <p class="text-gray-500 mb-0">Budget</p>
-                <h3 class="fw-extrabold" id="totalBudget"></h3>
-              </div>
-              <div class="icon-shape icon-sm icon-shape-info rounded">
-                <i class="fa-solid fa-arrow-trend-up"></i>
-              </div>
-            </div>
-            <p class="stat-change mt-3 mb-0">
-              <span class="up">↑ 3%</span> from last month
-            </p>
-          </div>
-        </div>
-      </div>
-      <!-- ✅ Overview Cards (Spend) -->
-      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
-        <div class="card stat-card-danger border-0 shadow">
-          <div class="card-body">
-            <div class="stat-icon">
-              <i class="bi bi-download"></i>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <p class="text-gray-500 mb-0">Spend</p>
-                <h3 class="fw-extrabold" id="totalSpend"></h3>
-              </div>
-              <div class="icon-shape icon-sm icon-shape-danger rounded">
-                <i class="fa-solid fa-arrow-trend-down"></i>
-              </div>
-            </div>
-            <p class="stat-change mt-3 mb-0">
-              <span class="up">↑ 3%</span> from last month
-            </p>
-          </div>
-        </div>
-      </div>
-      <!-- ✅ Overview Cards (Saving) -->
-      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
-        <div class="card stat-card-success border-0 shadow">
-          <div class="card-body">
-            <div class="stat-icon">
-              <i class="bi bi-download"></i>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <p class="text-gray-500 mb-0">Saving</p>
-                <h3 class="fw-extrabold" id="totalSaving"></h3>
-              </div>
-              <div class="icon-shape icon-sm icon-shape-success rounded">
-                <i class="fa-solid fa-sack-dollar"></i>
-              </div>
-            </div>
-            <p class="stat-change mt-3 mb-0">
-              <span class="up">↑ 3%</span> from last month
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ Budget Cards -->
-    <div id="budgetsCard" class="masonry-columns"></div>
-
-    <!-- Component Modal -->
-    <div class="modal fade" id="componentModal" tabindex="-1" aria-labelledby="componentModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="componentModalLabel">Modal Title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form id="modalForm">
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12 col-lg-6">
-                  <div class="form-group icon-payment mb-3">
-                    <label for="paymentSelect">Payment Method</label>
-                    <select id="paymentSelect" class="form-select" required>
-                      <option value="">-- Select Payment Method --</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-12 col-lg-6">
-                  <div class="form-group mb-3">
-                    <label for="nominal">Nominal</label>
-                    <input type="text" class="form-control nominal-budget" id="nominal" placeholder="Nominal" required>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12">
-                <div class="form-group icon-category mb-3">
-                  <label for="note">Note</label>
-                  <textarea name="note" id="note" class="form-control" placeholder="Input note..." required></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-link text-gray" data-bs-dismiss="modal">Close</button>
-              <button type="submit" id="btn-submit-modal" class="btn btn-primary">Add Transaction</button>
-            </div>
-          </form>
-        </div>
+    <div class="card mb-4">
+      <div class="table-responsive py-4">
+        <table id="custom-datatable" class="table table-striped table-bordered table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th class="text-center" style="width: 1%">
+                <input type="checkbox" id="select-all">
+              </th>
+              <th>Source Payment</th>
+              <th>Target Payment</th>
+              <th>Note</th>
+              <th>Nominal</th>
+              <th>Inserted Date</th>
+              <th>Updated Date</th>
+              <th class="text-center">Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th><input type="text" placeholder="Search source payment" class="form-control" /></th>
+              <th><input type="text" placeholder="Search target payment" class="form-control" /></th>
+              <th><input type="text" placeholder="Search note" class="form-control" /></th>
+              <th><input type="text" placeholder="Search nominal" class="form-control" /></th>
+              <th><input type="text" placeholder="Search inserted date" class="form-control" /></th>
+              <th><input type="text" placeholder="Search updated date" class="form-control" /></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </tfoot>
+          <tbody>
+          </tbody>
+        </table>
       </div>
     </div>
   </main>
+
+  <!-- Component Modal -->
+  <div class="modal fade" id="componentModal" tabindex="-1" aria-labelledby="componentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="componentModalLabel">Modal Title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="modalForm">
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="form-group icon-payment mb-3">
+                  <label for="sourcePaymentSelect">Source Payment</label>
+                  <select id="sourcePaymentSelect" class="form-select" required>
+                    <option value="">-- Select Source Method --</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="form-group icon-payment mb-3">
+                  <label for="targetPaymentSelect">Target Payment</label>
+                  <select id="targetPaymentSelect" class="form-select" required>
+                    <option value="">-- Select Target Method --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="form-group mb-3">
+                  <label for="note">Note</label>
+                  <input type="text" class="form-control" id="note" placeholder="Input note..." required>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="form-group mb-3">
+                  <label for="nominal">Nominal</label>
+                  <input type="text" class="form-control" id="nominal" placeholder="Nominal" required>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-link text-gray" data-bs-dismiss="modal">Close</button>
+            <button type="submit" id="btn-submit-modal" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- ✅ JS Vendors -->
   <script src="assets/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
@@ -382,10 +356,18 @@
   <script src="assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
   <script src="assets/vendor/choices.js/public/assets/scripts/choices.min.js"></script>
 
+  <!-- DataTables -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
   <!-- ✅ Custom JS (Cleaned) -->
   <script src="assets/js/volt.js"></script>
   <script src="assets/js/utils.js"></script>
-  <script src="assets/js/pages/budgets.js"></script>
+  <script src="assets/js/pages/loans.js"></script>
+
 </body>
 
 </html>

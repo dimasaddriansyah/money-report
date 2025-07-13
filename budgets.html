@@ -6,17 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Overview</title>
 
-  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, Font Awesome, Date Range Picker) -->
+  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, FontAwesome) -->
   <link rel="stylesheet" href="assets/vendor/choices.js/public/assets/styles/choices.min.css">
   <link type="text/css" href="assets/vendor/apexcharts/dist/apexcharts.css" rel="stylesheet">
   <link type="text/css" href="assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
   <!-- ✅ Custom CSS -->
   <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
+  <style>
+
+  </style>
 </head>
 
 <body>
@@ -74,8 +76,8 @@
         <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
 
         <li class="nav-item">
-          <span class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-            data-bs-target="#submenu-dashboard" aria-expanded="true">
+          <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+            data-bs-target="#submenu-dashboard">
             <span>
               <span class="sidebar-icon">
                 <i class="fa-solid fa-chart-pie me-2"></i>
@@ -90,9 +92,9 @@
               </svg>
             </span>
           </span>
-          <div class="multi-level collapse show" role="list" id="submenu-dashboard" aria-expanded="false">
+          <div class="multi-level collapse" role="list" id="submenu-dashboard" aria-expanded="false">
             <ul class="flex-column nav">
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="index.html" class="nav-link">
                   <span class="sidebar-text-contracted">O</span>
                   <span class="sidebar-text">Overview</span>
@@ -115,7 +117,7 @@
             <span class="sidebar-text">Transactions</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a href="budgets.html" class="nav-link d-flex align-items-center">
             <span class="sidebar-icon">
               <i class="fa-solid fa-cart-shopping me-3"></i>
@@ -225,7 +227,7 @@
       </div>
     </nav>
 
-    <!-- ✅ Breadcrumb & Filter -->
+    <!-- ✅ Header Text -->
     <div class="py-4">
       <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -235,32 +237,25 @@
                   d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
                 </path>
               </svg></a></li>
-          <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-          <li class="breadcrumb-item active" aria-current="page">Overview</li>
+          <li class="breadcrumb-item active" aria-current="page">Transaction & Budget</li>
+          <li class="breadcrumb-item active" aria-current="page">Budgets</li>
         </ol>
       </nav>
-      <div class="d-flex justify-content-between align-items-center w-100 flex-wrap">
+      <div class="d-flex justify-content-between w-100 flex-wrap">
         <div class="mb-3 mb-lg-0">
-          <h1 class="h4 mb-0">Overview</h1>
-          <p class="mb-0 text-gray-500">Transaction this month</p>
+          <h1 class="h4">Budgets in <span class="text-success fw-bolder" id="currentDate"></span></h1>
         </div>
-        <div class="d-flex gap-3">
-          <div class="input-group w-auto">
-            <span class="input-group-text" id="inputGroup-sizing-default"><i class="fa-regular fa-calendar"></i></span>
-            <input id="dateRange" class="form-control" placeholder="Select date range">
-          </div>
-          <div class="w-filter icon-payment">
-            <select id="paymentFilter" class="form-select icon-payment">
-              <option value="">All Payments</option>
-            </select>
-          </div>
+        <div>
+          <button type="button" class="btn btn-block btn-primary new-modal-btn">
+            <i class="fa-solid fa-plus me-2"></i> New Budget
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- ✅ Overview Cards (Income, Expenses, Saving) -->
+    <!-- ✅ Overview Cards (Budget, Spend, Saving) -->
     <div class="row">
-      <!-- ✅ Overview Cards (Income) -->
+      <!-- ✅ Overview Cards (Budget) -->
       <div class="col-12 col-xl-6 col-xxl-4 mb-4">
         <div class="card stat-card-info border-0 shadow">
           <div class="card-body">
@@ -269,8 +264,8 @@
             </div>
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <p class="text-gray-500 mb-0">Income</p>
-                <h3 class="fw-extrabold" id="totalIncome"></h3>
+                <p class="text-gray-500 mb-0">Budget</p>
+                <h3 class="fw-extrabold" id="totalBudget"></h3>
               </div>
               <div class="icon-shape icon-sm icon-shape-info rounded">
                 <i class="fa-solid fa-arrow-trend-up"></i>
@@ -282,7 +277,7 @@
           </div>
         </div>
       </div>
-      <!-- ✅ Overview Cards (Expenses) -->
+      <!-- ✅ Overview Cards (Spend) -->
       <div class="col-12 col-xl-6 col-xxl-4 mb-4">
         <div class="card stat-card-danger border-0 shadow">
           <div class="card-body">
@@ -291,8 +286,8 @@
             </div>
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <p class="text-gray-500 mb-0">Expenses</p>
-                <h3 class="fw-extrabold" id="totalExpenses"></h3>
+                <p class="text-gray-500 mb-0">Spend</p>
+                <h3 class="fw-extrabold" id="totalSpend"></h3>
               </div>
               <div class="icon-shape icon-sm icon-shape-danger rounded">
                 <i class="fa-solid fa-arrow-trend-down"></i>
@@ -328,85 +323,47 @@
       </div>
     </div>
 
-    <!-- ✅ Daily Expenses Chart -->
-    <div class="row">
-      <div class="col-12 mb-4">
-        <div class="card border-0 shadow">
-          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-            <div class="w-100 d-sm-flex justify-content-between align-items-center">
-              <h2 class="fs-5 fw-bold mb-0">Daily Expenses</h2>
-            </div>
-          </div>
-          <div class="card-body p-2 pb-4">
-            <div id="daily-expenses-chart"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- ✅ Budget Cards -->
+    <div id="budgetsCard" class="masonry-columns"></div>
 
-    <!-- ✅ Top Expenses Chart & Category Expenses Chart -->
-    <div class="row">
-      <!-- ✅ Top Expenses Chart -->
-      <div class="col-12 col-xl-6 mb-4">
-        <div class="card border-0 shadow">
-          <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-            <h2 class="fs-5 fw-bold mb-0">Top Expenses</h2>
+    <!-- Component Modal -->
+    <div class="modal fade" id="componentModal" tabindex="-1" aria-labelledby="componentModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="componentModalLabel">Modal Title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="card-body py-0">
-            <div id="top-expenses-chart"></div>
-          </div>
-        </div>
-      </div>
-      <!-- ✅ Category Expenses Chart -->
-      <div class="col-12 col-xl-6 mb-4">
-        <div class="card border-0 shadow">
-          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-            <div class="w-100 d-sm-flex justify-content-between align-items-center">
-              <h2 class="fs-5 fw-bold mb-0">Category Expenses</h2>
+          <form id="modalForm">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12 col-lg-6">
+                  <div class="form-group icon-payment mb-3">
+                    <label for="paymentSelect">Payment Method</label>
+                    <select id="paymentSelect" class="form-select" required>
+                      <option value="">-- Select Payment Method --</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <div class="form-group mb-3">
+                    <label for="nominal">Nominal</label>
+                    <input type="text" class="form-control nominal-budget" id="nominal" placeholder="Nominal" required>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group icon-category mb-3">
+                  <label for="note">Note</label>
+                  <textarea name="note" id="note" class="form-control" placeholder="Input note..." required></textarea>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="card-body p-2 pb-4">
-            <div id="category-expenses-chart"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ Summary Payment Chart & List Last Transactions -->
-    <div class="row">
-      <!-- ✅ Summary Payment Chart -->
-      <div class="col-12 col-xl-6 mb-4">
-        <div class="card border-0 shadow">
-          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-            <div class="w-100 d-sm-flex justify-content-between align-items-center">
-              <h2 class="fs-5 fw-bold mb-0">Summary Payment</h2>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-link text-gray" data-bs-dismiss="modal">Close</button>
+              <button type="submit" id="btn-submit-modal" class="btn btn-primary">Add Transaction</button>
             </div>
-          </div>
-          <div class="card-body">
-            <div id="list-summary-payment"></div>
-          </div>
-        </div>
-      </div>
-      <!-- ✅ List Last Transactions -->
-      <div class="col-12 col-xl-6 mb-4">
-        <div class="card h-100 border-0 shadow">
-          <div class="card-header border-bottom">
-            <h2 class="fs-5 fw-bold mb-0">Last Transactions</h2>
-          </div>
-          <div class="card-body py-0">
-            <ul class="list-group list-group-flush" id="list-last-transaction"></ul>
-          </div>
-          <!-- <a class="card-footer h-100 border-top bg-gray-50 d-flex align-items-center justify-content-center" href="transactions.html">
-            <div class="fw-bold d-flex align-items-center justify-content-center">
-              <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                <path fill-rule="evenodd"
-                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              See all
-            </div>
-          </a> -->
+          </form>
         </div>
       </div>
     </div>
@@ -417,24 +374,14 @@
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
   <script src="assets/vendor/apexcharts/dist/apexcharts.min.js"></script>
+  <script src="assets/vendor/simple-datatables/dist/umd/simple-datatables.js"></script>
   <script src="assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
   <script src="assets/vendor/choices.js/public/assets/scripts/choices.min.js"></script>
 
   <!-- ✅ Custom JS (Cleaned) -->
   <script src="assets/js/volt.js"></script>
   <script src="assets/js/utils.js"></script>
-  <script src="assets/js/pages/dashboard.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-  <script>
-    $(function () {
-
-
-
-    });
-  </script>
-
+  <script src="assets/js/pages/budgets.js"></script>
 </body>
 
 </html>

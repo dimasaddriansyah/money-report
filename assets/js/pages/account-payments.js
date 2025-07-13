@@ -25,7 +25,9 @@ document.addEventListener("DOMContentLoaded", function () {
               </td>
               <td class="text-sm text-dark fw-bold">${row[1] || "-"}</td>
               <td class="text-sm text-dark">${row[2] || "-"}</td>
-              <td class="text-sm text-dark">${row[3] || "-"}</td>
+              <td class="text-sm text-dark" data-order="${
+                row[3] ? new Date(row[3]).getTime() : ""
+              }">${row[3] || "-"}</td>
               <td class="align-middle">
                 <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${
                   row[0]

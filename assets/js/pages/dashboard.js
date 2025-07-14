@@ -132,44 +132,54 @@ document.addEventListener("DOMContentLoaded", function () {
   function calculateIncomeExpenses() {
     const selectedPayment = document.getElementById("paymentFilter").value;
     let sumIncome = 0,
-      sumExpenses = 0;
+      sumExpenses = 0,
+      lastMonthSaving = 0;
+
+    const currentMonthYear = selectedStartDate.format("MMMM YYYY");
 
     allTransactionsData.forEach((row) => {
       const type = row[3],
         payment = row[4],
-        category = row[5];
+        category = row[5],
+        remark = row[6];
       const nominal =
         parseInt((row[7] || "0").replace(/Rp\s?/g, "").replace(/,/g, ""), 10) ||
         0;
 
       const rowDate = moment(row[2], "DD MMMM YYYY HH:mm:ss");
+
+      // ✅ Proses lastMonthSaving tanpa filter tanggal bulan ini
+      if (type === "Income" && category === "Saving") {
+        // Jika saving bulan lalu (remark tidak mengandung bulan ini)
+        if (!remark.includes(currentMonthYear)) {
+          if (!selectedPayment || payment === selectedPayment) {
+            lastMonthSaving += nominal;
+          }
+        }
+        // Saving bulan ini tidak ditambahkan ke income bulan ini
+        return; // Skip baris ini dari income bulan ini
+      }
+
+      // ✅ Filter tanggal untuk income dan expenses bulan ini
       if (!rowDate.isBetween(selectedStartDate, selectedEndDate, "day", "[]"))
         return;
 
       if (type === "Income") {
-        if (
-          selectedPayment === "" &&
-          (payment === "Payroll" || category === "Remaining")
-        )
+        if (!selectedPayment || payment === selectedPayment) {
           sumIncome += nominal;
-        else if (payment === selectedPayment) sumIncome += nominal;
+        }
       } else if (type === "Expenses") {
-        if (
-          !(
-            selectedPayment === "" &&
-            payment === "Payroll" &&
-            category === "Transfer"
-          )
-        ) {
-          if (selectedPayment === "" || payment === selectedPayment)
-            sumExpenses += nominal;
+        if (!selectedPayment || payment === selectedPayment) {
+          sumExpenses += nominal;
         }
       }
     });
 
+    const totalIncome = sumIncome + lastMonthSaving;
+
     animateCountUp({
       elementId: "totalIncome",
-      targetValue: sumIncome,
+      targetValue: totalIncome,
     });
     animateCountUp({
       elementId: "totalExpenses",
@@ -177,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     animateCountUp({
       elementId: "totalSaving",
-      targetValue: sumIncome - sumExpenses,
+      targetValue: totalIncome - sumExpenses,
       classCondition: (val) => (val < 0 ? "text-danger" : "text-success"),
     });
   }

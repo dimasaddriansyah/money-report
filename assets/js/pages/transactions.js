@@ -65,8 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
               row[6] || ""
             }</td>
             <td class="text-sm ${
-              row[3] === "Expenses" ? "text-danger" : "text-success"
-            } fw-bold align-middle">${row[3] === "Expenses" ? "-" : "+"} ${
+              row[3] === "Expenses" || row[3] === "Transfer" ? "text-danger" : "text-success"
+            } fw-bold align-middle">${row[3] === "Expenses" || row[3] === "Transfer" ? "-" : "+"} ${
             row[7] || ""
           }</td>
             <td class="align-middle">
@@ -210,37 +210,45 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ✅ Get Data Categories
-  function getDataCategories() {
+  async function getDataCategories(type) {
+    categoryChoices.clearChoices();
+    categoryChoices.setChoices(
+      [
+        {
+          value: "",
+          label: "-- Select Category --",
+          selected: true,
+          disabled: true,
+        },
+      ],
+      "value",
+      "label",
+      false
+    );
+
+    if (!type) {
+      return;
+    }
+
     const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/categories!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        const rows = data.values || [];
-        categoryChoices.clearChoices();
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const rows = data.values || [];
+      const filtered = rows.filter((row) => row[1] === type);
+
+      filtered.forEach((row) => {
         categoryChoices.setChoices(
-          [
-            {
-              value: "",
-              label: "-- Select Category --",
-              selected: true,
-              disabled: true,
-            },
-          ],
+          [{ value: row[2], label: row[2] }],
           "value",
           "label",
           false
         );
-        rows.forEach((row) => {
-          categoryChoices.setChoices(
-            [{ value: row[1], label: row[1] }],
-            "value",
-            "label",
-            false
-          );
-        });
-      })
-      .catch((err) => console.error("Fetch error:", err));
+      });
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
   }
 
   // ✅ Get Data Account Payments
@@ -310,6 +318,12 @@ document.addEventListener("DOMContentLoaded", function () {
             selected: false,
             disabled: false,
           },
+          {
+            value: "Transfer",
+            label: "Transfer",
+            selected: false,
+            disabled: false,
+          },
         ],
         "value",
         "label",
@@ -321,14 +335,14 @@ document.addEventListener("DOMContentLoaded", function () {
       getDataAccountPayments();
 
       categoryChoices.clearStore();
-      getDataCategories();
+      getDataCategories(typeSelect);
 
       const idInput = form.querySelector('input[name="transaction_id"]');
       if (idInput) idInput.remove();
     });
 
   // ✅ Edit Modal button
-  document.addEventListener("click", function (e) {
+  document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".edit-modal-btn");
     if (!btn) return;
 
@@ -359,12 +373,20 @@ document.addEventListener("DOMContentLoaded", function () {
           selected: transaction[3] === "Expenses",
           disabled: false,
         },
+        {
+          value: "Transfer",
+          label: "Transfer",
+          selected: transaction[3] === "Transfer",
+          disabled: false,
+        },
       ],
       "value",
       "label",
       true
     );
+
     paymentChoices.setChoiceByValue(transaction[4] || "");
+    await getDataCategories(transaction[3] || "");
     categoryChoices.setChoiceByValue(transaction[5] || "");
     form.querySelector("#remark").value = transaction[6] || "";
 
@@ -482,6 +504,15 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error:", err);
         Swal.fire("Error", "Failed to communicate with server.", "error");
       });
+  });
+
+  // ✅ Event: Event select
+  document.getElementById("typeSelect").addEventListener("change", function () {
+    const selectedType = this.value;
+    categoryChoices.clearStore();
+    if (selectedType) {
+      getDataCategories(selectedType);
+    }
   });
 
   // ✅ Toast on page load

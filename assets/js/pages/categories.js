@@ -2,9 +2,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // ✅ Global variables
   let rows = []; // untuk menyimpan data transaksi
 
+  // ✅ Init Choices.js
+  const typeSelect = new Choices("#typeSelect", {
+    searchEnabled: true,
+    itemSelectText: "",
+  });
+
   // ✅ Fetch and render table
   function fetchAndRenderTable() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/categories!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/categories!A2:E?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
 
     fetch(url)
       .then((res) => res.json())
@@ -20,10 +26,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 <input type="checkbox" class="row-checkbox" data-id="${row[0]}">
               </td>
               <td class="text-sm text-dark fw-bold">${row[1] || "-"}</td>
-              <td class="text-sm text-dark">${row[2] || "-"}</td>
+              <td class="text-sm text-dark fw-bold">${row[2] || "-"}</td>
+              <td class="text-sm text-dark">${row[3] || "-"}</td>
               <td class="text-sm text-dark" data-order="${
-                row[3] ? new Date(row[3]).getTime() : ""
-              }">${row[3] || "-"}</td>
+                row[4] ? new Date(row[4]).getTime() : ""
+              }">${row[4] || "-"}</td>
               <td class="align-middle">
                 <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${
                   row[0]
@@ -52,10 +59,10 @@ document.addEventListener("DOMContentLoaded", function () {
           orderCellsTop: true,
           fixedHeader: true,
           autoWidth: false,
-          order: [[3, "desc"]],
+          order: [[4, "desc"]],
           columnDefs: [
-            { orderable: false, targets: [0, 4] },
-            { width: "1%", targets: [0, 4] },
+            { orderable: false, targets: [0, 5] },
+            { width: "1%", targets: [0, 5] },
           ],
           initComplete: function () {
             // per-column search
@@ -174,6 +181,39 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("modalForm");
     form.reset();
 
+    typeSelect.setChoices(
+      [
+        {
+          value: "",
+          label: "-- Select Type --",
+          selected: true,
+          disabled: true,
+        },
+        {
+          value: "Income",
+          label: "Income",
+          selected: false,
+          disabled: false,
+        },
+        {
+          value: "Expenses",
+          label: "Expenses",
+          selected: false,
+          disabled: false,
+        },
+        {
+          value: "Transfer",
+          label: "Transfer",
+          selected: false,
+          disabled: false,
+        },
+      ],
+      "value",
+      "label",
+      true
+    );
+    typeSelect.setChoiceByValue("");
+
     const idInput = form.querySelector('input[name="category_id"]');
     if (idInput) idInput.remove();
   });
@@ -195,7 +235,25 @@ document.addEventListener("DOMContentLoaded", function () {
     modalEl.querySelector("#btn-submit-modal").innerText = "Edit Category";
     const form = document.getElementById("modalForm");
 
-    form.querySelector("#name").value = category[1] || "";
+    typeSelect.setChoices(
+      [
+        {
+          value: "",
+          label: "-- Select Type --",
+          selected: true,
+          disabled: true,
+        },
+        { value: "Income", label: "Income" },
+        { value: "Expenses", label: "Expenses" },
+        { value: "Transfer", label: "Transfer" },
+      ],
+      "value",
+      "label",
+      true
+    );
+
+    typeSelect.setChoiceByValue(category[1] || "");
+    form.querySelector("#name").value = category[2] || "";
 
     let idInput = form.querySelector('input[name="category_id"]');
     if (!idInput) {
@@ -279,6 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const data = {
       action: catIdInput ? "category_update" : "category_create",
       category_id: catId,
+      type: form.typeSelect.value,
       name: form.name.value,
       inserted_date: now,
       updated_date: catIdInput ? now : now,

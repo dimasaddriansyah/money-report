@@ -79,7 +79,6 @@
         </li>
 
         <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-
         <li class="nav-item">
           <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
             data-bs-target="#submenu-dashboard">
@@ -106,13 +105,20 @@
                 </a>
               </li>
             </ul>
+            <ul class="flex-column nav">
+              <li class="nav-item">
+                <a href="investations.html" class="nav-link">
+                  <span class="sidebar-text-contracted">I</span>
+                  <span class="sidebar-text">Investations</span>
+                </a>
+              </li>
+            </ul>
           </div>
         </li>
 
         <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-
         <li class="nav-item nav-link">
-          <span class="sidebar-text text-gray-400">Transaction & Budget</span>
+          <span class="sidebar-text text-gray-400">Reporting</span>
         </li>
         <li class="nav-item active">
           <a href="transactions.html" class="nav-link d-flex align-items-center">
@@ -125,14 +131,13 @@
         <li class="nav-item">
           <a href="budgets.html" class="nav-link d-flex align-items-center">
             <span class="sidebar-icon">
-              <i class="fa-solid fa-cart-shopping me-3"></i>
+              <i class="fa-solid fa-bag-shopping me-3"></i>
             </span>
             <span class="sidebar-text">Budgets</span>
           </a>
         </li>
 
         <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-
         <li class="nav-item nav-link">
           <span class="sidebar-text text-gray-400">Master Data</span>
         </li>
@@ -153,11 +158,40 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="platforms.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-tablet-screen-button me-3"></i>
+            </span>
+            <span class="sidebar-text">Platforms</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="portfolios.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-book me-3"></i>
+            </span>
+            <span class="sidebar-text">Portfolios</span>
+          </a>
+        </li>
+
+        <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
+        <li class="nav-item nav-link">
+          <span class="sidebar-text text-gray-400">Loan & Bill</span>
+        </li>
+        <li class="nav-item">
           <a href="loans.html" class="nav-link d-flex align-items-center">
             <span class="sidebar-icon">
               <i class="fa-solid fa-sack-dollar me-3"></i>
             </span>
             <span class="sidebar-text">Loans</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="bills.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-file-invoice-dollar me-3"></i>
+            </span>
+            <span class="sidebar-text">Bills</span>
           </a>
         </li>
       </ul>
@@ -319,6 +353,24 @@
                   <label for="categorySelect">Category</label>
                   <select id="categorySelect" class="form-select" required>
                     <option value="">-- Select Category --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div id="investmentFields" class="row" style="display: none;">
+              <div class="col-12 col-lg-6">
+                <div class="form-group icon-platform mb-3">
+                  <label for="platformSelect">Platform</label>
+                  <select id="platformSelect" class="form-select">
+                    <option value="">-- Select Platform --</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="form-group icon-portfolio mb-3">
+                  <label for="portfolioSelect">Portfolio</label>
+                  <select id="portfolioSelect" class="form-select">
+                    <option value="">-- Select Portfolio --</option>
                   </select>
                 </div>
               </div>

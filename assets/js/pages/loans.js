@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   // ✅ Global variables
-  let rows = []; // untuk menyimpan data transaksi
+  let rows = []; // untuk menyimpan data loan
+  let bills = []; // untuk menyimpan data bill
   let statusChoices; // Global instance statusChoices
 
   const sourcePaymentChoices = new Choices("#sourcePaymentSelect", {
@@ -22,91 +23,154 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ✅ Fetch and render table
   function fetchAndRenderTable() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/loans!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+    const loanURL = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/loans!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+    const billURL = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/bills!A2:F?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        rows = data.values || []; // ✅ update global rows
-        let html = "";
+    Promise.all([fetch(loanURL), fetch(billURL)])
+      .then(([loanRes, billRes]) =>
+        Promise.all([loanRes.json(), billRes.json()])
+      )
+      .then(([loanData, billData]) => {
+        rows = loanData.values || [];
+        bills = billData.values || [];
 
-        rows.forEach((row) => {
-          html += `
-            <tr>
-              <td class="text-center">
-                <input type="checkbox" class="row-checkbox" data-id="${row[0]}">
-              </td>
-              <td class="text-sm text-dark">${row[1] || "-"}</td>
-              <td class="text-sm text-dark">${row[2] || "-"}</td>
-              <td class="text-sm text-dark">${row[3] || "-"}</td>
-              <td class="text-sm text-dark">${row[4] || "-"}</td>
-              <td class="text-sm text-dark">${row[6] || "-"}</td>
-              <td class="text-sm text-dark" data-order="${
-                row[7] ? new Date(row[7]).getTime() : ""
-              }">${row[7] || "-"}</td>
-              <td class="text-center">
-                <span class="text-sm ${
-                  row[5] === "Not Paid"
-                    ? "badge rounded-pill bg-danger"
-                    : "badge rounded-pill bg-success"
-                }">${row[5] || "-"}</span>
-              </td>
-              <td class="align-middle">
-                <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${
-                  row[0]
-                }" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                </a>
-                <a href="javascript:;" class="delete-modal-btn" data-id="${
-                  row[0]
-                }" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
-                  <i class="fa-regular fa-trash-can text-danger"></i>
-                </a>
-              </td>
-            </tr>
-          `;
-        });
-
-        $("#custom-datatable tbody").html(html);
-
-        // ✅ Destroy existing DataTable if exists, then reinitialize
-        if ($.fn.DataTable.isDataTable("#custom-datatable")) {
-          $("#custom-datatable").DataTable().destroy();
-        }
-
-        const table = $("#custom-datatable").DataTable({
-          responsive: true,
-          orderCellsTop: true,
-          fixedHeader: true,
-          autoWidth: false,
-          order: [[6, "desc"]],
-          columnDefs: [
-            { orderable: false, targets: [0, 8] },
-            { width: "1%", targets: [0, 8] },
-            { width: "10%", targets: [7] },
-          ],
-          initComplete: function () {
-            // per-column search
-            const api = this.api();
-            api.columns().every(function () {
-              const that = this;
-              $("input", this.footer()).on("keyup change clear", function () {
-                if (that.search() !== this.value) {
-                  that.search(this.value).draw();
-                }
-              });
-            });
-
-            // append bulk delete button
-            $("#custom-datatable_length").append(
-              '<button id="bulkDelete" class="btn btn-danger btn-sm ms-3 d-none">Delete Selected (<span id="selectedCount">0</span>)</button>'
-            );
-          },
-        });
-
-        updateSelectAllCheckbox();
+        renderLoanTable(); // ✅ separate render logic
       })
       .catch((err) => console.error("Fetch error:", err));
+  }
+
+  // ✅ Fetch and render Loan table
+  function renderLoanTable() {
+    let html = "";
+
+    rows.forEach((row) => {
+      html += `
+      <tr data-loan-id="${row[0]}">
+        <td class="text-center">
+          <i class="fa fa-plus-circle text-primary toggle-bills" style="cursor:pointer"></i>
+        </td>
+        <td class="text-center">
+          <input type="checkbox" class="row-checkbox" data-id="${row[0]}">
+        </td>
+        <td class="text-sm text-dark">${row[1] || "-"}</td>
+        <td class="text-sm text-dark">${row[2] || "-"}</td>
+        <td class="text-sm text-dark">${row[3] || "-"}</td>
+        <td class="text-sm text-dark">${row[4] || "-"}</td>
+        <td class="text-sm text-dark">${row[6] || "-"}</td>
+        <td class="text-sm text-dark">${row[7] || "-"}</td>
+        <td class="text-center">
+          <span class="text-sm ${
+            row[5] === "Unpaid"
+              ? "badge rounded-pill bg-danger"
+              : "badge rounded-pill bg-success"
+          }">${row[5] || "-"}</span>
+        </td>
+        <td class="align-middle">
+          <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${
+            row[0]
+          }" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
+            <i class="fa-regular fa-pen-to-square"></i>
+          </a>
+          <a href="javascript:;" class="delete-modal-btn" data-id="${
+            row[0]
+          }" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
+            <i class="fa-regular fa-trash-can text-danger"></i>
+          </a>
+        </td>
+      </tr>
+    `;
+    });
+
+    $("#custom-datatable tbody").html(html);
+
+    // ✅ DataTable initialization
+    if ($.fn.DataTable.isDataTable("#custom-datatable")) {
+      $("#custom-datatable").DataTable().destroy();
+    }
+
+    $("#custom-datatable").DataTable({
+      responsive: true,
+      orderCellsTop: true,
+      fixedHeader: true,
+      autoWidth: false,
+      order: [[6, "desc"]],
+      columnDefs: [
+        { orderable: false, targets: [0, 8] },
+        { width: "1%", targets: [0, 8] },
+        { width: "10%", targets: [7] },
+      ],
+      initComplete: function () {
+        const api = this.api();
+        api.columns().every(function () {
+          const that = this;
+          $("input", this.footer()).on("keyup change clear", function () {
+            if (that.search() !== this.value) {
+              that.search(this.value).draw();
+            }
+          });
+        });
+      },
+    });
+  }
+
+  $(document).on("click", ".toggle-bills", function () {
+    const icon = $(this);
+    const tr = icon.closest("tr");
+    const table = $("#custom-datatable").DataTable();
+    const row = table.row(tr);
+    const loanId = tr.data("loan-id");
+
+    if (row.child.isShown()) {
+      // collapse
+      row.child.hide();
+      icon
+        .removeClass("fa-minus-circle text-danger")
+        .addClass("fa-plus-circle text-primary");
+    } else {
+      // expand
+      const billsByLoan = bills.filter((b) => b[1] === loanId); // asumsi b[1] = loan_id di bills table
+
+      const childHtml = formatBillsTable(billsByLoan);
+      row.child(childHtml).show();
+      icon
+        .removeClass("fa-plus-circle text-primary")
+        .addClass("fa-minus-circle text-danger");
+    }
+  });
+
+  function formatBillsTable(bills) {
+    if (bills.length === 0) {
+      return '<div class="p-3">No bills found for this loan.</div>';
+    }
+
+    let html = `
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Bill ID</th>
+          <th>Payment Date</th>
+          <th>Note</th>
+          <th>Nominal</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+    bills.forEach((bill) => {
+      html += `
+      <tr>
+        <td>${bill[0]}</td>
+        <td>${bill[2]}</td>
+        <td>${bill[3]}</td>
+        <td>${bill[4]}</td>
+        <td>${bill[5]}</td>
+      </tr>
+    `;
+    });
+
+    html += "</tbody></table>";
+    return html;
   }
 
   // ✅ Update select-all checkbox status

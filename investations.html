@@ -6,18 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Overview</title>
 
-  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, Font Awesome, Date Range Picker) -->
+  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, FontAwesome, Datatable) -->
   <link rel="stylesheet" href="assets/vendor/choices.js/public/assets/styles/choices.min.css">
   <link type="text/css" href="assets/vendor/apexcharts/dist/apexcharts.css" rel="stylesheet">
   <link type="text/css" href="assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
   <!-- ✅ Custom CSS -->
   <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
+
+  <style>
+    tfoot {
+      display: table-header-group;
+    }
+  </style>
 </head>
 
 <body>
@@ -92,7 +98,7 @@
           </span>
           <div class="multi-level collapse show" role="list" id="submenu-dashboard" aria-expanded="false">
             <ul class="flex-column nav">
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="index.html" class="nav-link">
                   <span class="sidebar-text-contracted">O</span>
                   <span class="sidebar-text">Overview</span>
@@ -100,7 +106,7 @@
               </li>
             </ul>
             <ul class="flex-column nav">
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a href="investations.html" class="nav-link">
                   <span class="sidebar-text-contracted">I</span>
                   <span class="sidebar-text">Investations</span>
@@ -260,7 +266,7 @@
       </div>
     </nav>
 
-    <!-- ✅ Breadcrumb & Filter -->
+    <!-- ✅ Text Header-->
     <div class="py-4">
       <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -271,102 +277,44 @@
                 </path>
               </svg></a></li>
           <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-          <li class="breadcrumb-item active" aria-current="page">Overview</li>
+          <li class="breadcrumb-item active" aria-current="page">Investations</li>
         </ol>
       </nav>
-      <div class="d-flex justify-content-between align-items-center w-100 flex-wrap">
-        <div class="mb-3 mb-lg-0">
-          <h1 class="h4 mb-0">Overview</h1>
-          <p class="mb-0 text-gray-500">Transaction this month</p>
-        </div>
-        <div class="d-flex gap-3">
-          <div class="input-group w-auto">
-            <span class="input-group-text" id="inputGroup-sizing-default"><i class="fa-regular fa-calendar"></i></span>
-            <input id="dateRange" class="form-control" placeholder="Select date range">
-          </div>
-          <div class="w-filter icon-payment">
-            <select id="paymentFilter" class="form-select icon-payment">
-              <option value="">All Payments</option>
-            </select>
-          </div>
-        </div>
+      <div class="mb-3 mb-lg-0">
+        <h1 class="h4">List of Investations</h1>
       </div>
     </div>
 
-    <!-- ✅ Overview Cards (Balance all Payments) -->
-    <div class="swiper mySwiper pb-5">
-      <div class="swiper-wrapper" id="balanceCards">
-        <!-- Cards di sini -->
-      </div>
-      <div class="swiper-pagination"></div>
-    </div>
-
-    <!-- ✅ Daily Expenses Chart -->
-    <div class="row mt-4">
-      <div class="col-12 mb-4">
-        <div class="card border-0 shadow">
-          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-            <div class="w-100 d-sm-flex justify-content-between align-items-center">
-              <h2 class="fs-5 fw-bold mb-0">Daily Expenses</h2>
-            </div>
-          </div>
-          <div class="card-body p-2 pb-4">
-            <div id="daily-expenses-chart"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ Top Expenses Chart & Category Expenses Chart -->
-    <div class="row">
-      <!-- ✅ Top Expenses Chart -->
-      <div class="col-12 col-xl-6 mb-4">
-        <div class="card border-0 shadow">
-          <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-            <h2 class="fs-5 fw-bold mb-0">Top Expenses</h2>
-          </div>
-          <div class="card-body py-0">
-            <div id="top-expenses-chart"></div>
-          </div>
-        </div>
-      </div>
-      <!-- ✅ Category Expenses Chart -->
-      <div class="col-12 col-xl-6 mb-4">
-        <div class="card border-0 shadow">
-          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-            <div class="w-100 d-sm-flex justify-content-between align-items-center">
-              <h2 class="fs-5 fw-bold mb-0">Category Expenses</h2>
-            </div>
-          </div>
-          <div class="card-body p-2 pb-4">
-            <div id="category-expenses-chart"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ List Last Transactions -->
-    <div class="row">
-      <div class="col-12 mb-4">
-        <div class="card h-100 border-0 shadow">
-          <div class="card-header border-bottom">
-            <h2 class="fs-5 fw-bold mb-0">Last Transactions</h2>
-          </div>
-          <div class="card-body py-0">
-            <ul class="list-group list-group-flush" id="list-last-transaction"></ul>
-          </div>
-          <!-- <a class="card-footer h-100 border-top bg-gray-50 d-flex align-items-center justify-content-center" href="transactions.html">
-            <div class="fw-bold d-flex align-items-center justify-content-center">
-              <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                <path fill-rule="evenodd"
-                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              See all
-            </div>
-          </a> -->
-        </div>
+    <div class="card mb-4">
+      <div class="table-responsive py-4">
+        <table id="custom-datatable" class="table table-striped table-bordered table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th class="text-center" style="width: 1%">
+                <input type="checkbox" id="select-all">
+              </th>
+              <th>Platform Name</th>
+              <th>Portfolio Name</th>
+              <th>Product Name</th>
+              <th>Nominal</th>
+              <th>Inserted Date</th>
+              <th>Updated Date</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th><input type="text" placeholder="Search platform name" class="form-control" /></th>
+              <th><input type="text" placeholder="Search portfolio name" class="form-control" /></th>
+              <th><input type="text" placeholder="Search product name" class="form-control" /></th>
+              <th><input type="text" placeholder="Search nominal name" class="form-control" /></th>
+              <th><input type="text" placeholder="Search inserted date" class="form-control" /></th>
+              <th><input type="text" placeholder="Search updated date" class="form-control" /></th>
+            </tr>
+          </tfoot>
+          <tbody>
+          </tbody>
+        </table>
       </div>
     </div>
   </main>
@@ -376,17 +324,21 @@
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
   <script src="assets/vendor/apexcharts/dist/apexcharts.min.js"></script>
+  <script src="assets/vendor/simple-datatables/dist/umd/simple-datatables.js"></script>
   <script src="assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
   <script src="assets/vendor/choices.js/public/assets/scripts/choices.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- DataTables -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
   <!-- ✅ Custom JS (Cleaned) -->
   <script src="assets/js/volt.js"></script>
   <script src="assets/js/utils.js"></script>
-  <script src="assets/js/pages/dashboard.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <script src="assets/js/pages/investations.js"></script>
 
 </body>
 

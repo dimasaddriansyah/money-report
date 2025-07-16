@@ -2,65 +2,25 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"><!-- Primary Meta Tags -->
-  <title>Volt Premium Bootstrap Dashboard - DataTables</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-  <meta name="title" content="Volt Premium Bootstrap Dashboard - DataTables">
-  <meta name="author" content="Themesberg">
-  <meta name="description"
-    content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
-  <meta name="keywords"
-    content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, themesberg, themesberg dashboard, themesberg admin dashboard">
-  <link rel="canonical" href="https://themesberg.com/product/admin-dashboard/volt-premium-bootstrap-5-dashboard">
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://demo.themesberg.com/volt-pro">
-  <meta property="og:title" content="Volt Premium Bootstrap Dashboard - DataTables">
-  <meta property="og:description"
-    content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
-  <meta property="og:image"
-    content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg">
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://demo.themesberg.com/volt-pro">
-  <meta property="twitter:title" content="Volt Premium Bootstrap Dashboard - DataTables">
-  <meta property="twitter:description"
-    content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
-  <meta property="twitter:image"
-    content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Overview</title>
 
-  <!-- Favicon -->
-  <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon/favicon-16x16.png">
-  <link rel="manifest" href="assets/img/favicon/site.webmanifest">
-  <link rel="mask-icon" href="assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="theme-color" content="#ffffff">
-
-  <!-- Sweet Alert -->
-  <link type="text/css" href="assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
-  <!-- Notyf -->
-  <!-- <link type="text/css" href="assets/vendor/notyf/notyf.min.css" rel="stylesheet"> -->
-  <!-- Full Calendar  -->
-  <!-- <link type="text/css" href="assets/vendor/fullcalendar/main.min.css" rel="stylesheet"> -->
-  <!-- Apex Charts -->
+  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, Font Awesome, Date Range Picker) -->
+  <link rel="stylesheet" href="assets/vendor/choices.js/public/assets/styles/choices.min.css">
   <link type="text/css" href="assets/vendor/apexcharts/dist/apexcharts.css" rel="stylesheet">
-  <!-- Dropzone -->
-  <!-- <link type="text/css" href="assets/vendor/dropzone/dist/min/dropzone.min.css" rel="stylesheet"> -->
-  <!-- Choices  -->
-  <link type="text/css" href="assets/vendor/choices.js/public/assets/styles/choices.min.css" rel="stylesheet">
-  <!-- Leaflet JS -->
-  <link type="text/css" href="assets/vendor/leaflet/dist/leaflet.css" rel="stylesheet">
-  <!-- Volt CSS -->
-  <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
-  <!-- Font Awesome -->
+  <link type="text/css" href="assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+  <!-- ✅ Custom CSS -->
+  <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
 </head>
 
 <body>
+  <!-- ✅ Sidebar Navigation -->
   <nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-lg-none">
     <a class="navbar-brand me-lg-5" href="index.html">
       <img class="navbar-brand-dark" src="assets/img/brand/light.svg" alt="Volt logo">
@@ -73,7 +33,7 @@
       </button>
     </div>
   </nav>
-
+  <!-- ✅ Sidebar Menu Navigation -->
   <nav id="sidebarMenu" class="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
     <div class="sidebar-inner px-4 pt-3">
       <div class="user-card d-flex d-md-none justify-content-between justify-content-md-center pb-4">
@@ -105,26 +65,19 @@
 
       <ul class="nav flex-column pt-3 pt-md-0">
         <li class="nav-item">
-          <a href="index.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <img src="assets/img/brand/light.svg" height="20" width="20" alt="Volt Logo">
-            </span>
-            <span class="mt-1 sidebar-text">Volt Overview</span>
+          <a href="index.html" class="nav-link d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-vault me-2"></i>
+            <h5 class="mt-1 mb-0 sidebar-text"> Money Report</h5>
           </a>
         </li>
 
         <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-
         <li class="nav-item">
           <span class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
             data-bs-target="#submenu-dashboard" aria-expanded="true">
             <span>
               <span class="sidebar-icon">
-                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                  <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                </svg>
+                <i class="fa-solid fa-chart-pie me-2"></i>
               </span>
               <span class="sidebar-text">Dashboard</span>
             </span>
@@ -144,15 +97,12 @@
                   <span class="sidebar-text">Overview</span>
                 </a>
               </li>
+            </ul>
+            <ul class="flex-column nav">
               <li class="nav-item">
-                <a href="" class="nav-link"><span class="sidebar-text-contracted">T</span>
-                  <span class="sidebar-text">All Traffic</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="" class="nav-link">
-                  <span class="sidebar-text-contracted">P</span>
-                  <span class="sidebar-text">Product Analysis</span>
+                <a href="investations.html" class="nav-link">
+                  <span class="sidebar-text-contracted">I</span>
+                  <span class="sidebar-text">Investations</span>
                 </a>
               </li>
             </ul>
@@ -160,198 +110,119 @@
         </li>
 
         <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-
         <li class="nav-item nav-link">
           <span class="sidebar-text text-gray-400">Reporting</span>
         </li>
         <li class="nav-item">
           <a href="transactions.html" class="nav-link d-flex align-items-center">
             <span class="sidebar-icon">
-              <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                  d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                  clip-rule="evenodd"></path>
-              </svg>
+              <i class="fa-solid fa-arrow-right-arrow-left me-3"></i>
             </span>
             <span class="sidebar-text">Transactions</span>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="budgets.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-bag-shopping me-3"></i>
+            </span>
+            <span class="sidebar-text">Budgets</span>
+          </a>
+        </li>
 
         <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-
         <li class="nav-item nav-link">
           <span class="sidebar-text text-gray-400">Master Data</span>
         </li>
         <li class="nav-item">
           <a href="categories.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon"><svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                <path fill-rule="evenodd"
-                  d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
-                  clip-rule="evenodd"></path>
-              </svg> </span>
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-table-list me-3"></i>
+            </span>
             <span class="sidebar-text">Categories</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="account-payments.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon"><svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
-                <path fill-rule="evenodd"
-                  d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
-                  clip-rule="evenodd"></path>
-              </svg> </span>
-            <span class="sidebar-text">Account Payments</span>
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-credit-card me-3"></i>
+            </span>
+            <span class="sidebar-text">Payments</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="platforms.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-tablet-screen-button me-3"></i>
+            </span>
+            <span class="sidebar-text">Platforms</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="portfolios.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-book me-3"></i>
+            </span>
+            <span class="sidebar-text">Portfolios</span>
+          </a>
+        </li>
+
+        <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
+        <li class="nav-item nav-link">
+          <span class="sidebar-text text-gray-400">Loan & Bill</span>
+        </li>
+        <li class="nav-item">
+          <a href="loans.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-sack-dollar me-3"></i>
+            </span>
+            <span class="sidebar-text">Loans</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="bills.html" class="nav-link d-flex align-items-center">
+            <span class="sidebar-icon">
+              <i class="fa-solid fa-file-invoice-dollar me-3"></i>
+            </span>
+            <span class="sidebar-text">Bills</span>
           </a>
         </li>
       </ul>
     </div>
   </nav>
 
+  <!-- ✅ Main Content -->
   <main class="content">
+    <!-- ✅ Navbar Top -->
     <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
       <div class="container-fluid px-0">
         <div class="d-flex justify-content-between w-100" id="navbarSupportedContent">
           <div class="d-flex align-items-center">
             <button id="sidebar-toggle"
-              class="sidebar-toggle me-3 btn btn-icon-only d-none d-lg-inline-block align-items-center justify-content-center"><svg
-                class="toggle-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              class="sidebar-toggle me-3 btn btn-icon-only d-none d-lg-inline-block align-items-center justify-content-center">
+              <svg class="toggle-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd"
                   d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                   clip-rule="evenodd"></path>
               </svg>
-            </button><!-- Search form -->
-            <form class="navbar-search form-inline" id="navbar-search-main">
-              <div class="input-group input-group-merge search-bar"><span class="input-group-text"
-                  id="topbar-addon"><svg class="icon icon-xs" x-description="Heroicon name: solid/search"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fill-rule="evenodd"
-                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                      clip-rule="evenodd"></path>
-                  </svg> </span><input type="text" class="form-control" id="topbarInputIconLeft" placeholder="Search"
-                  aria-label="Search" aria-describedby="topbar-addon"></div>
-            </form><!-- / Search form -->
-          </div><!-- Navbar links -->
+            </button>
+          </div>
           <ul class="navbar-nav align-items-center">
-            <li class="nav-item dropdown"><a class="nav-link text-dark notification-bell unread dropdown-toggle"
-                data-unread-notifications="true" href="#" role="button" data-bs-toggle="dropdown"
-                data-bs-display="static" aria-expanded="false"><svg class="icon icon-sm text-gray-900"
-                  fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z">
-                  </path>
-                </svg></a>
-              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0">
-                <div class="list-group list-group-flush"><a href="#"
-                    class="text-center text-primary fw-bold border-bottom border-light py-3">Notifications</a>
-                  <a href="pages/calendar.html" class="list-group-item list-group-item-action border-bottom">
-                    <div class="row align-items-center">
-                      <div class="col-auto"><!-- Avatar --> <img alt="Image placeholder"
-                          src="assets/img/team/profile-picture-1.jpg" class="avatar-md rounded"></div>
-                      <div class="col ps-0 ms-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="h6 mb-0 text-small">Jose Leos</h4>
-                          </div>
-                          <div class="text-end"><small class="text-danger">a few moments
-                              ago</small>
-                          </div>
-                        </div>
-                        <p class="font-small mt-1 mb-0">Added you to an event "Project stand-up"
-                          tomorrow at 12:30 AM.
-                        </p>
-                      </div>
-                    </div>
-                  </a><a href="pages/tasks.html" class="list-group-item list-group-item-action border-bottom">
-                    <div class="row align-items-center">
-                      <div class="col-auto"><!-- Avatar --> <img alt="Image placeholder"
-                          src="assets/img/team/profile-picture-2.jpg" class="avatar-md rounded"></div>
-                      <div class="col ps-0 ms-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="h6 mb-0 text-small">Neil Sims</h4>
-                          </div>
-                          <div class="text-end"><small class="text-danger">2 hrs ago</small>
-                          </div>
-                        </div>
-                        <p class="font-small mt-1 mb-0">You've been assigned a task for "Awesome
-                          new
-                          project".</p>
-                      </div>
-                    </div>
-                  </a><a href="pages/tasks.html" class="list-group-item list-group-item-action border-bottom">
-                    <div class="row align-items-center">
-                      <div class="col-auto"><!-- Avatar --> <img alt="Image placeholder"
-                          src="assets/img/team/profile-picture-3.jpg" class="avatar-md rounded"></div>
-                      <div class="col ps-0 m-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="h6 mb-0 text-small">Roberta Casas</h4>
-                          </div>
-                          <div class="text-end"><small>5 hrs ago</small></div>
-                        </div>
-                        <p class="font-small mt-1 mb-0">Tagged you in a document called
-                          "Financial
-                          plans",</p>
-                      </div>
-                    </div>
-                  </a><a href="pages/single-message.html" class="list-group-item list-group-item-action border-bottom">
-                    <div class="row align-items-center">
-                      <div class="col-auto"><!-- Avatar --> <img alt="Image placeholder"
-                          src="assets/img/team/profile-picture-4.jpg" class="avatar-md rounded"></div>
-                      <div class="col ps-0 ms-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="h6 mb-0 text-small">Joseph Garth</h4>
-                          </div>
-                          <div class="text-end"><small>1 d ago</small></div>
-                        </div>
-                        <p class="font-small mt-1 mb-0">New message: "Hey, what's up? All set
-                          for the
-                          presentation?"</p>
-                      </div>
-                    </div>
-                  </a><a href="pages/single-message.html" class="list-group-item list-group-item-action border-bottom">
-                    <div class="row align-items-center">
-                      <div class="col-auto"><!-- Avatar --> <img alt="Image placeholder"
-                          src="assets/img/team/profile-picture-5.jpg" class="avatar-md rounded"></div>
-                      <div class="col ps-0 ms-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="h6 mb-0 text-small">Bonnie Green</h4>
-                          </div>
-                          <div class="text-end"><small>2 hrs ago</small></div>
-                        </div>
-                        <p class="font-small mt-1 mb-0">New message: "We need to improve the
-                          UI/UX for
-                          the landing
-                          page."</p>
-                      </div>
-                    </div>
-                  </a><a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3"><svg
-                      class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                      <path fill-rule="evenodd"
-                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                        clip-rule="evenodd"></path>
-                    </svg> View all</a>
-                </div>
-              </div>
-            </li>
-            <li class="nav-item dropdown ms-lg-3"><a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="media d-flex align-items-center"><img class="avatar rounded-circle" alt="Image placeholder"
+            <li class="nav-item dropdown ms-lg-3">
+              <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <div class="media d-flex align-items-center">
+                  <img class="avatar rounded-circle" alt="Image placeholder"
                     src="assets/img/team/profile-picture-3.jpg">
-                  <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block"><span
-                      class="mb-0 font-small fw-bold text-gray-900">Bonnie Green</span></div>
+                  <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">
+                    <span class="mb-0 font-small fw-bold text-gray-900">Bonnie Green</span>
+                  </div>
                 </div>
               </a>
-              <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1"><a
-                  class="dropdown-item d-flex align-items-center" href="#"><svg class="dropdown-icon text-gray-400 me-2"
-                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
                       clip-rule="evenodd"></path>
@@ -388,6 +259,7 @@
       </div>
     </nav>
 
+    <!-- ✅ Breadcrumb & Filter -->
     <div class="py-4">
       <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -406,28 +278,35 @@
           <h1 class="h4 mb-0">Overview</h1>
           <p class="mb-0 text-gray-500">Transaction this month</p>
         </div>
-        <div class="w-25">
-          <select id="paymentFilter" class="form-select">
-            <option value="">All Payments</option>
-          </select>
+        <div class="d-flex gap-3">
+          <div class="input-group w-auto">
+            <span class="input-group-text" id="inputGroup-sizing-default"><i class="fa-regular fa-calendar"></i></span>
+            <input id="dateRange" class="form-control" placeholder="Select date range">
+          </div>
+          <div class="w-filter icon-payment">
+            <select id="paymentFilter" class="form-select icon-payment">
+              <option value="">All Payments</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Overview Card -->
+    <!-- ✅ Overview Cards (Balance, Expenses, Saving) -->
     <div class="row">
-      <div class="col-12 col-xl-6 col-xxl-3 mb-4">
-        <div class="card stat-card-success border-0 shadow">
+      <!-- ✅ Overview Cards (Balance) -->
+      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
+        <div class="card stat-card-info border-0 shadow">
           <div class="card-body">
             <div class="stat-icon">
               <i class="bi bi-download"></i>
             </div>
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <p class="text-gray-500 mb-0">Income</p>
-                <h3 class="fw-extrabold" id="totalIncome"></h3>
+                <p class="text-gray-500 mb-0">Balance</p>
+                <h3 class="fw-extrabold" id="totalBalance"></h3>
               </div>
-              <div class="icon-shape icon-sm icon-shape-success rounded">
+              <div class="icon-shape icon-sm icon-shape-info rounded">
                 <i class="fa-solid fa-arrow-trend-up"></i>
               </div>
             </div>
@@ -437,7 +316,8 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-xl-6 col-xxl-3 mb-4">
+      <!-- ✅ Overview Cards (Expenses) -->
+      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
         <div class="card stat-card-danger border-0 shadow">
           <div class="card-body">
             <div class="stat-icon">
@@ -458,8 +338,9 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-xl-6 col-xxl-3 mb-4">
-        <div class="card stat-card-blue border-0 shadow">
+      <!-- ✅ Overview Cards (Saving) -->
+      <div class="col-12 col-xl-6 col-xxl-4 mb-4">
+        <div class="card stat-card-success border-0 shadow">
           <div class="card-body">
             <div class="stat-icon">
               <i class="bi bi-download"></i>
@@ -469,7 +350,7 @@
                 <p class="text-gray-500 mb-0">Saving</p>
                 <h3 class="fw-extrabold" id="totalSaving"></h3>
               </div>
-              <div class="icon-shape icon-sm icon-shape-info rounded">
+              <div class="icon-shape icon-sm icon-shape-success rounded">
                 <i class="fa-solid fa-sack-dollar"></i>
               </div>
             </div>
@@ -479,34 +360,13 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-xl-6 col-xxl-3 mb-4">
-        <div class="card stat-card-warning border-0 shadow">
-          <div class="card-body">
-            <div class="stat-icon">
-              <i class="bi bi-download"></i>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <p class="text-gray-500 mb-0">Investment</p>
-                <h3 class="fw-extrabold" id="totalInvestment"></h3>
-              </div>
-              <div class="icon-shape icon-sm icon-shape-warning rounded">
-                <i class="fa-solid fa-circle-dollar-to-slot"></i>
-              </div>
-            </div>
-            <p class="stat-change mt-3 mb-0">
-              <span class="up">↑ 3%</span> from last month
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- Chart Daily Expenses and Last Transactions -->
+    <!-- ✅ Daily Expenses Chart -->
     <div class="row">
-      <div class="col-12 col-xl-6 col-xxl-8 mb-4">
+      <div class="col-12 mb-4">
         <div class="card border-0 shadow">
-          <div class="card-body d-flex flex-row align-items-center flex-0 border-bottom">
+          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
             <div class="w-100 d-sm-flex justify-content-between align-items-center">
               <h2 class="fs-5 fw-bold mb-0">Daily Expenses</h2>
             </div>
@@ -516,591 +376,96 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-xxl-4 mb-4">
+    </div>
+
+    <!-- ✅ Top Expenses Chart & Category Expenses Chart -->
+    <div class="row">
+      <!-- ✅ Top Expenses Chart -->
+      <div class="col-12 col-xl-6 mb-4">
         <div class="card border-0 shadow">
           <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-            <h2 class="fs-5 fw-bold mb-0">Last Transactions</h2>
-            <button type="button" class="btn btn-block btn-primary new-transaction-btn">
-              <i class="fa-solid fa-plus me-2"></i> New Transaction
-            </button>
+            <h2 class="fs-5 fw-bold mb-0">Top Expenses</h2>
           </div>
           <div class="card-body py-0">
-            <ul class="list-group list-group-flush" id="custom-table-body"></ul>
+            <div id="top-expenses-chart"></div>
           </div>
-          <div class="card-footer border-top bg-gray-50">
-            <a class="fw-bold d-flex align-items-center justify-content-center" href="../calendar.html">
+        </div>
+      </div>
+      <!-- ✅ Category Expenses Chart -->
+      <div class="col-12 col-xl-6 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
+            <div class="w-100 d-sm-flex justify-content-between align-items-center">
+              <h2 class="fs-5 fw-bold mb-0">Category Expenses</h2>
+            </div>
+          </div>
+          <div class="card-body p-2 pb-4">
+            <div id="category-expenses-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Summary Payment Chart & List Last Transactions -->
+    <div class="row">
+      <!-- ✅ Summary Payment Chart -->
+      <div class="col-12 col-xl-6 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
+            <div class="w-100 d-sm-flex justify-content-between align-items-center">
+              <h2 class="fs-5 fw-bold mb-0">Summary Payment</h2>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="list-summary-payment"></div>
+          </div>
+        </div>
+      </div>
+      <!-- ✅ List Last Transactions -->
+      <div class="col-12 col-xl-6 mb-4">
+        <div class="card h-100 border-0 shadow">
+          <div class="card-header border-bottom">
+            <h2 class="fs-5 fw-bold mb-0">Last Transactions</h2>
+          </div>
+          <div class="card-body py-0">
+            <ul class="list-group list-group-flush" id="list-last-transaction"></ul>
+          </div>
+          <!-- <a class="card-footer h-100 border-top bg-gray-50 d-flex align-items-center justify-content-center" href="transactions.html">
+            <div class="fw-bold d-flex align-items-center justify-content-center">
               <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
                 <path fill-rule="evenodd"
                   d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
                   clip-rule="evenodd"></path>
-              </svg> See all
-            </a>
-          </div>
+              </svg>
+              See all
+            </div>
+          </a> -->
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Component Modal -->
-  <div class="modal fade" id="componentModal" tabindex="-1" aria-labelledby="componentModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="componentModalLabel">Modal Title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="modalForm">
-          <div class="modal-body">
-            <div class="form-group mb-3">
-              <label for="incomeExpensesSelect">Income/Expenses</label>
-              <select id="incomeExpensesSelect" class="form-select" required>
-                <option value="">-- Select Income/Expenses --</option>
-              </select>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group mb-3">
-                  <label for="paymentSelect">Payment Method</label>
-                  <select id="paymentSelect" class="form-select" required>
-                    <option value="">-- Select Payment Method --</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-group mb-3">
-                  <label for="categorySelect">Category</label>
-                  <select id="categorySelect" class="form-select" required>
-                    <option value="">-- Select Category --</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group mb-3">
-                  <label for="remark">Remark</label>
-                  <input type="text" class="form-control" id="remark" placeholder="Remark" required>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-group mb-3">
-                  <label for="nominal">Nominal</label>
-                  <input type="text" class="form-control" id="nominal" placeholder="Nominal" required>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-link text-gray" data-bs-dismiss="modal">Close</button>
-            <button type="submit" id="btn-submit-modal" class="btn btn-primary">Add Transaction</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Core -->
+  <!-- ✅ JS Vendors -->
   <script src="assets/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-  <!-- Vendor JS -->
-  <script src="assets/vendor/onscreen/dist/on-screen.umd.min.js"></script>
-  <!-- Slider -->
-  <script src="assets/vendor/nouislider/distribute/nouislider.min.js"></script>
-  <!-- Smooth scroll -->
   <script src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
-  <!-- Count up -->
-  <script src="assets/vendor/countup.js/dist/countUp.umd.js"></script>
-  <!-- Apex Charts -->
   <script src="assets/vendor/apexcharts/dist/apexcharts.min.js"></script>
-  <!-- Vanilla JS Datepicker -->
-  <script src="assets/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
-  <!-- DataTables -->
-  <script src="assets/vendor/simple-datatables/dist/umd/simple-datatables.js"></script>
-  <!-- Sweet Alerts 2 -->
   <script src="assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
-  <!-- Moment JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
-  <!-- Full Calendar -->
-  <script src="assets/vendor/fullcalendar/main.min.js"></script>
-  <!-- Dropzone -->
-  <script src="assets/vendor/dropzone/dist/min/dropzone.min.js"></script>
-  <!-- Choices.js -->
   <script src="assets/vendor/choices.js/public/assets/scripts/choices.min.js"></script>
-  <!-- Notyf -->
-  <script src="assets/vendor/notyf/notyf.min.js"></script>
-  <!-- Mapbox & Leaflet.js -->
-  <script src="assets/vendor/leaflet/dist/leaflet.js"></script>
-  <!-- SVG Map -->
-  <script src="assets/vendor/svg-pan-zoom/dist/svg-pan-zoom.min.js"></script>
-  <script src="assets/vendor/svgmap/dist/svgMap.min.js"></script>
-  <!-- Simplebar -->
-  <script src="assets/vendor/simplebar/dist/simplebar.min.js"></script>
-  <!-- Sortable Js -->
-  <script src="assets/vendor/sortablejs/Sortable.min.js"></script>
-  <!-- Github buttons -->
-  <script async defer="defer" src="https://buttons.github.io/buttons.js"></script>
-  <!-- Volt JS -->
+
+  <!-- ✅ Custom JS (Cleaned) -->
   <script src="assets/js/volt.js"></script>
-
-  <!-- Custom JS -->
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/pages/dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    $(function () {
 
-      // ✅ Global variables
-      let dataTableInstance = null;
-      let rows = []; // untuk menyimpan data transaksi
 
-      // ✅ Init Choices.js
-      const incomeExpensesSelect = new Choices("#incomeExpensesSelect", { searchEnabled: true, itemSelectText: '' });
-      const paymentChoices = new Choices("#paymentSelect", { searchEnabled: true, itemSelectText: '' });
-      const categoryChoices = new Choices("#categorySelect", { searchEnabled: true, itemSelectText: '' });
-      const paymentFilterChoices = new Choices("#paymentFilter", { searchEnabled: true, itemSelectText: '' });
-      const paymentColors = {
-        'BCA': '#1976d2',
-        'Mandiri': '#f9a825',
-        'Seabank': '#512da8',
-        'Gopay': '#00bcd4',
-        'Jago': '#fb8c00',
-        'Top Up': '#ff7043',
-        'Gasoline': '#4caf50',
-        'Laundry and Gallon': '#039be5',
-        'Loan': '#f57c00',
-        'Investment': '#43a047',
-        'Emergency': '#e53935',
-        'Saving': '#8e24aa',
-        'e-Money Mandiri': '#6d4c41',
-        'Unknown': '#9e9e9e'
-      };
-      // ✅ Separator Nominal input
-      const nominalInput = document.getElementById('nominal');
-      nominalInput.addEventListener('input', function () {
-        let value = this.value.replace(/,/g, '').replace(/\D/g, '');
-        this.value = value ? parseInt(value, 10).toLocaleString('en-US') : '';
-      });
 
-      // ✅ Utility: parse custom date
-      function parseCustomDate(dateStr) {
-        if (!dateStr) return null;
-
-        const parts = dateStr.split(' ');
-
-        if (parts.length < 4) return null; // minimal ada tanggal dan jam
-
-        const day = parseInt(parts[0], 10);
-        const monthName = parts[1];
-        const year = parseInt(parts[2], 10);
-
-        const timeParts = parts[3].split(':');
-        const hour = parseInt(timeParts[0], 10) || 0;
-        const minute = parseInt(timeParts[1], 10) || 0;
-        const second = parseInt(timeParts[2], 10) || 0;
-
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const month = monthNames.indexOf(monthName);
-
-        return month < 0 ? null : new Date(year, month, day, hour, minute, second);
-      }
-
-      // ✅ Fetch and render table
-      function fetchAndRenderTable() {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
-
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            rows = data.values.sort((a, b) => parseCustomDate(b[2]) - parseCustomDate(a[2])).slice(0, 5);
-
-            const tableBody = document.getElementById("custom-table-body");
-            let html = "";
-
-            rows.forEach(row => {
-              let logoSrc = '';
-
-              // Cek value row[4] untuk menentukan logo
-              if (row[4] === 'BCA') {
-                logoSrc = "https://www.bca.co.id/-/media/Feature/Card/List-Card/Tentang-BCA/Brand-Assets/Logo-BCA/Logo-BCA_Biru.png";
-              } else if (row[4] === 'Mandiri') {
-                logoSrc = "https://www.bankmandiri.co.id/image/layout_set_logo?img_id=31567&t=1742789528482";
-              } else if (row[4] === 'Seabank') {
-                logoSrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/SeaBank.svg/2560px-SeaBank.svg.png";
-              } else if (row[4] === 'Gopay') {
-                logoSrc = "https://gopay.co.id/assets/img/logo/gopay.png";
-              } else if (row[4] === 'Jago') {
-                logoSrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Logo-jago.svg/1200px-Logo-jago.svg.png";
-              } else if (row[4] === 'Top Up') {
-                logoSrc = "https://png.pngtree.com/png-vector/20220720/ourmid/pngtree-top-up-add-your-money-balance-vector-illustration-on-mobile-phone-png-image_6025976.png";
-              } else if (row[4] === 'Gasoline') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/6352/6352837.png";
-              } else if (row[4] === 'Laundry and Gallon') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/11261/11261734.png";
-              } else if (row[4] === 'Loan') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/5256/5256228.png";
-              } else if (row[4] === 'Emergency') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/709/709114.png";
-              } else if (row[4] === 'Saving') {
-                logoSrc = "https://cdn-icons-png.flaticon.com/512/914/914233.png";
-              } else if (row[4] === 'Investment') {
-                logoSrc = "https://iixglobal.com/wp-content/uploads/2023/02/invest-edited-1.png";
-              } else if (row[4] === 'e-Money Mandiri') {
-                logoSrc = "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/mlogo/MAE-28323-70e23f69-1cb6-4602-80a6-b62258f2fbff.jpg";
-              } else {
-                logoSrc = "../assets/img/team-2.jpg";
-              }
-
-              html += `
-                <li class="list-group-item bg-transparent border-bottom py-3 px-0">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                        <img class="img-fluid me-2" alt="logo" src="${logoSrc}" height="35" width="35">
-                    </div>
-                    <div class="col-auto px-0">
-                      <h4 class="fs-6 text-dark mb-0">
-                        <a href="#">${row[6] || ''} <span class="small text-gray-500">(${row[4] || ''})</sp></a>
-                      </h4>
-                      <span class="small">${row[2] || ''}</span>
-                    </div>
-                    <div class="col text-end">
-                      <span class="fs-6 fw-bolder ${row[3] === "Expenses" ? "text-danger" : "text-success"}">
-                        ${row[3] === "Expenses" ? "-" : "+"} ${row[7] || ''}
-                      </span>
-                    </div>
-                  </div>
-                </li>
-              `;
-            });
-
-            tableBody.innerHTML = html;
-
-            if (dataTableInstance) dataTableInstance.destroy();
-            dataTableInstance = new simpleDatatables.DataTable("#custom-datatable", { searchable: true, fixedHeight: true });
-          })
-          .catch(err => console.error('Fetch error:', err));
-      }
-
-      // ✅ Get Data Categories
-      function getDataCategories() {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/categories!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
-
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            const rows = data.values || [];
-            categoryChoices.clearChoices();
-            categoryChoices.setChoices([{ value: '', label: '-- Select Category --', selected: true, disabled: true }], 'value', 'label', false);
-            rows.forEach(row => { categoryChoices.setChoices([{ value: row[1], label: row[1] }], 'value', 'label', false); });
-          })
-          .catch(err => console.error('Fetch error:', err));
-      }
-
-      // ✅ Get Data Account Payments
-      function getDataAccountPayments() {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/accountPayments!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
-
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            const rows = data.values || [];
-            paymentChoices.clearChoices();
-            paymentChoices.setChoices([{ value: '', label: '-- Select Payment Method --', selected: true, disabled: true }], 'value', 'label', false);
-
-            rows.forEach(row => {
-              paymentChoices.setChoices([{ value: row[1], label: row[1] }], 'value', 'label', false);
-            });
-
-            const paymentFilter = document.getElementById("paymentFilter");
-            paymentFilter.innerHTML = '<option value="">All Payments</option>';
-
-            // ✅ Loop rows langsung (karena rows sudah berisi data payment valid)
-            rows.forEach(row => {
-              const payment = row[1]; // kolom B di sheetmu
-              console.log("Payment added to filter:", payment);
-              if (payment) {
-                const option = document.createElement("option");
-                option.value = payment;
-                option.text = payment;
-                paymentFilter.appendChild(option);
-              }
-            });
-          })
-          .catch(err => console.error('Fetch error:', err));
-      }
-
-      // ✅ Utility: show SweetAlert toast
-      function showToast(icon, message) { Swal.fire({ toast: true, position: 'top-end', icon, title: message, showConfirmButton: false, timer: 1500, timerProgressBar: true }); }
-
-      // ✅ New Modal button
-      document.querySelector('.new-transaction-btn').addEventListener('click', () => {
-        const modalEl = document.getElementById('componentModal');
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
-
-        modalEl.querySelector('.modal-title').innerText = 'New Transaction';
-        modalEl.querySelector('#btn-submit-modal').innerText = 'Add Transaction';
-        const form = document.getElementById('modalForm');
-        form.reset();
-
-        incomeExpensesSelect.setChoices([{ value: 'Income', label: 'Income', selected: false, disabled: false }, { value: 'Expenses', label: 'Expenses', selected: false, disabled: false }], 'value', 'label', true);
-        incomeExpensesSelect.setChoiceByValue('');
-
-        paymentChoices.clearStore();
-        getDataAccountPayments();
-
-        categoryChoices.clearStore();
-        getDataCategories();
-
-        const idInput = form.querySelector('input[name="transaction_id"]');
-        if (idInput) idInput.remove();
-      });
-
-      // ✅ Form submit (insert & update)
-      document.getElementById('modalForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const form = e.target;
-
-        let trxIdInput = form.querySelector('input[name="transaction_id"]');
-        let trxId = trxIdInput ? trxIdInput.value : 'TRX-' + new Date().toISOString().replace(/[-:.TZ]/g, '');
-
-        const data = {
-          action: trxIdInput ? 'transaction_update' : 'transaction_create',
-          transaction_id: trxId,
-          income_expenses: form.incomeExpensesSelect.value,
-          payment_method: paymentChoices.getValue(true),
-          category: categoryChoices.getValue(true),
-          remark: form.remark.value,
-          nominal: form.nominal.value.replace(/,/g, '')
-        };
-
-        fetch('https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec', {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "text/plain" },
-        })
-          .then(res => res.json())
-          .then(response => {
-            if (response.result === "success") {
-              form.reset();
-              const modalEl = document.getElementById('componentModal');
-              bootstrap.Modal.getInstance(modalEl).hide();
-
-              localStorage.setItem('transactionSaved', trxIdInput ? 'edited' : 'saved');
-              location.reload();
-            } else {
-              const msg = response.result === "not_found" ? 'Transaction not found.' : 'Failed to save transaction.';
-              Swal.fire('Error', msg, 'error');
-            }
-          })
-          .catch(err => {
-            console.error('Error:', err);
-            Swal.fire('Error', 'Failed to communicate with server.', 'error');
-          });
-      });
-
-
-      /// Define groupByDateAndPayment()
-      function groupByDateAndPayment(rows) {
-        // ✅ Inisialisasi object untuk menampung hasil grouping
-        const groupedTotals = {};
-
-        // ✅ Loop setiap row transaksi
-        rows.forEach(row => {
-          // 🔎 Ambil tanggal tanpa jam (format: "03 July 2025")
-          const dateTime = row[2] || '';
-          const dateParts = dateTime.split(' ');
-          const date = dateParts.slice(0, 3).join(' ');
-
-          // 🔎 Ambil payment method (row[4])
-          const paymentMethod = row[4] || 'Unknown';
-
-          // 🔎 Ambil nominal amount, bersihkan dari Rp dan koma, lalu parseInt
-          const amountRaw = row[7] || '0';
-          const amountClean = amountRaw.replace(/[^\d]/g, '');
-          const amount = parseInt(amountClean, 10) || 0;
-
-          // 🔎 Ambil type (Income atau Expenses)
-          const type = row[3];
-
-          // ✅ Hanya jika Expenses
-          if (type === "Expenses") {
-            // ✅ Jika date belum ada di groupedTotals, inisialisasi sebagai object kosong
-            if (!groupedTotals[date]) {
-              groupedTotals[date] = {};
-            }
-
-            // ✅ Jika paymentMethod belum ada di date tersebut, inisialisasi 0
-            if (!groupedTotals[date][paymentMethod]) {
-              groupedTotals[date][paymentMethod] = 0;
-            }
-
-            // ✅ Tambahkan amount ke payment method tersebut pada tanggal itu
-            groupedTotals[date][paymentMethod] += amount;
-          }
-        });
-
-        // ✅ Konversi hasil nested object menjadi array of objects untuk table/chart
-        const result = [];
-        for (const date in groupedTotals) {
-          for (const paymentMethod in groupedTotals[date]) {
-            result.push({
-              date: date,
-              payment_method: paymentMethod,
-              total: groupedTotals[date][paymentMethod]
-            });
-          }
-        }
-
-        // ✅ Return hasil array
-        return result;
-      }
-
-      function renderCustomChart(filterPayment = "") {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            const rows = data.values;
-            const grouped = groupByDateAndPayment(rows);
-
-            const datesSet = new Set();
-            const paymentsSet = new Set();
-
-            grouped.forEach(row => {
-              datesSet.add(row.date);
-              paymentsSet.add(row.payment_method);
-            });
-
-            const dates = Array.from(datesSet).sort();
-            let series = [];
-            let colors = [];
-
-            if (filterPayment) {
-              // ✅ Jika filter diisi, hanya payment tersebut
-              const dataSeries = dates.map(date => {
-                const found = grouped.find(r => r.date === date && r.payment_method === filterPayment);
-                return found ? found.total : 0;
-              });
-
-              series.push({
-                name: filterPayment,
-                data: dataSeries
-              });
-
-              colors.push(paymentColors[filterPayment] || '#9e9e9e');
-
-            } else {
-              // ✅ Jika All Payments, semua payment ditampilkan
-              paymentsSet.forEach(payment => {
-                const dataSeries = dates.map(date => {
-                  const found = grouped.find(r => r.date === date && r.payment_method === payment);
-                  return found ? found.total : 0;
-                });
-
-                series.push({
-                  name: payment,
-                  data: dataSeries
-                });
-
-                colors.push(paymentColors[payment] || '#9e9e9e');
-              });
-            }
-
-            const options = {
-              chart: {
-                type: 'line',
-                height: 300,
-                toolbar: { show: false }
-              },
-              series: series,
-              colors: colors,
-              xaxis: {
-                categories: dates,
-                title: { text: 'Date' }
-              },
-              yaxis: {
-                title: { text: 'Amount (Rp)' },
-                labels: {
-                  formatter: function (val) {
-                    return val.toLocaleString('en-US');
-                  }
-                }
-              },
-              legend: { position: 'bottom' },
-              tooltip: {
-                y: {
-                  formatter: function (val) {
-                    return "Rp " + val.toLocaleString('en-US');
-                  }
-                }
-              }
-            };
-
-            const chartContainer = document.querySelector("#daily-expenses-chart");
-            chartContainer.innerHTML = ""; // clear previous chart
-            const chart = new ApexCharts(chartContainer, options);
-            chart.render();
-          })
-          .catch(err => console.error('Fetch error:', err));
-      }
-
-      // ✅ Add event listener to filter select
-      document.getElementById("paymentFilter").addEventListener("change", function () {
-        const selectedPayment = this.value;
-        renderCustomChart(selectedPayment);
-        calculateIncomeExpenses();
-      });
-
-      // ✅ CalculateIncomeExpenses
-      function calculateIncomeExpenses() {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
-
-        const selectedPayment = document.getElementById("paymentFilter").value; // ✅ ambil filter payment
-
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            const rows = data.values;
-
-            let sumIncome = 0;
-            let sumExpenses = 0;
-            let sumInvestment = 0;
-
-            rows.forEach(row => {
-              const type = row[3];
-              const payment = row[4];
-              const nominalStr = row[7];
-              const nominal = parseInt(nominalStr.replace(/Rp\s?/g, '').replace(/,/g, ''), 10);
-
-              if (!isNaN(nominal)) {
-                // ✅ Cek dulu jika payment adalah Investment, selalu dijumlahkan ke sumInvestment
-                if (type === "Expenses" && payment === "Investment") {
-                  sumInvestment += nominal;
-                } else {
-                  // ✅ Selain Investment, apply filter payment
-                  if (selectedPayment === "" || payment === selectedPayment) {
-                    if (type === "Income") {
-                      sumIncome += nominal;
-                    } else if (type === "Expenses") {
-                      sumExpenses += nominal;
-                    }
-                  }
-                }
-              }
-            });
-
-            document.getElementById("totalIncome").innerText = "Rp " + sumIncome.toLocaleString('en-US');
-            document.getElementById("totalExpenses").innerText = "Rp " + sumExpenses.toLocaleString('en-US');
-            document.getElementById("totalSaving").innerHTML = `<h3 class="fw-extrabold ${(sumIncome - sumExpenses) < 0 ? "text-danger" : "text-success"}">Rp ${(sumIncome - sumExpenses).toLocaleString('en-US')}</h3>`;
-            document.getElementById("totalInvestment").innerText = "Rp " + sumInvestment.toLocaleString('en-US');
-          })
-          .catch(err => console.error("Error:", err));
-      }
-
-      // ✅ Initial fetch
-      fetchAndRenderTable();
-      getDataCategories();
-      getDataAccountPayments();
-      renderCustomChart();
-      calculateIncomeExpenses();
     });
   </script>
 

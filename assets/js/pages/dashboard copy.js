@@ -19,10 +19,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const selectedPayment = document.getElementById("paymentFilter").value;
     getDataTransactions(selectedPayment);
-    calculateAllBalances();
+    calculateIncomeExpenses();
     renderDailyExpensesChart(selectedPayment);
     renderTopExpensesChart(selectedPayment);
     renderCategoryExpensesChart(selectedPayment);
+    listSummaryPayment();
   }
 
   $("#dateRange").daterangepicker(
@@ -71,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function fetchAllTransactions() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:K?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
     const res = await fetch(url);
     const data = await res.json();
     allTransactionsData = data.values || [];
@@ -91,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const rows = filteredRows
       .sort((a, b) => parseCustomDate(b[2]) - parseCustomDate(a[2]))
-      .slice(0, 10);
+      .slice(0, 13);
 
     const tableBody = document.getElementById("list-last-transaction");
     let html = "";
@@ -128,133 +129,66 @@ document.addEventListener("DOMContentLoaded", function () {
     tableBody.innerHTML = html;
   }
 
-  function calculateAllBalances() {
-    const paymentBalances = {};
-    const paymentIncomes = {};
+  function calculateIncomeExpenses() {
+    const selectedPayment = document.getElementById("paymentFilter").value;
+    let sumIncome = 0,
+      sumExpenses = 0,
+      lastMonthSaving = 0;
+
+    const currentMonthYear = selectedStartDate.format("MMMM YYYY");
 
     allTransactionsData.forEach((row) => {
       const type = row[3],
         payment = row[4],
-        nominal =
-          parseInt(
-            (row[7] || "0").replace(/Rp\s?/g, "").replace(/,/g, ""),
-            10
-          ) || 0;
+        category = row[5],
+        remark = row[6];
+      const nominal =
+        parseInt((row[7] || "0").replace(/Rp\s?/g, "").replace(/,/g, ""), 10) ||
+        0;
 
-      const isTransfer = row[8] === "Y";
-      const transferFrom = row[9];
-      const transferTo = row[10];
+      const rowDate = moment(row[2], "DD MMMM YYYY HH:mm:ss");
 
-      if (!paymentBalances[payment]) paymentBalances[payment] = 0;
-      if (isTransfer) {
-        if (!paymentBalances[transferFrom]) paymentBalances[transferFrom] = 0;
-        if (!paymentBalances[transferTo]) paymentBalances[transferTo] = 0;
+      // ✅ Proses lastMonthSaving tanpa filter tanggal bulan ini
+      if (type === "Income" && category === "Saving") {
+        // Jika saving bulan lalu (remark tidak mengandung bulan ini)
+        if (!remark.includes(currentMonthYear)) {
+          if (!selectedPayment || payment === selectedPayment) {
+            lastMonthSaving += nominal;
+          }
+        }
+        // Saving bulan ini tidak ditambahkan ke income bulan ini
+        return; // Skip baris ini dari income bulan ini
       }
+
+      // ✅ Filter tanggal untuk income dan expenses bulan ini
+      if (!rowDate.isBetween(selectedStartDate, selectedEndDate, "day", "[]"))
+        return;
 
       if (type === "Income") {
-        paymentBalances[payment] += nominal;
-        if (!paymentIncomes[payment]) paymentIncomes[payment] = 0;
-        paymentIncomes[payment] += nominal;
+        if (!selectedPayment || payment === selectedPayment) {
+          sumIncome += nominal;
+        }
       } else if (type === "Expenses") {
-        paymentBalances[payment] -= nominal;
-      } else if (type === "Transfer" && isTransfer) {
-        paymentBalances[transferFrom] -= nominal;
-        paymentBalances[transferTo] += nominal;
+        if (!selectedPayment || payment === selectedPayment) {
+          sumExpenses += nominal;
+        }
       }
     });
 
-    const balanceCards = document.getElementById("balanceCards");
-    balanceCards.innerHTML = "";
+    const totalIncome = sumIncome + lastMonthSaving;
 
-    Object.entries(paymentBalances).forEach(([account, balance]) => {
-      const logoSrc = getPaymentLogo(account);
-      const incomePayment = paymentIncomes[account] || 1;
-
-      let progressValue = ((incomePayment - balance) / incomePayment) * 100;
-      progressValue = Math.max(0, Math.min(progressValue, 100)); // clamp antara 0-100
-      progressValue = Math.floor(progressValue); // tanpa koma
-
-      let progressClass = "bg-success";
-      let textClass = "text-success";
-
-      if (progressValue === 0) textClass = "text-gray-500";
-      else if (progressValue > 85) {
-        progressClass = "bg-danger";
-        textClass = "text-danger";
-      } else if (progressValue > 75) {
-        progressClass = "bg-warning";
-        textClass = "text-warning";
-      }
-
-      balanceCards.innerHTML += `
-      <div class="swiper-slide">
-        <div class="card balance-card">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <span class="text-xxs text-gray-500">Account</span>
-                <h5 class="card-title">${account}</h5>
-              </div>
-              <div>
-                <img src="${logoSrc}" alt"${account}" class="img-fluid" width="80" height="80"/>
-              </div>
-            </div>
-            <div class="mt-5">
-              <div class="d-flex justify-content-between align-items-end">
-                <div class="d-flex flex-column">
-                  <span class="text-xxs text-gray-500">Balance</span>
-                  <span class="card-text fw-bolder">
-                    Rp ${balance.toLocaleString("en-US")}
-                  </span>
-                </div>
-                <span class="text-xxs text-gray-500">
-                  ${progressValue + "%"}
-                </span>
-              </div>
-              <div class="progress mt-2">
-                <div class="progress-bar ${progressClass}" role="progressbar" 
-                aria-valuenow="${balance}" 
-                aria-valuemin="0" aria-valuemax="${incomePayment}" 
-                style="width: ${progressValue}%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>`;
+    animateCountUp({
+      elementId: "totalIncome",
+      targetValue: totalIncome,
     });
-
-    document.getElementById("balanceCards").innerHTML = balanceCards.innerHTML;
-
-    // Destroy swiper jika sudah ada
-    if (window.balanceSwiper) window.balanceSwiper.destroy(true, true);
-
-    // Initialize ulang
-    window.balanceSwiper = new Swiper(".mySwiper", {
-      pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
-      },
-      // Responsive breakpoints
-      breakpoints: {
-        // ketika layar >= 640px
-        640: {
-          slidesPerView: 2,
-          spaceBetween: 16,
-          grid: {
-            rows: 2,
-            fill: "row",
-          },
-        },
-        // ketika layar >= 1440px
-        1440: {
-          slidesPerView: 4,
-          spaceBetween: 16,
-          grid: {
-            rows: 2,
-            fill: "row",
-          },
-        },
-      },
+    animateCountUp({
+      elementId: "totalExpenses",
+      targetValue: sumExpenses,
+    });
+    animateCountUp({
+      elementId: "totalSaving",
+      targetValue: totalIncome - sumExpenses,
+      classCondition: (val) => (val < 0 ? "text-danger" : "text-success"),
     });
   }
 
@@ -469,14 +403,97 @@ document.addEventListener("DOMContentLoaded", function () {
     chart.render();
   }
 
+  function listSummaryPayment() {
+    const paymentExpenses = {};
+    const paymentIncomes = {};
+
+    allTransactionsData.forEach((row) => {
+      const type = row[3];
+      const payment = row[4];
+      const nominalStr = row[7] || "0";
+      const nominal =
+        parseInt(nominalStr.replace(/Rp\s?/g, "").replace(/,/g, ""), 10) || 0;
+
+      if (type === "Expenses") {
+        if (!paymentExpenses[payment]) paymentExpenses[payment] = 0;
+        paymentExpenses[payment] += nominal;
+      } else if (type === "Income") {
+        if (!paymentIncomes[payment]) paymentIncomes[payment] = 0;
+        paymentIncomes[payment] += nominal;
+      }
+    });
+
+    let html = "";
+
+    allAccountPayments.forEach((payment) => {
+      const logoSrc = getPaymentLogo(payment);
+      const totalExpense = paymentExpenses[payment] || 0;
+      const totalIncome = paymentIncomes[payment] || 0;
+      const saving = totalIncome - totalExpense;
+      const percentUsed =
+        totalIncome > 0 ? Math.min((totalExpense / totalIncome) * 100, 100) : 0;
+
+      let progressClass = "bg-success";
+      let textClass = "text-success";
+
+      if (percentUsed === 0) textClass = "text-gray-500";
+      else if (percentUsed > 90) {
+        progressClass = "bg-danger";
+        textClass = "text-danger";
+      } else if (percentUsed > 80) {
+        progressClass = "bg-warning";
+        textClass = "text-warning";
+      }
+
+      html += `
+        <div class="row mb-4">
+          <div class="col-auto">
+            <img src="${logoSrc}" alt="${payment}" class="img-fluid" width="50" height="50">
+          </div>
+          <div class="col">
+            <div class="progress-wrapper">
+              <div class="progress-info">
+                <div class="d-flex flex-column">
+                  <h6 class="mb-0">${payment}</h6>
+                  <span class="small fw-bold ${textClass}">Rp ${saving.toLocaleString(
+        "en-US"
+      )}</span>
+                </div>
+                <div class="d-flex flex-column small text-end">
+                  <span class="fw-bolder ${textClass}">${percentUsed.toFixed(
+        2
+      )}%</span>
+                  <div class="text-gray-500">
+                    <span>(${totalExpense.toLocaleString(
+                      "en-US"
+                    )}/${totalIncome.toLocaleString("en-US")})</span>
+                  </div>
+                </div>
+              </div>
+              <div class="progress mb-0">
+                <div class="progress-bar ${progressClass}" role="progressbar" aria-valuenow="${percentUsed.toFixed(
+        2
+      )}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentUsed.toFixed(
+        2
+      )}%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    document.getElementById("list-summary-payment").innerHTML = html;
+  }
+
   async function initData() {
     await getDataAccountPayments();
     await fetchAllTransactions();
     getDataTransactions();
-    calculateAllBalances();
+    calculateIncomeExpenses();
     renderDailyExpensesChart();
     renderTopExpensesChart();
     renderCategoryExpensesChart();
+    listSummaryPayment();
 
     // Trigger resize after all charts rendered
     setTimeout(() => {
@@ -489,9 +506,10 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("paymentFilter").addEventListener("change", () => {
     const selectedPayment = document.getElementById("paymentFilter").value;
     getDataTransactions(selectedPayment);
-    calculateAllBalances();
+    calculateIncomeExpenses();
     renderDailyExpensesChart(selectedPayment);
     renderTopExpensesChart(selectedPayment);
     renderCategoryExpensesChart(selectedPayment);
+    listSummaryPayment();
   });
 });

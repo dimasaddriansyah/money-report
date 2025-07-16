@@ -14,6 +14,14 @@ document.addEventListener("DOMContentLoaded", function () {
     searchEnabled: true,
     itemSelectText: "",
   });
+  const platformChoices = new Choices("#platformSelect", {
+    searchEnabled: true,
+    itemSelectText: "",
+  });
+  const portfolioChoices = new Choices("#portfolioSelect", {
+    searchEnabled: true,
+    itemSelectText: "",
+  });
 
   // ✅ Separator Nominal input
   const nominalInput = document.getElementById("nominal");
@@ -65,10 +73,12 @@ document.addEventListener("DOMContentLoaded", function () {
               row[6] || ""
             }</td>
             <td class="text-sm ${
-              row[3] === "Expenses" || row[3] === "Transfer" ? "text-danger" : "text-success"
-            } fw-bold align-middle">${row[3] === "Expenses" || row[3] === "Transfer" ? "-" : "+"} ${
-            row[7] || ""
-          }</td>
+              row[3] === "Expenses" || row[3] === "Transfer"
+                ? "text-danger"
+                : "text-success"
+            } fw-bold align-middle">${
+            row[3] === "Expenses" || row[3] === "Transfer" ? "-" : "+"
+          } ${row[7] || ""}</td>
             <td class="align-middle">
               <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${
                 row[0]
@@ -285,6 +295,123 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((err) => console.error("Fetch error:", err));
   }
 
+  // ✅ Fetch data Platform
+  async function getInvestationData() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/investations!A2:G?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+    try {
+      const res = await fetch(url);
+      const json = await res.json();
+      return json.values || [];
+    } catch (err) {
+      console.error("Fetch investation error:", err);
+      return [];
+    }
+  }
+
+  // ✅ Generate Investation ID
+  async function generateInvestationId() {
+    const rows = await getInvestationData();
+    let maxId = 0;
+
+    rows.forEach((row) => {
+      if (row[0] && row[0].startsWith("INVEST-")) {
+        const num = parseInt(row[0].split("-")[1], 10);
+        if (!isNaN(num) && num > maxId) maxId = num;
+      }
+    });
+
+    const nextIdNum = maxId + 1;
+    return "INVEST-" + String(nextIdNum).padStart(3, "0");
+  }
+
+  // ✅ Fetch data Platform
+  function getDataPlatforms() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/platforms!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const rows = data.values || [];
+        platformChoices.clearChoices();
+        platformChoices.setChoices(
+          [
+            {
+              value: "",
+              label: "-- Select Platform --",
+              selected: true,
+              disabled: true,
+            },
+          ],
+          "value",
+          "label",
+          false
+        );
+        rows.forEach((row) => {
+          platformChoices.setChoices(
+            [{ value: row[1], label: row[1] }],
+            "value",
+            "label",
+            false
+          );
+        });
+      })
+      .catch((err) => console.error("Fetch platform error:", err));
+  }
+
+  // ✅ Fetch data Portfolios
+  function getDataPortfolios() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/portfolios!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const rows = data.values || [];
+        portfolioChoices.clearChoices();
+        portfolioChoices.setChoices(
+          [
+            {
+              value: "",
+              label: "-- Select Portfolio --",
+              selected: true,
+              disabled: true,
+            },
+          ],
+          "value",
+          "label",
+          false
+        );
+        rows.forEach((row) => {
+          portfolioChoices.setChoices(
+            [{ value: row[1], label: row[1] }],
+            "value",
+            "label",
+            false
+          );
+        });
+      })
+      .catch((err) => console.error("Fetch portfolio error:", err));
+  }
+
+  categoryChoices.passedElement.element.addEventListener("change", function () {
+    const selectedCategory = this.value;
+    const investmentFields = document.getElementById("investmentFields");
+
+    const remarkInput = document.getElementById("remark");
+    const remarkLabel = document.querySelector('label[for="remark"]');
+
+    if (selectedCategory === "Investation") {
+      investmentFields.style.display = "flex"; // tampilkan
+      remarkLabel.textContent = "Product Name";
+      remarkInput.placeholder = "Enter product name";
+      getDataPlatforms();
+      getDataPortfolios();
+    } else {
+      investmentFields.style.display = "none"; // sembunyikan
+      platformChoices.clearStore();
+      portfolioChoices.clearStore();
+    }
+  });
+
   // ✅ New Modal button
   document
     .querySelector(".new-transaction-btn")
@@ -336,6 +463,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       categoryChoices.clearStore();
       getDataCategories(typeSelect);
+
+      document.getElementById("investmentFields").style.display = "none";
+      platformChoices.clearStore();
+      portfolioChoices.clearStore();
 
       const idInput = form.querySelector('input[name="transaction_id"]');
       if (idInput) idInput.remove();
@@ -452,59 +583,72 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ✅ Form submit (insert & update)
-  document.getElementById("modalForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const form = e.target;
+  document
+    .getElementById("modalForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = e.target;
 
-    let trxIdInput = form.querySelector('input[name="transaction_id"]');
-    let trxId = trxIdInput
-      ? trxIdInput.value
-      : "TRX-" + new Date().toISOString().replace(/[-:.TZ]/g, "");
+      let trxIdInput = form.querySelector('input[name="transaction_id"]');
+      let trxId = trxIdInput
+        ? trxIdInput.value
+        : "TRX-" + new Date().toISOString().replace(/[-:.TZ]/g, "");
 
-    const data = {
-      action: trxIdInput ? "transaction_update" : "transaction_create",
-      transaction_id: trxId,
-      type: form.typeSelect.value,
-      payment_method: paymentChoices.getValue(true),
-      category: categoryChoices.getValue(true),
-      remark: form.remark.value,
-      nominal: form.nominal.value.replace(/,/g, ""),
-    };
+      let invId = null;
+      const selectedCategory = categoryChoices.getValue(true);
 
-    fetch(
-      "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "text/plain" },
+      // ✅ Jika Investation, generate investation_id
+      if (selectedCategory === "Investation") {
+        invId = await generateInvestationId();
       }
-    )
-      .then((res) => res.json())
-      .then((response) => {
-        if (response.result === "success") {
-          console.log(response); // ✅ lihat hasil response sebenarnya
-          form.reset();
-          const modalEl = document.getElementById("componentModal");
-          bootstrap.Modal.getInstance(modalEl).hide();
 
-          localStorage.setItem(
-            "transactionSaved",
-            trxIdInput ? "edited" : "saved"
-          );
-          location.reload();
-        } else {
-          const msg =
-            response.result === "not_found"
-              ? "Transaction not found."
-              : "Failed to save transaction.";
-          Swal.fire("Error", msg, "error");
+      const data = {
+        action: trxIdInput ? "transaction_update" : "transaction_create",
+        transaction_id: trxId,
+        type: form.typeSelect.value,
+        payment_method: paymentChoices.getValue(true),
+        category: categoryChoices.getValue(true),
+        remark: form.remark.value,
+        nominal: form.nominal.value.replace(/,/g, ""),
+        investation_id: invId,
+        platform: platformChoices.getValue(true) || null,
+        portfolio: portfolioChoices.getValue(true) || null,
+      };
+
+      fetch(
+        "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
+        {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "text/plain" },
         }
-      })
-      .catch((err) => {
-        console.error("Error:", err);
-        Swal.fire("Error", "Failed to communicate with server.", "error");
-      });
-  });
+      )
+        .then((res) => res.json())
+        .then((response) => {
+          if (response.result === "success") {
+            console.log(response); // ✅ lihat hasil response sebenarnya
+            form.reset();
+            const modalEl = document.getElementById("componentModal");
+            bootstrap.Modal.getInstance(modalEl).hide();
+
+            localStorage.setItem(
+              "transactionSaved",
+              trxIdInput ? "edited" : "saved"
+            );
+            location.reload();
+          } else {
+            const msg =
+              response.result === "not_found"
+                ? "Transaction not found."
+                : "Failed to save transaction.";
+            Swal.fire("Error", msg, "error");
+          }
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+          Swal.fire("Error", "Failed to communicate with server.", "error");
+        });
+    });
 
   // ✅ Event: Event select
   document.getElementById("typeSelect").addEventListener("change", function () {

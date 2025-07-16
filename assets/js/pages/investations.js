@@ -16,17 +16,21 @@ document.addEventListener("DOMContentLoaded", function () {
         rows.forEach((row) => {
           html += `
             <tr>
-              <td class="text-center">
-                <input type="checkbox" class="row-checkbox" data-id="${row[0]}">
+              <td class="text-dark fw-bold text-center">
+                <span class="${
+                  row[2] === "Buy" ? "badge bg-success" : "badge bg-danger"
+                }">
+                  ${row[2] || "-"}
+                </span> 
               </td>
-              <td class="text-sm text-dark fw-bold">${row[1] || "-"}</td>
-              <td class="text-sm text-dark fw-bold">${row[2] || "-"}</td>
+              <td class="text-sm text-dark fw-bold" 
+              data-order="${row[1] ? new Date(row[1]).getTime() : ""}">
+                ${row[1] || "-"}
+              </td>
               <td class="text-sm text-dark fw-bold">${row[3] || "-"}</td>
               <td class="text-sm text-dark fw-bold">${row[4] || "-"}</td>
               <td class="text-sm text-dark">${row[5] || "-"}</td>
-              <td class="text-sm text-dark" data-order="${
-                row[6] ? new Date(row[6]).getTime() : ""
-              }">${row[6] || "-"}</td>
+              <td class="text-sm text-dark">${row[6] || "-"}</td>
             </tr>
           `;
         });
@@ -43,116 +47,115 @@ document.addEventListener("DOMContentLoaded", function () {
           orderCellsTop: true,
           fixedHeader: true,
           autoWidth: false,
-          order: [[5, "desc"]],
+          order: [[1, "desc"]],
           columnDefs: [
             { orderable: false, targets: [0] },
-            { width: "1%", targets: [0] },
+            { width: "8%", targets: [0] },
           ],
-          initComplete: function () {
-            // per-column search
-            const api = this.api();
-            api.columns().every(function () {
-              const that = this;
-              $("input", this.footer()).on("keyup change clear", function () {
-                if (that.search() !== this.value) {
-                  that.search(this.value).draw();
-                }
-              });
-            });
-
-            // append bulk delete button
-            $("#custom-datatable_length").append(
-              '<button id="bulkDelete" class="btn btn-danger btn-sm ms-3 d-none">Delete Selected (<span id="selectedCount">0</span>)</button>'
-            );
-          },
         });
 
-        updateSelectAllCheckbox();
+        calculatePortofolios();
       })
       .catch((err) => console.error("Fetch error:", err));
   }
 
-  // ✅ Update select-all checkbox status
-  function updateSelectAllCheckbox() {
-    const total = $(".row-checkbox").length;
-    const checked = $(".row-checkbox:checked").length;
-    $("#select-all").prop("checked", total === checked);
-  }
+  function calculatePortofolios() {
+    const assetPortfolios = {};
+    rows.forEach((row) => {
+      const type = row[2];
+      const platform = row[3];
+      const portfolio = row[4];
+      const nominal =
+        parseInt((row[6] || "0").replace(/Rp\s?/g, "").replace(/,/g, ""), 10) ||
+        0;
 
-  // ✅ Update selected count and toggle bulk delete button
-  function updateSelectedCount() {
-    const count = $(".row-checkbox:checked").length;
-    $("#selectedCount").text(count);
-    if (count > 0) {
-      $("#bulkDelete").removeClass("d-none");
-    } else {
-      $("#bulkDelete").addClass("d-none");
-    }
-  }
+      if (!assetPortfolios[portfolio]) {
+        assetPortfolios[portfolio] = {
+          totalNominal: 0,
+          platform: platform,
+        };
+      }
 
-  // ✅ Event delegation for select-all checkbox
-  $(document).on("click", "#select-all", function () {
-    const checked = this.checked;
-    $(".row-checkbox").prop("checked", checked);
-    updateSelectedCount();
-  });
-
-  // ✅ Event delegation for each row checkbox
-  $(document).on("change", ".row-checkbox", function () {
-    updateSelectedCount();
-    updateSelectAllCheckbox();
-  });
-
-  // ✅ Event: bulk delete with SweetAlert
-  $(document).on("click", "#bulkDelete", function () {
-    const selectedIds = $(".row-checkbox:checked")
-      .map(function () {
-        return $(this).data("id");
-      })
-      .get();
-
-    if (selectedIds.length === 0) return;
-
-    Swal.fire({
-      title: "Are you sure?",
-      text: `You are about to delete ${selectedIds.length} categories.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (!result.isConfirmed) return;
-
-      // ✅ Call your Apps Script delete endpoint here
-      console.log("Deleting IDs:", selectedIds);
-
-      // Example fetch POST to delete API
-      /*
-      fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
-        method: "POST",
-        body: JSON.stringify({ action: "bulkDelete", ids: selectedIds }),
-        headers: { "Content-Type": "text/plain" },
-      })
-      .then((res) => res.json())
-      .then((response) => {
-        if (response.result === "success") {
-          Swal.fire("Deleted!", "Categories deleted successfully.", "success");
-          fetchAndRenderTable();
-        } else {
-          Swal.fire("Error", "Failed to delete categories.", "error");
-        }
-      })
-      .catch((err) => {
-        console.error("Delete error:", err);
-        Swal.fire("Error", "Delete request failed.", "error");
-      });
-      */
-
-      // For demo only
-      Swal.fire("Deleted!", "Categories deleted successfully.", "success");
-      fetchAndRenderTable();
+      if (type === "Buy") {
+        assetPortfolios[portfolio].totalNominal += nominal;
+      } else if (type === "Sell") {
+        assetPortfolios[portfolio].totalNominal -= nominal;
+      }
     });
-  });
+
+    const portfolioCards = document.getElementById("portfolioCards");
+    portfolioCards.innerHTML = "";
+
+    Object.entries(assetPortfolios).forEach(([portfolio, data]) => {
+      const logoURL = getPlatformLogo(data.platform);
+
+      let target = 0;
+      if (portfolio === "Married Saving") {
+        target = 65000000;
+      } else if (portfolio === "Retirement") {
+        target = 1000000000;
+      } else {
+        target = 1; // prevent division by zero
+      }
+
+      const progressPercent = Math.min(
+        (data.totalNominal / target) * 100,
+        100
+      ).toFixed(2);
+
+      portfolioCards.innerHTML += `
+        <div class="swiper-slide">
+          <div class="card balance-card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="text-xxs text-gray-500">Portfolio</span>
+                  <h5 class="card-title">${portfolio}</h5>
+                </div>
+                <div>
+                  <img src="${logoURL}" alt="${portfolio}" class="img-fluid" width="80" height="80"/>
+                </div>
+              </div>
+              <div class="mt-5">
+                <div class="d-flex justify-content-between align-items-end">
+                  <div class="d-flex flex-column">
+                    <span class="text-xxs text-gray-500">Balance</span>
+                    <span class="card-text fw-bolder text-success">
+                      Rp ${data.totalNominal.toLocaleString("en-US")}
+                    </span>
+                  </div>
+                  <div class="d-flex flex-column text-end">
+                    <span class="text-xxs text-gray-500">Target</span>
+                    <span class="card-text fw-bolder">
+                      Rp ${target.toLocaleString("en-US")}
+                    </span>
+                  </div>
+                </div>
+                <div class="progress mt-2">
+                  <div class="progress-bar bg-success" role="progressbar" 
+                  aria-valuenow="${data.totalNominal}" 
+                  aria-valuemin="0" aria-valuemax="${target}" 
+                  style="width: ${progressPercent}%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    // Destroy swiper jika sudah ada
+    if (window.portfolioSwiper) window.portfolioSwiper.destroy(true, true);
+
+    // Initialize ulang swiper
+    window.portfolioSwiper = new Swiper(".mySwiper", {
+      slidesPerView: 2,
+      spaceBetween: 16,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+    });
+  }
 
   // ✅ Initial fetch
   fetchAndRenderTable();

@@ -181,6 +181,11 @@ function getPaymentLogo(payment) {
   return logos[payment] || "../assets/img/team-2.jpg";
 }
 
+// ✅ Utility get logo URL by Platform
+function getPlatformLogo(platform) {
+  return "assets/img/logos/" + platform + ".svg";
+}
+
 // 🔧 Helper format Rupiah
 function formatRupiah(angka) {
   const numberString = angka.toString();

@@ -15,6 +15,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <!-- ✅ Custom CSS -->
   <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
@@ -285,31 +286,36 @@
       </div>
     </div>
 
+    <!-- ✅ Portfolio Cards -->
+    <div class="swiper mySwiper pb-5">
+      <div class="swiper-wrapper" id="portfolioCards">
+        <!-- Cards di sini -->
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- ✅ List of Investment -->
     <div class="card mb-4">
       <div class="table-responsive py-4">
         <table id="custom-datatable" class="table table-striped table-bordered table-hover">
           <thead class="table-dark">
             <tr>
-              <th class="text-center" style="width: 1%">
-                <input type="checkbox" id="select-all">
-              </th>
+              <th class="text-center">Type</th>
+              <th>Payment Date</th>
               <th>Platform Name</th>
               <th>Portfolio Name</th>
               <th>Product Name</th>
               <th>Nominal</th>
-              <th>Inserted Date</th>
-              <th>Updated Date</th>
             </tr>
           </thead>
           <tfoot>
             <tr>
               <th></th>
+              <th><input type="text" placeholder="Search payment date" class="form-control" /></th>
               <th><input type="text" placeholder="Search platform name" class="form-control" /></th>
               <th><input type="text" placeholder="Search portfolio name" class="form-control" /></th>
               <th><input type="text" placeholder="Search product name" class="form-control" /></th>
               <th><input type="text" placeholder="Search nominal name" class="form-control" /></th>
-              <th><input type="text" placeholder="Search inserted date" class="form-control" /></th>
-              <th><input type="text" placeholder="Search updated date" class="form-control" /></th>
             </tr>
           </tfoot>
           <tbody>
@@ -327,6 +333,7 @@
   <script src="assets/vendor/simple-datatables/dist/umd/simple-datatables.js"></script>
   <script src="assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
   <script src="assets/vendor/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <!-- DataTables -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <td>
               <div class="d-flex align-items-center">
                 <div class="d-none d-lg-block">
-                  <img src="${logoSrc}" class="img-fluid me-4" height="40" width="40" alt="logo">
+                  <img src="${logoSrc}" class="img-fluid me-4" height="30" width="30" alt="logo">
                 </div>
                 <div class="d-flex flex-column justify-content-center">
                   <h6 class="mb-1 text-dark text-sm">${row[4] || ""}</h6>
@@ -61,24 +61,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
               </div>
             </td>
-            <td class="text-sm fw-normal" data-order="${
-              row[2] ? new Date(row[2]).getTime() : ""
-            }">
+            <td class="text-sm fw-normal" 
+            data-order="${row[2] ? new Date(row[2]).getTime() : ""}">
               <div class="d-flex flex-column">
                 <h6 class="mb-1 text-dark text-sm">${row[1] || ""}</h6>
                 <span class="text-xs">${row[2] || ""}</span>
               </div>
             </td>
-            <td class="text-sm text-dark fw-bold align-middle">${
-              row[6] || ""
-            }</td>
-            <td class="text-sm ${
+            <td class="text-sm text-dark fw-bold align-middle">
+              ${row[6] || ""}
+            </td>
+            <td class="text-sm fw-bold align-middle 
+            ${
               row[3] === "Expenses" || row[3] === "Transfer"
                 ? "text-danger"
                 : "text-success"
-            } fw-bold align-middle">${
-            row[3] === "Expenses" || row[3] === "Transfer" ? "-" : "+"
-          } ${row[7] || ""}</td>
+            }">
+              ${row[3] === "Expenses" || row[3] === "Transfer" ? "-" : "+"} Rp 
+              <span class="float-end">
+                ${row[7].replace("Rp", "").trim()}
+              </span>
+            </td>
             <td class="align-middle">
               <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${
                 row[0]
@@ -112,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
           columnDefs: [
             { orderable: false, targets: [0, 5] },
             { width: "1%", targets: [0, 5] },
+            { width: "15%", targets: [4] },
           ],
           initComplete: function () {
             // Per-column search

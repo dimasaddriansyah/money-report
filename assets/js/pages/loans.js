@@ -49,15 +49,18 @@ document.addEventListener("DOMContentLoaded", function () {
         <td class="text-center">
           <i class="fa fa-plus-circle text-primary toggle-bills" style="cursor:pointer"></i>
         </td>
-        <td class="text-center">
-          <input type="checkbox" class="row-checkbox" data-id="${row[0]}">
-        </td>
+        <td></td>
         <td class="text-sm text-dark">${row[1] || "-"}</td>
         <td class="text-sm text-dark">${row[2] || "-"}</td>
         <td class="text-sm text-dark">${row[3] || "-"}</td>
-        <td class="text-sm text-dark">${row[4] || "-"}</td>
+        <td class="text-sm text-dark">
+          Rp <span class="float-end">${row[4].replace("Rp", "").trim()}</span>
+        </td>
         <td class="text-sm text-dark">${row[6] || "-"}</td>
-        <td class="text-sm text-dark">${row[7] || "-"}</td>
+        <td class="text-sm text-dark" 
+        data-order="${row[7] ? new Date(row[7]).getTime() : ""}">
+          ${row[7] || "-"}
+        </td>
         <td class="text-center">
           <span class="text-sm ${
             row[5] === "Unpaid"
@@ -88,16 +91,15 @@ document.addEventListener("DOMContentLoaded", function () {
       $("#custom-datatable").DataTable().destroy();
     }
 
-    $("#custom-datatable").DataTable({
-      responsive: true,
+    const table = $("#custom-datatable").DataTable({
       orderCellsTop: true,
       fixedHeader: true,
       autoWidth: false,
-      order: [[6, "desc"]],
+      order: [[7, "desc"]],
       columnDefs: [
-        { orderable: false, targets: [0, 8] },
-        { width: "1%", targets: [0, 8] },
-        { width: "10%", targets: [7] },
+        { orderable: false, targets: [0, 1, 6, 7, 8, 9] },
+        { width: "1%", targets: [0, 1, 6, 7, 8, 9] },
+        { width: "13%", targets: [5] },
       ],
       initComplete: function () {
         const api = this.api();
@@ -111,6 +113,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       },
     });
+
+    table
+      .on("order.dt search.dt", function () {
+        table
+          .column(1, { order: "applied" })
+          .nodes()
+          .each(function (cell, i) {
+            cell.innerHTML = i + 1 + ".";
+          });
+      })
+      .draw();
   }
 
   $(document).on("click", ".toggle-bills", function () {
@@ -356,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="form-group icon-status mb-3"> 
         <label for="statusSelect">Status</label> 
         <select id="statusSelect" class="form-select" required>
-          <option value="Not Paid">Not Paid</option>
+          <option value="Unpaid">Unpaid</option>
           <option value="Paid">Paid</option>
         </select>
       </div>
@@ -482,7 +495,7 @@ document.addEventListener("DOMContentLoaded", function () {
       target_payment: targetPaymentChoices.getValue(true),
       note: form.note.value,
       nominal: form.nominal.value.replace(/,/g, ""),
-      status: statusChoices ? statusChoices.getValue(true) : "Not Paid",
+      status: statusChoices ? statusChoices.getValue(true) : "Unpaid",
       inserted_date: now,
       updated_date: now,
     };

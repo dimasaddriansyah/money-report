@@ -132,14 +132,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const paymentBalances = {};
     const paymentIncomes = {};
 
+    // Loop transaksi
     allTransactionsData.forEach((row) => {
-      const type = row[3],
-        payment = row[4],
-        nominal =
-          parseInt(
-            (row[7] || "0").replace(/Rp\s?/g, "").replace(/,/g, ""),
-            10
-          ) || 0;
+      const type = row[3];
+      const payment = row[4];
+      const nominal =
+        parseInt((row[7] || "0").replace(/Rp\s?/g, "").replace(/,/g, ""), 10) ||
+        0;
 
       const isTransfer = row[8] === "Y";
       const transferFrom = row[9];
@@ -166,25 +165,73 @@ document.addEventListener("DOMContentLoaded", function () {
     const balanceCards = document.getElementById("balanceCards");
     balanceCards.innerHTML = "";
 
+    // ✅ Hitung total semua payment balance dan total income
+    const totalAllPaymentBalances = Object.values(paymentBalances).reduce(
+      (sum, balance) => sum + balance,
+      0
+    );
+
+    const totalAllIncome = Object.values(paymentIncomes).reduce(
+      (sum, income) => sum + income,
+      0
+    );
+
+    let totalProgressValue =
+      totalAllIncome === 0
+        ? 100
+        : (totalAllPaymentBalances / totalAllIncome) * 100;
+
+    totalProgressValue = Math.max(0, Math.min(totalProgressValue, 100)); // clamp
+    totalProgressValue = Math.floor(totalProgressValue);
+
+    // ✅ Buat card Total All Balance di awal
+    let totalCardHTML = `
+    <div class="swiper-slide">
+      <div class="card balance-card bg-primary text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-xxs text-gray-400">Account</span>
+              <h5 class="card-title">Total All Balance</h5>
+            </div>
+            <div>
+              <img src="/assets/img/icons/Money.png" alt="totalAllBalances" class="img-fluid" width="40" height="40"/>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="d-flex justify-content-between align-items-end">
+              <div class="d-flex flex-column">
+                <span class="text-xxs text-gray-400">Balance</span>
+                <span class="card-text fw-bolder text-secondary">
+                  Rp ${totalAllPaymentBalances.toLocaleString("en-US")}
+                </span>
+              </div>
+              <span class="text-xxs">
+                ${totalProgressValue + "%"}
+              </span>
+            </div>
+            <div class="progress mt-2">
+              <div class="progress-bar bg-danger" role="progressbar" 
+              aria-valuenow="${totalAllPaymentBalances}" 
+              aria-valuemin="0" aria-valuemax="${totalAllIncome}" 
+              style="width: ${totalProgressValue}%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+    balanceCards.innerHTML = totalCardHTML;
+
+    // ✅ Loop semua payment cards
     Object.entries(paymentBalances).forEach(([account, balance]) => {
       const logoSrc = getPaymentLogo(account);
       const incomePayment = paymentIncomes[account] || 1;
 
       let progressValue = ((incomePayment - balance) / incomePayment) * 100;
       progressValue = Math.max(0, Math.min(progressValue, 100)); // clamp antara 0-100
-      progressValue = Math.floor(progressValue); // tanpa koma
-
-      let progressClass = "bg-success";
-      let textClass = "text-success";
-
-      if (progressValue === 0) textClass = "text-gray-500";
-      else if (progressValue > 85) {
-        progressClass = "bg-danger";
-        textClass = "text-danger";
-      } else if (progressValue > 75) {
-        progressClass = "bg-warning";
-        textClass = "text-warning";
-      }
+      progressValue = Math.floor(progressValue);
 
       balanceCards.innerHTML += `
       <div class="swiper-slide">
@@ -196,10 +243,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h5 class="card-title">${account}</h5>
               </div>
               <div>
-                <img src="${logoSrc}" alt"${account}" class="img-fluid" width="80" height="80"/>
+                <img src="${logoSrc}" alt="${account}" class="img-fluid" width="80" height="80"/>
               </div>
             </div>
-            <div class="mt-5">
+            <div class="mt-4">
               <div class="d-flex justify-content-between align-items-end">
                 <div class="d-flex flex-column">
                   <span class="text-xxs text-gray-500">Balance</span>
@@ -212,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </span>
               </div>
               <div class="progress mt-2">
-                <div class="progress-bar ${progressClass}" role="progressbar" 
+                <div class="progress-bar bg-danger" role="progressbar" 
                 aria-valuenow="${balance}" 
                 aria-valuemin="0" aria-valuemax="${incomePayment}" 
                 style="width: ${progressValue}%"></div>
@@ -223,8 +270,6 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>`;
     });
 
-    document.getElementById("balanceCards").innerHTML = balanceCards.innerHTML;
-
     // Destroy swiper jika sudah ada
     if (window.balanceSwiper) window.balanceSwiper.destroy(true, true);
 
@@ -234,25 +279,16 @@ document.addEventListener("DOMContentLoaded", function () {
         el: ".swiper-pagination",
         clickable: true,
       },
-      // Responsive breakpoints
       breakpoints: {
-        // ketika layar >= 640px
         640: {
           slidesPerView: 2,
           spaceBetween: 16,
-          grid: {
-            rows: 2,
-            fill: "row",
-          },
+          grid: { rows: 2, fill: "row" },
         },
-        // ketika layar >= 1440px
         1440: {
           slidesPerView: 4,
           spaceBetween: 16,
-          grid: {
-            rows: 2,
-            fill: "row",
-          },
+          grid: { rows: 2, fill: "row" },
         },
       },
     });

@@ -38,34 +38,48 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((res) => res.json())
       .then((data) => {
         rows = data.values || [];
+        console.log(rows);
+        
 
         let html = "";
 
         rows.forEach((row) => {
           // ✅ Mapping logo berdasarkan kategori
-          const logoSrc = getCategoryIcon(row[5]);
+          const paymentSrc = getPaymentLogo(row[4]);
+          const categorySrc = getCategoryIcon(row[5]);
 
           html += `
           <tr>
             <td class="align-middle">
               <input type="checkbox" class="row-checkbox" data-id="${row[0]}">
             </td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="d-none d-lg-block">
-                  <img src="${logoSrc}" class="img-fluid me-4" height="30" width="30" alt="logo">
-                </div>
-                <div class="d-flex flex-column justify-content-center">
-                  <h6 class="mb-1 text-dark text-sm">${row[4] || ""}</h6>
-                  <span class="text-xs">${row[5] || ""}</span>
-                </div>
-              </div>
-            </td>
             <td class="text-sm fw-normal" 
             data-order="${row[2] ? new Date(row[2]).getTime() : ""}">
               <div class="d-flex flex-column">
                 <h6 class="mb-1 text-dark text-sm">${row[1] || ""}</h6>
                 <span class="text-xs">${row[2] || ""}</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="d-none d-lg-block">
+                  <img src="${paymentSrc}" class="img-fluid me-4" height="40" width="40" alt="logo">
+                </div>
+                <div class="d-flex flex-column justify-content-center">
+                  <h6 class="mb-1 text-dark text-sm">${row[4] || ""}</h6>
+                  <span class="text-xs">Payment</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="d-none d-lg-block">
+                  <img src="${categorySrc}" class="img-fluid me-4" height="30" width="30" alt="logo">
+                </div>
+                <div class="d-flex flex-column justify-content-center">
+                  <h6 class="mb-1 text-dark text-sm">${row[5] || ""}</h6>
+                  <span class="text-xs">Category</span>
+                </div>
               </div>
             </td>
             <td class="text-sm text-dark fw-bold align-middle">
@@ -111,11 +125,11 @@ document.addEventListener("DOMContentLoaded", function () {
           orderCellsTop: true,
           fixedHeader: true,
           autoWidth: false,
-          order: [[2, "desc"]], // ✅ Kolom ke-3 (date) DESC
+          order: [[1, "desc"]], // ✅ Kolom ke-3 (date) DESC
           columnDefs: [
-            { orderable: false, targets: [0, 5] },
-            { width: "1%", targets: [0, 5] },
-            { width: "15%", targets: [4] },
+            { orderable: false, targets: [0, 6] },
+            { width: "1%", targets: [0, 6] },
+            { width: "15%", targets: [1, 5] },
           ],
           initComplete: function () {
             // Per-column search

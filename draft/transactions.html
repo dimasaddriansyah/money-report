@@ -24,20 +24,18 @@
     <!-- Sidebar (Desktop) -->
     <aside id="desktopSidebar"
       class="hidden md:flex flex-col bg-white text-gray-900 w-64 transition-all duration-300 overflow-y-auto fixed top-0 left-0 bottom-0 border-r border-gray-200">
-
       <!-- Branding -->
       <h1 class="text-xl font-bold mb-4 px-4 pt-4">
         <span class="sidebar-full">Cashflow</span>
         <span class="sidebar-c hidden">C</span>
       </h1>
-
       <!-- Navigation -->
       <nav class="flex-1">
         <ul class="">
           <!-- Dashboard -->
           <li>
             <button type="button" id="dashboardToggle" class="flex w-full transition">
-              <div class="flex justify-between items-center w-full mx-4 px-4 py-3 space-x-4 rounded-lg bg-gray-100">
+              <div class="flex justify-between items-center w-full mx-4 px-4 py-3 space-x-4 rounded-lg">
                 <div class="flex items-center space-x-4">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24"
                     stroke-width="2" stroke="currentColor">
@@ -72,7 +70,7 @@
               </li>
               <!-- Investations -->
               <li class="w-full">
-                <a href="#" class="flex items-center mx-4 px-4 py-3 space-x-4 rounded-lg bg-gray-100">
+                <a href="#" class="flex items-center mx-4 px-4 py-3 space-x-4 rounded-lg">
                   <div class="w-5 h-5 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-2 h-2 text-slate-400"
                       fill="currentColor">
@@ -86,13 +84,13 @@
               </li>
             </ul>
           </li>
-
           <!-- Reporting -->
           <hr class="my-6 mx-4 border-t border-gray-200">
           <li class="px-4 pb-3 text-gray-400 uppercase text-xs tracking-wider sidebar-text">Reporting</li>
           <!-- Transactions -->
           <li>
-            <a href="#" class="flex items-center mx-4 px-4 py-3 space-x-4 rounded-lg hover:bg-gray-100 transition">
+            <a href="#"
+              class="flex items-center mx-4 px-4 py-3 space-x-4 rounded-lg hover:bg-gray-100 bg-gray-100 transition">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24"
                 stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -112,7 +110,6 @@
               <span class="sidebar-text text-gray-800">Budgets</span>
             </a>
           </li>
-
           <!-- Master Data -->
           <hr class="my-6 mx-4 border-t border-gray-200">
           <li class="px-4 pb-3 text-gray-400 uppercase text-xs tracking-wider sidebar-text">Master Data</li>
@@ -161,7 +158,6 @@
               <span class="sidebar-text text-gray-800">Portfolios</span>
             </a>
           </li>
-
           <!-- Loan & Bill -->
           <hr class="my-6 mx-4 border-t border-gray-200">
           <li class="px-4 pb-3 text-gray-400 uppercase text-xs tracking-wider sidebar-text">Loan & Bill</li>
@@ -189,9 +185,7 @@
           </li>
         </ul>
       </nav>
-
     </aside>
-
     <!-- Sidebar (Mobile) -->
     <div id="mobileSidebar"
       class="fixed inset-0 bg-gray-800 text-white p-4 transform -translate-x-full transition-transform duration-300 md:hidden z-50">
@@ -226,7 +220,6 @@
         </ul>
       </nav>
     </div>
-
     <!-- Main Content -->
     <main id="mainContent" class="flex-1 md:ml-64 transition-all duration-300 overflow-y-auto pb-20">
       <!-- Header Content -->
@@ -245,123 +238,49 @@
         </button>
         <h1 class="text-xl font-bold">Dashboard</h1>
       </header>
-
       <!-- Main Content -->
-      <section class="p-6">
+      <section class="p-4 md:p-6">
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
           <ol class="flex w-full flex-wrap items-center">
             <li
               class="flex cursor-pointer items-center text-sm text-slate-500 transition-colors duration-300 hover:text-slate-800">
-              <a href="#">Dashboard</a>
+              <a href="#">Reporting</a>
               <span class="pointer-events-none mx-2 text-slate-800"> / </span>
             </li>
             <li
               class="flex cursor-pointer items-center text-sm text-slate-500 transition-colors duration-300 hover:text-slate-800">
-              <a href="#">Overview</a>
+              <a href="#">Transactions</a>
             </li>
           </ol>
         </nav>
-        <!-- Content -->
-        <div class="my-5">
-          <h5 class="text-slate-800 text-xl font-semibold">Overview</h5>
-          <p class="text-slate-600 leading-normal font-light">Content here...</p>
-        </div>
-        <div class="flex flex-col my-6 bg-white shadow-sm border border-slate-200 rounded-lg w-full">
+
+        <!-- Content Mobile -->
+        <div class="flex flex-col my-6 bg-white shadow-sm border border-slate-200 rounded-lg w-full md:hidden">
           <div class="p-4">
-            <div class="mb-4 flex items-center justify-between">
-              <h5 class="text-slate-800 text-lg font-semibold">
-                Latest Customers
-              </h5>
-              <a href="#" class="text-slate-600">
-                View all
-              </a>
+            <div class="flex items-center justify-between">
+              <h5 class="text-slate-800 text-lg font-semibold">Latest Transactions</h5>
+              <div class="flex items-center space-x-2">
+                <label for="itemsPerPage" class="text-slate-700 text-sm">Show</label>
+                <select id="itemsPerPage"
+                  class="border border-slate-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring focus:border-blue-300">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </select>
+              </div>
             </div>
-            <div class="divide-y divide-slate-200">
-              <div class="flex items-center justify-between pb-3 pt-3 last:pb-0">
-                <div class="flex items-center gap-x-3">
-                  <img src="https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg"
-                    alt="Maria Jimenez" class="relative inline-block h-8 w-8 rounded-full object-cover object-center" />
-                  <div>
-                    <h6 class="text-slate-800 font-semibold">
-                      Maria Jimenez
-                    </h6>
-                    <p class="text-slate-600 text-sm">
-                      maria@gmail.com
-                    </p>
-                  </div>
-                </div>
-                <h6 class="text-slate-600 font-medium">
-                  $400
-                </h6>
-              </div>
-              <div class="flex items-center justify-between pb-3 pt-3 last:pb-0">
-                <div class="flex items-center gap-x-3">
-                  <img src="https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-6.jpg"
-                    alt="John Micheal" class="relative inline-block h-8 w-8 rounded-full object-cover object-center" />
-                  <div>
-                    <h6 class="text-slate-800 font-semibold">
-                      John Micheal
-                    </h6>
-                    <p class="text-slate-600 text-sm">
-                      john@gmail.com
-                    </p>
-                  </div>
-                </div>
-                <h6 class="text-slate-600 font-medium">
-                  $420
-                </h6>
-              </div>
-              <div class="flex items-center justify-between pb-3 pt-3 last:pb-0">
-                <div class="flex items-center gap-x-3">
-                  <img src="https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg"
-                    alt="Alexa Liras" class="relative inline-block h-8 w-8 rounded-full object-cover object-center" />
-                  <div>
-                    <h6 class="text-slate-800 font-semibold">
-                      Alexa Liras
-                    </h6>
-                    <p class="text-slate-600 text-sm">
-                      alexa@gmail.com
-                    </p>
-                  </div>
-                </div>
-                <h6 class="text-slate-600 font-medium">
-                  $340
-                </h6>
-              </div>
-              <div class="flex items-center justify-between pb-3 pt-3 last:pb-0">
-                <div class="flex items-center gap-x-3">
-                  <img src="https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
-                    alt="Richard Gran" class="relative inline-block h-8 w-8 rounded-full object-cover object-center" />
-                  <div>
-                    <h6 class="text-slate-800 font-semibold">
-                      Richard Gran
-                    </h6>
-                    <p class="text-slate-600 text-sm">
-                      richard@gmail.com
-                    </p>
-                  </div>
-                </div>
-                <h6 class="text-slate-600 font-medium">
-                  $520
-                </h6>
-              </div>
-              <div class="flex items-center justify-between pb-3 pt-3 last:pb-0">
-                <div class="flex items-center gap-x-3">
-                  <img src="https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg"
-                    alt="Micheal Levi" class="relative inline-block h-8 w-8 rounded-full object-cover object-center" />
-                  <div>
-                    <h6 class="text-slate-800 font-semibold">
-                      Micheal Levi
-                    </h6>
-                    <p class="text-slate-600 text-sm">
-                      michael@gmail.com
-                    </p>
-                  </div>
-                </div>
-                <h6 class="text-slate-600 font-medium">
-                  $520
-                </h6>
+
+            <div id="customerList" class="divide-y divide-slate-100"></div>
+
+            <div class="flex justify-between items-center border-t border-t-slate-100 mt-5 pt-5">
+              <span id="pageInfo" class="text-slate-800 text-sm"></span>
+              <div id="pagination" class="flex justify-end items-center space-x-2">
+                <button id="prevPage"
+                  class="px-4 py-2 bg-slate-800 text-sm font-medium text-white rounded-md disabled:opacity-50">Prev</button>
+                <button id="nextPage"
+                  class="px-4 py-2 bg-slate-800 text-sm font-medium text-white rounded-md disabled:opacity-50">Next</button>
               </div>
             </div>
           </div>
@@ -373,15 +292,16 @@
   <!-- Bottom Navbar (Mobile) -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow md:hidden">
     <div class="flex justify-between items-center px-2">
-      <a href="#" class="flex flex-col items-center justify-center text-gray-700 hover:text-blue-600 py-2 flex-1">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="2"
+      <a href="#" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-800 py-2 flex-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
         </svg>
         <span class="text-xs">Overview</span>
       </a>
-      <a href="#" class="flex flex-col items-center justify-center text-gray-700 hover:text-blue-600 py-2 flex-1">
+      <a href="#"
+        class="flex flex-col items-center justify-center font-semibold text-slate-800 hover:text-slate-800 py-2 flex-1">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="2"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -390,24 +310,24 @@
         <span class="text-xs">Transaction</span>
       </a>
       <div class="relative flex-1">
-        <a href="#"
-          class="flex items-center justify-center bg-blue-600 text-white rounded-full w-14 h-14 mx-auto -mt-6 shadow-lg hover:bg-blue-700 transition-all">
+        <button id="openModalBtn"
+          class="flex items-center justify-center bg-slate-700 text-white rounded-full w-14 h-14 mx-auto -mt-6 shadow-lg hover:bg-slate-900 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-        </a>
+        </button>
       </div>
-      <a href="#" class="flex flex-col items-center justify-center text-gray-700 hover:text-blue-600 py-2 flex-1">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="2"
+      <a href="#" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-800 py-2 flex-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
         </svg>
         <span class="text-xs">Investation</span>
       </a>
-      <a href="#" class="flex flex-col items-center justify-center text-gray-700 hover:text-blue-600 py-2 flex-1">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="2"
+      <a href="#" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-800 py-2 flex-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
@@ -417,7 +337,35 @@
     </div>
   </nav>
 
+  <!-- Modal Component -->
+  <div id="myModal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm">
+    <!-- Modal Content -->
+    <div class="bg-white rounded-lg w-full max-w-md mx-auto overflow-hidden shadow-lg">
+      <!-- Header -->
+      <div class="flex justify-between items-center border-b border-b-slate-100 px-6 py-4">
+        <h6 class="text-lg text-slate-800 font-semibold">New Transaction</h6>
+        <button id="closeModalBtn" class="text-slate-400 hover:text-slate-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+
+        </button>
+      </div>
+      <!-- Body -->
+      <div class="p-6 space-y-4">
+      </div>
+      <!-- Footer -->
+      <div class="flex justify-end border-t border-t-slate-100 px-6 py-4">
+        <button id="closeModalBtn" class="text-slate-400 font-medium px-5 py-2">Close</button>
+        <button class="bg-slate-800 font-medium text-white px-5 py-2 rounded-lg hover:bg-slate-900">Submit</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
+  <script src="/assets/js/utils.js"></script>
   <script>
     // Toggle mobile sidebar
     const menuButton = document.getElementById('menuButton');
@@ -476,6 +424,156 @@
     });
 
   </script>
+  <script>
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+
+    const listContainer = document.getElementById('customerList');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
+    const itemsPerPageSelect = document.getElementById('itemsPerPage');
+
+    let currentPage = 1;
+    let itemsPerPage = parseInt(itemsPerPageSelect.value);
+    let totalPages = 1;
+    let transactions = [];
+
+    function renderPage(page) {
+      listContainer.innerHTML = '';
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageItems = transactions.slice(start, end);
+
+      // Group by date
+      const grouped = {};
+      pageItems.forEach(transaction => {
+        if (!grouped[transaction.date]) {
+          grouped[transaction.date] = [];
+        }
+        grouped[transaction.date].push(transaction);
+      });
+
+      // Render grouped data
+      for (const date in grouped) {
+        listContainer.innerHTML += `
+        <div class="pt-5 pb-2 text-sm font-medium text-slate-400 uppercase">${date}</div>
+      `;
+
+        grouped[date].forEach(transaction => {
+          paymentImage = getPaymentLogo(transaction.payment);
+
+          listContainer.innerHTML += `
+          <div class="flex justify-between pb-3 pt-3 last:pb-0">
+            <div class="flex gap-x-3">
+              <div class="h-8 w-8">
+                <img src="/${paymentImage}" alt="${transaction.payment}" class="h-full w-full object-contain"/>
+              </div>
+              <div>
+                <h6 class="text-slate-800 font-semibold">${transaction.category}</h6>
+                <p class="text-slate-400 text-sm">${transaction.remark}</p>
+              </div>
+            </div>
+            <h6 class="text-sm font-semibold ${transaction.type === "Expenses" ? "text-red-500" : "text-green-500"} "> ${transaction.type === "Expenses" ? "-" : "+"} ${transaction.nominal}</h6>
+          </div>
+        `;
+        });
+      }
+
+      const totalEntries = transactions.length;
+      const showingStart = totalEntries === 0 ? 0 : start + 1;
+      const showingEnd = end > totalEntries ? totalEntries : end;
+      pageInfo.innerHTML = `
+  <div class="text-slate-800 text-sm font-medium">Showing ${showingStart} to ${showingEnd}</div>
+  <div class="text-slate-400 text-sm">of ${totalEntries} entries</div>
+`;
+
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+    }
+
+    itemsPerPageSelect.addEventListener('change', () => {
+      itemsPerPage = parseInt(itemsPerPageSelect.value);
+      totalPages = Math.ceil(transactions.length / itemsPerPage);
+      currentPage = 1;
+      renderPage(currentPage);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderPage(currentPage);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderPage(currentPage);
+      }
+    });
+
+    // Fetch data and initialize
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const rows = data.values || [];
+
+        // Map rows to transaction objects with date only (no time)
+        transactions = rows.map(row => {
+          let rawDate = row[2] || '';
+          let dateOnly = rawDate.split(' ').slice(0, 3).join(' '); // ambil tanggal, bulan, tahun saja
+
+          return {
+            date: dateOnly,
+            type: row[3] || '',
+            payment: row[4] || '',
+            category: row[5] || '',
+            remark: row[6] || '',
+            nominal: row[7] || ''
+          };
+        });
+
+        // Sort transactions by date descending (newest to oldest)
+        transactions.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateB - dateA; // descending
+        });
+
+        totalPages = Math.ceil(transactions.length / itemsPerPage);
+        renderPage(currentPage);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+        listContainer.innerHTML = `<p class="text-red-500">Failed to load data</p>`;
+      });
+  </script>
+  <script>
+    const modal = document.getElementById('myModal');
+    const openBtn = document.getElementById('openModalBtn');
+    const closeBtn = document.querySelectorAll('#closeModalBtn');
+
+    openBtn.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+
+    closeBtn.forEach(btn => {
+      btn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      });
+    });
+
+    // Close modal if click outside content
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    });
+  </script>
+
 </body>
 
 </html>

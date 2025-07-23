@@ -97,32 +97,58 @@ document.addEventListener("DOMContentLoaded", function () {
     let html = "";
 
     rows.forEach((row) => {
-      const category = row[5] || "Unknown";
-      const logoSrc = getCategoryIcon(category);
-      html += `
-        <li class="list-group-item bg-transparent border-bottom py-3 px-0">
-          <div class="row align-items-center">
-            <div class="col-auto">
-              <img class="img-fluid me-2" alt="logo" src="${logoSrc}" height="35" width="35">
-            </div>
-            <div class="col px-0">
-              <div class="d-flex flex-column">
-                <h4 class="fs-6 text-dark mb-0">${row[6]}</h4>
-                <span class="small text-gray-500">${row[4]}</span>
-              </div>
-            </div>
-            <div class="col text-end">
-              <div class="d-flex flex-column">
-                <span class="fs-6 fw-bolder ${
-                  row[3] === "Expenses" ? "text-danger" : "text-success"
-                }">
-                  ${row[3] === "Expenses" ? "-" : "+"} ${row[7] || ""}
-                </span>
-                <span class="small">${row[2] || ""}</span>
-              </div>
-            </div>
-          </div>
-        </li>`;
+      const categorySrc = getCategoryIcon(row[5]);
+      const paymentSrc = getPaymentLogo(row[4]);
+    html += `
+<li class="list-group-item bg-transparent border-bottom py-3 px-0">
+  <div class="row g-2 align-items-center">
+    
+    <!-- Tanggal -->
+    <div class="col-12 col-md">
+      <div class="d-flex flex-column">
+        <span class="fw-bold">${row[1] || ""}</span>
+        <span class="small text-muted">${row[2] || ""}</span>
+      </div>
+    </div>
+
+    <!-- Payment (dengan image) -->
+    <div class="col-12 col-md">
+      <div class="d-flex align-items-center">
+        <img src="${paymentSrc}" alt="payment" class="img-fluid me-2" width="35" height="35">
+        <div class="d-flex flex-column">
+          <span class="fw-bold">${row[4] || ""}</span>
+          <span class="small text-muted">Payment</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category (dengan image) -->
+    <div class="col-12 col-md">
+      <div class="d-flex align-items-center">
+        <img src="${categorySrc}" alt="category" class="img-fluid me-2" width="35" height="35">
+        <div class="d-flex flex-column">
+          <span class="fw-bold">${row[5] || ""}</span>
+          <span class="small text-muted">Category</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Remark -->
+    <div class="col-12 col-md d-flex align-items-center">
+      <span>${row[6] || ""}</span>
+    </div>
+
+    <!-- Nominal -->
+    <div class="col-12 col-md text-end d-flex align-items-center justify-content-end">
+      <span class="fw-bold ${row[3] === "Expenses" ? "text-danger" : "text-success"}">
+        ${row[7] || ""}
+      </span>
+    </div>
+
+  </div>
+</li>
+`;
+
     });
 
     tableBody.innerHTML = html;
@@ -195,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <h5 class="card-title">Total All Balance</h5>
             </div>
             <div>
-              <img src="/assets/img/icons/Money.png" alt="totalAllBalances" class="img-fluid" width="40" height="40"/>
+              <img src="assets/img/icons/Money.png" alt="totalAllBalances" class="img-fluid" width="40" height="40"/>
             </div>
           </div>
           <div class="mt-4">

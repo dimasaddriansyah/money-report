@@ -1,0 +1,49 @@
+/* Hilangkan padding default Select2 agar tidak tabrakan dengan icon */
+.select2-container--default .select2-selection--single {
+  height: 41.6px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border: solid #e5e7eb 1px;
+  border-radius: 0.5rem;
+}
+
+.select2-selection__placeholder {
+  color: #9CA3AF !important;
+}
+
+.select2-selection__rendered {
+  line-height: 41.6px !important;
+  color: #1E293B !important;
+}
+
+.select2-selection__arrow {
+  height: 100% !important;
+  right: 0.5rem !important;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  background-color: #1E293B;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.select2-results__option--selectable {
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.select2-results__option {
+  padding: 0.625rem;
+}
+
+.swipe-item {
+  transition: transform 0.3s ease;
+}
+
+.action-buttons {
+  transition: opacity 0.3s ease;
+}

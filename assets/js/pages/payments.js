@@ -1,14 +1,14 @@
 const API_URL =
-  "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/platforms!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
+  "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/accountPayments!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
 
 let allData = [];
 let currentPage = 0;
 const itemsPerPage = 10;
 
-async function loadPlatforms() {
+async function loadPayments() {
   const loadingText = document.getElementById("loading-text");
   const seeMoreBtn = document.getElementById("see-more-btn");
-  const list = document.getElementById("platform-list");
+  const list = document.getElementById("payment-list");
 
   try {
     loadingText.classList.remove("hidden");
@@ -17,11 +17,9 @@ async function loadPlatforms() {
     const res = await fetch(API_URL);
     const data = await res.json();
     const rows = data.values || [];
-    console.log(rows);
-    
 
     if (rows.length === 0) {
-      list.innerHTML = `<li class="py-3 text-center text-slate-400">Tidak ada data platform.</li>`;
+      list.innerHTML = `<li class="py-3 text-center text-slate-400">Tidak ada data payment.</li>`;
       return;
     }
 
@@ -40,7 +38,7 @@ async function loadPlatforms() {
 
     currentPage = 0;
     list.innerHTML = "";
-    renderNextPlatforms();
+    renderNextPayments();
   } catch (error) {
     console.error("Gagal mengambil data:", error);
     list.innerHTML = `<li class="py-3 text-center text-red-500">Gagal memuat data</li>`;
@@ -49,11 +47,11 @@ async function loadPlatforms() {
   }
 }
 
-function renderNextPlatforms() {
+function renderNextPayments() {
   const start = currentPage * itemsPerPage;
   const end = start + itemsPerPage;
   const sliced = allData.slice(start, end);
-  const list = document.getElementById("platform-list");
+  const list = document.getElementById("payment-list");
 
   sliced.forEach((data, index) => {
     const container = document.createElement("div");
@@ -61,13 +59,13 @@ function renderNextPlatforms() {
 
     container.innerHTML = `
       <div class="relative group overflow-hidden w-full">
-        <div class="md:h-[4.5rem] sm:h-auto px-4 platform-content grid grid-cols-1 gap-y-2 sm:grid-cols-[3rem_1fr_1fr_1fr] sm:items-center sm:gap-2 transition-all duration-300 bg-white py-3 sm:py-0">
+        <div class="md:h-[4.5rem] sm:h-auto px-4 payment-content grid grid-cols-1 gap-y-2 sm:grid-cols-[3rem_1fr_1fr_1fr] sm:items-center sm:gap-2 transition-all duration-300 bg-white py-3 sm:py-0">
           <div class="flex flex-col items-start">
             <p class="text-xs text-slate-400">#</p>
             <p class="text-sm font-medium">${start + index + 1}</p>
           </div>
           <div class="flex flex-col items-start">
-            <p class="text-xs text-slate-400">Platform Name</p>
+            <p class="text-xs text-slate-400">Payment Name</p>
             <p class="text-sm font-medium">${data.name}</p>
           </div>
           <div class="flex flex-col items-start">
@@ -81,7 +79,7 @@ function renderNextPlatforms() {
         </div>
         <div class="absolute right-0 top-0 h-full flex items-center bg-white translate-x-full transition-all duration-300 action-buttons">
           <button class="flex items-center justify-center text-white w-16 h-full bg-yellow-500" 
-            onclick='openPlatformModal({ 
+            onclick='openPaymentModal({ 
               mode: "edit", 
               data: { 
                 id: "${data.id}", 
@@ -104,7 +102,7 @@ function renderNextPlatforms() {
     list.appendChild(container);
 
     const hammer = new Hammer(container.querySelector(".group"));
-    const content = container.querySelector(".platform-content");
+    const content = container.querySelector(".payment-content");
     const buttons = container.querySelector(".action-buttons");
 
     let resetSwipeTimeout; // ⏱️ timer reset per item
@@ -138,18 +136,18 @@ function renderNextPlatforms() {
   }
 }
 
-function openPlatformModal({ mode = "create", data = {} }) {
+function openPaymentModal({ mode = "create", data = {} }) {
   const isEdit = mode === "edit";
   const now = new Date().toISOString();
-  const modalTitle = isEdit ? "Edit Platform" : "Add New Platform";
+  const modalTitle = isEdit ? "Edit Payment" : "Add New Payment";
   const defaultName = data.name || "";
 
   openModal({
     title: modalTitle,
     content: `
-      <form id="platformForm" class="space-y-4">
+      <form id="paymentForm" class="space-y-4">
         <div>
-          <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Platform Name</label>
+          <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Payment Name</label>
           <input type="text" id="name" name="name" value="${defaultName}"
             class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent" />
         </div>
@@ -159,7 +157,7 @@ function openPlatformModal({ mode = "create", data = {} }) {
       const name = document.getElementById("name").value.trim();
 
       if (!name) {
-        alert("Platform name is required.");
+        alert("Payment name is required.");
         return;
       }
 
@@ -169,25 +167,23 @@ function openPlatformModal({ mode = "create", data = {} }) {
       };
 
       if (isEdit) {
-        payload.action = "platform_update";
-        payload.platform_id = data.id;
+        payload.action = "accountPayment_update";
+        payload.accountPayment_id = data.id;
       } else {
-        payload.action = "platform_create";
+        payload.action = "accountPayment_create";
         payload.inserted_date = now;
 
         const lastId = allData.length > 0 ? allData[0].id : null;
-        let newId = "PLATFORM-001";
+        let newId = "ACC-001";
 
-        if (lastId && /^PLATFORM-\d+$/.test(lastId)) {
+        if (lastId && /^ACC-\d+$/.test(lastId)) {
           const lastNumber = parseInt(lastId.split("-")[1], 10);
           const nextNumber = lastNumber + 1;
-          newId = `PLATFORM-${String(nextNumber).padStart(3, "0")}`;
+          newId = `ACC-${String(nextNumber).padStart(3, "0")}`;
         }
 
-        payload.platform_id = newId;
+        payload.accountPayment_id = newId;
       }
-
-      console.log("📦 Sending:", payload);
 
       fetch(
         "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
@@ -202,11 +198,11 @@ function openPlatformModal({ mode = "create", data = {} }) {
         .then((res) => res.json())
         .then(() => {
           closeModal();
-          loadPlatforms();
+          loadPayments();
           showToast(
             isEdit
-              ? "Platform updated successfully"
-              : "Platform added successfully"
+              ? "Payment updated successfully"
+              : "Payment added successfully"
           );
         })
         .catch((err) => {
@@ -217,19 +213,17 @@ function openPlatformModal({ mode = "create", data = {} }) {
   });
 }
 
-function openDeleteModal(platform_id) {
+function openDeleteModal(accountPayment_id) {
   openModal({
     title: "Confirm Delete",
     content: `
-      <p class="text-sm text-slate-600">Are you sure you want to delete this platform?</p>
+      <p class="text-sm text-slate-600">Are you sure you want to delete this payment?</p>
     `,
     onSubmit: () => {
       const payload = {
-        action: "platform_delete",
-        platform_id: platform_id,
+        action: "accountPayment_delete",
+        accountPayment_id: accountPayment_id,
       };
-
-      console.log("🗑️ Deleting:", payload);
 
       fetch(
         "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
@@ -244,8 +238,8 @@ function openDeleteModal(platform_id) {
         .then((res) => res.json())
         .then(() => {
           closeModal();
-          loadPlatforms();
-          showToast("Platform deleted successfully");
+          loadPayments();
+          showToast("Payment deleted successfully");
         })
         .catch((err) => {
           console.error("❌ Gagal menghapus:", err);
@@ -256,10 +250,10 @@ function openDeleteModal(platform_id) {
 }
 
 async function initApp() {
-  document.getElementById("addPlatformBtn").addEventListener("click", () => {
-    openPlatformModal({ mode: "create" });
+  document.getElementById("addPaymentBtn").addEventListener("click", () => {
+    openPaymentModal({ mode: "create" });
   });
-  await loadPlatforms();
+  await loadPayments();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);

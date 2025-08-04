@@ -1,335 +1,264 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // ✅ Global variables
-  let rows = []; // untuk menyimpan data transaksi
+const API_URL =
+  "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/portfolios!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
 
-  // ✅ Fetch and render table
-  function fetchAndRenderTable() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/portfolios!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+let allData = [];
+let currentPage = 0;
+const itemsPerPage = 10;
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        rows = data.values || []; // ✅ update global rows
+async function loadPortfolios() {
+  const loadingText = document.getElementById("loading-text");
+  const seeMoreBtn = document.getElementById("see-more-btn");
+  const list = document.getElementById("content-list");
 
-        let html = "";
+  try {
+    loadingText.classList.remove("hidden");
+    seeMoreBtn.classList.add("hidden");
 
-        rows.forEach((row) => {
-          html += `
-            <tr>
-              <td class="text-center">
-                <input type="checkbox" class="row-checkbox" data-id="${row[0]}">
-              </td>
-              <td class="text-sm text-dark fw-bold">${row[1] || "-"}</td>
-              <td class="text-sm text-dark">${row[2] || "-"}</td>
-              <td class="text-sm text-dark" data-order="${
-                row[3] ? new Date(row[3]).getTime() : ""
-              }">${row[3] || "-"}</td>
-              <td class="align-middle">
-                <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${
-                  row[0]
-                }" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                </a>
-                <a href="javascript:;" class="delete-modal-btn" data-id="${
-                  row[0]
-                }" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
-                  <i class="fa-regular fa-trash-can text-danger"></i>
-                </a>
-              </td>
-            </tr>
-          `;
-        });
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    const rows = data.values || [];
+    console.log(rows);
 
-        $("#custom-datatable tbody").html(html);
-
-        // ✅ Destroy existing DataTable if exists, then reinitialize
-        if ($.fn.DataTable.isDataTable("#custom-datatable")) {
-          $("#custom-datatable").DataTable().destroy();
-        }
-
-        const table = $("#custom-datatable").DataTable({
-          responsive: true,
-          orderCellsTop: true,
-          fixedHeader: true,
-          autoWidth: false,
-          order: [[3, "desc"]],
-          columnDefs: [
-            { orderable: false, targets: [0, 4] },
-            { width: "1%", targets: [0, 4] },
-          ],
-          initComplete: function () {
-            // per-column search
-            const api = this.api();
-            api.columns().every(function () {
-              const that = this;
-              $("input", this.footer()).on("keyup change clear", function () {
-                if (that.search() !== this.value) {
-                  that.search(this.value).draw();
-                }
-              });
-            });
-
-            // append bulk delete button
-            $("#custom-datatable_length").append(
-              '<button id="bulkDelete" class="btn btn-danger btn-sm ms-3 d-none">Delete Selected (<span id="selectedCount">0</span>)</button>'
-            );
-          },
-        });
-
-        updateSelectAllCheckbox();
-      })
-      .catch((err) => console.error("Fetch error:", err));
-  }
-
-  // ✅ Update select-all checkbox status
-  function updateSelectAllCheckbox() {
-    const total = $(".row-checkbox").length;
-    const checked = $(".row-checkbox:checked").length;
-    $("#select-all").prop("checked", total === checked);
-  }
-
-  // ✅ Update selected count and toggle bulk delete button
-  function updateSelectedCount() {
-    const count = $(".row-checkbox:checked").length;
-    $("#selectedCount").text(count);
-    if (count > 0) {
-      $("#bulkDelete").removeClass("d-none");
-    } else {
-      $("#bulkDelete").addClass("d-none");
+    if (rows.length === 0) {
+      list.innerHTML = `<li class="py-3 text-center text-slate-400">Tidak ada data portfolio.</li>`;
+      return;
     }
-  }
 
-  // ✅ Event delegation for select-all checkbox
-  $(document).on("click", "#select-all", function () {
-    const checked = this.checked;
-    $(".row-checkbox").prop("checked", checked);
-    updateSelectedCount();
-  });
-
-  // ✅ Event delegation for each row checkbox
-  $(document).on("change", ".row-checkbox", function () {
-    updateSelectedCount();
-    updateSelectAllCheckbox();
-  });
-
-  // ✅ Event: bulk delete with SweetAlert
-  $(document).on("click", "#bulkDelete", function () {
-    const selectedIds = $(".row-checkbox:checked")
-      .map(function () {
-        return $(this).data("id");
-      })
-      .get();
-
-    if (selectedIds.length === 0) return;
-
-    Swal.fire({
-      title: "Are you sure?",
-      text: `You are about to delete ${selectedIds.length} categories.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (!result.isConfirmed) return;
-
-      // ✅ Call your Apps Script delete endpoint here
-      console.log("Deleting IDs:", selectedIds);
-
-      // Example fetch POST to delete API
-      /*
-      fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
-        method: "POST",
-        body: JSON.stringify({ action: "bulkDelete", ids: selectedIds }),
-        headers: { "Content-Type": "text/plain" },
-      })
-      .then((res) => res.json())
-      .then((response) => {
-        if (response.result === "success") {
-          Swal.fire("Deleted!", "Categories deleted successfully.", "success");
-          fetchAndRenderTable();
-        } else {
-          Swal.fire("Error", "Failed to delete categories.", "error");
-        }
-      })
-      .catch((err) => {
-        console.error("Delete error:", err);
-        Swal.fire("Error", "Delete request failed.", "error");
+    allData = rows
+      .map((row) => ({
+        id: row[0],
+        name: row[1],
+        inserted_date: row[2],
+        updated_date: row[3],
+      }))
+      .sort((a, b) => {
+        const dateA = Date.parse(a.updated_date); // e.g. "02 July 2025 16:12:41"
+        const dateB = Date.parse(b.updated_date);
+        return dateB - dateA; // Descending: terbaru dulu
       });
-      */
 
-      // For demo only
-      Swal.fire("Deleted!", "Categories deleted successfully.", "success");
-      fetchAndRenderTable();
+    currentPage = 0;
+    list.innerHTML = "";
+    renderNextContents();
+  } catch (error) {
+    console.error("Gagal mengambil data:", error);
+    list.innerHTML = `<li class="py-3 text-center text-red-500">Gagal memuat data</li>`;
+  } finally {
+    loadingText.classList.add("hidden");
+  }
+}
+
+function renderNextContents() {
+  const start = currentPage * itemsPerPage;
+  const end = start + itemsPerPage;
+  const sliced = allData.slice(start, end);
+  const list = document.getElementById("content-list");
+
+  sliced.forEach((data, index) => {
+    const container = document.createElement("div");
+    container.className = "flex justify-between transition";
+
+    container.innerHTML = `
+      <div class="relative group overflow-hidden w-full">
+        <div class="sm:h-auto p-4 content grid grid-cols-1 gap-y-2 sm:grid-cols-[3rem_1fr_1fr_1fr] sm:items-center sm:gap-2 transition-all duration-300 bg-white">
+          <div class="flex flex-col items-start">
+            <p class="text-xs text-slate-400">#</p>
+            <p class="text-sm font-medium">${start + index + 1}</p>
+          </div>
+          <div class="flex flex-col items-start">
+            <p class="text-xs text-slate-400">Portfolio Name</p>
+            <p class="text-sm font-medium">${data.name}</p>
+          </div>
+          <div class="flex flex-col items-start">
+            <p class="text-xs text-slate-400">Inserted Date</p>
+            <p class="text-sm font-medium">${data.inserted_date}</p>
+          </div>
+          <div class="flex flex-col items-start">
+            <p class="text-xs text-slate-400">Updated Date</p>
+            <p class="text-sm font-medium">${data.updated_date}</p>
+          </div>
+        </div>
+        <div class="absolute right-0 top-0 h-full flex items-center bg-white translate-x-full transition-all duration-300 action-buttons">
+          <button class="flex items-center justify-center text-white w-16 h-full bg-yellow-500" 
+            onclick='openComponentModal({ 
+              mode: "edit", 
+              data: { 
+                id: "${data.id}", 
+                name: "${data.name}" 
+              }})'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </button>
+          <button class="flex items-center justify-center text-white w-16 h-full bg-red-500"
+            onclick='openDeleteModal("${data.id}")'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    list.appendChild(container);
+
+    const hammer = new Hammer(container.querySelector(".group"));
+    const content = container.querySelector(".content");
+    const buttons = container.querySelector(".action-buttons");
+
+    let resetSwipeTimeout; // ⏱️ timer reset per item
+
+    hammer.on("swipeleft", () => {
+      content.classList.add("translate-x-[-8rem]");
+      buttons.classList.remove("translate-x-full");
+
+      clearTimeout(resetSwipeTimeout); // pastikan tidak dobel
+      resetSwipeTimeout = setTimeout(() => {
+        content.classList.remove("translate-x-[-8rem]");
+        buttons.classList.add("translate-x-full");
+      }, 1500); // ⏱️ 1,5 detik
+    });
+
+    hammer.on("swiperight", () => {
+      content.classList.remove("translate-x-[-8rem]");
+      buttons.classList.add("translate-x-full");
+
+      clearTimeout(resetSwipeTimeout);
     });
   });
 
-  // ✅ New Modal button
-  document.querySelector(".new-modal-btn").addEventListener("click", () => {
-    const modalEl = document.getElementById("componentModal");
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
+  currentPage++;
+  const seeMoreBtn = document.getElementById("see-more-btn");
 
-    modalEl.querySelector(".modal-title").innerText = "New Portfolio";
-    modalEl.querySelector("#btn-submit-modal").innerText = "Add Portfolio";
-    const form = document.getElementById("modalForm");
-    form.reset();
+  if (currentPage * itemsPerPage >= allData.length) {
+    seeMoreBtn.classList.add("hidden");
+  } else {
+    seeMoreBtn.classList.remove("hidden");
+  }
+}
 
-    const idInput = form.querySelector('input[name="portfolio_id"]');
-    if (idInput) idInput.remove();
-  });
+function openComponentModal({ mode = "create", data = {} }) {
+  const isEdit = mode === "edit";
+  const now = new Date().toISOString();
+  const modalTitle = isEdit ? "Edit Portfolio" : "Add New Portfolio";
+  const defaultName = data.name || "";
 
-  // ✅ Edit Modal button
-  document.addEventListener("click", function (e) {
-    const btn = e.target.closest(".edit-modal-btn");
-    if (!btn) return;
+  openModal({
+    title: modalTitle,
+    content: `
+      <form id="portfolioForm" class="space-y-4">
+        <div>
+          <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Portfolio Name</label>
+          <input type="text" id="name" name="name" value="${defaultName}"
+            class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent" />
+        </div>
+      </form>
+    `,
+    onSubmit: () => {
+      const name = document.getElementById("name").value.trim();
 
-    const portfolioId = btn.getAttribute("data-id");
-    const portfolio = rows.find((row) => row[0] === portfolioId);
-    if (!portfolio) return;
+      if (!name) {
+        alert("Portfolio name is required.");
+        return;
+      }
 
-    const modalEl = document.getElementById("componentModal");
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
+      const payload = {
+        name,
+        updated_date: now,
+      };
 
-    modalEl.querySelector(".modal-title").innerText = "Edit Portfolio";
-    modalEl.querySelector("#btn-submit-modal").innerText = "Edit Portfolio";
-    const form = document.getElementById("modalForm");
+      if (isEdit) {
+        payload.action = "portfolio_update";
+        payload.portfolio_id = data.id;
+      } else {
+        payload.action = "portfolio_create";
+        payload.inserted_date = now;
 
-    form.querySelector("#name").value = portfolio[1] || "";
+        const lastId = allData.length > 0 ? allData[0].id : null;
+        let newId = "PORTFOLIO-001";
 
-    let idInput = form.querySelector('input[name="portfolio_id"]');
-    if (!idInput) {
-      idInput = document.createElement("input");
-      idInput.type = "hidden";
-      idInput.name = "portfolio_id";
-      form.appendChild(idInput);
-    }
-    idInput.value = portfolioId;
-  });
+        if (lastId && /^PORTFOLIO-\d+$/.test(lastId)) {
+          const lastNumber = parseInt(lastId.split("-")[1], 10);
+          const nextNumber = lastNumber + 1;
+          newId = `PORTFOLIO-${String(nextNumber).padStart(3, "0")}`;
+        }
 
-  // ✅ Delete Modal button
-  document.addEventListener("click", function (e) {
-    const btn = e.target.closest(".delete-modal-btn");
-    if (!btn) return;
+        payload.portfolio_id = newId;
+      }
 
-    const portfolioId = btn.getAttribute("data-id");
-
-    Swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#E11D48",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (!result.isConfirmed) return;
+      console.log("📦 Sending:", payload);
 
       fetch(
         "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
         {
           method: "POST",
-          body: JSON.stringify({
-            action: "portfolio_delete",
-            portfolio_id: portfolioId,
-          }),
-          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "text/plain",
+          },
         }
       )
         .then((res) => res.json())
-        .then((response) => {
-          if (response.result === "success") {
-            localStorage.setItem("portfolioSaved", "deleted");
-            location.reload();
-          } else {
-            Swal.fire("Error", "Failed to delete portfolio.", "error");
-          }
+        .then(() => {
+          closeModal();
+          loadPortfolios();
+          showToast(
+            isEdit
+              ? "Portfolio updated successfully"
+              : "Portfolio added successfully"
+          );
         })
         .catch((err) => {
-          console.error("Error:", err);
-          Swal.fire("Error", "Error deleting portfolio.", "error");
+          console.error("❌ Gagal mengirim:", err);
+          alert("Terjadi kesalahan saat menyimpan data.");
         });
-    });
+    },
   });
+}
 
-  // ✅ Form submit (insert & update)
-  document.getElementById("modalForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const form = e.target;
+function openDeleteModal(portfolio_id) {
+  openModal({
+    title: "Confirm Delete",
+    content: `
+      <p class="text-sm text-slate-600">Are you sure you want to delete this portfolio?</p>
+    `,
+    onSubmit: () => {
+      const payload = {
+        action: "portfolio_delete",
+        portfolio_id: portfolio_id,
+      };
 
-    let portfolioIdInput = form.querySelector('input[name="portfolio_id"]');
-    let portfolioId;
+      console.log("🗑️ Deleting:", payload);
 
-    if (portfolioIdInput) {
-      portfolioId = portfolioIdInput.value;
-    } else {
-      let maxId = 0;
-      rows.forEach((row) => {
-        if (row[0] && row[0].startsWith("PORTFOLIO-")) {
-          const num = parseInt(row[0].split("-")[1], 10);
-          if (!isNaN(num) && num > maxId) maxId = num;
+      fetch(
+        "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "text/plain",
+          },
         }
-      });
-      const nextIdNum = maxId + 1;
-      portfolioId = "PORTFOLIO-" + String(nextIdNum).padStart(3, "0");
-    }
-
-    const now = new Date().toISOString();
-
-    const data = {
-      action: portfolioIdInput ? "portfolio_update" : "portfolio_create",
-      portfolio_id: portfolioId,
-      name: form.name.value,
-      inserted_date: now,
-      updated_date: portfolioIdInput ? now : now,
-    };
-
-    fetch(
-      "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "text/plain" },
-      }
-    )
-      .then((res) => res.json())
-      .then((response) => {
-        if (response.result === "success") {
-          form.reset();
-          const modalEl = document.getElementById("componentModal");
-          bootstrap.Modal.getInstance(modalEl).hide();
-
-          localStorage.setItem(
-            "portfolioSaved",
-            portfolioIdInput ? "edited" : "saved"
-          );
-          location.reload();
-        } else {
-          const msg =
-            response.result === "not_found"
-              ? "Portfolio not found."
-              : "Failed to save portfolio.";
-          Swal.fire("Error", msg, "error");
-        }
-      })
-      .catch((err) => {
-        console.error("Error:", err);
-        Swal.fire("Error", "Failed to communicate with server.", "error");
-      });
+      )
+        .then((res) => res.json())
+        .then(() => {
+          closeModal();
+          loadPortfolios();
+          showToast("Portfolio deleted successfully");
+        })
+        .catch((err) => {
+          console.error("❌ Gagal menghapus:", err);
+          alert("Gagal menghapus data.");
+        });
+    },
   });
+}
 
-  // ✅ Toast on page load
-  const status = localStorage.getItem("portfolioSaved");
-  if (status) {
-    const messages = {
-      saved: "Portfolio saved successfully",
-      edited: "Portfolio edited successfully",
-      deleted: "Portfolio deleted successfully",
-    };
-    showToast("success", messages[status] || "Operation completed");
-    localStorage.removeItem("portfolioSaved");
-  }
+async function initApp() {
+  document.getElementById("addModalBtn").addEventListener("click", () => {
+    openComponentModal({ mode: "create" });
+  });
+  await loadPortfolios();
+}
 
-  // ✅ Initial fetch
-  fetchAndRenderTable();
-});
+document.addEventListener("DOMContentLoaded", initApp);

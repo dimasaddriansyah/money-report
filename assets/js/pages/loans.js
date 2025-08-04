@@ -1,548 +1,562 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // ✅ Global variables
-  let rows = []; // untuk menyimpan data loan
-  let bills = []; // untuk menyimpan data bill
-  let statusChoices; // Global instance statusChoices
+const API_URL =
+  "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/loans!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
 
-  const sourcePaymentChoices = new Choices("#sourcePaymentSelect", {
-    searchEnabled: true,
-    itemSelectText: "",
-  });
+let rawData = [];
+let swiperInstance;
+let currentPage = 0;
+const itemsPerPage = 10;
 
-  const targetPaymentChoices = new Choices("#targetPaymentSelect", {
-    searchEnabled: true,
-    itemSelectText: "",
-  });
+async function loadLoans() {
+  const loadingText = document.getElementById("loading-text");
+  const seeMoreBtn = document.getElementById("see-more-btn");
+  const list = document.getElementById("content-list");
 
-  // ✅ Separator Nominal input
-  const nominalInput = document.getElementById("nominal");
-  nominalInput.addEventListener("input", function () {
-    let value = this.value.replace(/,/g, "").replace(/\D/g, "");
-    this.value = value ? parseInt(value, 10).toLocaleString("en-US") : "";
-  });
+  try {
+    loadingText.classList.remove("hidden");
+    seeMoreBtn.classList.add("hidden");
 
-  // ✅ Fetch and render table
-  function fetchAndRenderTable() {
-    const loanURL = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/loans!A2:H?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
-    const billURL = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/bills!A2:F?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    const rows = data.values || [];
 
-    Promise.all([fetch(loanURL), fetch(billURL)])
-      .then(([loanRes, billRes]) =>
-        Promise.all([loanRes.json(), billRes.json()])
-      )
-      .then(([loanData, billData]) => {
-        rows = loanData.values || [];
-        bills = billData.values || [];
-
-        renderLoanTable(); // ✅ separate render logic
-      })
-      .catch((err) => console.error("Fetch error:", err));
-  }
-
-  // ✅ Fetch and render Loan table
-  function renderLoanTable() {
-    let html = "";
-
-    rows.forEach((row) => {
-      html += `
-      <tr data-loan-id="${row[0]}">
-        <td class="text-center">
-          <i class="fa fa-plus-circle text-primary toggle-bills" style="cursor:pointer"></i>
-        </td>
-        <td></td>
-        <td class="text-sm text-dark">${row[1] || "-"}</td>
-        <td class="text-sm text-dark">${row[2] || "-"}</td>
-        <td class="text-sm text-dark">${row[3] || "-"}</td>
-        <td class="text-sm text-dark">
-          Rp <span class="float-end">${row[4].replace("Rp", "").trim()}</span>
-        </td>
-        <td class="text-sm text-dark">${row[6] || "-"}</td>
-        <td class="text-sm text-dark" 
-        data-order="${row[7] ? new Date(row[7]).getTime() : ""}">
-          ${row[7] || "-"}
-        </td>
-        <td class="text-center">
-          <span class="text-sm ${
-            row[5] === "Unpaid"
-              ? "badge rounded-pill bg-danger"
-              : "badge rounded-pill bg-success"
-          }">${row[5] || "-"}</span>
-        </td>
-        <td class="align-middle">
-          <a href="javascript:;" class="me-3 edit-modal-btn" data-id="${
-            row[0]
-          }" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
-            <i class="fa-regular fa-pen-to-square"></i>
-          </a>
-          <a href="javascript:;" class="delete-modal-btn" data-id="${
-            row[0]
-          }" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
-            <i class="fa-regular fa-trash-can text-danger"></i>
-          </a>
-        </td>
-      </tr>
-    `;
-    });
-
-    $("#custom-datatable tbody").html(html);
-
-    // ✅ DataTable initialization
-    if ($.fn.DataTable.isDataTable("#custom-datatable")) {
-      $("#custom-datatable").DataTable().destroy();
+    if (rows.length === 0) {
+      list.innerHTML = `<li class="py-3 text-center text-slate-400">Tidak ada data loan.</li>`;
+      return;
     }
 
-    const table = $("#custom-datatable").DataTable({
-      orderCellsTop: true,
-      fixedHeader: true,
-      autoWidth: false,
-      order: [[7, "desc"]],
-      columnDefs: [
-        { orderable: false, targets: [0, 1, 6, 7, 8, 9] },
-        { width: "1%", targets: [0, 1, 6, 7, 8, 9] },
-        { width: "13%", targets: [5] },
-      ],
-      initComplete: function () {
-        const api = this.api();
-        api.columns().every(function () {
-          const that = this;
-          $("input", this.footer()).on("keyup change clear", function () {
-            if (that.search() !== this.value) {
-              that.search(this.value).draw();
-            }
-          });
-        });
-      },
-    });
-
-    table
-      .on("order.dt search.dt", function () {
-        table
-          .column(1, { order: "applied" })
-          .nodes()
-          .each(function (cell, i) {
-            cell.innerHTML = i + 1 + ".";
-          });
-      })
-      .draw();
-  }
-
-  $(document).on("click", ".toggle-bills", function () {
-    const icon = $(this);
-    const tr = icon.closest("tr");
-    const table = $("#custom-datatable").DataTable();
-    const row = table.row(tr);
-    const loanId = tr.data("loan-id");
-
-    if (row.child.isShown()) {
-      // collapse
-      row.child.hide();
-      icon
-        .removeClass("fa-minus-circle text-danger")
-        .addClass("fa-plus-circle text-primary");
-    } else {
-      // expand
-      const billsByLoan = bills.filter((b) => b[1] === loanId); // asumsi b[1] = loan_id di bills table
-
-      const childHtml = formatBillsTable(billsByLoan);
-      row.child(childHtml).show();
-      icon
-        .removeClass("fa-plus-circle text-primary")
-        .addClass("fa-minus-circle text-danger");
-    }
-  });
-
-  function formatBillsTable(bills) {
-    if (bills.length === 0) {
-      return '<div class="p-3">No bills found for this loan.</div>';
-    }
-
-    let html = `
-    <table class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>Bill ID</th>
-          <th>Payment Date</th>
-          <th>Note</th>
-          <th>Nominal</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-    bills.forEach((bill) => {
-      html += `
-      <tr>
-        <td>${bill[0]}</td>
-        <td>${bill[2]}</td>
-        <td>${bill[3]}</td>
-        <td>${bill[4]}</td>
-        <td>${bill[5]}</td>
-      </tr>
-    `;
-    });
-
-    html += "</tbody></table>";
-    return html;
-  }
-
-  // ✅ Update select-all checkbox status
-  function updateSelectAllCheckbox() {
-    const total = $(".row-checkbox").length;
-    const checked = $(".row-checkbox:checked").length;
-    $("#select-all").prop("checked", total === checked);
-  }
-
-  // ✅ Update selected count and toggle bulk delete button
-  function updateSelectedCount() {
-    const count = $(".row-checkbox:checked").length;
-    $("#selectedCount").text(count);
-    if (count > 0) {
-      $("#bulkDelete").removeClass("d-none");
-    } else {
-      $("#bulkDelete").addClass("d-none");
-    }
-  }
-
-  // ✅ Event delegation for select-all checkbox
-  $(document).on("click", "#select-all", function () {
-    const checked = this.checked;
-    $(".row-checkbox").prop("checked", checked);
-    updateSelectedCount();
-  });
-
-  // ✅ Event delegation for each row checkbox
-  $(document).on("change", ".row-checkbox", function () {
-    updateSelectedCount();
-    updateSelectAllCheckbox();
-  });
-
-  // ✅ Event: bulk delete with SweetAlert
-  $(document).on("click", "#bulkDelete", function () {
-    const selectedIds = $(".row-checkbox:checked")
-      .map(function () {
-        return $(this).data("id");
-      })
-      .get();
-
-    if (selectedIds.length === 0) return;
-
-    Swal.fire({
-      title: "Are you sure?",
-      text: `You are about to delete ${selectedIds.length} loans.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (!result.isConfirmed) return;
-
-      // ✅ Call your Apps Script delete endpoint here
-      console.log("Deleting IDs:", selectedIds);
-
-      // Example fetch POST to delete API
-      /*
-      fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
-        method: "POST",
-        body: JSON.stringify({ action: "bulkDelete", ids: selectedIds }),
-        headers: { "Content-Type": "text/plain" },
-      })
-      .then((res) => res.json())
-      .then((response) => {
-        if (response.result === "success") {
-          Swal.fire("Deleted!", "Categories deleted successfully.", "success");
-          fetchAndRenderTable();
-        } else {
-          Swal.fire("Error", "Failed to delete categories.", "error");
-        }
-      })
-      .catch((err) => {
-        console.error("Delete error:", err);
-        Swal.fire("Error", "Delete request failed.", "error");
+    rawData = rows
+      .map((row) => ({
+        id: row[0],
+        source_payment: row[1],
+        target_payment: row[2],
+        note: row[3],
+        nominal: row[4],
+        status: row[5],
+        inserted_date: row[6],
+        updated_date: row[7],
+      }))
+      .sort((a, b) => {
+        // Sort status DESC (misal status adalah string, bisa disesuaikan jika numerik)
+        if (a.status > b.status) return -1;
+        if (a.status < b.status) return 1;
+        const dateA = Date.parse(a.updated_date); // e.g. "02 July 2025 16:12:41"
+        const dateB = Date.parse(b.updated_date);
+        return dateB - dateA; // Descending: terbaru dulu
       });
-      */
 
-      // For demo only
-      Swal.fire("Deleted!", "Categories deleted successfully.", "success");
-      fetchAndRenderTable();
-    });
-  });
-
-  // ✅ Get Data Account Payments
-  function getDataAccountPayments() {
-    return new Promise((resolve, reject) => {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/accountPayments!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY`;
-
-      fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-          const rows = data.values || [];
-          sourcePaymentChoices.clearChoices();
-          sourcePaymentChoices.setChoices(
-            [
-              {
-                value: "",
-                label: "-- Select Payment Method --",
-                selected: true,
-                disabled: true,
-              },
-            ],
-            "value",
-            "label",
-            false
-          );
-          targetPaymentChoices.clearChoices();
-          targetPaymentChoices.setChoices(
-            [
-              {
-                value: "",
-                label: "-- Select Payment Method --",
-                selected: true,
-                disabled: true,
-              },
-            ],
-            "value",
-            "label",
-            false
-          );
-          rows.forEach((row) => {
-            sourcePaymentChoices.setChoices(
-              [{ value: row[1], label: row[1] }],
-              "value",
-              "label",
-              false
-            );
-            targetPaymentChoices.setChoices(
-              [{ value: row[1], label: row[1] }],
-              "value",
-              "label",
-              false
-            );
-          });
-          resolve(); // ✅ resolve promise setelah selesai
-        })
-        .catch((err) => {
-          console.error("Fetch error:", err);
-          reject(err);
-        });
-    });
+    currentPage = 0;
+    list.innerHTML = "";
+    renderNextContents();
+    renderCardSlides(rawData);
+  } catch (error) {
+    console.error("Gagal mengambil data:", error);
+    list.innerHTML = `<li class="py-3 text-center text-red-500">Gagal memuat data</li>`;
+  } finally {
+    loadingText.classList.add("hidden");
   }
+}
 
-  // ✅ New Modal button
-  document.querySelector(".new-modal-btn").addEventListener("click", () => {
-    const modalEl = document.getElementById("componentModal");
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
+function renderNextContents() {
+  const start = currentPage * itemsPerPage;
+  const end = start + itemsPerPage;
+  const sliced = rawData.slice(start, end);
+  const list = document.getElementById("content-list");
 
-    modalEl.querySelector(".modal-title").innerText = "New Loan";
-    modalEl.querySelector("#btn-submit-modal").innerText = "Add Loan";
-    const form = document.getElementById("modalForm");
-    form.reset();
+  sliced.forEach((data, index) => {
+    const container = document.createElement("div");
+    container.className = "flex justify-between transition";
 
-    sourcePaymentChoices.clearStore();
-    targetPaymentChoices.clearStore();
-    getDataAccountPayments();
+    // 🎨 Warna status
+    let bgColor = "bg-red-100";
+    let textColor = "text-red-700";
+    if (data.status === "Paid") {
+      bgColor = "bg-green-100";
+      textColor = "text-green-700";
+    }
 
-    const idInput = form.querySelector('input[name="loan_id"]');
-    if (idInput) idInput.remove();
+    container.innerHTML = `
+      <div class="relative group overflow-hidden w-full">
+        <div class="h-auto p-4 gap-y-3 sm:gap-y-3 content flex flex-wrap bg-white transition-all duration-300">
+          <div class="w-full sm:w-1/3">
+            <p class="text-xs text-slate-400">#</p>
+            <p class="text-sm font-medium">${start + index + 1}</p>
+          </div>
+          <div class="w-full sm:w-1/3">
+            <p class="text-xs text-slate-400">Status</p>
+            <span class="inline-block text-xs px-1.5 py-0.5 rounded ${bgColor} ${textColor} font-medium">
+              ${data.status}
+            </span>
+          </div>
+          <div class="w-full sm:w-1/3 hidden sm:flex"></div>
+          <div class="w-full sm:w-1/3">
+            <p class="text-xs text-slate-400">Source Payment</p>
+            <p class="text-sm font-medium">${data.source_payment}</p>
+          </div>
+          <div class="w-full sm:w-1/3">
+            <p class="text-xs text-slate-400">Target Payment</p>
+            <p class="text-sm font-medium">${data.target_payment}</p>
+          </div>
+          <div class="w-full sm:w-1/3">
+            <p class="text-xs text-slate-400">Nominal</p>
+            <p class="text-sm font-medium">${data.nominal}</p>
+          </div>
+          <div class="w-full sm:w-1/3">
+            <p class="text-xs text-slate-400">Note</p>
+            <p class="text-sm font-medium">${data.note}</p>
+          </div>
+          <div class="w-full sm:w-1/3">
+            <p class="text-xs text-slate-400">Inserted Date</p>
+            <p class="text-sm font-medium">${data.inserted_date}</p>
+          </div>
+          <div class="w-full sm:w-1/3">
+            <p class="text-xs text-slate-400">Updated Date</p>
+            <p class="text-sm font-medium">${data.updated_date}</p>
+          </div>
+        </div>
+        <div
+          class="absolute right-0 top-0 h-full flex items-center bg-white translate-x-full transition-all duration-300 action-buttons">
+          <button class="btn-edit flex items-center justify-center text-white w-16 h-full bg-yellow-500" data-id="${
+            data.id
+          }">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+              class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </button>
+          <button class="btn-delete flex items-center justify-center text-white w-16 h-full bg-red-500" data-id="${
+            data.id
+          }">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+              class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    list.appendChild(container);
+
+    const editBtn = container.querySelector(".btn-edit");
+    editBtn.addEventListener("click", () => {
+      openComponentModal({ mode: "edit", data });
+    });
+
+    const deleteBtn = container.querySelector(".btn-delete");
+    deleteBtn.addEventListener("click", () => {
+      openDeleteModal(data.id);
+    });
+
+    const hammer = new Hammer(container.querySelector(".group"));
+    const content = container.querySelector(".content");
+    const buttons = container.querySelector(".action-buttons");
+
+    let resetSwipeTimeout; // ⏱️ timer reset per item
+
+    hammer.on("swipeleft", () => {
+      content.classList.add("translate-x-[-8rem]");
+      buttons.classList.remove("translate-x-full");
+
+      clearTimeout(resetSwipeTimeout); // pastikan tidak dobel
+      resetSwipeTimeout = setTimeout(() => {
+        content.classList.remove("translate-x-[-8rem]");
+        buttons.classList.add("translate-x-full");
+      }, 1500); // ⏱️ 1,5 detik
+    });
+
+    hammer.on("swiperight", () => {
+      content.classList.remove("translate-x-[-8rem]");
+      buttons.classList.add("translate-x-full");
+
+      clearTimeout(resetSwipeTimeout);
+    });
   });
 
-  // ✅ Edit Modal button
-  document.addEventListener("click", function (e) {
-    const btn = e.target.closest(".edit-modal-btn");
-    if (!btn) return;
+  currentPage++;
+  const seeMoreBtn = document.getElementById("see-more-btn");
 
-    const loanId = btn.getAttribute("data-id");
-    const loan = rows.find((row) => row[0] === loanId);
-    if (!loan) return;
+  if (currentPage * itemsPerPage >= rawData.length) {
+    seeMoreBtn.classList.add("hidden");
+  } else {
+    seeMoreBtn.classList.remove("hidden");
+  }
+}
 
-    const modalEl = document.getElementById("componentModal");
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
+function renderCardSlides(cards) {
+  const wrapper = document.getElementById("slide-wrapper");
+  wrapper.innerHTML = "";
 
-    modalEl.querySelector(".modal-title").innerText = "Edit Loan";
-    modalEl.querySelector("#btn-submit-modal").innerText = "Edit Loan";
-    const form = document.getElementById("modalForm");
+  // 🚫 Filter: Buang data dengan status = "Paid"
+  const filteredCards = cards.filter((item) => item.status !== "Paid");
 
-    const statusSelectHTML = `
-    <div class="col-12"> 
-      <div class="form-group icon-status mb-3"> 
-        <label for="statusSelect">Status</label> 
-        <select id="statusSelect" class="form-select" required>
-          <option value="Unpaid">Unpaid</option>
-          <option value="Paid">Paid</option>
-        </select>
+  // Total Balance dengan nominal dari seluruh kartu
+  const totalBalance = filteredCards.reduce((sum, item) => {
+    return sum + parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
+  }, 0);
+
+  // Slide total balance
+  const totalSlide = document.createElement("div");
+  totalSlide.className =
+    "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white";
+  totalSlide.innerHTML = `
+    <div class="flex justify-between">
+      <div>
+        <span class="text-sm text-slate-200">Total All Loans</span>
+        <h1 class="text-lg font-bold text-white">Rp ${totalBalance.toLocaleString(
+          "en-US"
+        )}</h1>
+      </div>
+      <div class="w-7 h-7">
+        <img src="assets/img/icons/Money.png" alt="All Loans" class="w-full h-full object-contain">
       </div>
     </div>
   `;
+  wrapper.appendChild(totalSlide);
 
-    const nominalInputContainer = form
-      .querySelector("#nominal")
-      .closest(".col-12, .col-md-6");
-    if (nominalInputContainer && !document.getElementById("statusSelect")) {
-      nominalInputContainer.insertAdjacentHTML("afterend", statusSelectHTML);
-
-      const statusSelectEl = document.getElementById("statusSelect");
-      if (statusSelectEl) {
-        statusChoices = new Choices(statusSelectEl, {
-          searchEnabled: true,
-          itemSelectText: "",
-        });
-      }
+  // Group cards by loan_id
+  const grouped = filteredCards.reduce((acc, item) => {
+    const key = `${item.id}`;
+    if (!acc[key]) {
+      acc[key] = {
+        id: item.id,
+        note: item.note,
+        target_payment: item.target_payment,
+        totalNominal: 0,
+      };
     }
+    acc[key].totalNominal += parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
+    return acc;
+  }, {});
 
-    // ✅ Jika instance sudah ada, set value dari data
-    if (statusChoices) {
-      statusChoices.setChoiceByValue(loan[5] || "");
-    }
+  // Slide per investasi
+  Object.values(grouped).forEach((item) => {
+    const slide = document.createElement("div");
+    slide.className =
+      "swiper-slide rounded-xl bg-white p-4 shadow space-y-10 text-slate-800";
 
-    getDataAccountPayments().then(() => {
-      sourcePaymentChoices.setChoiceByValue(loan[1] || "");
-      targetPaymentChoices.setChoiceByValue(loan[2] || "");
-    });
+    slide.innerHTML = `
+      <div class="flex justify-between">
+        <div>
+          <span class="text-sm text-slate-400">${item.note}</span>
+          <h1 class="text-lg font-bold text-slate-800">${
+            "Rp " + item.totalNominal.toLocaleString("en-US")
+          }</h1>
+        </div>
+        <div class="w-14 h-7">
+          <img src="${getPaymentURL(item.target_payment)}" alt="${
+      item.target_payment
+    }" class="w-full h-full object-contain">
+        </div>
+      </div>
+      <div class="w-full">
+        <div class="relative w-full h-3 overflow-hidden text-xs font-medium rounded-full bg-slate-100">
+          <div class="h-full bg-red-100 rounded-full transition-all duration-300" style="width: 20%"></div>
+          <div class="absolute inset-0 flex items-center justify-center text-red-700 text-[10px] font-bold">
+            20%
+          </div>
+        </div>
+      </div>
+    `;
 
-    form.querySelector("#note").value = loan[3] || "";
-
-    let nominalValue = loan[4] || "";
-    nominalValue = nominalValue.replace(/Rp\s?/i, "").replace(/\s/g, "");
-    form.querySelector("#nominal").value = nominalValue
-      ? parseInt(nominalValue.replace(/,/g, ""), 10).toLocaleString("en-US")
-      : "";
-
-    let idInput = form.querySelector('input[name="loan_id"]');
-    if (!idInput) {
-      idInput = document.createElement("input");
-      idInput.type = "hidden";
-      idInput.name = "loan_id";
-      form.appendChild(idInput);
-    }
-    idInput.value = loanId;
+    wrapper.appendChild(slide);
   });
 
-  // ✅ Delete Modal button
-  document.addEventListener("click", function (e) {
-    const btn = e.target.closest(".delete-modal-btn");
-    if (!btn) return;
+  // Destroy dan re-inisialisasi swiper agar slide baru dikenali
+  if (swiperInstance) swiperInstance.destroy(true, true);
 
-    const loanId = btn.getAttribute("data-id");
+  swiperInstance = new Swiper(".mySwiper", {
+    slidesPerGroup: 2,
+    spaceBetween: 24,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    breakpoints: {
+      0: { slidesPerView: 1 },
+      768: { slidesPerView: 2 },
+    },
+  });
+}
 
-    Swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#E11D48",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (!result.isConfirmed) return;
+async function loadPayments() {
+  const sourceSelect = document.getElementById("paymentSourceSelect");
+  const targetSelect = document.getElementById("paymentTargetSelect");
+  const url =
+    "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/accountPayments!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
+
+  const resetSelect = (select) => {
+    select.innerHTML = "<option></option>";
+  };
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+
+    // Reset isi select
+    resetSelect(sourceSelect);
+    resetSelect(targetSelect);
+
+    rows.forEach((row) => {
+      const value = row[1]; // Misal ambil dari kolom B (index 1)
+      if (value) {
+        const option1 = document.createElement("option");
+        option1.value = value;
+        option1.textContent = value;
+        sourceSelect.appendChild(option1);
+
+        const option2 = document.createElement("option");
+        option2.value = value;
+        option2.textContent = value;
+        targetSelect.appendChild(option2);
+      }
+    });
+
+    // Apply Select2 ulang
+    [sourceSelect, targetSelect].forEach((select) => {
+      $(select).select2({
+        placeholder: select.dataset.placeholder,
+        width: "100%",
+        dropdownParent: $(select).closest(".relative"),
+      });
+    });
+
+    $(document).on("select2:open", () => {
+      setTimeout(() => {
+        document
+          .querySelector(".select2-container--open .select2-search__field")
+          ?.focus();
+      }, 100);
+    });
+  } catch (err) {
+    console.error("Gagal memuat payment options:", err);
+  }
+}
+
+function openComponentModal({ mode = "create", data = {} }) {
+  const isEdit = mode === "edit";
+  const now = new Date().toISOString();
+  const modalTitle = isEdit ? "Edit Loan" : "Add New Loan";
+
+  openModal({
+    title: modalTitle,
+    content: `
+      <form id="formContent" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-2">Source Payment</label>
+            <div class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 pointer-events-none">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+              </svg>
+              <select id="paymentSourceSelect" data-placeholder="Select Payment" class="select2-custom w-full border rounded-lg text-sm pl-10 py-2 bg-white text-slate-700">
+                <option></option>
+              </select>
+            </div>
+          </div>  
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-2">Target Payment</label>
+            <div class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 pointer-events-none">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+              </svg>
+              <select id="paymentTargetSelect" data-placeholder="Select Payment" class="select2-custom w-full border rounded-lg text-sm pl-10 py-2 bg-white text-slate-700">
+                <option></option>
+              </select>
+            </div>
+          </div>  
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-2">Note</label>
+            <div class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+              </svg>
+              <input type="text" id="note" 
+                class="w-full border rounded-lg p-2.5 pl-10 text-sm" placeholder="Input note..." />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-2">Nominal</label>
+            <div class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <input type="text" id="nominal" class="w-full border rounded-lg p-2.5 pl-10 text-sm" placeholder="Input nominal..." />
+            </div>
+          </div>
+        </div>
+      ${
+        isEdit
+          ? `
+            <div>
+              <label class="block text-sm font-medium text-slate-600 mb-2">Status</label>
+              <div class="relative">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 pointer-events-none">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
+                </svg>
+                <select id="statusSelect" data-placeholder="Select Status" class="select2-custom w-full border rounded-lg text-sm pl-10 py-2 bg-white text-slate-700">
+                  <option></option>
+                  <option value="Paid">Paid</option>
+                  <option value="Unpaid">Unpaid</option>
+                </select>
+              </div>
+            </div>`
+          : ""
+      }
+      </form>
+    `,
+    onSubmit: () => {
+      const note = $("#note").val();
+      const source_payment = $("#paymentSourceSelect").val();
+      const target_payment = $("#paymentTargetSelect").val();
+      const status = $("#statusSelect").val();
+      const nominal = $("#nominal").val();
+
+      if (!note) {
+        alert("Content note is required.");
+        return;
+      }
+
+      const payload = {
+        source_payment,
+        target_payment,
+        note,
+        nominal: parseFloat(nominal.replace(/[^0-9.-]+/g, "")) || 0,
+        updated_date: now,
+      };
+
+      if (isEdit) {
+        payload.action = "loan_update";
+        payload.loan_id = data.id;
+        payload.status = status;
+      } else {
+        payload.action = "loan_create";
+        payload.status = "Unpaid";
+        payload.inserted_date = now;
+
+        const lastId = rawData.length > 0 ? rawData[0].id : null;
+        let newId = "LOAN-001";
+
+        if (lastId && /^LOAN-\d+$/.test(lastId)) {
+          const lastNumber = parseInt(lastId.split("-")[1], 10);
+          const nextNumber = lastNumber + 1;
+          newId = `LOAN-${String(nextNumber).padStart(3, "0")}`;
+        }
+        payload.loan_id = newId;
+      }
 
       fetch(
         "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
         {
           method: "POST",
-          body: JSON.stringify({
-            action: "loan_delete",
-            loan_id: loanId,
-          }),
-          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "text/plain",
+          },
         }
       )
         .then((res) => res.json())
-        .then((response) => {
-          if (response.result === "success") {
-            localStorage.setItem("loanSaved", "deleted");
-            location.reload();
-          } else {
-            Swal.fire("Error", "Failed to delete loan.", "error");
-          }
+        .then(() => {
+          closeModal();
+          loadLoans();
+          showToast(
+            isEdit ? "Loan updated successfully" : "Loan added successfully"
+          );
         })
         .catch((err) => {
-          console.error("Error:", err);
-          Swal.fire("Error", "Error deleting loan.", "error");
+          console.error("❌ Gagal mengirim:", err);
+          alert("Terjadi kesalahan saat menyimpan data.");
         });
+    },
+  });
+
+  setTimeout(() => {
+    document.getElementById("note").value = data.note || "";
+    const nominalInput = document.getElementById("nominal");
+
+    // Ambil nilai dan format saat buka modal
+    nominalInput.value = data.nominal
+      ? parseInt(
+          String(data.nominal).replace(/[^0-9]/g, ""),
+          10
+        ).toLocaleString("en-US")
+      : "";
+
+    // Tambahkan formatter saat diketik
+    nominalInput.addEventListener("input", function (e) {
+      const raw = e.target.value.replace(/[^0-9]/g, "");
+      e.target.value = raw ? parseInt(raw, 10).toLocaleString("en-US") : "";
     });
-  });
 
-  // ✅ Form submit (insert & update)
-  document.getElementById("modalForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const form = e.target;
-
-    let loanIdInput = form.querySelector('input[name="loan_id"]');
-    let loanId;
-
-    if (loanIdInput) {
-      loanId = loanIdInput.value;
-    } else {
-      let maxId = 0;
-      rows.forEach((row) => {
-        if (row[0] && row[0].startsWith("LOAN-")) {
-          const num = parseInt(row[0].split("-")[1], 10);
-          if (!isNaN(num) && num > maxId) maxId = num;
-        }
-      });
-      const nextIdNum = maxId + 1;
-      loanId = "LOAN-" + String(nextIdNum).padStart(3, "0");
-    }
-
-    const now = new Date().toISOString();
-
-    const data = {
-      action: loanIdInput ? "loan_update" : "loan_create",
-      loan_id: loanId,
-      source_payment: sourcePaymentChoices.getValue(true),
-      target_payment: targetPaymentChoices.getValue(true),
-      note: form.note.value,
-      nominal: form.nominal.value.replace(/,/g, ""),
-      status: statusChoices ? statusChoices.getValue(true) : "Unpaid",
-      inserted_date: now,
-      updated_date: now,
-    };
-
-    fetch(
-      "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "text/plain" },
+    // Load data payments
+    loadPayments().then(() => {
+      if (isEdit) {
+        $("#paymentSourceSelect").val(data.source_payment).trigger("change");
+        $("#paymentTargetSelect").val(data.target_payment).trigger("change");
       }
-    )
-      .then((res) => res.json())
-      .then((response) => {
-        if (response.result === "success") {
-          form.reset();
-          const modalEl = document.getElementById("componentModal");
-          bootstrap.Modal.getInstance(modalEl).hide();
+    });
 
-          localStorage.setItem("loanSaved", loanIdInput ? "edited" : "saved");
-          location.reload();
-        } else {
-          const msg =
-            response.result === "not_found"
-              ? "Loan not found."
-              : "Failed to save loan.";
-          Swal.fire("Error", msg, "error");
+    // Load data categories by statusSelect
+    const $statusSelect = $("#statusSelect");
+
+    $statusSelect.select2({
+      width: "100%",
+      dropdownParent: $statusSelect.closest(".relative"),
+      placeholder: $statusSelect.attr("data-placeholder") || "Select Type",
+    });
+
+    // Setelah inisialisasi baru set value-nya
+    if (isEdit && data.status) {
+      $statusSelect.val(data.status).trigger("change");
+    }
+  }, 100);
+}
+
+function openDeleteModal(data) {
+  openModal({
+    title: "Confirm Delete",
+    content: `
+      <p class="text-sm text-slate-600">Are you sure you want to delete this loan?</p>
+    `,
+    onSubmit: () => {
+      const payload = {
+        action: "loan_delete",
+        loan_id: data,
+      };
+
+      fetch(
+        "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "text/plain",
+          },
         }
-      })
-      .catch((err) => {
-        console.error("Error:", err);
-        Swal.fire("Error", "Failed to communicate with server.", "error");
-      });
+      )
+        .then((res) => res.json())
+        .then(() => {
+          closeModal();
+          loadLoans();
+          showToast("Loan deleted successfully");
+        })
+        .catch((err) => {
+          console.error("❌ Gagal menghapus:", err);
+          alert("Gagal menghapus data.");
+        });
+    },
   });
+}
 
-  // ✅ Toast on page load
-  const status = localStorage.getItem("loanSaved");
-  if (status) {
-    const messages = {
-      saved: "Loan saved successfully",
-      edited: "Loan edited successfully",
-      deleted: "Loan deleted successfully",
-    };
-    showToast("success", messages[status] || "Operation completed");
-    localStorage.removeItem("loanSaved");
-  }
+async function initApp() {
+  document.getElementById("addModalBtn").addEventListener("click", () => {
+    openComponentModal({ mode: "create" });
+  });
+  await loadLoans();
+}
 
-  // ✅ Initial fetch
-  fetchAndRenderTable();
-});
+document.addEventListener("DOMContentLoaded", initApp);

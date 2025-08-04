@@ -5,20 +5,15 @@ let allGroupedData = [];
 let currentPage = 0;
 let lastRenderedDate = "";
 let swiperInstance;
-const itemsPerPage = 15;
 
 async function loadTransactions() {
-  const seeMoreBtn = document.getElementById("see-more-btn");
-
   try {
-    seeMoreBtn.classList.add("hidden");
-
     const res = await fetch(API_URL);
     const data = await res.json();
     const rows = data.values || [];
 
     if (rows.length === 0) {
-      document.getElementById("content-list").innerHTML =
+      document.getElementById("transaction-list").innerHTML =
         '<li class="py-3 text-center text-slate-400">Tidak ada transaksi.</li>';
       return;
     }
@@ -45,26 +40,24 @@ async function loadTransactions() {
 
     allGroupedData = rawData;
     currentPage = 0;
-    document.getElementById("content-list").innerHTML = "";
+    document.getElementById("transaction-list").innerHTML = "";
     renderNextContents();
 
     const paymentSummary = calculatePaymentSummary(allGroupedData);
     renderPaymentSlides(paymentSummary);
   } catch (error) {
     console.error("Gagal mengambil data:", error);
-    document.getElementById("content-list").innerHTML =
+    document.getElementById("transaction-list").innerHTML =
       '<li class="py-3 text-center text-red-500">Gagal memuat data</li>';
   }
 }
 
 function renderNextContents() {
-  const start = currentPage * itemsPerPage;
-  const end = start + itemsPerPage;
-  const slicedData = allGroupedData.slice(start, end);
+  const slicedData = allGroupedData.slice(0, 10);
 
   if (slicedData.length === 0) return;
 
-  const list = document.getElementById("content-list");
+  const list = document.getElementById("transaction-list");
   const grouped = {};
 
   slicedData.forEach((data) => {
@@ -130,7 +123,7 @@ function renderNextContents() {
         container.innerHTML = `
           <div class="relative group overflow-hidden w-full ">
             <div
-              class="h-20 px-4 content flex justify-between items-center transition-all duration-300 bg-white">
+              class="h-20 px-4 transaction-content flex justify-between items-center transition-all duration-300 bg-white">
               <div class="flex items-start space-x-4">
                 <div class="w-8 h-8 flex-shrink-0 mt-1">
                   <img src="${getPaymentURL(data.payment)}" 
@@ -178,7 +171,7 @@ function renderNextContents() {
         });
 
         const hammer = new Hammer(container.querySelector(".group"));
-        const content = container.querySelector(".content");
+        const content = container.querySelector(".transaction-content");
         const buttons = container.querySelector(".action-buttons");
 
         let resetSwipeTimeout; // ⏱️ timer reset per item
@@ -202,14 +195,6 @@ function renderNextContents() {
         });
       });
     });
-
-  currentPage++;
-  const seeMoreBtn = document.getElementById("see-more-btn");
-  if (currentPage * itemsPerPage >= allGroupedData.length) {
-    seeMoreBtn.classList.add("hidden");
-  } else {
-    seeMoreBtn.classList.remove("hidden");
-  }
 }
 
 function calculatePaymentSummary(transactions) {
@@ -710,11 +695,210 @@ function openDeleteModal(data) {
   });
 }
 
+function dailyChart() {
+  const dailyData = allGroupedData.filter((item) => item.type === "Expenses");
+
+  const groupByDate = {};
+
+  // fungsi bantu buat format tanggal "04 August"
+  function formatDateLabel(dateStr) {
+    const parts = dateStr.split(" "); // misal: ["04", "August", "2025", "14:20:31"]
+    return parts[0] + " " + parts[1]; // "04 August"
+  }
+
+  // proses grouping
+  dailyData.forEach((item) => {
+    const dateLabel = formatDateLabel(item.date);
+    const nominal = parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
+
+    if (!groupByDate[dateLabel]) {
+      groupByDate[dateLabel] = 0;
+    }
+    groupByDate[dateLabel] += nominal;
+  });
+
+  // 3. Ubahkan object grouping ke array untuk chart
+  const groupedArray = Object.keys(groupByDate).map((key) => ({
+    dateLabel: key,
+    totalNominal: groupByDate[key],
+  }));
+
+  // 4. Urutkan berdasarkan tanggal jika perlu (optional, karena string tanggal dan bulan)
+  groupedArray.sort((a, b) => {
+    // parsing ulang untuk sort by date sebenarnya
+    const dateA = new Date(a.dateLabel + " 2025"); // asumsikan tahun 2025
+    const dateB = new Date(b.dateLabel + " 2025");
+    return dateA - dateB;
+  });
+
+  const chart = document.getElementById("dailyChart").getContext("2d");
+
+  new Chart(chart, {
+    type: "line",
+    data: {
+      labels: groupedArray.map((item) => item.dateLabel),
+      datasets: [
+        {
+          label: "Expenses",
+          data: groupedArray.map((item) => item.totalNominal),
+          fill: false,
+          borderColor: "rgba(75, 192, 192, 1)",
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          tension: 0.3, // untuk lengkungan garis (smooth)
+          pointRadius: 5,
+          pointHoverRadius: 7,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Date",
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: "Nominal (IDR)",
+          },
+          beginAtZero: true,
+        },
+      },
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: function (context) {
+              // Format nominal dengan pemisah ribuan
+              return (
+                context.dataset.label +
+                ": Rp " +
+                context.parsed.y.toLocaleString("id-ID")
+              );
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+function topChart() {
+  const topData = allGroupedData
+    .filter((item) => item.type === "Expenses")
+    .sort((a, b) => {
+      return (
+        parseInt(b.nominal.replace(/[^0-9]/g, ""), 10) -
+        parseInt(a.nominal.replace(/[^0-9]/g, ""), 10)
+      );
+    })
+    .slice(0, 10);
+
+  const chart = document.getElementById("topChart").getContext("2d");
+
+  new Chart(chart, {
+    type: "bar",
+    data: {
+      labels: topData.map((item) => item.remark),
+      datasets: [
+        {
+          axis: "y",
+          label: "Nominal",
+          data: topData.map((item) =>
+            parseInt(item.nominal.replace(/[^0-9]/g, ""), 10)
+          ),
+          fill: false,
+          // backgroundColor: [
+          //   "rgba(255, 99, 132, 0.2)",
+          //   "rgba(255, 159, 64, 0.2)",
+          //   "rgba(255, 205, 86, 0.2)",
+          //   "rgba(75, 192, 192, 0.2)",
+          //   "rgba(54, 162, 235, 0.2)",
+          //   "rgba(153, 102, 255, 0.2)",
+          //   "rgba(201, 203, 207, 0.2)",
+          // ],
+          // borderColor: [
+          //   "rgb(255, 99, 132)",
+          //   "rgb(255, 159, 64)",
+          //   "rgb(255, 205, 86)",
+          //   "rgb(75, 192, 192)",
+          //   "rgb(54, 162, 235)",
+          //   "rgb(153, 102, 255)",
+          //   "rgb(201, 203, 207)",
+          // ],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      indexAxis: "y",
+    },
+  });
+}
+
+function categoriesChart() {
+  const categoriesData = allGroupedData.filter(
+    (item) => item.type === "Expenses"
+  );
+
+  // Group by category dan hitung total nominal per kategori
+  const groupedByCategory = categoriesData.reduce((categories, item) => {
+    const category = item.category;
+    const nominal = parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
+
+    if (!categories[category]) {
+      categories[category] = {
+        category: category,
+        totalNominal: 0,
+      };
+    }
+
+    categories[category].totalNominal += nominal;
+    return categories;
+  }, {});
+
+  // Jika ingin hasil sebagai array, bukan objek
+  const categoriesGroup = Object.values(groupedByCategory);
+
+  const chart = document.getElementById("categoriesChart").getContext("2d");
+  new Chart(chart, {
+    type: "doughnut",
+    data: {
+      labels: categoriesGroup.map((item) => item.category),
+      datasets: [
+        {
+          axis: "y",
+          label: "Nominal",
+          data: categoriesGroup.map((item) => item.totalNominal),
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        legend: {
+          position: "bottom", // legend di bawah
+        },
+      },
+    },
+  });
+}
+
 async function initApp() {
   document.getElementById("addModalBtn").addEventListener("click", () => {
     openComponentModal({ mode: "create" });
   });
   await loadTransactions();
+  dailyChart();
+  topChart();
+  categoriesChart();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);

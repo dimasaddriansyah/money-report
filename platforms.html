@@ -4,369 +4,182 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Overview</title>
-
-  <!-- ✅ CSS Vendors (Choices, Apex Chart, Sweet Alert, FontAwesome, Datatable) -->
-  <link rel="stylesheet" href="assets/vendor/choices.js/public/assets/styles/choices.min.css">
-  <link type="text/css" href="assets/vendor/apexcharts/dist/apexcharts.css" rel="stylesheet">
-  <link type="text/css" href="assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
-
-  <!-- ✅ Custom CSS -->
-  <link type="text/css" href="assets/css/volt.css" rel="stylesheet">
-
-  <style>
-    tfoot {
-      display: table-header-group;
-    }
-  </style>
+  <title>Cashflow App</title>
+  <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="assets/css/pages/transactions.css" rel="stylesheet" />
 </head>
 
-<body>
-  <!-- ✅ Sidebar Navigation -->
-  <nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-lg-none">
-    <a class="navbar-brand me-lg-5" href="index.html">
-      <img class="navbar-brand-dark" src="assets/img/brand/light.svg" alt="Volt logo">
-      <img class="navbar-brand-light" src="assets/img/brand/dark.svg" alt="Volt logo">
-    </a>
-    <div class="d-flex align-items-center">
-      <button class="navbar-toggler d-lg-none collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-        aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+<body class="bg-gray-100 text-slate-800">
+  <!-- Wrapper -->
+  <div class="min-h-screen max-w-screen-md mx-auto flex flex-col relative">
+
+    <!-- Header -->
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+      <button id="menuToggle">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24"
+          stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"></path>
+        </svg>
       </button>
-    </div>
-  </nav>
-  <!-- ✅ Sidebar Menu Navigation -->
-  <nav id="sidebarMenu" class="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
-    <div class="sidebar-inner px-4 pt-3">
-      <div class="user-card d-flex d-md-none justify-content-between justify-content-md-center pb-4">
-        <div class="d-flex align-items-center">
-          <div class="avatar-lg me-4"><img src="assets/img/team/profile-picture-3.jpg"
-              class="card-img-top rounded-circle border-white" alt="Bonnie Green"></div>
-          <div class="d-block">
-            <h2 class="h5 mb-3">Hi, Jane</h2><a href="pages/examples/sign-in.html"
-              class="btn btn-secondary btn-sm d-inline-flex align-items-center"><svg class="icon icon-xxs me-1"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                </path>
-              </svg> Sign Out</a>
-          </div>
-        </div>
-        <div class="collapse-close d-md-none">
-          <a href="#sidebarMenu" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu"
-            aria-expanded="true" aria-label="Toggle navigation">
-            <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd">
-              </path>
-            </svg>
-          </a>
-        </div>
-      </div>
+      <h1 class="text-xl font-bold">Cashflow</h1>
+    </header>
 
-      <ul class="nav flex-column pt-3 pt-md-0">
-        <li class="nav-item">
-          <a href="index.html" class="nav-link d-flex justify-content-center align-items-center">
-            <i class="fa-solid fa-vault me-2"></i>
-            <h5 class="mt-1 mb-0 sidebar-text"> Money Report</h5>
-          </a>
-        </li>
-
-        <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-        <li class="nav-item">
-          <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-            data-bs-target="#submenu-dashboard">
-            <span>
-              <span class="sidebar-icon">
-                <i class="fa-solid fa-chart-pie me-2"></i>
-              </span>
-              <span class="sidebar-text">Dashboard</span>
-            </span>
-            <span class="link-arrow">
-              <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-            </span>
-          </span>
-          <div class="multi-level collapse" role="list" id="submenu-dashboard" aria-expanded="false">
-            <ul class="flex-column nav">
-              <li class="nav-item">
-                <a href="index.html" class="nav-link">
-                  <span class="sidebar-text-contracted">O</span>
-                  <span class="sidebar-text">Overview</span>
-                </a>
-              </li>
-            </ul>
-            <ul class="flex-column nav">
-              <li class="nav-item">
-                <a href="Investations.html" class="nav-link">
-                  <span class="sidebar-text-contracted">I</span>
-                  <span class="sidebar-text">Investations</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-
-        <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-        <li class="nav-item nav-link">
-          <span class="sidebar-text text-gray-400">Reporting</span>
-        </li>
-        <li class="nav-item">
-          <a href="transactions.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <i class="fa-solid fa-arrow-right-arrow-left me-3"></i>
-            </span>
-            <span class="sidebar-text">Transactions</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="budgets.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <i class="fa-solid fa-bag-shopping me-3"></i>
-            </span>
-            <span class="sidebar-text">Budgets</span>
-          </a>
-        </li>
-
-        <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-        <li class="nav-item nav-link">
-          <span class="sidebar-text text-gray-400">Master Data</span>
-        </li>
-        <li class="nav-item">
-          <a href="categories.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <i class="fa-solid fa-table-list me-3"></i>
-            </span>
-            <span class="sidebar-text">Categories</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="account-payments.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <i class="fa-solid fa-credit-card me-3"></i>
-            </span>
-            <span class="sidebar-text">Payments</span>
-          </a>
-        </li>
-        <li class="nav-item active">
-          <a href="platforms.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <i class="fa-solid fa-tablet-screen-button me-3"></i>
-            </span>
-            <span class="sidebar-text">Platforms</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="portfolios.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <i class="fa-solid fa-book me-3"></i>
-            </span>
-            <span class="sidebar-text">Portfolios</span>
-          </a>
-        </li>
-
-        <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-        <li class="nav-item nav-link">
-          <span class="sidebar-text text-gray-400">Loan & Bill</span>
-        </li>
-        <li class="nav-item">
-          <a href="loans.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <i class="fa-solid fa-sack-dollar me-3"></i>
-            </span>
-            <span class="sidebar-text">Loans</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="bills.html" class="nav-link d-flex align-items-center">
-            <span class="sidebar-icon">
-              <i class="fa-solid fa-file-invoice-dollar me-3"></i>
-            </span>
-            <span class="sidebar-text">Bills</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- ✅ Main Content -->
-  <main class="content">
-    <!-- ✅ Navbar Top -->
-    <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
-      <div class="container-fluid px-0">
-        <div class="d-flex justify-content-between w-100" id="navbarSupportedContent">
-          <div class="d-flex align-items-center">
-            <button id="sidebar-toggle"
-              class="sidebar-toggle me-3 btn btn-icon-only d-none d-lg-inline-block align-items-center justify-content-center">
-              <svg class="toggle-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                  clip-rule="evenodd"></path>
-              </svg>
-            </button>
-          </div>
-          <ul class="navbar-nav align-items-center">
-            <li class="nav-item dropdown ms-lg-3">
-              <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <div class="media d-flex align-items-center">
-                  <img class="avatar rounded-circle" alt="Image placeholder"
-                    src="assets/img/team/profile-picture-3.jpg">
-                  <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                    <span class="mb-0 font-small fw-bold text-gray-900">Bonnie Green</span>
-                  </div>
-                </div>
-              </a>
-              <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                      clip-rule="evenodd"></path>
-                  </svg> My Profile </a><a class="dropdown-item d-flex align-items-center" href="#"><svg
-                    class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                      d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                      clip-rule="evenodd"></path>
-                  </svg> Settings </a><a class="dropdown-item d-flex align-items-center" href="#"><svg
-                    class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                      d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
-                      clip-rule="evenodd"></path>
-                  </svg> Messages </a><a class="dropdown-item d-flex align-items-center" href="#"><svg
-                    class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-.08.08-1.53-1.533A5.98 5.98 0 004 10c0 .954.223 1.856.619 2.657l1.54-1.54zm1.088-6.45A5.974 5.974 0 0110 4c.954 0 1.856.223 2.657.619l-1.54 1.54a4.002 4.002 0 00-2.346.033L7.246 4.668zM12 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      clip-rule="evenodd"></path>
-                  </svg> Support</a>
-                <div role="separator" class="dropdown-divider my-1"></div><a
-                  class="dropdown-item d-flex align-items-center" href="#"><svg class="dropdown-icon text-danger me-2"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                    </path>
-                  </svg> Logout</a>
-              </div>
+    <!-- Platform -->
+    <section id="platform-section" class="m-4">
+      <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <nav class="text-sm text-slate-500" aria-label="Breadcrumb">
+          <ol class="list-reset flex items-center space-x-1">
+            <li>
+              <a href="index.html" class="font-medium hover:text-slate-900">Overview</a>
+              <span class="mx-1">/</span>
             </li>
-          </ul>
-        </div>
+            <li>
+              <a href="#" class="font-medium hover:text-slate-900">Master Data</a>
+              <span class="mx-1">/</span>
+            </li>
+            <li class="text-slate-400">Platforms</li>
+          </ol>
+        </nav>
+        <button id="addPlatformBtn"
+          class="flex justify-center md:justify-end items-center text-xs text-center font-medium px-3 py-2 space-x-1 rounded-md bg-slate-800 text-white hover:bg-slate-700 w-full md:w-auto">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          <span>Add Platform</span>
+        </button>
       </div>
-    </nav>
-
-    <!-- ✅ Text Header-->
-    <div class="py-4">
-      <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-        <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-          <li class="breadcrumb-item"><a href="#"><svg class="icon icon-xxs" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                </path>
-              </svg></a></li>
-          <li class="breadcrumb-item active" aria-current="page">Master Data</li>
-          <li class="breadcrumb-item active" aria-current="page">Platforms</li>
-        </ol>
-      </nav>
-      <div class="d-flex justify-content-between w-100 flex-wrap">
-        <div class="mb-3 mb-lg-0">
-          <h1 class="h4">Platforms</h1>
+      <div class="bg-white rounded-xl shadow">
+        <h2 class="p-4 text-lg font-semibold bg-slate-100 rounded-t-xl">List of Platforms</h2>
+        <ul id="platform-list" class="divide-y"></ul>
+        <div id="loading-text" class="text-sm text-slate-400 text-center py-3 hidden">
+          Loading data...
         </div>
-        <div>
-          <button type="button" class="btn btn-block btn-primary new-modal-btn">
-            <i class="fa-solid fa-plus me-2"></i> New Platfrom
+        <div class="flex justify-center py-3">
+          <button id="see-more-btn"
+            class="hidden text-xs text-center font-medium px-3 py-2 rounded-md border border-slate-800 text-slate-800 hover:bg-slate-800 hover:text-white"
+            onclick="renderNextPlatforms()">
+            Load more data
           </button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="card mb-4">
-      <div class="table-responsive py-4">
-        <table id="custom-datatable" class="table table-striped table-bordered table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th class="text-center" style="width: 1%">
-                <input type="checkbox" id="select-all">
-              </th>
-              <th>Platform Name</th>
-              <th>Inserted Date</th>
-              <th>Updated Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tfoot>
-            <tr>
-              <th></th>
-              <th><input type="text" placeholder="Search platform name" class="form-control" /></th>
-              <th><input type="text" placeholder="Search inserted date" class="form-control" /></th>
-              <th><input type="text" placeholder="Search updated date" class="form-control" /></th>
-              <th></th>
-            </tr>
-          </tfoot>
-          <tbody>
-          </tbody>
-        </table>
+    <!-- Sidebar Fullscreen -->
+    <div id="sidebar"
+      class="fixed inset-0 bg-white z-50 -translate-x-full transition-transform duration-300 ease-in-out">
+      <div class="flex items-center justify-between p-4 border-b">
+        <h2 class="text-lg font-semibold">Menu Lainnya</h2>
+        <button id="closeSidebar">
+          <svg class="h-6 w-6 text-slate-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
-    </div>
-  </main>
-
-  <!-- Component Modal -->
-  <div class="modal fade" id="componentModal" tabindex="-1" aria-labelledby="componentModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="componentModalLabel">Modal Title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <nav>
+        <span class="flex p-4 text-xs text-slate-400 font-medium">MASTER DATA</span>
+        <div class="flex p-4 space-x-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+          </svg>
+          <a href="categories.html" class="text-sm text-slate-400">Categories</a>
         </div>
-        <form id="modalForm">
-          <div class="modal-body">
-            <div class="form-group mb-3">
-              <label for="name">Platfrom Name</label>
-              <input type="text" class="form-control" id="name" placeholder="Input platfrom name..." required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-link text-gray" data-bs-dismiss="modal">Close</button>
-            <button type="submit" id="btn-submit-modal" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
+        <div class="flex p-4 space-x-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+          </svg>
+          <a href="payments.html" class="text-sm text-slate-400">Payments</a>
+        </div>
+        <div class="flex p-4 space-x-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-800" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+          </svg>
+          <a href="platforms.html" class="text-sm font-medium text-slate-800">Platforms</a>
+        </div>
+        <div class="flex p-4 space-x-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
+          </svg>
+          <a href="portfolios.html" class="text-sm text-slate-400">Portfolios</a>
+        </div>
+        <span class="flex p-4 text-xs text-slate-400 font-medium">LOAN & BILL</span>
+        <div class="flex p-4 space-x-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008Z" />
+          </svg>
+          <a href="loans.html" class="text-sm text-slate-400">Loans</a>
+        </div>
+        <div class="flex p-4 space-x-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <a href="bills.html" class="text-sm text-slate-400">Bills</a>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Modal Base Component -->
+    <div id="modalComponent"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm transition-all duration-300 ease-out">
+      <!-- Modal Content -->
+      <div class="bg-white rounded-lg w-[90%] max-w-screen-md mx-auto overflow-visible shadow-lg relative z-50">
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b border-b-slate-100 px-6 py-4">
+          <h6 id="modalTitle" class="text-lg text-slate-800 font-semibold">Heading Title</h6>
+          <button id="closeModalBtn" class="text-slate-400 hover:text-slate-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div id="modalBody" class="px-6 py-4">
+          <!-- Dynamic content goes here -->
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-end border-t border-t-slate-100 px-6 py-4 space-x-2">
+          <button id="modalCancelBtn"
+            class="text-sm text-slate-400 font-medium px-5 py-2 rounded-lg transition-all hover:bg-slate-100">Close</button>
+          <button id="modalSubmitBtn"
+            class="bg-slate-800 text-sm font-medium text-white px-5 py-2 rounded-lg transition-all hover:bg-slate-900">Submit</button>
+        </div>
       </div>
     </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-[9999] space-y-2"></div>
   </div>
 
-  <!-- ✅ JS Vendors -->
-  <script src="assets/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
-  <script src="assets/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
-  <script src="assets/vendor/apexcharts/dist/apexcharts.min.js"></script>
-  <script src="assets/vendor/simple-datatables/dist/umd/simple-datatables.js"></script>
-  <script src="assets/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
-  <script src="assets/vendor/choices.js/public/assets/scripts/choices.min.js"></script>
-
-  <!-- DataTables -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-  <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
 
-  <!-- ✅ Custom JS (Cleaned) -->
-  <script src="assets/js/volt.js"></script>
   <script src="assets/js/utils.js"></script>
+  <script src="assets/js/modal-handler.js"></script>
   <script src="assets/js/pages/platforms.js"></script>
+  <script>
 
+  </script>
 </body>
 
 </html>

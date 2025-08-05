@@ -123,9 +123,9 @@ function renderNextContents() {
         container.innerHTML = `
           <div class="relative group overflow-hidden w-full ">
             <div
-              class="h-20 px-4 transaction-content flex justify-between items-center transition-all duration-300 bg-white">
-              <div class="flex items-start space-x-4">
-                <div class="w-8 h-8 flex-shrink-0 mt-1">
+              class="h-28 px-4 transaction-content flex justify-between items-center transition-all duration-300 bg-white">
+              <div class="flex flex-col">
+                <div class="w-12 h-8 flex-shrink-0">
                   <img src="${getPaymentURL(data.payment)}" 
                   alt="${data.payment}" class="w-full h-full object-contain">
                 </div>
@@ -751,7 +751,7 @@ function dailyChart() {
       ],
     },
     options: {
-      responsive: true,
+      responsive: false,
       scales: {
         x: {
           title: {
@@ -790,15 +790,30 @@ function dailyChart() {
 }
 
 function topChart() {
-  const topData = allGroupedData
-    .filter((item) => item.type === "Expenses")
-    .sort((a, b) => {
-      return (
-        parseInt(b.nominal.replace(/[^0-9]/g, ""), 10) -
-        parseInt(a.nominal.replace(/[^0-9]/g, ""), 10)
-      );
-    })
-    .slice(0, 10);
+  const rawData = allGroupedData.filter((item) => item.type === "Expenses");
+
+  // Group by remark dan hitung total nominal
+  const groupedByRemark = rawData.reduce((remarks, item) => {
+    const remark = item.remark;
+    const nominal = parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
+
+    if (!remarks[remark]) {
+      remarks[remark] = {
+        remark: remark,
+        totalNominal: 0,
+      };
+    }
+
+    remarks[remark].totalNominal += nominal;
+    return remarks;
+  }, {});
+
+  // Jika ingin hasil sebagai array, bukan objek
+  const remarkGroup = Object.values(groupedByRemark).sort((a, b) => {
+    return b.totalNominal - a.totalNominal;
+  });
+
+  const topData = remarkGroup.slice(0, 10);
 
   const chart = document.getElementById("topChart").getContext("2d");
 
@@ -810,33 +825,14 @@ function topChart() {
         {
           axis: "y",
           label: "Nominal",
-          data: topData.map((item) =>
-            parseInt(item.nominal.replace(/[^0-9]/g, ""), 10)
-          ),
+          data: topData.map((item) => item.totalNominal),
           fill: false,
-          // backgroundColor: [
-          //   "rgba(255, 99, 132, 0.2)",
-          //   "rgba(255, 159, 64, 0.2)",
-          //   "rgba(255, 205, 86, 0.2)",
-          //   "rgba(75, 192, 192, 0.2)",
-          //   "rgba(54, 162, 235, 0.2)",
-          //   "rgba(153, 102, 255, 0.2)",
-          //   "rgba(201, 203, 207, 0.2)",
-          // ],
-          // borderColor: [
-          //   "rgb(255, 99, 132)",
-          //   "rgb(255, 159, 64)",
-          //   "rgb(255, 205, 86)",
-          //   "rgb(75, 192, 192)",
-          //   "rgb(54, 162, 235)",
-          //   "rgb(153, 102, 255)",
-          //   "rgb(201, 203, 207)",
-          // ],
           borderWidth: 1,
         },
       ],
     },
     options: {
+      responsive: false,
       indexAxis: "y",
     },
   });

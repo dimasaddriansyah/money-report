@@ -130,9 +130,9 @@ function renderNextContents() {
         container.innerHTML = `
           <div class="relative group overflow-hidden w-full ">
             <div
-              class="h-20 px-4 content flex justify-between items-center transition-all duration-300 bg-white">
-              <div class="flex items-start space-x-4">
-                <div class="w-8 h-8 flex-shrink-0 mt-1">
+              class="h-28 px-4 content flex justify-between items-center transition-all duration-300 bg-white">
+              <div class="flex flex-col">
+                <div class="w-12 h-8 flex-shrink-0">
                   <img src="${getPaymentURL(data.payment)}" 
                   alt="${data.payment}" class="w-full h-full object-contain">
                 </div>

@@ -199,17 +199,24 @@ function renderCardSlides(cards) {
   wrapper.appendChild(totalSlide);
 
   // Group cards by platform-portfolio
-  const grouped = cards.reduce((acc, item) => {
+  const grouped = cards.reduce((investation, item) => {
     const key = `${item.platform}-${item.portfolio}`;
-    if (!acc[key]) {
-      acc[key] = {
+    if (!investation[key]) {
+      investation[key] = {
         platform: item.platform,
         portfolio: item.portfolio,
         totalNominal: 0,
       };
     }
-    acc[key].totalNominal += parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
-    return acc;
+
+    const nominalValue = parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
+
+    if (item.type === "Buy") {
+      investation[key].totalNominal += nominalValue;
+    } else if (item.type === "Sell") {
+      investation[key].totalNominal -= nominalValue;
+    }
+    return investation;
   }, {});
 
   // Slide per investasi

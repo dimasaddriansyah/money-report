@@ -347,7 +347,6 @@ function renderPaymentSlides(paymentSummary) {
   if (swiperInstance) swiperInstance.destroy(true, true);
 
   swiperInstance = new Swiper(".mySwiper", {
-    slidesPerGroup: 2,
     spaceBetween: 24,
     pagination: {
       el: ".swiper-pagination",
@@ -356,9 +355,11 @@ function renderPaymentSlides(paymentSummary) {
     breakpoints: {
       0: {
         slidesPerView: 1,
+        slidesPerGroup: 1,
       },
       768: {
         slidesPerView: 2,
+        slidesPerGroup: 2,
       },
     },
   });

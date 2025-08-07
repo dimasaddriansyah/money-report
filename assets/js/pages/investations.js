@@ -248,15 +248,20 @@ function renderCardSlides(cards) {
   if (swiperInstance) swiperInstance.destroy(true, true);
 
   swiperInstance = new Swiper(".mySwiper", {
-    slidesPerGroup: 2,
     spaceBetween: 24,
     pagination: {
       el: ".swiper-pagination",
       clickable: true,
     },
     breakpoints: {
-      0: { slidesPerView: 1 },
-      768: { slidesPerView: 2 },
+      0: {
+        slidesPerView: 1,
+        slidesPerGroup: 1,
+      },
+      768: {
+        slidesPerView: 2,
+        slidesPerGroup: 2,
+      },
     },
   });
 }

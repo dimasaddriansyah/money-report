@@ -12,7 +12,7 @@
 
 <body class="bg-gray-100 text-slate-800">
   <!-- Wrapper -->
-  <div class="min-h-screen max-w-screen-md mx-auto flex flex-col pb-20 relative">
+  <div class="min-h-screen max-w-screen-md mx-auto flex flex-col relative">
 
     <!-- Header -->
     <header class="bg-white shadow p-4 flex justify-between items-center">
@@ -25,51 +25,30 @@
       <h1 class="text-xl font-bold">Cashflow</h1>
     </header>
 
-    <!-- Scroll Container -->
-    <div class="swiper mySwiper p-4 max-w-full">
-      <div class="swiper-wrapper mb-5" id="slide-wrapper">
-        <!-- Card akan dimasukkan dari JS -->
+    <!-- Overview -->
+    <section id="overview-section" class="m-4">
+      <div id="overview-list"></div>
+    </section>
+
+    <!-- Content -->
+    <section id="content-section" class="m-4 pb-14">
+      <div class="bg-white rounded-xl shadow">
+        <h2 class="p-4 text-lg font-semibold bg-slate-100 rounded-t-xl">List of Budgets</h2>
+        <div id="content-list" class="divide-y"></div>
       </div>
-      <div class="swiper-pagination"></div>
-    </div>
-
-    <!-- Daily Expenses Chart -->
-    <section id="daily-expenses-section" class="bg-white rounded-xl shadow mx-4 mb-6">
-      <h2 class="p-4 text-lg font-semibold rounded-t-xl bg-slate-100">Daily Expenses</h2>
-      <canvas id="dailyChart" class="p-4 w-full" height="400"></canvas>
-    </section>
-
-    <!-- Top Expenses Chart -->
-    <section id="top-expenses-section" class="bg-white rounded-xl shadow mx-4 mb-6">
-      <h2 class="p-4 text-lg font-semibold rounded-t-xl bg-slate-100">Top Expenses</h2>
-      <canvas id="topChart" class="p-4 w-full" height="400"></canvas>
-    </section>
-
-    <!-- Categories Expenses Chart -->
-    <section id="categories-expenses-section" class="bg-white rounded-xl shadow mx-4 mb-6">
-      <h2 class="p-4 text-lg font-semibold rounded-t-xl bg-slate-100">Categories Expenses</h2>
-      <div class="flex justify-center">
-        <canvas id="categoriesChart" class="p-4 w-full" height="400"></canvas>
-      </div>
-    </section>
-
-    <!-- Transaksi -->
-    <section id="transaction-section" class="bg-white rounded-xl shadow mx-4">
-      <h2 class="p-4 text-lg font-semibold rounded-t-xl">Last Transactions</h2>
-      <ul id="transaction-list" class="divide-y pb-4"></ul>
     </section>
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 inset-x-0 bg-white border-t shadow z-50 max-w-screen-md mx-auto">
       <div class="flex justify-between items-center p-2">
-        <a href="index.html" class="flex flex-col items-center justify-center flex-1 text-slate-800">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="2"
-            stroke="currentColor">
+        <a href="index.html" class="flex flex-col items-center justify-center flex-1 text-slate-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z">
             </path>
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"></path>
           </svg>
-          <span class="text-xs font-semibold">Overview</span>
+          <span class="text-xs">Overview</span>
         </a>
         <a href="transactions.html" class="flex flex-col items-center justify-center flex-1 text-slate-400">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24"
@@ -98,14 +77,14 @@
           </svg>
           <span class="text-xs">Investations</span>
         </a>
-        <a href="budgets.html" class="flex flex-col items-center justify-center flex-1 text-slate-400">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24"
-            stroke-width="1.5" stroke="currentColor">
+        <a href="budgets.html" class="flex flex-col items-center justify-center flex-1 text-slate-800">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="2"
+            stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
           </svg>
 
-          <span class="text-xs">Budgets</span>
+          <span class="text-xs font-semibold">Budgets</span>
         </a>
       </div>
     </nav>
@@ -217,11 +196,13 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script src="assets/js/utils.js"></script>
   <script src="assets/js/modal-handler.js"></script>
-  <script src="assets/js/pages/overview.js"></script>
+  <script src="assets/js/pages/budgets.js"></script>
+  <script>
+
+  </script>
 </body>
 
 </html>

@@ -99,20 +99,22 @@ function renderNextContents() {
     group.items.forEach((item, idx) => {
       detailContent += `
         <div class="relative group overflow-hidden w-full">
-          <div class="h-auto p-4 content flex justify-between items-center transition-all duration-300 bg-slate-50 border-b border-slate-200">
+          <div class="h-auto p-4 space-y-3 content flex flex-col justify-between items-center transition-all duration-300 bg-slate-50 border-b border-slate-200">
             <div class="w-full sm:w-16">
               <p class="text-xs text-slate-400">#</p>
               <p class="text-sm font-medium">${idx + 1}</p>
             </div>
-            <div class="w-1/2 sm:flex-1">
-              <p class="text-xs text-slate-400">Note</p>
-              <p class="text-sm font-medium">${item.note}</p>
-            </div>
-            <div class="w-1/2 sm:flex-1 pr-8 sm:pr-8">
-              <p class="text-xs text-right text-slate-400">Nominal</p>
-              <p class="text-sm text-right font-medium">
-                Rp ${item.nominal.toLocaleString("id-ID")}
-              </p>
+            <div class="flex w-full">
+              <div class="w-1/2 sm:flex-1">
+                <p class="text-xs text-slate-400">Note</p>
+                <p class="text-sm font-medium">${item.note}</p>
+              </div>
+              <div class="w-1/2 sm:flex-1 pr-8 sm:pr-8">
+                <p class="text-xs text-right text-slate-400">Nominal</p>
+                <p class="text-sm text-right font-medium">
+                  Rp ${item.nominal.toLocaleString("id-ID")}
+                </p>
+              </div>
             </div>
           </div>
           <div class="absolute right-0 top-0 h-full flex items-center bg-white translate-x-full transition-all duration-300 action-buttons">

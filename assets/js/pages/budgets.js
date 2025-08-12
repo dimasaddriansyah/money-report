@@ -99,7 +99,7 @@ function renderNextContents() {
     group.items.forEach((item, idx) => {
       detailContent += `
         <div class="relative group overflow-hidden w-full">
-          <div class="h-auto p-4 space-y-3 content flex flex-col justify-between items-center transition-all duration-300 bg-slate-50 border-b border-slate-200">
+          <div class="h-auto p-4 space-y-3 content flex flex-col justify-between transition-all duration-300 bg-slate-50 border-b border-slate-200">
             <div class="w-full sm:w-16">
               <p class="text-xs text-slate-400">#</p>
               <p class="text-sm font-medium">${idx + 1}</p>

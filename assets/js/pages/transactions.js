@@ -292,14 +292,14 @@ function renderPaymentSlides(paymentSummary) {
     "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white transition hover:bg-slate-700 hover:cursor-default";
 
   totalSlide.innerHTML = `
-    <div class="flex justify-between">
-      <div>
+    <div class="flex flex-col sm:flex-row sm:justify-between">
+      <div class="order-2 sm:order-1 pt-2 sm:pt-0">
         <span class="text-sm text-slate-200">Balance All Payments</span>
         <h1 class="text-lg font-bold text-white">Rp ${totalBalance.toLocaleString(
           "en-US"
         )}</h1>
       </div>
-      <div class="w-7 h-7">
+      <div class="order-1 sm:order-2 w-7 h-7">
         <img src="assets/img/icons/Money.png" alt="All Payments" class="w-full h-full object-contain">
       </div>
     </div>
@@ -336,12 +336,12 @@ function renderPaymentSlides(paymentSummary) {
     }
 
     slide.innerHTML = `
-      <div class="flex justify-between">
-        <div>
+      <div class="flex flex-col sm:flex-row sm:justify-between">
+        <div class="order-2 sm:order-1 pt-2 sm:pt-0">
           <span class="text-sm text-slate-400">${item.payment}</span>
           <h1 class="text-lg font-bold text-slate-800">Rp ${item.balance}</h1>
         </div>
-        <div class="w-14 h-7">
+        <div class="order-1 sm:order-2 w-14 h-7">
           <img src="${item.image}" alt="${item.payment}" class="w-full h-full object-contain">
         </div>
       </div>
@@ -362,19 +362,27 @@ function renderPaymentSlides(paymentSummary) {
   if (swiperInstance) swiperInstance.destroy(true, true);
 
   swiperInstance = new Swiper(".mySwiper", {
-    spaceBetween: 24,
+    spaceBetween: 16,
     pagination: {
       el: ".swiper-pagination",
       clickable: true,
     },
     breakpoints: {
       0: {
-        slidesPerView: 1,
+        slidesPerView: 2,
         slidesPerGroup: 1,
+        grid: {
+          rows: 2,
+          fill: "row",
+        },
       },
       768: {
         slidesPerView: 2,
         slidesPerGroup: 2,
+        grid: {
+          rows: 2,
+          fill: "row",
+        },
       },
     },
   });

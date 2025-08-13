@@ -485,6 +485,126 @@ async function loadCategories(selectType = "") {
   }
 }
 
+async function loadPlatforms() {
+  const platformSelect = document.getElementById("platformSelect");
+  const url =
+    "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/platforms!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
+
+  const resetSelect = (select) => {
+    select.innerHTML = "<option></option>";
+  };
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+
+    // Reset isi select
+    resetSelect(platformSelect);
+
+    rows.forEach((row) => {
+      const value = row[1];
+      if (value) {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        platformSelect.appendChild(option);
+      }
+    });
+
+    // Apply Select2 ulang
+    [platformSelect].forEach((select) => {
+      $(select).select2({
+        placeholder: select.dataset.placeholder,
+        width: "100%",
+        dropdownParent: $(select).closest(".relative"),
+      });
+    });
+
+    $(document).on("select2:open", () => {
+      setTimeout(() => {
+        document
+          .querySelector(".select2-container--open .select2-search__field")
+          ?.focus();
+      }, 100);
+    });
+  } catch (err) {
+    console.error("Gagal memuat platform options:", err);
+  }
+}
+
+async function loadPortfolios() {
+  const portfolioSelect = document.getElementById("portfolioSelect");
+  const url =
+    "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/portfolios!A2:D?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
+
+  const resetSelect = (select) => {
+    select.innerHTML = "<option></option>";
+  };
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+
+    // Reset isi select
+    resetSelect(portfolioSelect);
+
+    rows.forEach((row) => {
+      const value = row[1];
+      if (value) {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        portfolioSelect.appendChild(option);
+      }
+    });
+
+    // Apply Select2 ulang
+    [portfolioSelect].forEach((select) => {
+      $(select).select2({
+        placeholder: select.dataset.placeholder,
+        width: "100%",
+        dropdownParent: $(select).closest(".relative"),
+      });
+    });
+
+    $(document).on("select2:open", () => {
+      setTimeout(() => {
+        document
+          .querySelector(".select2-container--open .select2-search__field")
+          ?.focus();
+      }, 100);
+    });
+  } catch (err) {
+    console.error("Gagal memuat portfolio options:", err);
+  }
+}
+
+async function loadInvestations() {
+  const url =
+    "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/investations!A2:G?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+
+    return rows.map((row) => ({
+      id: row[0],
+      payment_date: row[1],
+      type: row[2],
+      platform: row[3],
+      portfolio: row[4],
+      product_name: row[5],
+      nominal: row[6],
+    }));
+  } catch (err) {
+    console.error("Gagal memuat investations:", err);
+    return [];
+  }
+}
+
 function openComponentModal({ mode = "create", data = {} }) {
   const isEdit = mode === "edit";
   const now = new Date().toISOString();
@@ -495,7 +615,7 @@ function openComponentModal({ mode = "create", data = {} }) {
     content: `
       <form id="formContent" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-slate-600 mb-2">Type</label>
+          <label for="type" class="block text-sm font-medium text-slate-600 mb-2">Type</label>
           <div class="relative">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 pointer-events-none">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122" />
@@ -510,7 +630,7 @@ function openComponentModal({ mode = "create", data = {} }) {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-slate-600 mb-2">Payment</label>
+            <label for="payment" class="block text-sm font-medium text-slate-600 mb-2">Payment</label>
             <div class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 pointer-events-none">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
@@ -521,7 +641,7 @@ function openComponentModal({ mode = "create", data = {} }) {
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-600 mb-2">Category</label>
+            <label for="category" class="block text-sm font-medium text-slate-600 mb-2">Category</label>
             <div class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 pointer-events-none">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
@@ -535,7 +655,7 @@ function openComponentModal({ mode = "create", data = {} }) {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-slate-600 mb-2">Remark</label>
+            <label for="remark" class="block text-sm font-medium text-slate-600 mb-2">Remark</label>
             <div class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
@@ -544,7 +664,7 @@ function openComponentModal({ mode = "create", data = {} }) {
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-600 mb-2">Nominal</label>
+            <label for="nominal" class="block text-sm font-medium text-slate-600 mb-2">Nominal</label>
             <div class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -555,15 +675,31 @@ function openComponentModal({ mode = "create", data = {} }) {
         </div>
       </form>
     `,
-    onSubmit: () => {
+    onSubmit: async () => {
       const type = $("#typeSelect").val();
       const payment = $("#paymentSelect").val();
       const category = $("#categorySelect").val();
       const remark = $("#remark").val();
       const nominal = $("#nominal").val();
+      const platform = $("#platformSelect").val();
+      const portfolio = $("#portfolioSelect").val();
 
-      if (!remark) {
-        alert("Content product is required.");
+      const requiredFields = [
+        { name: "Type", value: type },
+        { name: "Payment Method", value: payment },
+        { name: "Category", value: category },
+        { name: "Product Name / Remark", value: remark },
+        { name: "Nominal", value: nominal },
+        { name: "Platform", value: platform },
+        { name: "Portfolio", value: portfolio },
+      ];
+
+      // cari field yang kosong
+      const emptyField = requiredFields.find(
+        (field) => !field.value || field.value.trim() === ""
+      );
+      if (emptyField) {
+        alert(`${emptyField.name} is required.`);
         return;
       }
 
@@ -573,6 +709,8 @@ function openComponentModal({ mode = "create", data = {} }) {
         payment_method: payment,
         category,
         nominal: parseFloat(nominal.replace(/[^0-9.-]+/g, "")) || 0,
+        platform,
+        portfolio,
       };
 
       if (isEdit) {
@@ -587,6 +725,25 @@ function openComponentModal({ mode = "create", data = {} }) {
           newId = "TRX-" + new Date().toISOString().replace(/[-:.TZ]/g, "");
         }
         payload.transaction_id = newId;
+
+        let investationId = null;
+        // ✅ Jika Investation, generate investation_id
+        if (category === "Investation") {
+          const investations = await loadInvestations(); // tunggu data selesai diambil
+          let maxId = 0;
+
+          investations.forEach((row) => {
+            if (row.id && row.id.startsWith("INVEST-")) {
+              const num = parseInt(row.id.split("-")[1], 10);
+              if (!isNaN(num) && num > maxId) maxId = num;
+            }
+          });
+
+          const nextIdNum = maxId + 1;
+          investationId = "INVEST-" + String(nextIdNum).padStart(3, "0");
+        }
+
+        payload.investation_id = investationId;
       }
 
       console.log(payload);
@@ -660,7 +817,97 @@ function openComponentModal({ mode = "create", data = {} }) {
     $typeSelect.on("change", function () {
       const selected = $(this).val();
       loadCategories(selected);
+      checkDynamicForm();
     });
+
+    $("#categorySelect").on("change", function () {
+      checkDynamicForm();
+    });
+
+    // Fungsi untuk menampilkan form baru jika Expenses + Investation
+    function checkDynamicForm() {
+      const type = $("#typeSelect").val();
+      const category = $("#categorySelect").val();
+
+      let extraField = document.getElementById("extraInvestField");
+
+      if (type === "Expenses" && category === "Investation") {
+        if (!extraField) {
+          // Cari wrapper Category
+          const paymentCategoryRow = document
+            .getElementById("categorySelect")
+            .closest(".grid"); // pastikan class grid ada di pembungkusnya
+
+          // Elemen baru
+          const wrapper = document.createElement("div");
+          wrapper.id = "extraInvestField";
+          wrapper.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
+          wrapper.innerHTML = `
+            <div>
+              <label class="block text-sm font-medium text-slate-600 mb-2">Platform</label>
+              <div class="relative">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 pointer-events-none">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                </svg>
+                <select id="platformSelect" data-placeholder="Select Platform" class="select2-custom w-full border rounded-lg text-sm pl-10 py-2 bg-white text-slate-700">
+                  <option></option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-600 mb-2">Portfolio</label>
+              <div class="relative">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10 pointer-events-none">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
+                </svg>
+                <select id="portfolioSelect" data-placeholder="Select Portfolio" class="select2-custom w-full border rounded-lg text-sm pl-10 py-2 bg-white text-slate-700">
+                  <option></option>
+                </select>
+              </div>
+            </div>
+          `;
+
+          // Sisipkan setelah category wrapper
+          paymentCategoryRow.insertAdjacentElement("afterend", wrapper);
+
+          // Ubah Label Remark menjadi Product Name
+          const remarkLabel = document.querySelector('label[for="remark"]');
+          const remarkInput = document.getElementById("remark");
+          remarkLabel.textContent = "Product Name";
+          remarkInput.placeholder = "Input product name...";
+
+          // Inisialisasi select2 platforms
+          $("#platformSelect").select2({
+            placeholder: "Select Platform",
+            width: "100%",
+          });
+
+          // Inisialisasi select2 portfolios
+          $("#portfolioSelect").select2({
+            placeholder: "Select Portfolio",
+            width: "100%",
+          });
+
+          // Load data platforms
+          loadPlatforms().then(() => {
+            if (isEdit) {
+              $("#platformSelect").val(data.platform).trigger("change");
+            }
+          });
+
+          // Load data portfolios
+          loadPortfolios().then(() => {
+            if (isEdit) {
+              $("#portfolioSelect").val(data.portfolio).trigger("change");
+            }
+          });
+        }
+      } else {
+        if (extraField) {
+          extraField.remove();
+        }
+      }
+    }
 
     // Setelah inisialisasi baru set value-nya
     if (isEdit && data.type) {
@@ -724,6 +971,7 @@ async function initApp() {
     openComponentModal({ mode: "create" });
   });
   await loadTransactions();
+  await loadInvestations();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);

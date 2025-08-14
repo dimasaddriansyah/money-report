@@ -2,9 +2,10 @@ const API_URL =
   "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:K?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
 
 let allGroupedData = [];
-let currentPage = 0;
 let lastRenderedDate = "";
 let swiperInstance;
+let currentFilter = null;
+let currentPage = 0;
 const itemsPerPage = 15;
 
 async function loadTransactions() {
@@ -57,10 +58,23 @@ async function loadTransactions() {
   }
 }
 
-function renderNextContents() {
+function renderNextContents(payment) {
+  // Reset halaman kalau payment diganti
+  if (payment !== currentFilter) {
+    currentPage = 0;
+    document.getElementById("content-list").innerHTML = "";
+    currentFilter = payment;
+  }
+
+  // Filter data sesuai payment
+  let filteredData = allGroupedData;
+  if (payment) {
+    filteredData = allGroupedData.filter((d) => d.payment === payment);
+  }
+
   const start = currentPage * itemsPerPage;
   const end = start + itemsPerPage;
-  const slicedData = allGroupedData.slice(start, end);
+  const slicedData = filteredData.slice(start, end);
 
   if (slicedData.length === 0) return;
 
@@ -69,9 +83,7 @@ function renderNextContents() {
 
   slicedData.forEach((data) => {
     const date = new Date(data.date);
-    // Mendapatkan nama hari, misal "Sunday"
     const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "long" });
-    // Mendapatkan tanggal dalam format "02 August 2025"
     const enDate = date.toLocaleDateString("en-US", {
       day: "2-digit",
       month: "long",
@@ -79,8 +91,6 @@ function renderNextContents() {
     });
     const [month, dayWithComma, year] = enDate.split(" ");
     const day = dayWithComma.replace(",", "");
-
-    // Gabungkan jadi format lengkap: "Sunday, 02 August 2025"
     const formattedDate = `${dayOfWeek}, ${day} ${month} ${year}`;
 
     if (!grouped[formattedDate]) grouped[formattedDate] = [];
@@ -88,40 +98,24 @@ function renderNextContents() {
   });
 
   Object.keys(grouped)
-    .sort((a, b) => {
-      const dateA = Date.parse(a.date); // e.g. "02 July 2025 16:12:41"
-      const dateB = Date.parse(b.date);
-      return dateB - dateA; // Descending: terbaru dulu
-    })
-    .forEach((formattedDate, index) => {
-      const isSameAsLast = formattedDate === lastRenderedDate;
-
-      if (!isSameAsLast) {
-        const header = document.createElement("div");
-        header.className = `text-sm text-slate-500 p-3 bg-slate-100`;
-
-        header.innerHTML = `
-          <div class="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-              stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-500">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1
-                2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18
-                0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21
-                18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25
-                9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12
-                15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75
-                15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5
-                15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0
-                2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0
-                2.25h.008v.008H16.5V15Z" />
-            </svg>
-            <span class="font-medium">${formattedDate}</span>
-          </div>
-        `;
-        list.appendChild(header);
-        lastRenderedDate = formattedDate;
-      }
+    .sort((a, b) => Date.parse(b) - Date.parse(a))
+    .forEach((formattedDate) => {
+      const header = document.createElement("div");
+      header.className = `text-sm text-slate-500 p-3 bg-slate-100`;
+      header.innerHTML = `
+        <div class="flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-500">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1
+              2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18
+              0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21
+              18.75" />
+          </svg>
+          <span class="font-medium">${formattedDate}</span>
+        </div>
+      `;
+      list.appendChild(header);
 
       grouped[formattedDate].forEach((data) => {
         const container = document.createElement("div");
@@ -205,7 +199,7 @@ function renderNextContents() {
 
   currentPage++;
   const seeMoreBtn = document.getElementById("see-more-btn");
-  if (currentPage * itemsPerPage >= allGroupedData.length) {
+  if (currentPage * itemsPerPage >= filteredData.length) {
     seeMoreBtn.classList.add("hidden");
   } else {
     seeMoreBtn.classList.remove("hidden");
@@ -274,6 +268,8 @@ function calculatePaymentSummary(transactions) {
 
 function renderPaymentSlides(paymentSummary) {
   const wrapper = document.getElementById("slide-wrapper");
+  const contentTitle = document.querySelector("#content-section h2");
+
   wrapper.innerHTML = "";
 
   // 🚫 Filter: Buang data dengan payment = "Investment"
@@ -289,7 +285,7 @@ function renderPaymentSlides(paymentSummary) {
   // 💳 Tambahkan slide total balance paling depan
   const totalSlide = document.createElement("div");
   totalSlide.className =
-    "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white transition hover:bg-slate-700 hover:cursor-default";
+    "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white transition hover:bg-slate-700 hover:cursor-pointer";
 
   totalSlide.innerHTML = `
     <div class="flex flex-col sm:flex-row sm:justify-between">
@@ -309,6 +305,25 @@ function renderPaymentSlides(paymentSummary) {
       </div>
     </div>
   `;
+
+  // 🖱️ Klik totalSlide = reset filter
+  totalSlide.addEventListener("click", () => {
+    // Hapus highlight semua card
+    document.querySelectorAll(".swiper-slide").forEach((s) => {
+      s.classList.remove("bg-slate-200", "border", "border-slate-400");
+      s.classList.add(s === totalSlide ? "bg-slate-800" : "bg-white");
+    });
+
+    // Reset title & filter
+    contentTitle.innerHTML = `List of Transactions`;
+    currentFilter = null;
+
+    // Reset halaman & tampilkan semua data
+    currentPage = 0;
+    document.getElementById("content-list").innerHTML = "";
+    renderNextContents(null);
+  });
+
   wrapper.appendChild(totalSlide);
 
   // 🎞️ Tambahkan slide per payment yang bukan Investment
@@ -324,7 +339,6 @@ function renderPaymentSlides(paymentSummary) {
     const percent =
       income > 0 ? Math.max(Math.round((balance / income) * 100), 0) : 0;
 
-    // 🎨 Warna progress bar berdasarkan persentase
     let barColor = "bg-red-200";
     let textColor = "text-red-700";
     if (percent > 50) {
@@ -336,24 +350,45 @@ function renderPaymentSlides(paymentSummary) {
     }
 
     slide.innerHTML = `
-      <div class="flex flex-col sm:flex-row sm:justify-between">
-        <div class="order-2 sm:order-1 pt-2 sm:pt-0">
-          <span class="text-sm text-slate-400">${item.payment}</span>
-          <h1 class="text-lg font-bold text-slate-800">Rp ${item.balance}</h1>
-        </div>
-        <div class="order-1 sm:order-2 w-14 h-7">
-          <img src="${item.image}" alt="${item.payment}" class="w-full h-full object-contain">
+    <div class="flex flex-col sm:flex-row sm:justify-between">
+      <div class="order-2 sm:order-1 pt-2 sm:pt-0">
+        <span class="text-sm text-slate-400">${item.payment}</span>
+        <h1 class="text-lg font-bold text-slate-800">Rp ${item.balance}</h1>
+      </div>
+      <div class="order-1 sm:order-2 w-14 h-7">
+        <img src="${item.image}" alt="${item.payment}" class="w-full h-full object-contain">
+      </div>
+    </div>
+    <div class="w-full">
+      <div class="relative w-full h-3 overflow-hidden text-xs font-medium rounded-full bg-slate-100">
+        <div class="h-full ${barColor} rounded-full transition-all duration-300" style="width: ${percent}%"></div>
+        <div class="absolute inset-0 flex items-center justify-center ${textColor} text-[10px] font-bold">
+          ${percent}%
         </div>
       </div>
-      <div class="w-full">
-        <div class="relative w-full h-3 overflow-hidden text-xs font-medium rounded-full bg-slate-100">
-          <div class="h-full ${barColor} rounded-full transition-all duration-300" style="width: ${percent}%"></div>
-          <div class="absolute inset-0 flex items-center justify-center ${textColor} text-[10px] font-bold">
-            ${percent}%
-          </div>
-        </div>
-      </div>
-    `;
+    </div>
+  `;
+
+    // 🖱️ Event click untuk highlight + update data
+    slide.addEventListener("click", () => {
+      // Hapus highlight dari semua card kecuali totalSlide
+      document.querySelectorAll(".swiper-slide").forEach((s) => {
+        if (s !== totalSlide) {
+          s.classList.remove("bg-slate-200", "border", "border-slate-400");
+          s.classList.add("bg-white");
+        }
+      });
+
+      // Highlight card terpilih
+      slide.classList.remove("bg-white");
+      slide.classList.add("bg-slate-200", "border", "border-slate-400");
+
+      // Update title
+      contentTitle.innerHTML = `List of Transactions <span class="text-blue-500">${item.payment}</span>`;
+
+      // Update list transaksi sesuai payment
+      renderNextContents(item.payment);
+    });
 
     wrapper.appendChild(slide);
   });

@@ -52,17 +52,23 @@ async function loadInvestations() {
   }
 }
 
-function renderNextContents() {
+function renderNextContents(filterPortfolio = null) {
+  let dataToRender = rawData;
+
+  // 🔍 Filter kalau ada portfolio yang dipilih
+  if (filterPortfolio) {
+    dataToRender = rawData.filter((d) => d.portfolio === filterPortfolio);
+  }
+
   const start = currentPage * itemsPerPage;
   const end = start + itemsPerPage;
-  const sliced = rawData.slice(start, end);
+  const sliced = dataToRender.slice(start, end);
   const list = document.getElementById("content-list");
 
   sliced.forEach((data, index) => {
     const container = document.createElement("div");
     container.className = "flex justify-between transition";
 
-    // 🎨 Warna type
     let bgColor = "bg-red-100";
     let textColor = "text-red-700";
     if (data.type === "Buy") {
@@ -105,19 +111,16 @@ function renderNextContents() {
             <p class="text-sm font-medium">${data.nominal}</p>
           </div>
         </div>
-        <div
-          class="absolute right-0 top-0 h-full flex items-center bg-white translate-x-full transition-all duration-300 action-buttons">
-          <button class="btn-edit flex items-center justify-center text-white w-16 h-full bg-yellow-500" 
-            data-id="${data.id}">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-            </svg>
+        <div class="absolute right-0 top-0 h-full flex items-center bg-white translate-x-full transition-all duration-300 action-buttons">
+          <button class="btn-edit flex items-center justify-center text-white w-16 h-full bg-yellow-500" data-id="${
+            data.id
+          }">
+            ✏️
           </button>
-          <button class="btn-delete flex items-center justify-center text-white w-16 h-full bg-red-500" 
-            data-id="${data.id}">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-            </svg>
+          <button class="btn-delete flex items-center justify-center text-white w-16 h-full bg-red-500" data-id="${
+            data.id
+          }">
+            🗑
           </button>
         </div>
       </div>
@@ -139,31 +142,27 @@ function renderNextContents() {
     const content = container.querySelector(".content");
     const buttons = container.querySelector(".action-buttons");
 
-    let resetSwipeTimeout; // ⏱️ timer reset per item
-
+    let resetSwipeTimeout;
     hammer.on("swipeleft", () => {
       content.classList.add("translate-x-[-8rem]");
       buttons.classList.remove("translate-x-full");
-
-      clearTimeout(resetSwipeTimeout); // pastikan tidak dobel
+      clearTimeout(resetSwipeTimeout);
       resetSwipeTimeout = setTimeout(() => {
         content.classList.remove("translate-x-[-8rem]");
         buttons.classList.add("translate-x-full");
-      }, 1500); // ⏱️ 1,5 detik
+      }, 1500);
     });
 
     hammer.on("swiperight", () => {
       content.classList.remove("translate-x-[-8rem]");
       buttons.classList.add("translate-x-full");
-
       clearTimeout(resetSwipeTimeout);
     });
   });
 
   currentPage++;
   const seeMoreBtn = document.getElementById("see-more-btn");
-
-  if (currentPage * itemsPerPage >= rawData.length) {
+  if (currentPage * itemsPerPage >= dataToRender.length) {
     seeMoreBtn.classList.add("hidden");
   } else {
     seeMoreBtn.classList.remove("hidden");
@@ -172,6 +171,8 @@ function renderNextContents() {
 
 function renderCardSlides(cards) {
   const wrapper = document.getElementById("slide-wrapper");
+  const contentTitle = document.querySelector("#content-section h2");
+
   wrapper.innerHTML = "";
 
   // Total Balance dengan nominal dari seluruh kartu
@@ -179,23 +180,68 @@ function renderCardSlides(cards) {
     return sum + parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
   }, 0);
 
+  // Hitung total max value berdasarkan portfolio
+  const maxValues = {
+    "Married Saving": 85000000,
+    Retirement: 800000000,
+  };
+
+  const totalMaxValues = Object.values(maxValues).reduce(
+    (sum, value) => sum + value,
+    0
+  );
+
+  // Hitung persen total
+  let totalPercent = (totalBalance / totalMaxValues) * 100;
+  if (totalPercent > 100) totalPercent = 100;
+
   // Slide total balance
   const totalSlide = document.createElement("div");
   totalSlide.className =
-    "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white";
+    "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white transition hover:bg-slate-700 hover:cursor-pointer";
   totalSlide.innerHTML = `
     <div class="flex justify-between">
       <div>
-        <span class="text-sm text-slate-200">Balance All Investments</span>
-        <h1 class="text-lg font-bold text-white">Rp ${totalBalance.toLocaleString(
-          "en-US"
-        )}</h1>
+        <span class="text-sm text-slate-400">Balance All Investments</span>
+        <h1 class="text-lg font-bold text-white">
+          Rp ${totalBalance.toLocaleString("en-US")}
+        </h1>
       </div>
       <div class="w-7 h-7">
         <img src="assets/img/icons/Money.png" alt="All Investments" class="w-full h-full object-contain">
       </div>
     </div>
+    <div class="w-full">
+      <div class="flex justify-between text-xs font-semibold text-slate-400 mb-1">
+        <span>Rp 0</span>
+        <span>Rp ${totalMaxValues.toLocaleString("en-US")}</span>
+      </div>
+      <div class="relative w-full h-3 overflow-hidden text-xs font-medium rounded-full bg-slate-100">
+        <div class="h-full bg-green-200 rounded-full transition-all duration-300" style="width: ${totalPercent}%"></div>
+        <div class="absolute inset-0 flex items-center justify-center text-green-700 text-[10px] font-bold">
+          ${totalPercent.toFixed(2)}%
+        </div>
+      </div>
+    </div>
   `;
+
+  totalSlide.addEventListener("click", () => {
+    // Hapus highlight semua card
+    document.querySelectorAll(".swiper-slide").forEach((s) => {
+      s.classList.remove("bg-slate-200", "border", "border-slate-400");
+      s.classList.add(s === totalSlide ? "bg-slate-800" : "bg-white");
+    });
+
+    // Reset title & filter
+    contentTitle.innerHTML = `List of Investations`;
+    currentFilter = null;
+
+    // Reset halaman & tampilkan semua data
+    currentPage = 0;
+    document.getElementById("content-list").innerHTML = "";
+    renderNextContents(null);
+  });
+
   wrapper.appendChild(totalSlide);
 
   // Group cards by platform-portfolio
@@ -221,25 +267,62 @@ function renderCardSlides(cards) {
 
   // Slide per investasi
   Object.values(grouped).forEach((item) => {
+    const maxValue = maxValues[item.portfolio] || 1;
+
+    // Hitung persen
+    let percent = (item.totalNominal / maxValue) * 100;
+    if (percent > 100) percent = 100; // biar gak lebih dari 100%
+
     const slide = document.createElement("div");
     slide.className =
-      "swiper-slide rounded-xl bg-white p-4 shadow space-y-10 text-slate-800";
+      "swiper-slide rounded-xl bg-white p-4 shadow space-y-10 text-slate-800 transition hover:bg-slate-50 hover:cursor-pointer";
 
     slide.innerHTML = `
       <div class="flex justify-between">
         <div>
           <span class="text-sm text-slate-400">${item.portfolio}</span>
-          <h1 class="text-lg font-bold text-slate-800">${
-            "Rp " + item.totalNominal.toLocaleString("en-US")
-          }</h1>
+          <h1 class="text-lg font-bold text-slate-800">
+            ${"Rp " + item.totalNominal.toLocaleString("en-US")}
+          </h1>
         </div>
         <div class="w-14 h-7">
-          <img src="${getPlatformURL(item.platform)}" alt="${
-      item.platform
-    }" class="w-full h-full object-contain">
+          <img src="${getPlatformURL(item.platform)}" 
+            alt="${item.platform}" class="w-full h-full object-contain">
+        </div>
+      </div>
+      <div class="w-full">
+        <div class="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+          <span>Rp 0</span>
+          <span>${"Rp " + maxValue.toLocaleString("en-US")}</span>
+        </div>
+        <div class="relative w-full h-3 overflow-hidden text-xs font-medium rounded-full bg-slate-100">
+          <div class="h-full bg-green-200 rounded-full transition-all duration-300" style="width: ${percent}%"></div>
+          <div class="absolute inset-0 flex items-center justify-center text-green-700 text-[10px] font-bold">
+            ${percent.toFixed(2)}%
+          </div>
         </div>
       </div>
     `;
+
+    slide.addEventListener("click", () => {
+      // Hapus highlight dari semua card kecuali totalSlide
+      document.querySelectorAll(".swiper-slide").forEach((s) => {
+        if (s !== totalSlide) {
+          s.classList.remove("bg-slate-200", "border", "border-slate-400");
+          s.classList.add("bg-white");
+        }
+      });
+
+      // Highlight card terpilih
+      slide.classList.remove("bg-white");
+      slide.classList.add("bg-slate-200", "border", "border-slate-400");
+
+      // Update title
+      contentTitle.innerHTML = `List of Investations <span class="text-blue-500">${item.portfolio}</span>`;
+
+      // Update list transaksi sesuai portfolio
+      renderNextContents(item.portfolio);
+    });
 
     wrapper.appendChild(slide);
   });
@@ -248,19 +331,27 @@ function renderCardSlides(cards) {
   if (swiperInstance) swiperInstance.destroy(true, true);
 
   swiperInstance = new Swiper(".mySwiper", {
-    spaceBetween: 24,
+    spaceBetween: 16,
     pagination: {
       el: ".swiper-pagination",
       clickable: true,
     },
     breakpoints: {
       0: {
-        slidesPerView: 1,
+        slidesPerView: 2,
         slidesPerGroup: 1,
+        grid: {
+          rows: 2,
+          fill: "row",
+        },
       },
       768: {
         slidesPerView: 2,
         slidesPerGroup: 2,
+        grid: {
+          rows: 2,
+          fill: "row",
+        },
       },
     },
   });

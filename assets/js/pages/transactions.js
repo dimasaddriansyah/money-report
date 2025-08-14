@@ -290,10 +290,10 @@ function renderPaymentSlides(paymentSummary) {
   totalSlide.innerHTML = `
     <div class="flex flex-col sm:flex-row sm:justify-between">
       <div class="order-2 sm:order-1 pt-2 sm:pt-0">
-        <span class="text-sm text-slate-200">Balance All Payments</span>
-        <h1 class="text-lg font-bold text-white">Rp ${totalBalance.toLocaleString(
-          "en-US"
-        )}</h1>
+        <span class="text-sm text-slate-400">All Balance</span>
+        <h1 class="text-lg font-bold text-white">
+          Rp ${totalBalance.toLocaleString("en-US")}
+        </h1>
       </div>
       <div class="order-1 sm:order-2 w-7 h-7">
         <img src="assets/img/icons/Money.png" alt="All Payments" class="w-full h-full object-contain">
@@ -315,12 +315,12 @@ function renderPaymentSlides(paymentSummary) {
     });
 
     // Reset title & filter
-    contentTitle.innerHTML = `List of Transactions`;
+    contentTitle.innerHTML = `Last Transactions`;
     currentFilter = null;
 
     // Reset halaman & tampilkan semua data
     currentPage = 0;
-    document.getElementById("content-list").innerHTML = "";
+    document.getElementById("transaction-list").innerHTML = "";
     renderNextContents(null);
   });
 
@@ -384,7 +384,7 @@ function renderPaymentSlides(paymentSummary) {
       slide.classList.add("bg-slate-200", "border", "border-slate-400");
 
       // Update title
-      contentTitle.innerHTML = `List of Transactions <span class="text-blue-500">${item.payment}</span>`;
+      contentTitle.innerHTML = `Last Transactions <span class="text-blue-500">${item.payment}</span>`;
 
       // Update list transaksi sesuai payment
       renderNextContents(item.payment);

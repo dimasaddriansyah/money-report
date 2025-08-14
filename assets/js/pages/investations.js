@@ -71,6 +71,7 @@ function renderNextContents(filterPortfolio = null) {
 
     let bgColor = "bg-red-100";
     let textColor = "text-red-700";
+
     if (data.type === "Buy") {
       bgColor = "bg-green-100";
       textColor = "text-green-700";
@@ -83,30 +84,30 @@ function renderNextContents(filterPortfolio = null) {
             <p class="text-xs text-slate-400">#</p>
             <p class="text-sm font-medium">${start + index + 1}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Type</p>
             <span class="inline-block text-xs px-1.5 py-0.5 rounded ${bgColor} ${textColor} font-medium">
               ${data.type}
             </span>
           </div>
-          <div class="w-full sm:w-1/3 hidden sm:flex"></div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3 hidden sm:flex"></div>
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Payment Date</p>
             <p class="text-sm font-medium">${data.payment_date}</p>
           </div>
-          <div class="w-full sm:w-1/3">
-            <p class="text-xs text-slate-400">Portfolio</p>
-            <p class="text-sm font-medium">${data.portfolio}</p>
-          </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Platform</p>
             <p class="text-sm font-medium">${data.platform}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
+            <p class="text-xs text-slate-400">Portfolio</p>
+            <p class="text-sm font-medium">${data.portfolio}</p>
+          </div>
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Product</p>
             <p class="text-sm font-medium">${data.product}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Nominal</p>
             <p class="text-sm font-medium">${data.nominal}</p>
           </div>
@@ -199,10 +200,11 @@ function renderCardSlides(cards) {
   const totalSlide = document.createElement("div");
   totalSlide.className =
     "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white transition hover:bg-slate-700 hover:cursor-pointer";
+
   totalSlide.innerHTML = `
-    <div class="flex justify-between">
-      <div>
-        <span class="text-sm text-slate-400">Balance All Investments</span>
+    <div class="flex flex-col sm:flex-row sm:justify-between">
+      <div class="order-2 sm:order-1 pt-2 sm:pt-0">
+        <span class="text-sm text-slate-400">All Balance</span>
         <h1 class="text-lg font-bold text-white">
           Rp ${totalBalance.toLocaleString("en-US")}
         </h1>
@@ -278,8 +280,8 @@ function renderCardSlides(cards) {
       "swiper-slide rounded-xl bg-white p-4 shadow space-y-10 text-slate-800 transition hover:bg-slate-50 hover:cursor-pointer";
 
     slide.innerHTML = `
-      <div class="flex justify-between">
-        <div>
+      <div class="flex flex-col sm:flex-row sm:justify-between">
+        <div class="order-2 sm:order-1 pt-2 sm:pt-0">
           <span class="text-sm text-slate-400">${item.portfolio}</span>
           <h1 class="text-lg font-bold text-slate-800">
             ${"Rp " + item.totalNominal.toLocaleString("en-US")}

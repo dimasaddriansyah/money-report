@@ -2,9 +2,12 @@ const API_URL =
   "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/newReport!A2:K?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
 
 let allGroupedData = [];
-let currentPage = 0;
-let lastRenderedDate = "";
 let swiperInstance;
+let dailyChartInstance = null;
+let topChartInstance = null;
+let categoriesChartInstance = null;
+let lastRenderedDate = "";
+let currentPage = 0;
 
 async function loadTransactions() {
   try {
@@ -52,12 +55,21 @@ async function loadTransactions() {
   }
 }
 
-function renderNextContents() {
-  const slicedData = allGroupedData.slice(0, 10);
+function renderNextContents(payment) {
+  lastRenderedDate = "";
+  const list = document.getElementById("transaction-list");
+  list.innerHTML = "";
+
+  let filteredData = allGroupedData;
+
+  if (payment) {
+    filteredData = allGroupedData.filter((d) => d.payment === payment);
+  }
+
+  const slicedData = filteredData.slice(0, 10);
 
   if (slicedData.length === 0) return;
 
-  const list = document.getElementById("transaction-list");
   const grouped = {};
 
   slicedData.forEach((data) => {
@@ -259,6 +271,16 @@ function calculatePaymentSummary(transactions) {
 
 function renderPaymentSlides(paymentSummary) {
   const wrapper = document.getElementById("slide-wrapper");
+  const contentTitle = document.querySelector("#transaction-section h2");
+  const contentTitleTopExpenses = document.querySelector(
+    "#top-expenses-section h2"
+  );
+  const contentTitleDailyExpenses = document.querySelector(
+    "#daily-expenses-section h2"
+  );
+  const contentTitleCategoriesExpenses = document.querySelector(
+    "#categories-expenses-section h2"
+  );
   wrapper.innerHTML = "";
 
   // 🚫 Filter: Buang data dengan payment = "Investment"
@@ -274,12 +296,12 @@ function renderPaymentSlides(paymentSummary) {
   // 💳 Tambahkan slide total balance paling depan
   const totalSlide = document.createElement("div");
   totalSlide.className =
-    "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white transition hover:bg-slate-700 hover:cursor-default";
+    "swiper-slide rounded-xl bg-slate-800 p-4 shadow space-y-10 text-white transition hover:bg-slate-700 hover:cursor-pointer";
 
   totalSlide.innerHTML = `
     <div class="flex flex-col sm:flex-row sm:justify-between">
       <div class="order-2 sm:order-1 pt-2 sm:pt-0">
-        <span class="text-sm text-slate-200">Balance All Payments</span>
+        <span class="text-sm text-slate-400">All Balance</span>
         <h1 class="text-lg font-bold text-white">Rp ${totalBalance.toLocaleString(
           "en-US"
         )}</h1>
@@ -294,6 +316,31 @@ function renderPaymentSlides(paymentSummary) {
       </div>
     </div>
   `;
+
+  // 🖱️ Klik totalSlide = reset filter
+  totalSlide.addEventListener("click", () => {
+    // Hapus highlight semua card
+    document.querySelectorAll(".swiper-slide").forEach((s) => {
+      s.classList.remove("bg-slate-200", "border", "border-slate-400");
+      s.classList.add(s === totalSlide ? "bg-slate-800" : "bg-white");
+    });
+
+    // Reset title & filter
+    contentTitleDailyExpenses.innerHTML = `Daily Expenses`;
+    contentTitleTopExpenses.innerHTML = `Top Expenses`;
+    contentTitleCategoriesExpenses.innerHTML = `Categories Expenses`;
+    contentTitle.innerHTML = `Last Transactions`;
+
+    // Reset halaman & tampilkan semua data
+    currentPage = 0;
+    document.getElementById("transaction-list").innerHTML = "";
+
+    dailyChart(null);
+    topChart(null);
+    categoriesChart(null);
+    renderNextContents(null);
+  });
+
   wrapper.appendChild(totalSlide);
 
   // 🎞️ Tambahkan slide per payment yang bukan Investment
@@ -339,6 +386,33 @@ function renderPaymentSlides(paymentSummary) {
         </div>
       </div>
     `;
+
+    // 🖱️ Event click untuk highlight + update data
+    slide.addEventListener("click", () => {
+      // Hapus highlight dari semua card kecuali totalSlide
+      document.querySelectorAll(".swiper-slide").forEach((s) => {
+        if (s !== totalSlide) {
+          s.classList.remove("bg-slate-200", "border", "border-slate-400");
+          s.classList.add("bg-white");
+        }
+      });
+
+      // Highlight card terpilih
+      slide.classList.remove("bg-white");
+      slide.classList.add("bg-slate-200", "border", "border-slate-400");
+
+      // Update title
+      contentTitleDailyExpenses.innerHTML = `Daily Expenses <span class="text-blue-500">${item.payment}</span>`;
+      contentTitleTopExpenses.innerHTML = `Top Expenses <span class="text-blue-500">${item.payment}</span>`;
+      contentTitleCategoriesExpenses.innerHTML = `Categories Expenses <span class="text-blue-500">${item.payment}</span>`;
+      contentTitle.innerHTML = `List of Transactions <span class="text-blue-500">${item.payment}</span>`;
+
+      // Update list transaksi sesuai payment
+      dailyChart(item.payment);
+      topChart(item.payment);
+      categoriesChart(item.payment);
+      renderNextContents(item.payment);
+    });
 
     wrapper.appendChild(slide);
   });
@@ -704,18 +778,21 @@ function openDeleteModal(data) {
   });
 }
 
-function dailyChart() {
-  const dailyData = allGroupedData.filter((item) => item.type === "Expenses");
+function dailyChart(payment = null) {
+  let dailyData = allGroupedData.filter((item) => item.type === "Expenses");
+
+  if (payment) {
+    dailyData = dailyData.filter((d) => d.payment === payment);
+  }
 
   const groupByDate = {};
 
-  // fungsi bantu buat format tanggal "04 August"
+  // fungsi bantu format tanggal "04 August"
   function formatDateLabel(dateStr) {
     const parts = dateStr.split(" "); // misal: ["04", "August", "2025", "14:20:31"]
     return parts[0] + " " + parts[1]; // "04 August"
   }
 
-  // proses grouping
   dailyData.forEach((item) => {
     const dateLabel = formatDateLabel(item.date);
     const nominal = parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
@@ -726,23 +803,44 @@ function dailyChart() {
     groupByDate[dateLabel] += nominal;
   });
 
-  // 3. Ubahkan object grouping ke array untuk chart
   const groupedArray = Object.keys(groupByDate).map((key) => ({
     dateLabel: key,
     totalNominal: groupByDate[key],
   }));
 
-  // 4. Urutkan berdasarkan tanggal jika perlu (optional, karena string tanggal dan bulan)
+  // Urutkan berdasarkan tanggal
   groupedArray.sort((a, b) => {
-    // parsing ulang untuk sort by date sebenarnya
-    const dateA = new Date(a.dateLabel + " 2025"); // asumsikan tahun 2025
+    const dateA = new Date(a.dateLabel + " 2025");
     const dateB = new Date(b.dateLabel + " 2025");
     return dateA - dateB;
   });
 
-  const chart = document.getElementById("dailyChart").getContext("2d");
+  const chartContainer = document.getElementById("dailyChartContainer");
 
-  new Chart(chart, {
+  // ❌ Data kosong → tampilkan empty state
+  if (groupedArray.length === 0) {
+    chartContainer.innerHTML = `
+      <div class="flex flex-col items-center">
+        <img src="assets/img/animation/empty.svg" width="200" height="200">
+        <span class="text-slate-400 mt-2">Data tidak ditemukan</span>
+      </div>
+    `;
+    if (dailyChartInstance) {
+      dailyChartInstance.destroy();
+      dailyChartInstance = null;
+    }
+    return;
+  }
+
+  // ✅ Ada data → render canvas chart
+  chartContainer.innerHTML = `<canvas id="dailyChart" height="400"></canvas>`;
+  const ctx = document.getElementById("dailyChart").getContext("2d");
+
+  if (dailyChartInstance) {
+    dailyChartInstance.destroy();
+  }
+
+  dailyChartInstance = new Chart(ctx, {
     type: "line",
     data: {
       labels: groupedArray.map((item) => item.dateLabel),
@@ -752,7 +850,7 @@ function dailyChart() {
           data: groupedArray.map((item) => item.totalNominal),
           borderColor: "#EF4444",
           backgroundColor: "#FEF2F299",
-          tension: 0.3, // untuk lengkungan garis (smooth)
+          tension: 0.3,
           pointRadius: 5,
           pointHoverRadius: 7,
           fill: true,
@@ -761,31 +859,21 @@ function dailyChart() {
       ],
     },
     options: {
-      responsive: false,
+      responsive: true,
+      maintainAspectRatio: false,
       scales: {
-        x: {
-          title: {
-            display: true,
-            text: "Date",
-          },
-        },
+        x: { title: { display: true, text: "Date" } },
         y: {
-          title: {
-            display: true,
-            text: "Nominal (IDR)",
-          },
+          title: { display: true, text: "Nominal (IDR)" },
           beginAtZero: true,
         },
       },
       plugins: {
-        legend: {
-          position: "top",
-        },
+        legend: { position: "top" },
         tooltip: {
           enabled: true,
           callbacks: {
             label: function (context) {
-              // Format nominal dengan pemisah ribuan
               return (
                 context.dataset.label +
                 ": Rp " +
@@ -799,35 +887,54 @@ function dailyChart() {
   });
 }
 
-function topChart() {
-  const rawData = allGroupedData.filter((item) => item.type === "Expenses");
+function topChart(payment = null) {
+  let rawData = allGroupedData.filter((item) => item.type === "Expenses");
 
-  // Group by remark dan hitung total nominal
+  if (payment) {
+    rawData = rawData.filter((d) => d.payment === payment);
+  }
+
   const groupedByRemark = rawData.reduce((remarks, item) => {
     const remark = item.remark;
     const nominal = parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
 
     if (!remarks[remark]) {
-      remarks[remark] = {
-        remark: remark,
-        totalNominal: 0,
-      };
+      remarks[remark] = { remark, totalNominal: 0 };
     }
-
     remarks[remark].totalNominal += nominal;
     return remarks;
   }, {});
 
-  // Jika ingin hasil sebagai array, bukan objek
-  const remarkGroup = Object.values(groupedByRemark).sort((a, b) => {
-    return b.totalNominal - a.totalNominal;
-  });
+  const topData = Object.values(groupedByRemark)
+    .sort((a, b) => b.totalNominal - a.totalNominal)
+    .slice(0, 10);
 
-  const topData = remarkGroup.slice(0, 10);
+  const chartContainer = document.getElementById("topChartContainer");
 
-  const chart = document.getElementById("topChart").getContext("2d");
+  // ❌ Kalau tidak ada data
+  if (topData.length === 0) {
+    chartContainer.innerHTML = `
+      <div class="flex flex-col items-center">
+        <img src="assets/img/animation/empty.svg" width="200" height="200">
+        <span class="text-slate-400 mt-2">Data tidak ditemukan</span>
+      </div>
+    `;
+    if (topChartInstance) {
+      topChartInstance.destroy();
+      topChartInstance = null;
+    }
+    return;
+  }
 
-  new Chart(chart, {
+  // ✅ Kalau ada data → render canvas
+  chartContainer.innerHTML = `<canvas id="topChart" height="400"></canvas>`;
+  const ctx = document.getElementById("topChart").getContext("2d");
+
+  if (topChartInstance) {
+    topChartInstance.destroy();
+  }
+
+  topChartInstance = new Chart(ctx, {
     type: "bar",
     data: {
       labels: topData.map((item) => item.remark),
@@ -842,59 +949,89 @@ function topChart() {
       ],
     },
     options: {
-      responsive: false,
+      responsive: true,
+      maintainAspectRatio: false,
       indexAxis: "y",
     },
   });
 }
 
-function categoriesChart() {
-  const categoriesData = allGroupedData.filter(
+function categoriesChart(payment = null) {
+  let categoriesData = allGroupedData.filter(
     (item) => item.type === "Expenses"
   );
 
-  // Group by category dan hitung total nominal per kategori
+  if (payment) {
+    categoriesData = categoriesData.filter((d) => d.payment === payment);
+  }
+
   const groupedByCategory = categoriesData.reduce((categories, item) => {
     const category = item.category;
     const nominal = parseInt(item.nominal.replace(/[^0-9]/g, ""), 10);
 
     if (!categories[category]) {
-      categories[category] = {
-        category: category,
-        totalNominal: 0,
-      };
+      categories[category] = { category, totalNominal: 0 };
     }
-
     categories[category].totalNominal += nominal;
     return categories;
   }, {});
 
-  // Jika ingin hasil sebagai array, bukan objek
   const categoriesGroup = Object.values(groupedByCategory);
 
-  const chart = document.getElementById("categoriesChart").getContext("2d");
-  new Chart(chart, {
-    type: "doughnut",
-    data: {
-      labels: categoriesGroup.map((item) => item.category),
-      datasets: [
-        {
-          axis: "y",
-          label: "Nominal",
-          data: categoriesGroup.map((item) => item.totalNominal),
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      responsive: false,
-      plugins: {
-        legend: {
-          position: "bottom", // legend di bawah
+  const chartContainer = document.getElementById("categoriesChartContainer");
+
+  // Destroy instance lama
+  if (categoriesChartInstance) {
+    categoriesChartInstance.destroy();
+    categoriesChartInstance = null;
+  }
+
+  // kalau kosong → tampilkan teks
+  if (categoriesGroup.length === 0) {
+    chartContainer.innerHTML = `
+      <div class="flex flex-col items-center">
+        <img src="assets/img/animation/empty.svg" width="200" height="200">
+        <span class="text-slate-400 mt-2">Data tidak ditemukan</span>
+      </div>
+    `;
+    categoriesChartInstance = null;
+    return;
+  }
+
+  // kalau ada data → tampilkan canvas untuk chart
+  chartContainer.innerHTML = `<canvas id="categoriesChart"></canvas>`;
+  const ctx = document.getElementById("categoriesChart").getContext("2d");
+
+  if (!categoriesChartInstance) {
+    categoriesChartInstance = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: categoriesGroup.map((item) => item.category),
+        datasets: [
+          {
+            label: "Nominal",
+            data: categoriesGroup.map((item) => item.totalNominal),
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: "bottom" },
         },
       },
-    },
-  });
+    });
+  } else {
+    categoriesChartInstance.data.labels = categoriesGroup.map(
+      (item) => item.category
+    );
+    categoriesChartInstance.data.datasets[0].data = categoriesGroup.map(
+      (item) => item.totalNominal
+    );
+    categoriesChartInstance.update();
+  }
 }
 
 async function initApp() {

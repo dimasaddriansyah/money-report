@@ -36,20 +36,28 @@
     <!-- Daily Expenses Chart -->
     <section id="daily-expenses-section" class="bg-white rounded-xl shadow mx-4 mb-6">
       <h2 class="p-4 text-lg font-semibold rounded-t-xl bg-slate-100">Daily Expenses</h2>
-      <canvas id="dailyChart" class="p-4 w-full" height="400"></canvas>
+      <div id="dailyChartContainer" class="p-4 w-full">
+        <canvas id="dailyChart" class="w-full" height="400"></canvas>
+      </div>
     </section>
 
     <!-- Top Expenses Chart -->
     <section id="top-expenses-section" class="bg-white rounded-xl shadow mx-4 mb-6">
       <h2 class="p-4 text-lg font-semibold rounded-t-xl bg-slate-100">Top Expenses</h2>
-      <canvas id="topChart" class="p-4 w-full" height="400"></canvas>
+      <div class="flex justify-center">
+        <div id="topChartContainer" class="p-4 w-full">
+          <canvas id="topChart" class="w-full" height="400"></canvas>
+        </div>
+      </div>
     </section>
 
     <!-- Categories Expenses Chart -->
     <section id="categories-expenses-section" class="bg-white rounded-xl shadow mx-4 mb-6">
       <h2 class="p-4 text-lg font-semibold rounded-t-xl bg-slate-100">Categories Expenses</h2>
       <div class="flex justify-center">
-        <canvas id="categoriesChart" class="p-4 w-full" height="400"></canvas>
+        <div id="categoriesChartContainer" class="p-4 w-full">
+          <canvas id="categoriesChart" class="w-full" height="400"></canvas>
+        </div>
       </div>
     </section>
 

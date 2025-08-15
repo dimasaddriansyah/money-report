@@ -858,7 +858,7 @@ function dailyChart(payment = null) {
         },
       },
       plugins: {
-        legend: { position: "top" },
+        legend: false,
         tooltip: {
           enabled: true,
           callbacks: {
@@ -866,7 +866,7 @@ function dailyChart(payment = null) {
               return (
                 context.dataset.label +
                 ": Rp " +
-                context.parsed.y.toLocaleString("id-ID")
+                context.parsed.y.toLocaleString("en-US")
               );
             },
           },
@@ -944,6 +944,7 @@ function topChart(payment = null) {
       maintainAspectRatio: false,
       indexAxis: "y",
       plugins: {
+        legend: false,
         datalabels: {
           color: (context) => {
             const value = context.dataset.data[context.dataIndex];
@@ -967,7 +968,7 @@ function topChart(payment = null) {
             weight: "bold",
             size: 12,
           },
-          formatter: (value) => "Rp " + value.toLocaleString("id-ID"),
+          formatter: (value) => "Rp " + value.toLocaleString("en-US"),
         },
       },
     },
@@ -995,7 +996,9 @@ function categoriesChart(payment = null) {
     return categories;
   }, {});
 
-  const categoriesGroup = Object.values(groupedByCategory);
+  const categoriesGroup = Object.values(groupedByCategory).sort(
+    (a, b) => b.totalNominal - a.totalNominal
+  );
 
   const chartContainer = document.getElementById("categoriesChartContainer");
 
@@ -1021,6 +1024,62 @@ function categoriesChart(payment = null) {
   chartContainer.innerHTML = `<canvas id="categoriesChart"></canvas>`;
   const ctx = document.getElementById("categoriesChart").getContext("2d");
 
+  // Plugin custom untuk teks di tengah doughnut
+  const centerTextPlugin = {
+    id: "centerText",
+    afterDraw(chart) {
+      const {
+        ctx,
+        chartArea: { width, height },
+      } = chart;
+
+      // Hitung total nominal
+      const total = chart.data.datasets[0].data.reduce(
+        (sum, val) => sum + val,
+        0
+      );
+
+      ctx.save();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // Baris 1 → judul
+      ctx.font = "14px Arial";
+      ctx.fillStyle = "#B2B4BA"; // warna abu biar beda
+      ctx.fillText("Expenses", width / 2, height / 2 - 10);
+
+      // Baris 2 → total nominal
+      ctx.font = "bold 16px Arial";
+      ctx.fillStyle = "#000"; // warna hitam
+      ctx.fillText(total.toLocaleString("en-US"), width / 2, height / 2 + 12);
+
+      ctx.restore();
+    },
+  };
+
+  // Warna asli slice
+  const originalColors = [
+    "#4CAF50",
+    "#FF9800",
+    "#2196F3",
+    "#E91E63",
+    "#9C27B0",
+    "#FFC107",
+    "#00BCD4",
+    "#8BC34A",
+    "#FF5722",
+    "#3F51B5",
+  ];
+
+  // Fungsi ubah HEX ke RGBA dengan opacity
+  function setOpacity(hex, opacity) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  }
+
   if (!categoriesChartInstance) {
     categoriesChartInstance = new Chart(ctx, {
       type: "doughnut",
@@ -1031,16 +1090,46 @@ function categoriesChart(payment = null) {
             label: "Nominal",
             data: categoriesGroup.map((item) => item.totalNominal),
             borderWidth: 1,
+            backgroundColor: originalColors.slice(),
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 100,
+          easing: "easeOutQuad",
+        },
         plugins: {
           legend: { position: "bottom" },
+          datalabels: {
+            color: "#fff",
+            font: { weight: "bold", size: 12 },
+            formatter: (value, ctx) => {
+              const total = ctx.chart.data.datasets[0].data.reduce(
+                (sum, val) => sum + val,
+                0
+              );
+              const percentage = (value / total) * 100;
+              return percentage < 6 ? "" : `${percentage.toFixed(1) + "%"}`;
+            },
+          },
+        },
+        onHover: (event, elements) => {
+          const chart = event.chart;
+          if (elements.length) {
+            const index = elements[0].index;
+            chart.data.datasets[0].backgroundColor = originalColors.map(
+              (color, i) => (i === index ? color : setOpacity(color, 0.3))
+            );
+          } else {
+            chart.data.datasets[0].backgroundColor = originalColors.slice();
+          }
+          chart.update();
         },
       },
+      plugins: [ChartDataLabels, centerTextPlugin],
     });
   } else {
     categoriesChartInstance.data.labels = categoriesGroup.map(

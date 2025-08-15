@@ -932,8 +932,10 @@ function topChart(payment = null) {
           axis: "y",
           label: "Nominal",
           data: topData.map((item) => item.totalNominal),
-          fill: false,
-          borderWidth: 1,
+          fill: true,
+          borderWidth: 2,
+          borderColor: "#EF4444",
+          backgroundColor: "#FEF2F299",
         },
       ],
     },
@@ -941,7 +943,35 @@ function topChart(payment = null) {
       responsive: true,
       maintainAspectRatio: false,
       indexAxis: "y",
+      plugins: {
+        datalabels: {
+          color: (context) => {
+            const value = context.dataset.data[context.dataIndex];
+            const max = Math.max(...context.dataset.data);
+            // kalau batang panjang, warna putih; kalau pendek, hitam
+            return value > max * 0.3 ? "#EF4444" : "#EF4444";
+          },
+          anchor: (context) => {
+            const value = context.dataset.data[context.dataIndex];
+            const max = Math.max(...context.dataset.data);
+            // kalau batang panjang, taruh di tengah
+            return value > max * 0.3 ? "center" : "end";
+          },
+          align: (context) => {
+            const value = context.dataset.data[context.dataIndex];
+            const max = Math.max(...context.dataset.data);
+            // kalau batang panjang, posisikan tengah; kalau pendek, di kanan luar
+            return value > max * 0.3 ? "center" : "right";
+          },
+          font: {
+            weight: "bold",
+            size: 12,
+          },
+          formatter: (value) => "Rp " + value.toLocaleString("id-ID"),
+        },
+      },
     },
+    plugins: [ChartDataLabels],
   });
 }
 

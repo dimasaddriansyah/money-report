@@ -77,60 +77,60 @@ function renderNextContents() {
     container.innerHTML = `
       <div class="relative group overflow-hidden w-full">
         <div class="h-auto p-4 gap-y-3 sm:gap-y-3 content flex flex-wrap bg-white transition-all duration-300">
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">#</p>
             <p class="text-sm font-medium">${start + index + 1}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Status</p>
             <span class="inline-block text-xs px-1.5 py-0.5 rounded ${bgColor} ${textColor} font-medium">
               ${data.status}
             </span>
           </div>
           <div class="w-full sm:w-1/3 hidden sm:flex"></div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Source Payment</p>
             <p class="text-sm font-medium">${data.source_payment}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Target Payment</p>
             <p class="text-sm font-medium">${data.target_payment}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Nominal</p>
             <p class="text-sm font-medium">${data.nominal}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Note</p>
             <p class="text-sm font-medium">${data.note}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Inserted Date</p>
             <p class="text-sm font-medium">${data.inserted_date}</p>
           </div>
-          <div class="w-full sm:w-1/3">
+          <div class="w-1/2 sm:w-1/3">
             <p class="text-xs text-slate-400">Updated Date</p>
             <p class="text-sm font-medium">${data.updated_date}</p>
           </div>
         </div>
-        <div
-          class="absolute right-0 top-0 h-full flex items-center bg-white translate-x-full transition-all duration-300 action-buttons">
-          <button class="btn-edit flex items-center justify-center text-white w-16 h-full bg-yellow-500" data-id="${
-            data.id
-          }">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-              class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+        <div class="absolute right-0 top-0 h-full flex items-center bg-white translate-x-full transition-all duration-300 action-buttons">
+          <button class="btn-detail flex items-center justify-center text-white w-16 h-full bg-cyan-500" 
+            data-id="${data.id}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
           </button>
-          <button class="btn-delete flex items-center justify-center text-white w-16 h-full bg-red-500" data-id="${
-            data.id
-          }">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-              class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+          <button class="btn-edit flex items-center justify-center text-white w-16 h-full bg-yellow-500" 
+            data-id="${data.id}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </button>
+          <button class="btn-delete flex items-center justify-center text-white w-16 h-full bg-red-500" 
+            data-id="${data.id}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
             </svg>
           </button>
         </div>
@@ -138,6 +138,11 @@ function renderNextContents() {
     `;
 
     list.appendChild(container);
+
+    const detailBtn = container.querySelector(".btn-detail");
+    detailBtn.addEventListener("click", () => {
+      openDetailModal(data);
+    });
 
     const editBtn = container.querySelector(".btn-edit");
     editBtn.addEventListener("click", () => {
@@ -204,9 +209,9 @@ function renderCardSlides(cards) {
     <div class="flex justify-between">
       <div>
         <span class="text-sm text-slate-200">Total All Loans</span>
-        <h1 class="text-lg font-bold text-white">Rp ${totalBalance.toLocaleString(
-          "en-US"
-        )}</h1>
+        <h1 class="text-lg font-bold text-white">
+          Rp ${totalBalance.toLocaleString("en-US")}
+        </h1>
       </div>
       <div class="w-7 h-7">
         <img src="assets/img/icons/Money.png" alt="All Loans" class="w-full h-full object-contain">
@@ -240,14 +245,13 @@ function renderCardSlides(cards) {
       <div class="flex justify-between">
         <div>
           <span class="text-sm text-slate-400">${item.note}</span>
-          <h1 class="text-lg font-bold text-slate-800">${
-            "Rp " + item.totalNominal.toLocaleString("en-US")
-          }</h1>
+          <h1 class="text-lg font-bold text-slate-800">
+            ${"Rp " + item.totalNominal.toLocaleString("en-US")}
+          </h1>
         </div>
         <div class="w-14 h-7">
-          <img src="${getPaymentURL(item.target_payment)}" alt="${
-      item.target_payment
-    }" class="w-full h-full object-contain">
+          <img src="${getPaymentURL(item.target_payment)}" 
+            alt="${item.target_payment}" class="w-full h-full object-contain">
         </div>
       </div>
       <div class="w-full">
@@ -332,6 +336,29 @@ async function loadPayments() {
     });
   } catch (err) {
     console.error("Gagal memuat payment options:", err);
+  }
+}
+
+async function loadBills() {
+  const url =
+    "https://sheets.googleapis.com/v4/spreadsheets/1VW5nKe4tt0kmqKRqM7mWEa7Ggbix20eip2pMQIt2CG4/values/bills!A2:F?key=AIzaSyBJk1OZ5Iyoc3udp6N72R5F70gg6wiossY";
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+
+    return rows.map((row) => ({
+      id: row[0],
+      loan_id: row[1],
+      payment_date: row[2],
+      note: row[3],
+      nominal: row[4],
+      status: row[5],
+    }));
+  } catch (err) {
+    console.error("Gagal memuat bills:", err);
+    return [];
   }
 }
 
@@ -514,6 +541,66 @@ function openComponentModal({ mode = "create", data = {} }) {
       $statusSelect.val(data.status).trigger("change");
     }
   }, 100);
+}
+
+async function openDetailModal(data) {
+  const bills = await loadBills();
+
+  // cari bill berdasarkan id
+  const bill = bills.filter((value) => value.loan_id === data.id);
+
+  if (bill.length > 0) {
+    const contentHTML = `
+      <div class="divide-y">
+        ${bill
+          .map(
+            (bill, index) => `
+              <div class="h-auto py-4 first:pt-0 gap-y-3 sm:gap-y-3 content flex flex-wrap bg-white transition-all duration-300">
+                <div class="w-1/2 sm:w-1/3">
+                  <p class="text-xs text-slate-400">#</p>
+                  <p class="text-sm font-medium">${index + 1}</p>
+                </div>
+                <div class="w-1/2 sm:w-1/3">
+                  <p class="text-xs text-slate-400">Status</p>
+                  <span class="inline-block text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-500 font-medium">
+                    ${bill.status}
+                  </span>
+                </div>
+                <div class="w-full sm:w-1/3 hidden sm:flex"></div>
+                <div class="w-1/2 sm:w-1/3">
+                  <p class="text-xs text-slate-400">Payment Date</p>
+                  <p class="text-sm font-medium">${bill.payment_date}</p>
+                </div>
+                <div class="w-1/2 sm:w-1/3">
+                  <p class="text-xs text-slate-400">Nominal</p>
+                  <p class="text-sm font-medium">${bill.nominal}</p>
+                </div>
+                <div class="w-1/2 sm:w-1/3">
+                  <p class="text-xs text-slate-400">Note</p>
+                  <p class="text-sm font-medium">${bill.note}</p>
+                </div>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+
+    openModal({
+      title: `Detail ${data.id}`,
+      content: contentHTML,
+    });
+  } else {
+    openModal({
+      title: `Detail Loan`,
+      content: `
+      <div class="flex flex-col items-center">
+        <img src="assets/img/animation/empty.svg" width="200" height="200">
+        <span class="text-slate-400 mt-2">Data tidak ditemukan</span>
+      </div>
+      `,
+    });
+  }
 }
 
 function openDeleteModal(data) {

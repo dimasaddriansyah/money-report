@@ -749,12 +749,8 @@ function openComponentModal({ mode = "create", data = {} }) {
       } else {
         payload.action = "transaction_create";
         payload.date = now;
-
-        const lastId = rawData.length > 0 ? rawData[0].id : null;
-        if (lastId && /^TRX-\d+$/.test(lastId)) {
-          newId = "TRX-" + new Date().toISOString().replace(/[-:.TZ]/g, "");
-        }
-        payload.transaction_id = newId;
+        payload.transaction_id =
+          "TRX-" + new Date().toISOString().replace(/[-:.TZ]/g, "");
 
         let investationId = null;
         // ✅ Jika Investation, generate investation_id

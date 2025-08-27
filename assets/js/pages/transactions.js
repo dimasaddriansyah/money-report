@@ -121,9 +121,13 @@ function renderNextContents(payment) {
             <div
               class="h-28 px-4 content flex justify-between items-center transition-all duration-300 bg-white">
               <div class="flex flex-col">
-                <div class="w-12 h-8 flex-shrink-0">
-                  <img src="${getPaymentURL(data.payment)}" 
-                  alt="${data.payment}" class="w-full h-full object-contain">
+                <div class="flex items-center gap-2">
+                  <div class="w-12 h-8 flex-shrink-0">
+                    <img src="${getPaymentURL(data.payment)}" alt="${data.payment}" class="w-full h-full object-contain">
+                  </div>
+                  <span class="inline-flex items-center text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-500 font-medium">
+                    ${data.payment}
+                  </span>
                 </div>
                 <div>
                   <p class="font-medium">${data.category}</p>

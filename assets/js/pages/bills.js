@@ -313,28 +313,28 @@ function openComponentModal({ mode = "create", data = {} }) {
 
       console.log(payload);
 
-      // fetch(
-      //   "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
-      //   {
-      //     method: "POST",
-      //     body: JSON.stringify(payload),
-      //     headers: {
-      //       "Content-Type": "text/plain",
-      //     },
-      //   }
-      // )
-      //   .then((res) => res.json())
-      //   .then(() => {
-      //     closeModal();
-      //     loadBills();
-      //     showToast(
-      //       isEdit ? "Bill updated successfully" : "Bill added successfully"
-      //     );
-      //   })
-      //   .catch((err) => {
-      //     console.error("❌ Gagal mengirim:", err);
-      //     alert("Terjadi kesalahan saat menyimpan data.");
-      //   });
+      fetch(
+        "https://script.google.com/macros/s/AKfycbzEvDfgqxBzvJIk1-_i4JfihTbq_u-_cEayKu5nVSlPxG_p_bIi5WLL2ESo879Ybe7unw/exec",
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        }
+      )
+        .then((res) => res.json())
+        .then(() => {
+          closeModal();
+          loadBills();
+          showToast(
+            isEdit ? "Bill updated successfully" : "Bill added successfully"
+          );
+        })
+        .catch((err) => {
+          console.error("❌ Gagal mengirim:", err);
+          alert("Terjadi kesalahan saat menyimpan data.");
+        });
     },
   });
 

@@ -546,6 +546,13 @@ function openComponentModal({ mode = "create", data = {} }) {
 async function openDetailModal(data) {
   const bills = await loadBills();
 
+  let bgColor = "bg-red-100";
+  let textColor = "text-red-700";
+  if (data.status === "Paid") {
+    bgColor = "bg-green-100";
+    textColor = "text-green-700";
+  }
+
   // cari bill berdasarkan id
   const bill = bills.filter((value) => value.loan_id === data.id);
 
@@ -562,7 +569,7 @@ async function openDetailModal(data) {
                 </div>
                 <div class="w-1/2 sm:w-1/3">
                   <p class="text-xs text-slate-400">Status</p>
-                  <span class="inline-block text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-500 font-medium">
+                  <span class="inline-block text-xs px-1.5 py-0.5 rounded ${bgColor} ${textColor} font-medium">
                     ${bill.status}
                   </span>
                 </div>

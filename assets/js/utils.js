@@ -34,7 +34,7 @@ function getPaymentURL(payment) {
     Saving: "assets/img/brands/Jago.svg",
     "e-Money Mandiri": "assets/img/brands/" + payment + ".png",
     "TapCash BNI": "assets/img/brands/" + payment + ".png",
-    "Blu by BCA": "assets/img/brands/" + payment + ".svg",
+    "Blu by BCA": "assets/img/brands/" + payment + ".png",
   };
   return payments[payment] || "../assets/img/team-2.jpg";
 }

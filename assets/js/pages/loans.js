@@ -549,19 +549,24 @@ async function openDetailModal(data) {
   // cari bill berdasarkan id
   const bill = bills.filter((value) => value.loan_id === data.id);
 
-  let bgColor = "bg-red-100";
-  let textColor = "text-red-700";
-  if (bill.status === "Paid") {
-    bgColor = "bg-green-100";
-    textColor = "text-green-700";
-  }
-
   if (bill.length > 0) {
     const contentHTML = `
       <div class="divide-y">
         ${bill
-          .map(
-            (bill, index) => `
+          .map((bill, index) => {
+            // tentukan warna berdasarkan status bill
+            let bgColor = "bg-red-100";
+            let textColor = "text-red-700";
+
+            if (bill.status === "Paid") {
+              bgColor = "bg-green-100";
+              textColor = "text-green-700";
+            } else if (bill.status === "Pending") {
+              bgColor = "bg-yellow-100";
+              textColor = "text-yellow-700";
+            }
+
+            return `
               <div class="h-auto py-4 first:pt-0 gap-y-3 sm:gap-y-3 content flex flex-wrap bg-white transition-all duration-300">
                 <div class="w-1/2 sm:w-1/3">
                   <p class="text-xs text-slate-400">#</p>
@@ -587,8 +592,8 @@ async function openDetailModal(data) {
                   <p class="text-sm font-medium">${bill.note}</p>
                 </div>
               </div>
-            `
-          )
+            `;
+          })
           .join("")}
       </div>
     `;

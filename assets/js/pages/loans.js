@@ -546,15 +546,15 @@ function openComponentModal({ mode = "create", data = {} }) {
 async function openDetailModal(data) {
   const bills = await loadBills();
 
+  // cari bill berdasarkan id
+  const bill = bills.filter((value) => value.loan_id === data.id);
+
   let bgColor = "bg-red-100";
   let textColor = "text-red-700";
-  if (data.status === "Paid") {
+  if (bill.status === "Paid") {
     bgColor = "bg-green-100";
     textColor = "text-green-700";
   }
-
-  // cari bill berdasarkan id
-  const bill = bills.filter((value) => value.loan_id === data.id);
 
   if (bill.length > 0) {
     const contentHTML = `

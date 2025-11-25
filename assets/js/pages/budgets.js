@@ -204,7 +204,7 @@ function renderNextContents() {
 }
 
 function renderOverviewBudgets() {
-  const budget = 7300000;
+  const budget = 7365000;
   const totalSpend = rawData.reduce((sum, item) => {
     return sum + (Number(item.nominal.replace(/[Rp,\s]/g, "")) || 0);
   }, 0);

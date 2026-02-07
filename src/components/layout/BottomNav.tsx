@@ -1,0 +1,151 @@
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import {
+  ChartTrend,
+  Wallet,
+  AppsAlt,
+  Plus,
+  Edit,
+  PencilSparkles,
+  FireAlt,
+} from "@boxicons/react";
+
+const menus = [
+  { label: "Home", path: "/", Icon: FireAlt },
+  { label: "Insights", path: "/insights", Icon: ChartTrend },
+  { label: "Budgets", path: "/budgets", Icon: Wallet },
+  { label: "Settings", path: "/settings", Icon: AppsAlt },
+];
+
+export default function BottomNav() {
+  const location = useLocation();
+  const [openFab, setOpenFab] = useState(false);
+
+  return (
+    <>
+      {/* OVERLAY */}
+      <div
+        onClick={() => setOpenFab(false)}
+        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300
+          ${openFab ? "opacity-100" : "opacity-0 pointer-events-none"}
+        `}
+      />
+
+      {/* BOTTOM NAV */}
+      <nav className="fixed inset-x-0 bottom-0 z-50 shadow-blue-950">
+        <div className="relative flex items-center justify-between px-6 py-3 bg-white">
+          {/* LEFT */}
+          <div className="flex justify-between flex-1 pr-10">
+            {menus.slice(0, 2).map((menu) => (
+              <NavItem
+                key={menu.path}
+                {...menu}
+                active={location.pathname === menu.path}
+              />
+            ))}
+          </div>
+
+          {/* CENTER FAB */}
+          <div className="absolute z-50 -translate-x-1/2 left-1/2 -top-7">
+            <button
+              onClick={() => setOpenFab(true)}
+              className="flex items-center justify-center text-white rounded-full shadow-lg cursor-pointer h-14 w-14 bg-slate-600 active:scale-95"
+            >
+              <Plus className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* RIGHT */}
+          <div className="flex justify-between flex-1 pl-10">
+            {menus.slice(2).map((menu) => (
+              <NavItem
+                key={menu.path}
+                {...menu}
+                active={location.pathname === menu.path}
+              />
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* FAB ACTION SHEET (SLIDE UP) */}
+      <div
+        className={`fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-4
+          transition-transform duration-300 ease-out
+          ${openFab ? "translate-y-0" : "translate-y-full"}
+        `}
+      >
+        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-slate-300" />
+
+        <h3 className="mb-4 text-sm font-semibold text-slate-700">
+          Add Transaction
+        </h3>
+
+        <div className="space-y-2">
+          <button
+            onClick={() => {
+              console.log("Manual input");
+              setOpenFab(false);
+            }}
+            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg cursor-pointer border-slate-100 hover:bg-slate-50"
+          >
+            <Edit className="w-5 h-5 text-blue-600" />
+            <div>
+              <div className="text-sm font-medium">Manual Input</div>
+              <div className="text-xs text-slate-500">
+                Input transaksi secara manual
+              </div>
+            </div>
+          </button>
+
+          <button
+            onClick={() => {
+              console.log("Generate input");
+              setOpenFab(false);
+            }}
+            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg cursor-pointer border-slate-100 hover:bg-slate-50"
+          >
+            <PencilSparkles className="w-5 h-5 text-amber-500" />
+            <div>
+              <div className="text-sm font-medium">Generate Input</div>
+              <div className="text-xs text-slate-500">
+                Generate otomatis dari template
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <button
+          onClick={() => setOpenFab(false)}
+          className="w-full mt-4 text-sm cursor-pointer text-slate-500 hover:font-medium hover:text-red-500"
+        >
+          Cancel
+        </button>
+      </div>
+    </>
+  );
+}
+
+function NavItem({
+  label,
+  path,
+  Icon,
+  active,
+}: {
+  label: string;
+  path: string;
+  Icon: React.ElementType;
+  active: boolean;
+}) {
+  return (
+    <Link
+      to={path}
+      className={`flex flex-col items-center gap-1 text-xs transition ${
+        active ? "font-semibold text-black" : "text-gray-400"
+      }`}
+    >
+      <Icon className="w-5 h-5" />
+      {label}
+    </Link>
+  );
+}

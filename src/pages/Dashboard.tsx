@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Edit, Trash } from "@boxicons/react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronLeftCircle,
+  ChevronRightCircle,
+  Edit,
+  Trash,
+} from "@boxicons/react";
 import Header from "../components/layout/Header";
 import {
   getPaymentClass,
@@ -47,6 +54,7 @@ export default function Dashboard() {
   // 🔹 bulan aktif
   const currentMonth = MONTHS[new Date().getMonth()];
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [year, setYear] = useState(new Date().getFullYear());
 
   // 🔹 load more
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -106,6 +114,14 @@ export default function Dashboard() {
     (a, b) => new Date(b).getTime() - new Date(a).getTime(),
   );
 
+  const getNumber = (id: string) => Number(id.replace(/\D/g, ""));
+
+  sortedDates.forEach((date) => {
+    groupedByDate[date].sort(
+      (a, b) => getNumber(b.transaction_id) - getNumber(a.transaction_id),
+    );
+  });
+
   const getTotalExpensesByDate = (transactions: Transaction[]) =>
     transactions
       .filter((trx) => trx.type === "Expenses")
@@ -132,29 +148,71 @@ export default function Dashboard() {
   const [openSwipeId, setOpenSwipeId] = useState<string | null>(null);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
+  const [openMonth, setOpenMonth] = useState(false);
+
+  const handlePrevMonth = () => {
+    const currentIndex = MONTHS.indexOf(selectedMonth);
+
+    if (currentIndex === 0) {
+      setSelectedMonth(MONTHS[11]);
+      setYear((prev) => prev - 1);
+    } else {
+      setSelectedMonth(MONTHS[currentIndex - 1]);
+    }
+  };
+
+  const handleNextMonth = () => {
+    const currentIndex = MONTHS.indexOf(selectedMonth);
+
+    if (currentIndex === 11) {
+      setSelectedMonth(MONTHS[0]);
+      setYear((prev) => prev + 1);
+    } else {
+      setSelectedMonth(MONTHS[currentIndex + 1]);
+    }
+  };
+
   return (
     <div className="min-h-screen pb-26 ">
-      <Header selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} />
+      <Header title="Cashflow 2026" />
 
       <main className="bg-blue-500">
-        <section id="head" className="p-4 ">
-          <h1 className="text-lg font-semibold">Transactions Test</h1>
+        <section id="head" className="p-4 space-y-3 bg-blue-500">
+          <div className="flex justify-center gap-4">
+            <ChevronLeftCircle
+              onClick={handlePrevMonth}
+              className="w-8 h-8 text-white self-center cursor-pointer"
+            />
+            <div className="w-30 p-1 rounded-lg border border-slate-200 bg-white  hover:bg-slate-50 text-center">
+              <div className="flex flex-col">
+                <span className="text-slate-500 text-xs">{year}</span>
+                <span className="font-semibold text-md">{selectedMonth}</span>
+              </div>
+            </div>
+            <ChevronRightCircle
+              onClick={handleNextMonth}
+              className="w-8 h-8 text-white self-center cursor-pointer"
+            />
+          </div>
+
+          <h1 className="text-lg font-semibold text-white">Transactions</h1>
         </section>
 
         <section id="transactions" className="bg-white rounded-t-3xl">
           <div className="pt-4">
             <div className="mx-auto h-1.5 w-12 rounded-full bg-slate-300" />
           </div>
-          <div className="p-4">
+          <div className="px-6 py-4">
             <span className="text-lg font-semibold">Recently Transactions</span>
           </div>
+
           {/* 🔹 SKELETON LOADER */}
           {loading && (
             <div className="space-y-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 p-4 bg-white border rounded-lg animate-pulse"
+                  className="flex items-center gap-4 p-4 bg-white animate-pulse"
                 >
                   <div className="w-12 h-12 rounded-lg bg-slate-200" />
                   <div className="flex-1 space-y-2">
@@ -170,7 +228,7 @@ export default function Dashboard() {
 
           {/* 🔹 EMPTY STATE */}
           {!loading && visibleDates.length === 0 && (
-            <div className="text-sm text-slate-500">
+            <div className="text-sm text-slate-500 px-6 py-4">
               Tidak ada transaksi di bulan {selectedMonth}
             </div>
           )}
@@ -179,7 +237,7 @@ export default function Dashboard() {
           <div onClick={() => setOpenSwipeId(null)}>
             {visibleDates.map((date) => (
               <div key={date}>
-                <div className="flex items-center justify-between px-4 py-4 text-sm font-semibold text-slate-600 bg-gray-50">
+                <div className="flex items-center justify-between px-6 py-4 text-sm font-semibold text-slate-600 bg-gray-50">
                   <span>{formatDate(date)}</span>
                   <span className="text-red-500">
                     {formatRupiah(
@@ -222,7 +280,7 @@ export default function Dashboard() {
 
                         {/* MAIN CONTENT */}
                         <div
-                          className={`flex items-center gap-4 p-4 bg-white transition-transform duration-300 ease-out ${isOpen ? "-translate-x-32" : "translate-x-0"} `}
+                          className={`flex items-center gap-4 px-6 py-4 bg-white transition-transform duration-300 ease-out ${isOpen ? "-translate-x-32" : "translate-x-0"} `}
                           onTouchStart={(e) => {
                             setTouchStartX(e.touches[0].clientX);
                           }}

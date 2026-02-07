@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   ChartTrend,
@@ -19,6 +19,7 @@ const menus = [
 
 export default function BottomNav() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [openFab, setOpenFab] = useState(false);
 
   return (
@@ -70,10 +71,7 @@ export default function BottomNav() {
 
       {/* FAB ACTION SHEET (SLIDE UP) */}
       <div
-        className={`fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-4
-          transition-transform duration-300 ease-out
-          ${openFab ? "translate-y-0" : "translate-y-full"}
-        `}
+        className={`fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-4 transition-transform duration-300 ease-out ${openFab ? "translate-y-0" : "translate-y-full"} `}
       >
         <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-slate-300" />
 
@@ -100,8 +98,8 @@ export default function BottomNav() {
 
           <button
             onClick={() => {
-              console.log("Generate input");
               setOpenFab(false);
+              setTimeout(() => navigate("/generate-form"), 150);
             }}
             className="flex items-center w-full gap-3 p-3 text-left border rounded-lg cursor-pointer border-slate-100 hover:bg-slate-50"
           >
@@ -117,7 +115,7 @@ export default function BottomNav() {
 
         <button
           onClick={() => setOpenFab(false)}
-          className="w-full mt-4 text-sm cursor-pointer text-slate-500 hover:font-medium hover:text-red-500"
+          className="w-full mt-4 p-1 text-sm cursor-pointer border rounded-lg border-slate-200 text-slate-500 hover:font-medium hover:text-red-500"
         >
           Cancel
         </button>

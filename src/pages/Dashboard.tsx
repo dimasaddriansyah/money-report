@@ -138,7 +138,7 @@ export default function Dashboard() {
 
       <main className="bg-blue-500">
         <section id="head" className="p-4 ">
-          <h1 className="text-lg font-semibold">Transactions</h1>
+          <h1 className="text-lg font-semibold">Transactions Test</h1>
         </section>
 
         <section id="transactions" className="bg-white rounded-t-3xl">

@@ -57,6 +57,7 @@ export const getTypeDesc = (type: string) => {
 export const formatDate = (dateStr: string) => {
   const d = new Date(dateStr);
   return d.toLocaleDateString("id-ID", {
+    weekday: "long",
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -69,3 +70,12 @@ export const formatRupiah = (value: number) =>
     currency: "IDR",
     minimumFractionDigits: 0,
   }).format(value);
+
+export const parseNominal = (value: string): number =>
+  Number(value.replace(/[^\d-]/g, "")) || 0;
+
+export const getPeriodRange = (monthIndex: number, year: number) => {
+  const start = new Date(year, monthIndex - 1, 25, 0, 0, 0);
+  const end = new Date(year, monthIndex, 24, 23, 59, 59);
+  return { start, end };
+};

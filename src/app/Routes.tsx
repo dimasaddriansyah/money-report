@@ -4,6 +4,7 @@ import Insights from "../pages/Insights";
 import Dashboard from "../pages/Dashboard";
 import Settings from "../pages/Settings";
 import GenerateForm from "../pages/transactions/GenerateForm";
+import TransactionCreate from "../pages/transactions/TransactionCreate";
 
 export default function AppRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function AppRoutes() {
       <Route path="/budgets" element={<Budgets />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/generate-form" element={<GenerateForm />} />
+      <Route path="/transaction/create" element={<TransactionCreate />} />
     </Routes>
   );
 }

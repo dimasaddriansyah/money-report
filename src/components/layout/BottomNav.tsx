@@ -115,7 +115,7 @@ export default function BottomNav() {
 
         <button
           onClick={() => setOpenFab(false)}
-          className="w-full mt-4 p-1 text-sm cursor-pointer border rounded-lg border-slate-200 text-slate-500 hover:font-medium hover:text-red-500"
+          className="w-full mt-4 p-1 text-sm cursor-pointer text-slate-500 hover:font-medium hover:text-red-500"
         >
           Cancel
         </button>

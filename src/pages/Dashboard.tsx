@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { useTransactions } from "../hooks/useTransactions";
 import {
-  ChevronDown,
   ChevronLeft,
-  ChevronLeftCircle,
-  ChevronRightCircle,
+  ChevronRight,
   Edit,
+  EyeAlt,
+  EyeClosed,
   Trash,
 } from "@boxicons/react";
 import Header from "../components/layout/Header";
@@ -16,45 +17,46 @@ import {
   formatDate,
   formatRupiah,
 } from "../helpers/helper";
-
-type Transaction = {
-  transaction_id: string;
-  date: string;
-  type: string;
-  payment: string;
-  category: string;
-  remark: string;
-  nominal: string;
-};
-
-const MONTHS = [
-  "Januari",
-  "Februari",
-  "Maret",
-  "April",
-  "Mei",
-  "Juni",
-  "Juli",
-  "Agustus",
-  "September",
-  "Oktober",
-  "November",
-  "Desember",
-];
-
-const PAGE_SIZE = 20;
+import jagoImg from "../assets/payments/Jago.png";
 
 export default function Dashboard() {
   const API_URL =
     "https://sheets.googleapis.com/v4/spreadsheets/1hfMdgqNThzucxyiG3nmMSKrGcXCqpIxRAmbR45iBaDY/values/transactions!A2:K?key=AIzaSyASayZmsushhgaCv6LYHULesUAPydpwsP4";
 
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
+  const MONTHS = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
+
+  const PAGE_SIZE = 20;
+
+  const [hideBalance, setHideBalance] = useState<boolean>(() => {
+    const saved = localStorage.getItem("hideBalance");
+    return saved ? JSON.parse(saved) : false;
+  });
 
   // 🔹 bulan aktif
   const currentMonth = MONTHS[new Date().getMonth()];
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [year, setYear] = useState(new Date().getFullYear());
+  const selectedMonthIndex = MONTHS.indexOf(selectedMonth);
+  const prevMonthLabel = MONTHS[(selectedMonthIndex + 11) % 12];
+
+  const { loading, transactions, balances } = useTransactions(
+    API_URL,
+    selectedMonthIndex,
+    year,
+  );
 
   // 🔹 load more
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -64,44 +66,12 @@ export default function Dashboard() {
     setVisibleCount(PAGE_SIZE);
   }, [selectedMonth]);
 
-  // 🔹 FETCH DATA
   useEffect(() => {
-    setLoading(true);
-
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        const rows = data.values ?? [];
-
-        const mapped: Transaction[] = rows.map((row: string[]) => ({
-          transaction_id: row[0] ?? "",
-          date: row[2] ?? "",
-          type: row[3] ?? "",
-          payment: row[4] ?? "",
-          category: row[5] ?? "",
-          remark: row[6] ?? "",
-          nominal: row[7] ?? "",
-        }));
-
-        mapped.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-        );
-
-        setTransactions(mapped);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
-  // 🔹 FILTER BULAN
-  const filteredTransactions = transactions.filter((trx) => {
-    if (!trx.date) return false;
-    const monthIndex = new Date(trx.date).getMonth();
-    return MONTHS[monthIndex] === selectedMonth;
-  });
+    localStorage.setItem("hideBalance", JSON.stringify(hideBalance));
+  }, [hideBalance]);
 
   // 🔹 GROUP BY DATE
-  const groupedByDate = filteredTransactions.reduce(
+  const groupedByDate = transactions.reduce(
     (acc: Record<string, Transaction[]>, trx) => {
       if (!acc[trx.date]) acc[trx.date] = [];
       acc[trx.date].push(trx);
@@ -145,10 +115,12 @@ export default function Dashboard() {
     (a, b) => new Date(b).getTime() - new Date(a).getTime(),
   );
 
-  const [openSwipeId, setOpenSwipeId] = useState<string | null>(null);
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [openSwipe, setOpenSwipe] = useState<{
+    id: string;
+    direction: "left" | "right";
+  } | null>(null);
 
-  const [openMonth, setOpenMonth] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const handlePrevMonth = () => {
     const currentIndex = MONTHS.indexOf(selectedMonth);
@@ -163,7 +135,6 @@ export default function Dashboard() {
 
   const handleNextMonth = () => {
     const currentIndex = MONTHS.indexOf(selectedMonth);
-
     if (currentIndex === 11) {
       setSelectedMonth(MONTHS[0]);
       setYear((prev) => prev + 1);
@@ -173,32 +144,77 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen pb-26 ">
+    <div className="min-h-screen bg-indigo-700">
       <Header title="Cashflow 2026" />
 
-      <main className="bg-blue-500">
-        <section id="head" className="p-4 space-y-3 bg-blue-500">
-          <div className="flex justify-center gap-4">
-            <ChevronLeftCircle
+      <main className="flex flex-col min-h-screen">
+        <section id="head">
+          <section id="date" className="flex justify-between gap-4 px-4 py-2">
+            <ChevronLeft
               onClick={handlePrevMonth}
               className="w-8 h-8 text-white self-center cursor-pointer"
             />
-            <div className="w-30 p-1 rounded-lg border border-slate-200 bg-white  hover:bg-slate-50 text-center">
+            <div className="w-full p-1 rounded-lg hover:border hover:border-white/50 text-center cursor-pointer">
               <div className="flex flex-col">
-                <span className="text-slate-500 text-xs">{year}</span>
-                <span className="font-semibold text-md">{selectedMonth}</span>
+                <span className="text-white/50 text-xs">{year}</span>
+                <span className="font-semibold text-md text-white">
+                  {`25 ${prevMonthLabel} - 24 ${selectedMonth}`}
+                </span>
               </div>
             </div>
-            <ChevronRightCircle
+            <ChevronRight
               onClick={handleNextMonth}
               className="w-8 h-8 text-white self-center cursor-pointer"
             />
-          </div>
+          </section>
 
-          <h1 className="text-lg font-semibold text-white">Transactions</h1>
+          <section id="balanceCurrently" className="px-4 py-8">
+            <span className="text-white/80">Balance</span>
+            <div className="flex gap-2 items-center">
+              <h1 className="text-2xl font-bold text-white transition-all duration-200">
+                {hideBalance ? "••••••••" : "Rp 400.000.000"}
+              </h1>
+              <button
+                onClick={() => setHideBalance((prev) => !prev)}
+                className="transition-opacity duration-200 cursor-pointer"
+              >
+                {hideBalance ? (
+                  <EyeAlt className="text-white/50" />
+                ) : (
+                  <EyeClosed className="text-white/50" />
+                )}
+              </button>
+            </div>
+          </section>
+
+          <section
+            id="balancePayments"
+            className="flex gap-3 overflow-x-auto px-4 py-4 scrollbar-hide"
+          >
+            {Object.entries(balances).map(([payment, saldo]) => (
+              <div
+                key={payment}
+                className="flex-none bg-white/10 rounded-2xl ps-3 pe-6 py-2 flex gap-4 items-center cursor-pointer"
+              >
+                <div className="bg-white/30 rounded-full w-8 h-8 flex items-center justify-center">
+                  <img src={jagoImg} alt={payment} />
+                </div>
+
+                <div className="flex flex-col">
+                  <span className="text-white/60 text-xs">{payment}</span>
+                  <span className="text-md font-medium text-white">
+                    {hideBalance ? "••••••••" : formatRupiah(saldo)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </section>
         </section>
 
-        <section id="transactions" className="bg-white rounded-t-3xl">
+        <section
+          id="transactions"
+          className="bg-white rounded-t-3xl flex-1 flex flex-col"
+        >
           <div className="pt-4">
             <div className="mx-auto h-1.5 w-12 rounded-full bg-slate-300" />
           </div>
@@ -229,12 +245,13 @@ export default function Dashboard() {
           {/* 🔹 EMPTY STATE */}
           {!loading && visibleDates.length === 0 && (
             <div className="text-sm text-slate-500 px-6 py-4">
-              Tidak ada transaksi di bulan {selectedMonth}
+              Tidak ada transaksi pada periode
+              {` 25 ${prevMonthLabel} - 24 ${selectedMonth}`}
             </div>
           )}
 
           {/* 🔹 DATA */}
-          <div onClick={() => setOpenSwipeId(null)}>
+          <div onClick={() => setOpenSwipe(null)}>
             {visibleDates.map((date) => (
               <div key={date}>
                 <div className="flex items-center justify-between px-6 py-4 text-sm font-semibold text-slate-600 bg-gray-50">
@@ -248,25 +265,21 @@ export default function Dashboard() {
 
                 <ul className="divide-y divide-slate-200">
                   {visibleGroupedByDate[date].map((trx) => {
-                    const isOpen = openSwipeId === trx.transaction_id;
+                    const isLeft =
+                      openSwipe?.id === trx.transaction_id &&
+                      openSwipe.direction === "left";
+
+                    const isRight =
+                      openSwipe?.id === trx.transaction_id &&
+                      openSwipe.direction === "right";
 
                     return (
                       <li
                         key={trx.transaction_id}
                         className="relative overflow-hidden"
                       >
-                        {/* ACTION BUTTONS (KANAN) */}
-                        <div className="absolute inset-y-0 right-0 flex">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log("EDIT:", trx.transaction_id);
-                            }}
-                            className="flex items-center justify-center w-16 text-yellow-500 bg-yellow-50"
-                          >
-                            <Edit />
-                          </button>
-
+                        {/* ACTION LEFT */}
+                        <div className="absolute inset-y-0 left-0 flex">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -277,10 +290,31 @@ export default function Dashboard() {
                             <Trash />
                           </button>
                         </div>
+                        {/* ACTION RIGHT */}
+                        <div className="absolute inset-y-0 right-0 flex">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("DETAIL:", trx.transaction_id);
+                            }}
+                            className="flex items-center justify-center w-16 text-blue-500 bg-blue-50"
+                          >
+                            <EyeAlt />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("EDIT:", trx.transaction_id);
+                            }}
+                            className="flex items-center justify-center w-16 text-yellow-500 bg-yellow-50"
+                          >
+                            <Edit />
+                          </button>
+                        </div>
 
                         {/* MAIN CONTENT */}
                         <div
-                          className={`flex items-center gap-4 px-6 py-4 bg-white transition-transform duration-300 ease-out ${isOpen ? "-translate-x-32" : "translate-x-0"} `}
+                          className={`flex items-center gap-4 px-6 py-4 bg-white transition-transform duration-300 ease-out ${isLeft ? "translate-x-16" : isRight ? "-translate-x-32" : "translate-x-0"} `}
                           onTouchStart={(e) => {
                             setTouchStartX(e.touches[0].clientX);
                           }}
@@ -291,13 +325,19 @@ export default function Dashboard() {
                             const deltaX = touchEndX - touchStartX;
 
                             // swipe left → open
-                            if (deltaX < -40) {
-                              setOpenSwipeId(trx.transaction_id);
+                            if (deltaX > -40) {
+                              setOpenSwipe({
+                                id: trx.transaction_id,
+                                direction: "left",
+                              });
                             }
 
                             // swipe right → close
-                            if (deltaX > 40) {
-                              setOpenSwipeId(null);
+                            if (deltaX < 40) {
+                              setOpenSwipe({
+                                id: trx.transaction_id,
+                                direction: "right",
+                              });
                             }
 
                             setTouchStartX(null);
@@ -342,7 +382,7 @@ export default function Dashboard() {
 
           {/* 🔹 LOAD MORE */}
           {!loading && visibleCount < flatTransactions.length && (
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-4 mb-26">
               <button
                 onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
                 className="px-6 py-2 text-sm font-medium bg-white border rounded-full cursor-pointer text-slate-700 hover:bg-slate-100"

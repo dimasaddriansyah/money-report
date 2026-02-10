@@ -10,7 +10,7 @@ export default function Header({ title, showBack = false }: HeaderProps) {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between border-b bg-white px-4 py-3">
+    <header className="top-0 z-40 flex items-center justify-between px-4 py-3">
       <div className="flex items-center gap-4">
         {showBack && (
           <button
@@ -20,7 +20,7 @@ export default function Header({ title, showBack = false }: HeaderProps) {
             <ArrowLeft className="h-5 w-5" />
           </button>
         )}
-        <h1 className="text-lg font-semibold text-slate-800">{title}</h1>
+        <h1 className="text-lg font-bold text-white">{title}</h1>
       </div>
     </header>
   );

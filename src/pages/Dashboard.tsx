@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTransactions } from "../hooks/useTransactions";
+import type { Transaction } from "../hooks/useTransactions";
 import {
   ChevronLeft,
   ChevronRight,

@@ -11,7 +11,7 @@ export default function GenerateForm() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="min-h-dvh flex flex-col">
       <Header title="Generate Input" showBack />
 
       {/* Content */}
@@ -34,7 +34,7 @@ export default function GenerateForm() {
       </div>
 
       {/* Button Bottom */}
-      <div className="w-full max-w-md mx-auto sticky bottom-0 pb-[env(safe-area-inset-bottom)]">
+      <div className="w-full max-w-md mx-auto p-4">
         <button
           onClick={handleGenerate}
           disabled={!text.trim()}

@@ -9,7 +9,7 @@ export default function TransactionCreate() {
   };
 
   return (
-    <main className="min-h-[100dvh] flex flex-col">
+    <main className="min-h-dvh flex flex-col">
       <Header title="Add Transaction" showBack />
 
       {/* Content */}
@@ -44,7 +44,7 @@ export default function TransactionCreate() {
       </div>
 
       {/* Button Bottom */}
-      <div className="w-full max-w-md mx-auto sticky bottom-0 pb-[env(safe-area-inset-bottom)]">
+      <div className="w-full max-w-md mx-auto pb-4">
         <button
           onClick={createTransaction}
           disabled={!text.trim()}

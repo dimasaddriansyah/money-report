@@ -44,7 +44,7 @@ export default function TransactionCreate() {
       </div>
 
       {/* Button Bottom */}
-      <div className="w-full max-w-md mx-auto p-4">
+      <div className="w-full max-w-md mx-auto sticky bottom-0 pb-[env(safe-area-inset-bottom)]">
         <button
           onClick={createTransaction}
           disabled={!text.trim()}

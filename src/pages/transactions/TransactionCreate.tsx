@@ -9,7 +9,7 @@ export default function TransactionCreate() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="min-h-[100dvh] flex flex-col">
       <Header title="Add Transaction" showBack />
 
       {/* Content */}

@@ -21,7 +21,7 @@ export default function TransactionCreate() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Contoh: Buatkan ringkasan laporan keuangan bulanan dengan bahasa sederhana..."
-          className="w-full rounded-xl border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-4"
+          className="w-full rounded-xl border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-4"
         />
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Category
@@ -30,7 +30,7 @@ export default function TransactionCreate() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Contoh: Buatkan ringkasan laporan keuangan bulanan dengan bahasa sederhana..."
-          className="w-full rounded-xl border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-4"
+          className="w-full rounded-xl border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-4"
         />
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Remark
@@ -39,7 +39,7 @@ export default function TransactionCreate() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Contoh: Buatkan ringkasan laporan keuangan bulanan dengan bahasa sederhana..."
-          className="w-full rounded-xl border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-4"
+          className="w-full rounded-xl border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-4"
         />
       </div>
 

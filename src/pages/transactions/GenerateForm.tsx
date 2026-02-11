@@ -25,9 +25,7 @@ export default function GenerateForm() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Contoh: Buatkan ringkasan laporan keuangan bulanan dengan bahasa sederhana..."
-          className="w-full rounded-xl border border-gray-300 p-3 text-sm
-                     focus:outline-none focus:ring-2 focus:ring-indigo-500
-                     resize-none"
+          className="w-full rounded-xl border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
         />
 
         <p className="mt-2 text-xs text-gray-500">

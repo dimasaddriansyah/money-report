@@ -79,7 +79,12 @@ export default function TransactionForm({ form, onChange, onSubmit }: Props) {
       <div className="m-4">
         <div
           className="relative flex items-center justify-center rounded-xl border border-gray-300 bg-white"
-          onClick={() => document.getElementById("dateInput")?.showPicker()}
+          onClick={() => {
+            const input = document.getElementById(
+              "dateInput",
+            ) as HTMLInputElement | null;
+            input?.showPicker();
+          }}
         >
           {/* LEFT ICON */}
           <CalendarAlt className="absolute left-4 w-4 h-4 text-slate-400 pointer-events-none" />

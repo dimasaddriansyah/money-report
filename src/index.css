@@ -1,10 +1,16 @@
 @import "tailwindcss";
 
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE & Edge */
-  scrollbar-width: none;     /* Firefox */
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: none;
 }

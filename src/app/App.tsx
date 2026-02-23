@@ -1,20 +1,22 @@
 import { HashRouter, useLocation } from "react-router-dom";
+import { Suspense } from "react";
 import AppRoutes from "./Routes";
-import BottomNav from "../components/layout/BottomNav";
+import BottomNav from "../components/BottomNav";
+import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
+import { Toaster } from "sonner";
 
 function AppContent() {
   const location = useLocation();
 
-  // route yang TIDAK ingin menampilkan BottomNav
-  const hideNavRoutes = ["/generate-form","/transaction/create"];
-
+  const hideNavRoutes = ["/generate-form", "/transaction/create"];
   const hideBottomNav = hideNavRoutes.includes(location.pathname);
 
   return (
-    <>
+    <Suspense fallback={<DashboardSkeleton />}>
       <AppRoutes />
       {!hideBottomNav && <BottomNav />}
-    </>
+      <Toaster position="top-center" richColors />
+    </Suspense>
   );
 }
 

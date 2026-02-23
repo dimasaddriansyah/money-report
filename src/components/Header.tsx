@@ -4,9 +4,14 @@ import { ArrowLeft } from "@boxicons/react";
 type HeaderProps = {
   title?: React.ReactNode;
   showBack?: boolean;
+  textColor?: string;
 };
 
-export default function Header({ title, showBack = false }: HeaderProps) {
+export default function Header({
+  title,
+  showBack = false,
+  textColor = "text-slate-900",
+}: HeaderProps) {
   const navigate = useNavigate();
 
   return (
@@ -17,10 +22,10 @@ export default function Header({ title, showBack = false }: HeaderProps) {
             onClick={() => navigate(-1)}
             className="rounded-full border border-slate-200 p-1 active:scale-95"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className={`h-5 w-5 ${textColor ?? ""}`} />
           </button>
         )}
-        <h1 className="text-lg font-bold text-white">{title}</h1>
+        <h1 className={`text-lg font-bold ${textColor ?? ""}`}>{title}</h1>
       </div>
     </header>
   );

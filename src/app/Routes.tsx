@@ -1,10 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import Budgets from "../pages/Budgets";
 import Insights from "../pages/Insights";
-import Dashboard from "../pages/Dashboard";
 import Settings from "../pages/Settings";
 import GenerateForm from "../pages/transactions/GenerateForm";
 import TransactionCreate from "../pages/transactions/TransactionCreate";
+import { lazy } from "react";
+
+const Dashboard = lazy(() => import("../pages/Dashboard"));
 
 export default function AppRoutes() {
   return (

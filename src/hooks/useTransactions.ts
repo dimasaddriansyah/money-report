@@ -1,87 +1,67 @@
 import { useEffect, useMemo, useState } from "react";
-import { parseNominal, getPeriodRange } from "../helpers/helper";
+import type { Transaction } from "../types/Transactions";
+import { calculateBalance } from "../helpers/CalculateBalance";
+import { fetchTransactions } from "../services/TransactionServices";
 
-export type Transaction = {
-  transaction_id: string;
-  date: string;
-  type: string;
-  payment: string;
-  category: string;
-  remark: string;
-  nominal: string;
-};
-
-export const useTransactions = (
-  apiUrl: string,
-  selectedMonthIndex: number,
-  year: number,
-) => {
-  const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+export function useTransactions(startDate?: Date, endDate?: Date) {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 🔹 FETCH SEKALI
+  // =========================
+  // FETCH DATA
+  // =========================
+  const [hasLoaded, setHasLoaded] = useState(false);
+
   useEffect(() => {
-    setLoading(true);
+    if (hasLoaded) return;
 
-    fetch(apiUrl)
-      .then((res) => res.json())
-      .then((data) => {
-        const rows = data.values ?? [];
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-        const mapped: Transaction[] = rows.map((row: string[]) => ({
-          transaction_id: row[0] ?? "",
-          date: row[2] ?? "",
-          type: row[3] ?? "",
-          payment: row[4] ?? "",
-          category: row[5] ?? "",
-          remark: row[6] ?? "",
-          nominal: row[7] ?? "0",
-        }));
-
-        mapped.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-        );
-
-        setAllTransactions(mapped);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [apiUrl]);
-
-  // 🔹 FILTER PERIODE 25 → 24
-  const periodTransactions = useMemo(() => {
-    const { start, end } = getPeriodRange(selectedMonthIndex, year);
-
-    return allTransactions.filter((trx) => {
-      if (!trx.date) return false;
-      const d = new Date(trx.date);
-      return d >= start && d <= end;
-    });
-  }, [allTransactions, selectedMonthIndex, year]);
-
-  // 🔹 HITUNG BALANCE
-  const totalBalances = useMemo<Record<string, number>>(() => {
-    const map: Record<string, number> = {};
-
-    allTransactions.forEach((trx) => {
-      if (!trx.payment) return;
-
-      const amount = parseNominal(trx.nominal);
-      map[trx.payment] ??= 0;
-
-      if (trx.type === "Income") {
-        map[trx.payment] += amount;
-      } else if (trx.type === "Expenses") {
-        map[trx.payment] -= amount;
+        const data = await fetchTransactions();
+        setTransactions(data);
+        setHasLoaded(true);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Unexpected error occurred");
+        }
+      } finally {
+        setLoading(false);
       }
-    });
+    };
 
-    return map;
-  }, [allTransactions]);
+    load();
+  }, [hasLoaded]);
+
+  // =========================
+  // FILTER BY MONTH
+  // =========================
+  const filteredTransactions = useMemo(() => {
+    if (!startDate || !endDate) return transactions;
+
+    return transactions.filter((trx) => {
+      const trxDate = new Date(trx.date);
+
+      return trxDate >= startDate && trxDate <= endDate;
+    });
+  }, [transactions, startDate, endDate]);
+
+  // =========================
+  // CURRENT BALANCE
+  // =========================
+  const currentBalance = useMemo(() => {
+    return calculateBalance(filteredTransactions);
+  }, [filteredTransactions]);
 
   return {
+    transactions: filteredTransactions,
+    currentBalance,
     loading,
-    transactions: periodTransactions,
-    balances: totalBalances,
+    error,
   };
-};
+}

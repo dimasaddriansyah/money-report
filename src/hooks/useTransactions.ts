@@ -1,29 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Transaction } from "../types/Transactions";
-import { calculateBalance } from "../helpers/CalculateBalance";
+import { calculateNetCashflow } from "../helpers/CalculateNetCashflow";
 import { fetchTransactions } from "../services/TransactionServices";
 
 export function useTransactions(startDate?: Date, endDate?: Date) {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // =========================
-  // FETCH DATA
-  // =========================
-  const [hasLoaded, setHasLoaded] = useState(false);
-
+  // ===========================================================================
+  // FETCH DATA (ONLY ONCE)
+  // ===========================================================================
   useEffect(() => {
-    if (hasLoaded) return;
-
     const load = async () => {
       try {
         setLoading(true);
         setError(null);
 
         const data = await fetchTransactions();
-        setTransactions(data);
-        setHasLoaded(true);
+        setAllTransactions(data);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -36,31 +31,31 @@ export function useTransactions(startDate?: Date, endDate?: Date) {
     };
 
     load();
-  }, [hasLoaded]);
+  }, []);
 
-  // =========================
-  // FILTER BY MONTH
-  // =========================
-  const filteredTransactions = useMemo(() => {
-    if (!startDate || !endDate) return transactions;
+  // ===========================================================================
+  // FILTER FOR PERIOD VIEW
+  // ===========================================================================
+  const periodTransactions = useMemo(() => {
+    if (!startDate || !endDate) return allTransactions;
 
-    return transactions.filter((trx) => {
+    return allTransactions.filter((trx) => {
       const trxDate = new Date(trx.date);
-
       return trxDate >= startDate && trxDate <= endDate;
     });
-  }, [transactions, startDate, endDate]);
+  }, [allTransactions, startDate, endDate]);
 
-  // =========================
-  // CURRENT BALANCE
-  // =========================
+  // ===========================================================================
+  // CURRENT BALANCE (ALL DATA)
+  // ===========================================================================
   const currentBalance = useMemo(() => {
-    return calculateBalance(filteredTransactions);
-  }, [filteredTransactions]);
+    return calculateNetCashflow(allTransactions);
+  }, [allTransactions]);
 
   return {
-    transactions: filteredTransactions,
-    currentBalance,
+    transactions: periodTransactions, // 👈 untuk list & period summary
+    allTransactions, // 👈 untuk account balances
+    currentBalance, // 👈 snapshot total
     loading,
     error,
   };

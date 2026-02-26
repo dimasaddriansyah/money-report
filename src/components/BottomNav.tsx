@@ -1,20 +1,20 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
-  ChartTrend,
-  Wallet,
-  AppsAlt,
-  Plus,
-  Edit,
-  PencilSparkles,
-  FireAlt,
-} from "@boxicons/react";
+  Chart01Icon,
+  Edit01Icon,
+  FireIcon,
+  Settings02Icon,
+  PlusSignIcon,
+  SparklesIcon,
+  Wallet02Icon,
+} from "hugeicons-react";
 
 const menus = [
-  { label: "Home", path: "/", Icon: FireAlt },
-  { label: "Insights", path: "/insights", Icon: ChartTrend },
-  { label: "Budgets", path: "/budgets", Icon: Wallet },
-  { label: "Settings", path: "/settings", Icon: AppsAlt },
+  { label: "Home", path: "/", Icon: FireIcon },
+  { label: "Insights", path: "/insights", Icon: Chart01Icon },
+  { label: "Budgets", path: "/budgets", Icon: Wallet02Icon },
+  { label: "Settings", path: "/settings", Icon: Settings02Icon },
 ];
 
 export default function BottomNav() {
@@ -52,7 +52,7 @@ export default function BottomNav() {
               onClick={() => setOpenFab(true)}
               className="flex items-center justify-center text-white rounded-full shadow-lg cursor-pointer h-14 w-14 bg-slate-600 active:scale-95"
             >
-              <Plus className="w-6 h-6" />
+              <PlusSignIcon strokeWidth={2} className="w-6 h-6" />
             </button>
           </div>
 
@@ -82,12 +82,12 @@ export default function BottomNav() {
         <div className="space-y-2">
           <button
             onClick={() => {
-              console.log("Manual input");
               setOpenFab(false);
+              setTimeout(() => navigate("/transaction/create"), 150);
             }}
             className="flex items-center w-full gap-3 p-3 text-left border rounded-lg cursor-pointer border-slate-100 hover:bg-slate-50"
           >
-            <Edit className="w-5 h-5 text-blue-600" />
+            <Edit01Icon className="w-5 h-5 text-blue-600" />
             <div>
               <div className="text-sm font-medium">Manual Input</div>
               <div className="text-xs text-slate-500">
@@ -103,7 +103,7 @@ export default function BottomNav() {
             }}
             className="flex items-center w-full gap-3 p-3 text-left border rounded-lg cursor-pointer border-slate-100 hover:bg-slate-50"
           >
-            <PencilSparkles className="w-5 h-5 text-amber-500" />
+            <SparklesIcon className="w-5 h-5 text-amber-500" />
             <div>
               <div className="text-sm font-medium">Generate Input</div>
               <div className="text-xs text-slate-500">

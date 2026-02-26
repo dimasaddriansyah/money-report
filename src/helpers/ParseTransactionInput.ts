@@ -1,12 +1,12 @@
 import type { TransactionType } from "../types/Transactions";
-import { categoryAlias, paymentAlias } from "./Alias";
+import { categoryAlias, accountAlias } from "./Alias";
 import { parseSmartNominal } from "./Number";
 
 export function parseTransactionInput(input: string) {
   const words = input.toLowerCase().trim().split(/\s+/);
 
   let nominal = 0;
-  let payment = "";
+  let account = "";
   let category = "";
   let type: TransactionType = "expenses";
   let date = new Date().toISOString().split("T")[0];
@@ -42,9 +42,9 @@ export function parseTransactionInput(input: string) {
       continue;
     }
 
-    // PAYMENT
-    if (paymentAlias[word]) {
-      payment = paymentAlias[word];
+    // ACCOUNT
+    if (accountAlias[word]) {
+      account = accountAlias[word];
       continue;
     }
 
@@ -62,7 +62,7 @@ export function parseTransactionInput(input: string) {
     nominal,
     date,
     type,
-    payment,
+    account,
     category,
   };
 }

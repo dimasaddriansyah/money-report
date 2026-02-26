@@ -34,12 +34,12 @@ export default function TransactionGroup({
 
   return (
     <div>
-      <div className="px-6 py-3 flex justify-between items-center text-sm font-semibold text-slate-500 bg-slate-50">
+      <div className="px-4 py-3 flex justify-between items-center text-sm font-semibold text-slate-500 bg-slate-50">
         <span className="text-slate-500">{formattedDate}</span>
         <span className="text-red-500">{formatRupiah(totalExpenses)}</span>
       </div>
 
-      <ul>
+      <ul className="divide-y divide-slate-100/40">
         {transactions.map((trx) => (
           <TransactionItem
             key={trx.transaction_id}

@@ -1,4 +1,4 @@
-export const parseNominal = (value: string): number =>
+const parseNominal = (value: string): number =>
   Number(value.replace(/[^\d-]/g, "")) || 0;
 
 export const parseSmartNominal = (value: string): number => {

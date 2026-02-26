@@ -1,4 +1,5 @@
-import { PAYMENT_GROUPS, PAYMENT_STYLES } from "./Alias";
+import type { Transaction } from "../types/Transactions";
+import { ACCOUNT_GROUPS, ACCOUNT_STYLES } from "./Alias";
 
 export const getCategoriesImg = (category: string) => {
   const categoryImages = import.meta.glob("../assets/categories/*.png", {
@@ -13,24 +14,71 @@ export const getCategoriesImg = (category: string) => {
   );
 };
 
-export const getPaymentClass = (payment: string) => {
-  const normalized = payment.toLowerCase().trim();
+export const getAccountClass = (account?: string) => {
+  if (!account) return "bg-slate-100 text-slate-600 border-slate-300";
 
-  const groupKey = Object.keys(PAYMENT_GROUPS).find((key) =>
-    PAYMENT_GROUPS[key].includes(normalized),
+  const normalized = account.toLowerCase().trim();
+
+  const groupKey = Object.keys(ACCOUNT_GROUPS).find((key) =>
+    ACCOUNT_GROUPS[key].includes(normalized),
   );
 
   if (groupKey) {
-    return PAYMENT_STYLES[groupKey];
+    return ACCOUNT_STYLES[groupKey];
   }
 
   return "bg-slate-100 text-slate-600 border-slate-300";
 };
 
-export const getTypeClass = (type: string) =>
-  type === "expenses" || type === "transfer"
-    ? "text-red-500"
-    : "text-green-500";
+export const getTransactionUtils = (
+  trx: Transaction,
+  currentAccount?: string,
+) => {
+  if (trx.type === "income") {
+    return {
+      sign: "+",
+      textColor: "text-green-500",
+    };
+  }
 
-export const getTypeDesc = (type: string) =>
-  type === "expenses" || type === "transfer" ? "-" : "+";
+  if (trx.type === "expenses") {
+    return {
+      sign: "-",
+      textColor: "text-red-500",
+    };
+  }
+
+  // Transfer
+  if (trx.type === "transfer") {
+    if (!currentAccount) {
+      return {
+        sign: "",
+        textColor: "text-slate-500",
+      };
+    }
+
+    if (trx.from_account === currentAccount) {
+      return {
+        sign: "-",
+        textColor: "text-red-500",
+      };
+    }
+
+    if (trx.to_account === currentAccount) {
+      return {
+        sign: "+",
+        textColor: "text-green-500",
+      };
+    }
+
+    return {
+      sign: "",
+      textColor: "text-slate-500",
+    };
+  }
+
+  return {
+    sign: "",
+    textColor: "",
+  };
+};

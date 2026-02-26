@@ -1,6 +1,6 @@
-// -------------------------------------------------------------------------------
-// FORMAT DATE, PERIOD RANGE DATE, TODAY, EXTRACT DATE STRING
-// -------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// DATE UTILITIES
+// -----------------------------------------------------------------------------
 export const MONTHS = [
   "Januari",
   "Februari",
@@ -16,60 +16,117 @@ export const MONTHS = [
   "Desember",
 ];
 
-const MONTH_MAP: Record<string, string> = {
-  Januari: "01",
-  Februari: "02",
-  Maret: "03",
-  April: "04",
-  Mei: "05",
-  Juni: "06",
-  Juli: "07",
-  Agustus: "08",
-  September: "09",
-  Oktober: "10",
-  November: "11",
-  Desember: "12",
-};
-
-export const formatDate = (dateStr: string) => {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("id-ID", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-};
-
-export const getPeriodRange = (monthIndex: number, year: number) => {
-  const start = new Date(year, monthIndex - 1, 25, 0, 0, 0);
-  const end = new Date(year, monthIndex, 24, 23, 59, 59);
-  return { start, end };
-};
-
-export const getTodayISO = () => {
-  return new Date().toISOString().split("T")[0];
-};
-
-export const extractDateFromText = (text: string): string | null => {
-  const match = text.match(/^(\d{1,2})[/-](\d{1,2})$/);
-
-  if (!match) return null;
-
-  const day = match[1].padStart(2, "0");
-  const month = match[2].padStart(2, "0");
-  const year = new Date().getFullYear();
-
-  return `${year}-${month}-${day}`;
-};
-
-export function convertToISO(dateStr: string): string {
-  const [day, monthName, year] = dateStr.trim().split(" ");
-
-  const month = MONTH_MAP[monthName];
-
-  return `${year}-${month}-${day.padStart(2, "0")}`;
+// ----------------------------------------------------------------------------
+// FORMAT ISO → INDONESIA (Display Only)
+// ----------------------------------------------------------------------------
+export function formatISOToID(isoDate: string): string {
+  if (!isoDate) return "";
+  const date = new Date(isoDate);
+  return isNaN(date.getTime())
+    ? ""
+    : date.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
 }
+
+// ----------------------------------------------------------------------------
+// EXTRACT SMART DATE FROM TEXT
+// ----------------------------------------------------------------------------
+export function extractShortDate(text: string): string | null {
+  const lower = text.toLowerCase();
+  const today = new Date();
+  const year = today.getFullYear();
+
+  const toISO = (d: Date) => d.toISOString().split("T")[0];
+
+  // ============================
+  // 1️⃣ Relative (kemarin, dll)
+  // ============================
+  if (lower.includes("kemarin")) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - 1);
+    return toISO(d);
+  }
+
+  if (lower.includes("hari ini")) {
+    return toISO(today);
+  }
+
+  if (lower.includes("besok")) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + 1);
+    return toISO(d);
+  }
+
+  // ============================
+  // 2️⃣ Text month (10 jan / 10-jan / 10/jan)
+  // ============================
+  const textMonthMatch = lower.match(
+    /\b(0?[1-9]|[12][0-9]|3[01])[\s/-](jan|januari|feb|februari|mar|maret|apr|april|mei|jun|juni|jul|juli|agu|agustus|sep|september|okt|oktober|nov|november|des|desember)\b/,
+  );
+
+  if (textMonthMatch) {
+    const day = textMonthMatch[1].padStart(2, "0");
+    const monthName = textMonthMatch[2];
+
+    const MONTH_MAP: Record<string, string> = {
+      jan: "01",
+      januari: "01",
+      feb: "02",
+      februari: "02",
+      mar: "03",
+      maret: "03",
+      apr: "04",
+      april: "04",
+      mei: "05",
+      jun: "06",
+      juni: "06",
+      jul: "07",
+      juli: "07",
+      agu: "08",
+      agustus: "08",
+      sep: "09",
+      september: "09",
+      okt: "10",
+      oktober: "10",
+      nov: "11",
+      november: "11",
+      des: "12",
+      desember: "12",
+    };
+
+    const month = MONTH_MAP[monthName];
+    if (month) {
+      return `${year}-${month}-${day}`;
+    }
+  }
+
+  // ============================
+  // 3️⃣ Numeric (10-01 / 10/01)
+  // ============================
+  const numericMatch = lower.match(
+    /\b(0?[1-9]|[12][0-9]|3[01])[/-](0?[1-9]|1[0-2])\b/,
+  );
+
+  if (numericMatch) {
+    const day = numericMatch[1].padStart(2, "0");
+    const month = numericMatch[2].padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  return null;
+}
+
+// ----------------------------------------------------------------------------
+// TODAY ISO
+// ----------------------------------------------------------------------------
+export const getTodayISO = () => new Date().toISOString().split("T")[0];
+
+// -----------------------------------------------------------------------------
+// END DATE UTILITIES (ISO as source of truth)
+// -----------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------
 // RUPIAH FORMAT

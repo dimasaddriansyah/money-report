@@ -1,4 +1,4 @@
-import { EyeAlt, EyeSlash } from "@boxicons/react";
+import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import { formatRupiah } from "../../helpers/Format";
 
 interface Props {
@@ -17,7 +17,9 @@ export default function CurrentBalance({ balance, hide, toggle }: Props) {
           {hide ? "Rp •••••••••••" : formatRupiah(balance)}
         </h1>
 
-        <button onClick={toggle} className="text-white">{hide ? <EyeAlt /> : <EyeSlash />}</button>
+        <button onClick={toggle} className="text-white cursor-pointer">
+          {hide ? <ViewIcon strokeWidth={2}/> : <ViewOffSlashIcon strokeWidth={2}/>}
+        </button>
       </div>
     </section>
   );

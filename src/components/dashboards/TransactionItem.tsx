@@ -1,26 +1,31 @@
 import { useSwipeable } from "react-swipeable";
-import { Edit, Trash } from "@boxicons/react";
 import {
   getCategoriesImg,
-  getPaymentClass,
-  getTypeClass,
-  getTypeDesc,
+  getAccountClass,
+  getTransactionUtils,
 } from "../../helpers/UI";
 import type { Transaction } from "../../types/Transactions";
 import { formatRupiah } from "../../helpers/Format";
+import { getDisplayAccount } from "../../helpers/GetDisplayAccount";
+import { Delete01Icon, Edit01Icon } from "hugeicons-react";
 
 interface Props {
   trx: Transaction;
   openSwipe: string | null;
   setOpenSwipe: (id: string | null) => void;
+  currentAccount?: string;
 }
 
 export default function TransactionItem({
   trx,
   openSwipe,
   setOpenSwipe,
+  currentAccount,
 }: Props) {
   const isOpen = openSwipe === trx.transaction_id;
+
+  const displayAccount = getDisplayAccount(trx, currentAccount);
+  const { sign, textColor } = getTransactionUtils(trx, currentAccount);
 
   const handlers = useSwipeable({
     onSwipedLeft: () => setOpenSwipe(trx.transaction_id),
@@ -33,16 +38,16 @@ export default function TransactionItem({
       {/* ACTIONS */}
       <div className="absolute inset-y-0 right-0 flex">
         <button className="w-16 flex justify-center items-center bg-yellow-50 text-yellow-500">
-          <Edit />
+          <Edit01Icon />
         </button>
         <button className="w-16 flex justify-center items-center bg-red-50 text-red-500">
-          <Trash />
+          <Delete01Icon />
         </button>
       </div>
 
       <div
         {...handlers}
-        className={`flex items-center px-6 py-4 gap-4 bg-white transition-transform ${
+        className={`flex items-center px-4 py-4 gap-4 bg-white transition-transform ${
           isOpen ? "-translate-x-32" : "translate-x-0"
         }`}
       >
@@ -54,9 +59,9 @@ export default function TransactionItem({
 
         <div className="flex-1">
           <span
-            className={`px-2 py-1 rounded-full text-xs ${getPaymentClass(trx.payment)}`}
+            className={`px-2 py-1 rounded-full text-xs ${getAccountClass(displayAccount)}`}
           >
-            {trx.payment}
+            {displayAccount}
           </span>
 
           <div className="mt-1">
@@ -65,8 +70,8 @@ export default function TransactionItem({
           </div>
         </div>
 
-        <div className={`text-sm font-semibold ${getTypeClass(trx.type)}`}>
-          {getTypeDesc(trx.type) + " " + formatRupiah(trx.nominal)}
+        <div className={`text-sm font-semibold ${textColor}`}>
+          {sign} {formatRupiah(trx.nominal)}
         </div>
       </div>
     </li>

@@ -5,7 +5,7 @@ import { useMonthNavigation } from "../hooks/useMonthNavigation";
 import Header from "../components/Header";
 import MonthNavigator from "../components/dashboards/MonthNavigator";
 import CurrentBalance from "../components/dashboards/CurrentBalance";
-import PaymentBalances from "../components/dashboards/PaymentBalances";
+import AccountBalances from "../components/dashboards/AccountBalances";
 import { MONTHS } from "../helpers/Format";
 import TransactionGroup from "../components/dashboards/TransactionGroup";
 import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
@@ -19,21 +19,20 @@ export default function Dashboard() {
 
   const [hideBalance, setHideBalance] = useLocalStorage("hideBalance", false);
 
-  const { monthIndex, year, prev, next, startDate, endDate } =
-    useMonthNavigation();
+  const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation();
   const selectedMonth = MONTHS[monthIndex];
 
-  const { transactions, currentBalance, loading } = useTransactions(
-    startDate,
-    endDate,
-  );
+  const { transactions, allTransactions, currentBalance, loading } =
+    useTransactions(startDate, endDate);
 
   const { flatTransactions, visibleGrouped, visibleDates } =
     useGroupedTransactions(transactions, visibleCount);
 
+  const isEmpty = flatTransactions.length === 0;
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-indigo-700">
+      <div className="min-h-screen bg-slate-700">
         <Header title="Cashflow 2026" textColor="text-white" />
         <DashboardSkeleton />
       </div>
@@ -41,14 +40,15 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-indigo-700">
+    <div className="bg-slate-700 flex flex-col">
       <Header title="Cashflow 2026" textColor="text-white" />
 
       <MonthNavigator
         selectedMonth={selectedMonth}
-        year={year}
         onPrev={prev}
         onNext={next}
+        startDate={startDate}
+        endDate={endDate}
       />
 
       <CurrentBalance
@@ -57,23 +57,46 @@ export default function Dashboard() {
         toggle={() => setHideBalance((prev) => !prev)}
       />
 
-      <PaymentBalances transactions={transactions} hide={hideBalance} />
+      <AccountBalances transactions={allTransactions} hide={hideBalance} />
 
-      <section className="bg-white rounded-t-3xl">
-        {visibleDates.map((date) => (
-          <TransactionGroup
-            key={date}
-            date={date}
-            transactions={visibleGrouped[date]}
-            openSwipe={openSwipe}
-            setOpenSwipe={setOpenSwipe}
-          />
-        ))}
+      <section
+        className={`bg-white rounded-t-3xl overflow-hidden flex flex-col ${
+          isEmpty ? "flex-1" : "pb-24"
+        }`}
+      >
+        <div
+          className={`${isEmpty ? "bg-white" : "bg-slate-50"} h-8 flex items-center`}
+        >
+          <div className="mx-auto h-1.5 w-12 rounded-full bg-slate-300" />
+        </div>
+        {isEmpty ? (
+          <div className="flex flex-col text-slate-400 gap-4 items-center py-8 px-4">
+            <div className="text-4xl opacity-30">📭</div>
+            <div className="text-center">
+              <p className="text-lg font-medium">Belum ada transaksi</p>
+              <p className="text-sm">
+                Yuk mulai catat pemasukan atau pengeluaran
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            {visibleDates.map((date) => (
+              <TransactionGroup
+                key={date}
+                date={date}
+                transactions={visibleGrouped[date]}
+                openSwipe={openSwipe}
+                setOpenSwipe={setOpenSwipe}
+              />
+            ))}
+          </>
+        )}
 
         {!loading && visibleCount < flatTransactions.length && (
-          <div className="mb-28 mt-2 px-6">
+          <div className="my-4 px-4">
             <button
-              className="w-full border border-stone-400 text-slate-800 py-2 rounded-lg"
+              className="w-full border border-slate-200 text-slate-900 py-3 rounded-lg cursor-pointer hover:bg-slate-200 text-sm font-medium transition-all"
               onClick={() => setVisibleCount((p) => p + PAGE_SIZE)}
             >
               Load more data

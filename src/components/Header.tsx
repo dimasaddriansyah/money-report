@@ -1,5 +1,5 @@
+import { ArrowLeft01Icon } from "hugeicons-react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "@boxicons/react";
 
 type HeaderProps = {
   title?: React.ReactNode;
@@ -22,7 +22,7 @@ export default function Header({
             onClick={() => navigate(-1)}
             className="rounded-full border border-slate-200 p-1 active:scale-95"
           >
-            <ArrowLeft className={`h-5 w-5 ${textColor ?? ""}`} />
+            <ArrowLeft01Icon className={`h-5 w-5 ${textColor ?? ""} cursor-pointer`} />
           </button>
         )}
         <h1 className={`text-lg font-bold ${textColor ?? ""}`}>{title}</h1>

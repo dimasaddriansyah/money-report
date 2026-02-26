@@ -7,7 +7,7 @@ export default function DashboardSkeleton() {
         <div className="h-8 w-40 bg-slate-400 rounded"></div>
       </div>
 
-      {/* Payment Balances Skeleton */}
+      {/* Account Balances Skeleton */}
       <div className="flex gap-4 overflow-hidden">
         {[...Array(4)].map((_, i) => (
           <div

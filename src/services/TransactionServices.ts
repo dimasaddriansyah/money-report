@@ -1,9 +1,9 @@
 import type { Transaction } from "../types/Transactions";
 import { buildSheetUrl } from "./GoogleSheetsService";
-import { convertToISO } from "../helpers/Format";
+import { formatISOToID } from "../helpers/Format";
 
 export async function fetchTransactions(): Promise<Transaction[]> {
-  const url = buildSheetUrl("transactions", "A2:K");
+  const url = buildSheetUrl("transactions", "A2:I");
 
   const response = await fetch(url);
 
@@ -16,11 +16,12 @@ export async function fetchTransactions(): Promise<Transaction[]> {
 
   return rows.map((row: string[]) => ({
     transaction_id: row[0],
-    date: convertToISO(row[2]),
+    date: formatISOToID(row[2]),
     type: row[3].toLowerCase() as Transaction["type"],
-    payment: row[4],
-    category: row[5],
-    remark: row[6],
-    nominal: Number(row[7].replace(/[^\d-]/g, "")),
+    category: row[4],
+    remark: row[5],
+    from_account: row[6],
+    to_account: row[7],
+    nominal: Number(row[8].replace(/[^\d-]/g, "")),
   }));
 }

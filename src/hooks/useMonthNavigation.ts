@@ -2,47 +2,43 @@ import { useMemo, useState } from "react";
 
 export function useMonthNavigation() {
   const today = new Date();
+  const day = today.getDate();
 
-  const [monthIndex, setMonthIndex] = useState(today.getMonth());
-  const [year, setYear] = useState(today.getFullYear());
+  const baseDate =
+    day >= 25
+      ? new Date(today.getFullYear(), today.getMonth() + 1, 1)
+      : new Date(today.getFullYear(), today.getMonth(), 1);
+
+  const [currentDate, setCurrentDate] = useState(baseDate);
 
   const prev = () => {
-    setMonthIndex((m) => {
-      if (m === 0) {
-        setYear((y) => y - 1);
-        return 11;
-      }
-      return m - 1;
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(prev.getMonth() - 1);
+      return newDate;
     });
   };
 
   const next = () => {
-    setMonthIndex((m) => {
-      if (m === 11) {
-        setYear((y) => y + 1);
-        return 0;
-      }
-      return m + 1;
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(prev.getMonth() + 1);
+      return newDate;
     });
   };
 
-  // 🔥 INI BAGIAN BARU
+  const monthIndex = currentDate.getMonth();
+  const year = currentDate.getFullYear();
+
   const { startDate, endDate } = useMemo(() => {
-    // End date = tanggal 24 bulan terpilih
-    const end = new Date(year, monthIndex, 24);
+    const end = new Date(year, monthIndex, 24, 23, 59, 59);
+    const start = new Date(year, monthIndex - 1, 25, 0, 0, 0);
 
-    // Start date = tanggal 25 bulan sebelumnya
-    const start = new Date(year, monthIndex - 1, 25);
-
-    return {
-      startDate: start,
-      endDate: end,
-    };
+    return { startDate: start, endDate: end };
   }, [monthIndex, year]);
 
   return {
     monthIndex,
-    year,
     prev,
     next,
     startDate,

@@ -1,19 +1,18 @@
 import { useState } from "react";
-import { useTransactions } from "../hooks/useTransactions";
-import { useGroupedTransactions } from "../hooks/useGroupedTransactions";
-import { useMonthNavigation } from "../hooks/useMonthNavigation";
-import Header from "../components/Header";
+import { useTransactions } from "../hooks/transactions/useTransactions";
+import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
+import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
+import Header from "../components/navigation/Header";
 import MonthNavigator from "../components/dashboards/MonthNavigator";
 import CurrentBalance from "../components/dashboards/CurrentBalance";
 import AccountBalances from "../components/dashboards/AccountBalances";
 import { MONTHS } from "../helpers/Format";
 import TransactionGroup from "../components/dashboards/TransactionGroup";
 import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-
-const PAGE_SIZE = 20;
+import { useLocalStorage } from "../hooks/utils/useLocalStorage";
 
 export default function Dashboard() {
+  const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [openSwipe, setOpenSwipe] = useState<string | null>(null);
 

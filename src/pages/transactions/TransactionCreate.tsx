@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Header from "../../components/Header";
+import Header from "../../components/navigation/Header";
 import { parseTransactionInput } from "../../helpers/ParseTransactionInput";
 import type { TransactionType } from "../../types/Transactions";
 import TransactionForm from "../../components/transactions/TransactionForm";
@@ -49,6 +49,8 @@ export default function TransactionCreate() {
     date: getTodayISO(),
   });
 
+  const loading = !!generatedText && !form.remark;
+
   // ===========================================================================
   // PARSE GENERATED TEXT
   // ===========================================================================
@@ -74,8 +76,6 @@ export default function TransactionCreate() {
 
     return () => clearTimeout(timeout);
   }, [generatedText]);
-
-  const loading = !!generatedText && !form.remark;
 
   // ===========================================================================
   // HANDLE CHANGE
@@ -132,8 +132,6 @@ export default function TransactionCreate() {
       payload.category = "Internal Transfer";
       payload.remark = `Transfer dari ${form.from_account} ke ${form.to_account}`;
     }
-
-    console.log("FINAL PAYLOAD:", payload);
 
     try {
       const response = await fetch(

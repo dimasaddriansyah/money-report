@@ -22,7 +22,9 @@ export default function Header({
             onClick={() => navigate(-1)}
             className="rounded-full border border-slate-200 p-1 active:scale-95"
           >
-            <ArrowLeft01Icon className={`h-5 w-5 ${textColor ?? ""} cursor-pointer`} />
+            <ArrowLeft01Icon
+              className={`h-5 w-5 ${textColor ?? ""} cursor-pointer`}
+            />
           </button>
         )}
         <h1 className={`text-lg font-bold ${textColor ?? ""}`}>{title}</h1>

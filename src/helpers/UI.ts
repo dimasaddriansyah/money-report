@@ -1,4 +1,4 @@
-import type { Transaction } from "../types/Transactions";
+import type { Transactions } from "../types/Transactions";
 import { ACCOUNT_GROUPS, ACCOUNT_STYLES } from "./Alias";
 
 export const getCategoriesImg = (category: string) => {
@@ -31,7 +31,7 @@ export const getAccountClass = (account?: string) => {
 };
 
 export const getTransactionUtils = (
-  trx: Transaction,
+  trx: Transactions,
   currentAccount?: string,
 ) => {
   if (trx.type === "income") {
@@ -80,5 +80,27 @@ export const getTransactionUtils = (
   return {
     sign: "",
     textColor: "",
+  };
+};
+
+export const getProgressStyles = (value: number) => {
+  if (value >= 90)
+    return {
+      bar: "bg-red-500",
+      badge: "bg-red-50 text-red-500",
+      text: "text-red-500",
+    };
+
+  if (value >= 60)
+    return {
+      bar: "bg-amber-500",
+      badge: "bg-amber-50 text-amber-500",
+      text: "text-amber-500",
+    };
+
+  return {
+    bar: "bg-blue-500",
+    badge: "bg-blue-50 text-blue-500",
+    text: "text-blue-500",
   };
 };

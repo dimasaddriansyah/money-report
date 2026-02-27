@@ -1,7 +1,7 @@
 import { HashRouter, useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import AppRoutes from "./Routes";
-import BottomNav from "../components/BottomNav";
+import BottomNav from "../components/navigation/BottomNav";
 import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
 import { Toaster } from "sonner";
 

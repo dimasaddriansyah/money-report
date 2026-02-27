@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Transaction } from "../types/Transactions";
-import { calculateNetCashflow } from "../helpers/CalculateNetCashflow";
-import { fetchTransactions } from "../services/TransactionServices";
+import type { Transactions } from "../../types/Transactions";
+import { calculateNetCashflow } from "../../helpers/CalculateNetCashflow";
+import { fetchTransactions } from "../../services/TransactionServices";
 
 export function useTransactions(startDate?: Date, endDate?: Date) {
-  const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+  const [allTransactions, setAllTransactions] = useState<Transactions[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

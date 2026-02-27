@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import type { Transaction } from "../types/Transactions";
+import type { Transactions } from "../../types/Transactions";
 
 export function useGroupedTransactions(
-  transactions: Transaction[],
+  transactions: Transactions[],
   visibleCount: number
 ) {
   return useMemo(() => {
-    const grouped: Record<string, Transaction[]> = {};
+    const grouped: Record<string, Transactions[]> = {};
 
     transactions.forEach((trx) => {
       if (!grouped[trx.date]) grouped[trx.date] = [];
@@ -28,7 +28,7 @@ export function useGroupedTransactions(
     const flat = sortedDates.flatMap((date) => grouped[date]);
     const visible = flat.slice(0, visibleCount);
 
-    const visibleGrouped: Record<string, Transaction[]> = {};
+    const visibleGrouped: Record<string, Transactions[]> = {};
 
     visible.forEach((trx) => {
       if (!visibleGrouped[trx.date]) visibleGrouped[trx.date] = [];

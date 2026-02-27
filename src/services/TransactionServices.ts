@@ -1,8 +1,8 @@
-import type { Transaction } from "../types/Transactions";
+import type { Transactions } from "../types/Transactions";
 import { buildSheetUrl } from "./GoogleSheetsService";
 import { formatISOToID } from "../helpers/Format";
 
-export async function fetchTransactions(): Promise<Transaction[]> {
+export async function fetchTransactions(): Promise<Transactions[]> {
   const url = buildSheetUrl("transactions", "A2:I");
 
   const response = await fetch(url);
@@ -17,7 +17,7 @@ export async function fetchTransactions(): Promise<Transaction[]> {
   return rows.map((row: string[]) => ({
     transaction_id: row[0],
     date: formatISOToID(row[2]),
-    type: row[3].toLowerCase() as Transaction["type"],
+    type: row[3].toLowerCase() as Transactions["type"],
     category: row[4],
     remark: row[5],
     from_account: row[6],

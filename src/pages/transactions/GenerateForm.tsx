@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
+import Header from "../../components/navigation/Header";
 
 export default function GenerateForm() {
   const navigate = useNavigate();

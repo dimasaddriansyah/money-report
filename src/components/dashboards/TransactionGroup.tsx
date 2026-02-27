@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import type { Transaction } from "../../types/Transactions";
+import type { Transactions } from "../../types/Transactions";
 import TransactionItem from "./TransactionItem";
 import { formatRupiah } from "../../helpers/Format";
 
 interface Props {
   date: string;
-  transactions: Transaction[];
+  transactions: Transactions[];
   openSwipe: string | null;
   setOpenSwipe: (id: string | null) => void;
 }

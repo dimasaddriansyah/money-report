@@ -1,7 +1,7 @@
-import type { Transaction } from "../types/Transactions";
+import type { Transactions } from "../types/Transactions";
 
 export const getDisplayAccount = (
-  trx: Transaction,
+  trx: Transactions,
   currentAccount?: string,
 ) => {
   // 🔥 DASHBOARD MODE (tidak dalam halaman account tertentu)

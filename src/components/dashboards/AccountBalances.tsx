@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import type { Transaction } from "../../types/Transactions";
+import type { Transactions } from "../../types/Transactions";
 import { calculateAccountBalances } from "../../helpers/CalculateAccountBalances";
 import { formatRupiah } from "../../helpers/Format";
 
 interface Props {
-  transactions: Transaction[];
+  transactions: Transactions[];
   hide: boolean;
 }
 

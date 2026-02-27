@@ -1,6 +1,6 @@
-import type { Transaction } from "../types/Transactions";
+import type { Transactions } from "../types/Transactions";
 
-export function calculateNetCashflow(transactions: Transaction[]) {
+export function calculateNetCashflow(transactions: Transactions[]) {
   return transactions.reduce((acc, trx) => {
     const nominal = trx.nominal;
 

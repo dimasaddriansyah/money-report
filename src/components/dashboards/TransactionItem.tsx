@@ -4,13 +4,13 @@ import {
   getAccountClass,
   getTransactionUtils,
 } from "../../helpers/UI";
-import type { Transaction } from "../../types/Transactions";
+import type { Transactions } from "../../types/Transactions";
 import { formatRupiah } from "../../helpers/Format";
 import { getDisplayAccount } from "../../helpers/GetDisplayAccount";
 import { Delete01Icon, Edit01Icon } from "hugeicons-react";
 
 interface Props {
-  trx: Transaction;
+  trx: Transactions;
   openSwipe: string | null;
   setOpenSwipe: (id: string | null) => void;
   currentAccount?: string;

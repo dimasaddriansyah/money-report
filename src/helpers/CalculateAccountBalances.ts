@@ -1,6 +1,6 @@
-import type { Transaction } from "../types/Transactions";
+import type { Transactions } from "../types/Transactions";
 
-export function calculateAccountBalances(transactions: Transaction[]) {
+export function calculateAccountBalances(transactions: Transactions[]) {
   const balances: Record<string, number> = {};
 
   const adjust = (account: string | undefined, amount: number) => {

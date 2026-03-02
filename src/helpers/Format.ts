@@ -122,7 +122,7 @@ export function extractShortDate(text: string): string | null {
 // ----------------------------------------------------------------------------
 // TODAY ISO
 // ----------------------------------------------------------------------------
-export const getTodayISO = () => new Date().toISOString().split("T")[0];
+export const getTodayISO = () => new Date().toLocaleDateString("sv-SE");
 
 // -----------------------------------------------------------------------------
 // END DATE UTILITIES (ISO as source of truth)
@@ -147,6 +147,10 @@ export const formatRupiahInput = (value: number | string) => {
   if (!numeric) return "";
 
   return new Intl.NumberFormat("id-ID").format(numeric);
+};
+
+export const formatNumber = (value: number) => {
+  return value.toLocaleString("id-ID");
 };
 
 // -------------------------------------------------------------------------------

@@ -15,18 +15,18 @@ export default function Dashboard() {
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [openSwipe, setOpenSwipe] = useState<string | null>(null);
-
   const [hideBalance, setHideBalance] = useLocalStorage("hideBalance", false);
-
   const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation();
   const selectedMonth = MONTHS[monthIndex];
-
-  const { transactions, allTransactions, currentBalance, loading } =
-    useTransactions(startDate, endDate);
-
+  const {
+    transactions,
+    allTransactions,
+    currentBalance,
+    loading,
+    deleteTransaction,
+  } = useTransactions(startDate, endDate);
   const { flatTransactions, visibleGrouped, visibleDates } =
     useGroupedTransactions(transactions, visibleCount);
-
   const isEmpty = flatTransactions.length === 0;
 
   if (loading) {
@@ -87,6 +87,7 @@ export default function Dashboard() {
                 transactions={visibleGrouped[date]}
                 openSwipe={openSwipe}
                 setOpenSwipe={setOpenSwipe}
+                onDeleteConfirm={deleteTransaction}
               />
             ))}
           </>

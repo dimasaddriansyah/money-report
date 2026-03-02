@@ -9,6 +9,7 @@ import {
   SparklesIcon,
   Wallet02Icon,
 } from "hugeicons-react";
+import BottomSheet from "../utils/BottomSheet";
 
 const menus = [
   { label: "Home", path: "/", Icon: FireIcon },
@@ -27,13 +28,17 @@ export default function BottomNav() {
       {/* OVERLAY */}
       <div
         onClick={() => setOpenFab(false)}
-        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300
-          ${openFab ? "opacity-100" : "opacity-0 pointer-events-none"}
-        `}
+        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${
+          openFab ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
       />
 
       {/* BOTTOM NAV */}
-      <nav className="fixed inset-x-0 bottom-0 z-50 shadow-blue-950">
+      <nav
+        className={`fixed inset-x-0 bottom-0 z-30 shadow-blue-950 transition-opacity duration-200 ${
+          openFab ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+      >
         <div className="relative flex items-center justify-between px-6 py-3 bg-white">
           {/* LEFT */}
           <div className="flex justify-between flex-1 pr-10">
@@ -69,23 +74,18 @@ export default function BottomNav() {
         </div>
       </nav>
 
-      {/* FAB ACTION SHEET (SLIDE UP) */}
-      <div
-        className={`fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-4 transition-transform duration-300 ease-out ${openFab ? "translate-y-0" : "translate-y-full"} `}
+      <BottomSheet
+        open={openFab}
+        onClose={() => setOpenFab(false)}
+        title="Add Transaction"
       >
-        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-slate-300" />
-
-        <h3 className="mb-4 text-sm font-semibold text-slate-700">
-          Add Transaction
-        </h3>
-
         <div className="space-y-2">
           <button
             onClick={() => {
               setOpenFab(false);
               setTimeout(() => navigate("/transaction/create"), 150);
             }}
-            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg cursor-pointer border-slate-100 hover:bg-slate-50"
+            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-100 hover:bg-slate-50 cursor-pointer"
           >
             <Edit01Icon className="w-5 h-5 text-blue-600" />
             <div>
@@ -101,7 +101,7 @@ export default function BottomNav() {
               setOpenFab(false);
               setTimeout(() => navigate("/generate-form"), 150);
             }}
-            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg cursor-pointer border-slate-100 hover:bg-slate-50"
+            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-100 hover:bg-slate-50 cursor-pointer"
           >
             <SparklesIcon className="w-5 h-5 text-amber-500" />
             <div>
@@ -111,15 +111,15 @@ export default function BottomNav() {
               </div>
             </div>
           </button>
-        </div>
 
-        <button
-          onClick={() => setOpenFab(false)}
-          className="w-full mt-4 p-1 text-sm cursor-pointer text-slate-500 hover:font-medium hover:text-red-500"
-        >
-          Cancel
-        </button>
-      </div>
+          <button
+            onClick={() => setOpenFab(false)}
+            className="w-full mt-4 p-2 text-sm text-slate-500 hover:text-red-500 hover:font-medium cursor-pointer"
+          >
+            Cancel
+          </button>
+        </div>
+      </BottomSheet>
     </>
   );
 }

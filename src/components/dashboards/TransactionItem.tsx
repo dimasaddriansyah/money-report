@@ -14,6 +14,7 @@ interface Props {
   openSwipe: string | null;
   setOpenSwipe: (id: string | null) => void;
   currentAccount?: string;
+  onDeleteRequest: (trx: Transactions) => void;
 }
 
 export default function TransactionItem({
@@ -21,6 +22,7 @@ export default function TransactionItem({
   openSwipe,
   setOpenSwipe,
   currentAccount,
+  onDeleteRequest,
 }: Props) {
   const isOpen = openSwipe === trx.transaction_id;
 
@@ -40,7 +42,10 @@ export default function TransactionItem({
         <button className="w-16 flex justify-center items-center bg-yellow-50 text-yellow-500">
           <Edit01Icon />
         </button>
-        <button className="w-16 flex justify-center items-center bg-red-50 text-red-500">
+        <button
+          onClick={() => onDeleteRequest(trx)}
+          className="w-16 flex justify-center items-center bg-red-50 text-red-500"
+        >
           <Delete01Icon />
         </button>
       </div>

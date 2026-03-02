@@ -12,6 +12,8 @@ import {
   smartCapitalize,
 } from "../../helpers/Format";
 import { SparklesIcon } from "hugeicons-react";
+import { useAccounts } from "../../hooks/accounts/useAccounts";
+import { useCategories } from "../../hooks/categories/useCategories";
 
 interface FormState {
   remark?: string;
@@ -25,6 +27,8 @@ interface FormState {
 }
 
 type TransactionPayload = {
+  module: string;
+  action: string;
   type: Capitalize<TransactionType>;
   date: string;
   dateID: string;
@@ -50,6 +54,9 @@ export default function TransactionCreate() {
   });
 
   const loading = !!generatedText && !form.remark;
+
+  const { accounts, loading: loadingAccounts } = useAccounts();
+  const { categories, loading: loadingCategories } = useCategories();
 
   // ===========================================================================
   // PARSE GENERATED TEXT
@@ -107,6 +114,8 @@ export default function TransactionCreate() {
     }
 
     const payload: TransactionPayload = {
+      module: "transactions",
+      action: "create",
       type: smartCapitalize(form.type) as Capitalize<TransactionType>,
       date: finalDate,
       dateID: formatISOToID(finalDate),
@@ -135,7 +144,7 @@ export default function TransactionCreate() {
 
     try {
       const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbzBTVCS9a28WtZXVWNflmHYLcLRuPYKPZ6xmjoD4t-PxMCMThXP1EHBY1zvsBShypI/exec",
+        "https://script.google.com/macros/s/AKfycbzBik6KxU6D4Dt5x5DshCFuR3qn0xhsP2EfheR0oB8uuP6KCOAHgDyc5L7cHa8xKnuj/exec",
         {
           method: "POST",
           body: JSON.stringify(payload),
@@ -181,6 +190,10 @@ export default function TransactionCreate() {
       ) : (
         <TransactionForm
           form={form}
+          accounts={accounts}
+          loadingAccounts={loadingAccounts}
+          categories={categories}
+          loadingCategories={loadingCategories}
           onChange={handleChange}
           onSubmit={handleSubmit}
         />

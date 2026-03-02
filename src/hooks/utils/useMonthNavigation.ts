@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-export function useMonthNavigation() {
+export function useMonthNavigation(maxFutureMonth = 0) {
   const today = new Date();
   const day = today.getDate();
 
@@ -23,6 +23,19 @@ export function useMonthNavigation() {
     setCurrentDate((prev) => {
       const newDate = new Date(prev);
       newDate.setMonth(prev.getMonth() + 1);
+
+      // limit berdasarkan baseDate
+      const limitDate = new Date(baseDate);
+      limitDate.setMonth(baseDate.getMonth() + maxFutureMonth);
+
+      if (
+        newDate.getFullYear() > limitDate.getFullYear() ||
+        (newDate.getFullYear() === limitDate.getFullYear() &&
+          newDate.getMonth() > limitDate.getMonth())
+      ) {
+        return prev;
+      }
+
       return newDate;
     });
   };

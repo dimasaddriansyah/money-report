@@ -7,7 +7,9 @@ export const getCategoriesImg = (category: string) => {
     import: "default",
   }) as Record<string, string>;
 
-  const path = `../assets/categories/${category}.png`;
+  const filterCategory = category === "Interest" ? "Saving" : category;
+
+  const path = `../assets/categories/${filterCategory}.png`;
 
   return (
     categoryImages[path] ?? categoryImages["../assets/categories/default.png"]

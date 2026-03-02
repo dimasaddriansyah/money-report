@@ -19,11 +19,6 @@ export default function MonthNavigator({
   const selectedMonthIndex = MONTHS.indexOf(selectedMonth);
   const prevMonthLabel = MONTHS[(selectedMonthIndex + 11) % 12];
 
-  const today = new Date();
-  const end = new Date(endDate);
-
-  const isFuturePeriod = end >= today;
-
   const startYear = startDate.getFullYear();
   const endYear = endDate.getFullYear();
 
@@ -35,7 +30,7 @@ export default function MonthNavigator({
       <ArrowLeft01Icon
         onClick={onPrev}
         strokeWidth={2}
-        className="w-8 h-8 text-white cursor-pointer"
+        className="w-8 h-8 text-white cursor-pointer hover:scale-110 transition"
       />
 
       <div className="text-center">
@@ -46,13 +41,9 @@ export default function MonthNavigator({
       </div>
 
       <ArrowRight01Icon
-        onClick={!isFuturePeriod ? onNext : undefined}
+        onClick={onNext}
         strokeWidth={2}
-        className={`w-8 h-8 transition ${
-          isFuturePeriod
-            ? "text-white/30 cursor-not-allowed"
-            : "text-white cursor-pointer hover:scale-110"
-        }`}
+        className="w-8 h-8 text-white cursor-pointer hover:scale-110 transition"
       />
     </section>
   );

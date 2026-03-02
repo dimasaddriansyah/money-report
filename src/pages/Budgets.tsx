@@ -10,8 +10,12 @@ import { getProgressStyles } from "../helpers/UI";
 import { useTransactions } from "../hooks/transactions/useTransactions";
 
 export default function Budgets() {
-  const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation();
+  const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation(1);
   const selectedMonth = MONTHS[monthIndex];
+
+  const selectedPeriod = `${endDate.getFullYear()}-${String(
+    endDate.getMonth() + 1,
+  ).padStart(2, "0")}`;
 
   const { budgets, loading } = useBudgets(startDate, endDate);
 
@@ -21,6 +25,8 @@ export default function Budgets() {
   const summaryStyles = getProgressStyles(percentage);
 
   const { transactions } = useTransactions(startDate, endDate);
+
+  const currentBudget = budgets[0];
 
   if (loading) {
     return (
@@ -49,6 +55,8 @@ export default function Budgets() {
         totalAllocated={totalAllocated}
         percentage={percentage}
         styles={summaryStyles}
+        budget={currentBudget}
+        selectedPeriod={selectedPeriod}
       />
 
       <BudgetAccountList

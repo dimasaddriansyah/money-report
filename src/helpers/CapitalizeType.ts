@@ -1,3 +1,14 @@
-export function capitalizeType<T extends string>(value: T): Capitalize<T> {
-  return (value.charAt(0).toUpperCase() + value.slice(1)) as Capitalize<T>;
-}
+import type { TransactionType } from "../types/Transactions";
+
+export const CapitalizeType = (type: TransactionType): string => {
+  switch (type) {
+    case "income":
+      return "Income";
+    case "expenses":
+      return "Expenses";
+    case "transfer":
+      return "Transfer";
+    default:
+      return type;
+  }
+};

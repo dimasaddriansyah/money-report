@@ -8,6 +8,7 @@ import type { Transactions } from "../../types/Transactions";
 import { formatRupiah } from "../../helpers/Format";
 import { getDisplayAccount } from "../../helpers/GetDisplayAccount";
 import { Delete01Icon, Edit01Icon } from "hugeicons-react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   trx: Transactions;
@@ -24,8 +25,8 @@ export default function TransactionItem({
   currentAccount,
   onDeleteRequest,
 }: Props) {
+  const navigate = useNavigate();
   const isOpen = openSwipe === trx.transaction_id;
-
   const displayAccount = getDisplayAccount(trx, currentAccount);
   const { sign, textColor } = getTransactionUtils(trx, currentAccount);
 
@@ -39,7 +40,14 @@ export default function TransactionItem({
     <li className="relative overflow-hidden">
       {/* ACTIONS */}
       <div className="absolute inset-y-0 right-0 flex">
-        <button className="w-16 flex justify-center items-center bg-yellow-50 text-yellow-500">
+        <button
+          onClick={() =>
+            navigate(`/transaction/edit/${trx.transaction_id}`, {
+              state: { transaction: trx },
+            })
+          }
+          className="w-16 flex justify-center items-center bg-yellow-50 text-yellow-500"
+        >
           <Edit01Icon />
         </button>
         <button

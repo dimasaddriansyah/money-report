@@ -19,7 +19,7 @@ export const MONTHS = [
 // ----------------------------------------------------------------------------
 // FORMAT ISO → INDONESIA (Display Only)
 // ----------------------------------------------------------------------------
-export function formatISOToID(isoDate: string): string {
+export function formatISODatetoID(isoDate: string): string {
   if (!isoDate) return "";
   const date = new Date(isoDate);
   return isNaN(date.getTime())

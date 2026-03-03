@@ -1,4 +1,4 @@
-import { HashRouter, useLocation } from "react-router-dom";
+import { HashRouter, matchPath, useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import AppRoutes from "./Routes";
 import BottomNav from "../components/navigation/BottomNav";
@@ -8,8 +8,9 @@ import { Toaster } from "sonner";
 function AppContent() {
   const location = useLocation();
 
-  const hideNavRoutes = ["/generate-form", "/transaction/create"];
-  const hideBottomNav = hideNavRoutes.includes(location.pathname);
+  const hideBottomNav =
+    matchPath("/transaction/*", location.pathname) ||
+    location.pathname === "/generate-form";
 
   return (
     <Suspense fallback={<DashboardSkeleton />}>

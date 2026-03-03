@@ -1,6 +1,6 @@
 import type { Categories } from "../types/Categories";
 import { buildSheetUrl } from "./GoogleSheetsService";
-import { formatISOToID } from "../helpers/Format";
+import { formatISODatetoID } from "../helpers/Format";
 
 export async function fetchCategories(): Promise<Categories[]> {
   const url = buildSheetUrl("categories", "A2:I");
@@ -17,7 +17,7 @@ export async function fetchCategories(): Promise<Categories[]> {
   return rows.map((row: string[]) => ({
     category_id: row[0],
     name: row[1],
-    inserted_date: formatISOToID(row[2]),
-    updated_date: formatISOToID(row[3]),
+    inserted_date: formatISODatetoID(row[2]),
+    updated_date: formatISODatetoID(row[3]),
   }));
 }

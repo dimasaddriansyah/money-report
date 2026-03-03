@@ -68,15 +68,17 @@ export function useTransactions(startDate?: Date, endDate?: Date) {
 
       const result = await response.json();
 
-      if (result.status !== "success") {
-        setAllTransactions(previousState);
+      if (result.status === "success") {
         toast.success("Transaction deleted successfully!", {
           duration: 2000,
         });
-        return false;
+        return true;
       }
-
-      return true;
+      setAllTransactions(previousState);
+      toast.error("Something went wrong!", {
+        duration: 2000,
+      });
+      return false;
     } catch (error) {
       console.error(error);
       setAllTransactions(previousState);

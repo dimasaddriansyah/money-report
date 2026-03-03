@@ -1,5 +1,5 @@
 import type { TransactionType } from "../../types/Transactions";
-import { formatISOToID, formatRupiahInput } from "../../helpers/Format";
+import { formatISODatetoID, formatRupiahInput } from "../../helpers/Format";
 import {
   ArrowDown01Icon,
   Calendar01Icon,
@@ -115,7 +115,7 @@ export default function TransactionForm({
               className="absolute inset-0 opacity-0 cursor-pointer"
             />
             <div className="py-3 text-base font-semibold text-slate-800">
-              {formatISOToID(form.date)}
+              {formatISODatetoID(form.date)}
             </div>
           </div>
           <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />

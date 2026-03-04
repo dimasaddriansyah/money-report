@@ -8,6 +8,7 @@ import { MONTHS } from "../helpers/Format";
 import { useBudgetSummary } from "../hooks/budgets/useBudgetSummary";
 import { getProgressStyles } from "../helpers/UI";
 import { useTransactions } from "../hooks/transactions/useTransactions";
+import { PlusSignIcon } from "hugeicons-react";
 
 export default function Budgets() {
   const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation(1);
@@ -59,12 +60,18 @@ export default function Budgets() {
         selectedPeriod={selectedPeriod}
       />
 
-      <BudgetAccountList
-        budgetsByAccount={budgetsByAccount}
-        totalBudget={totalBudget}
-        transactions={transactions}
-        getProgressStyles={getProgressStyles}
-      />
+      <div className="flex flex-col rounded-t-3xl bg-slate-500 overflow-hidden">
+        <button className="flex justify-center text-white font-semibold gap-2 py-3.5 cursor-pointer hover:bg-slate-400">
+          <PlusSignIcon />
+          <span>Add Budgets</span>
+        </button>
+        <BudgetAccountList
+          budgetsByAccount={budgetsByAccount}
+          totalBudget={totalBudget}
+          transactions={transactions}
+          getProgressStyles={getProgressStyles}
+        />
+      </div>
     </div>
   );
 }

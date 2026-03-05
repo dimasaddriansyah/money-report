@@ -56,7 +56,11 @@ export default function Dashboard() {
         toggle={() => setHideBalance((prev) => !prev)}
       />
 
-      <AccountBalances transactions={allTransactions} hide={hideBalance} />
+      <AccountBalances
+        transactions={allTransactions}
+        hide={hideBalance}
+        cardPadding="px-4 pb-6"
+      />
 
       <section
         className={`bg-white rounded-t-3xl overflow-hidden flex flex-col ${

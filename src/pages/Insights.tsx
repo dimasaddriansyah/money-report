@@ -3,11 +3,16 @@ import Header from "../components/navigation/Header";
 import MonthNavigator from "../components/dashboards/MonthNavigator";
 import { formatRupiah, MONTHS } from "../helpers/Format";
 import ExpensesChart from "../components/insights/expensesChart";
-import { ViewIcon } from "hugeicons-react";
+import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
+import AccountBalances from "../components/dashboards/AccountBalances";
+import { useTransactions } from "../hooks/transactions/useTransactions";
+import { useLocalStorage } from "../hooks/utils/useLocalStorage";
 
 export default function Insight() {
   const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation();
   const selectedMonth = MONTHS[monthIndex];
+  const [hideBalance, setHideBalance] = useLocalStorage("hideBalance", false);
+  const { allTransactions } = useTransactions(startDate, endDate);
 
   return (
     <div className="bg-slate-700 flex flex-col">
@@ -26,11 +31,18 @@ export default function Insight() {
           <div className="flex flex-col">
             <span className="text-sm text-white/60">Balance</span>
             <span className="text-2xl text-white font-semibold">
-              {formatRupiah(120000)}
+              {hideBalance ? "Rp •••••••••••" : formatRupiah(120000)}
             </span>
           </div>
-          <button className="cursor-pointer">
-            <ViewIcon strokeWidth={2} className="text-white" />
+          <button
+            onClick={() => setHideBalance((prev) => !prev)}
+            className="cursor-pointer"
+          >
+            {hideBalance ? (
+              <ViewIcon strokeWidth={2} className="text-white" />
+            ) : (
+              <ViewOffSlashIcon strokeWidth={2} className="text-white" />
+            )}
           </button>
         </div>
         <div className="flex gap-4 py-2">
@@ -38,7 +50,7 @@ export default function Insight() {
             <div className="flex flex-col">
               <span className="text-sm text-white/60">Income</span>
               <span className="text-base text-white font-medium">
-                Rp 1.400.000
+                {hideBalance ? "Rp •••••••••••" : formatRupiah(1400000)}
               </span>
             </div>
           </div>
@@ -47,16 +59,26 @@ export default function Insight() {
             <div className="flex flex-col">
               <span className="text-sm text-white/60">Expenses</span>
               <span className="text-base text-white font-medium">
-                Rp 1.400.000
+                {hideBalance ? "Rp •••••••••••" : formatRupiah(1400000)}
               </span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-slate-50 min-h-dvh">
-        <section className="bg-white rounded-2xl m-4 p-4">
-          <span className="text-base font-medium">Grafik Pengeluaran Harian</span>
+      <section className="bg-slate-50 min-h-dvh p-4 space-y-4">
+        <AccountBalances
+          transactions={allTransactions}
+          hide={hideBalance}
+          cardStyle="border border-slate-200 hover:bg-slate-700 transition-all cursor-pointer"
+          accountTextColor="text-slate-400! group-hover:text-white/70!"
+          balanceTextColor="text-slate-900! group-hover:text-white!"
+        />
+
+        <section className="bg-white rounded-2xl p-4">
+          <span className="text-base font-medium">
+            Grafik Pengeluaran Harian
+          </span>
           <ExpensesChart />
         </section>
       </section>

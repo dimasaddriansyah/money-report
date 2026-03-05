@@ -83,5 +83,5 @@ export default function ExpensesChart() {
     ],
   };
 
-  return <EChartsReact option={option} style={{ height: 400 }} />;
+  return <EChartsReact option={option} style={{ height: 350 }} />;
 }

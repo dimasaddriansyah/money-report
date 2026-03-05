@@ -39,7 +39,7 @@ export default function BottomNav() {
           openFab ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >
-        <div className="relative flex items-center justify-between px-6 py-3 bg-white">
+        <div className="relative flex items-center justify-between px-6 py-3 bg-white pb-[calc(env(safe-area-inset-bottom)+12px)]">
           {/* LEFT */}
           <div className="flex justify-between flex-1 pr-10">
             {menus.slice(0, 2).map((menu) => (

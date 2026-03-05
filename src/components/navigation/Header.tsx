@@ -15,7 +15,7 @@ export default function Header({
   const navigate = useNavigate();
 
   return (
-    <header className="top-0 z-40 flex items-center justify-between px-4 py-3">
+    <header className="top-0 z-40 flex items-center justify-between px-4 pb-3 pt-[calc(env(safe-area-inset-top)+8px)] bg-slate-700">
       <div className="flex items-center gap-4">
         {showBack && (
           <button

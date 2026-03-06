@@ -5,7 +5,7 @@ import TransactionForm from "../../components/transactions/TransactionForm";
 import type { Transactions, TransactionType } from "../../types/Transactions";
 import { useAccounts } from "../../hooks/accounts/useAccounts";
 import { useCategories } from "../../hooks/categories/useCategories";
-import { formatISODatetoID, getTodayISO } from "../../helpers/Format";
+import { formatISODatetoID, getTodayISO, smartCapitalize } from "../../helpers/Format";
 import { toast } from "sonner";
 import { CapitalizeType } from "../../helpers/CapitalizeType";
 import { parseTransactionInput } from "../../helpers/ParseTransactionInput";
@@ -62,7 +62,7 @@ export default function TransactionPage() {
       const parsed = parseTransactionInput(generatedText);
 
       return {
-        remark: parsed.remark ?? "",
+        remark: smartCapitalize(parsed.remark) ?? "",
         nominal: parsed.nominal ?? 0,
         category: parsed.category,
         account: parsed.account,

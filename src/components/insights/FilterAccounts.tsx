@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { Transactions } from "../../types/Transactions";
+import { getAccountsImg } from "../../helpers/UI";
 
 interface Props {
   transactions: Transactions[];
@@ -38,13 +39,14 @@ export default function FilterAccounts({
               onClick={() =>
                 onSelectAccount(account === "All Account" ? null : account)
               }
-              className={`min-w-28 rounded-2xl px-4 py-2 shrink-0 snap-start cursor-pointer transition-all
+              className={`min-w-28 rounded-2xl px-4 py-2 flex gap-2 shrink-0 snap-start cursor-pointer transition-all
               ${
                 isActive
                   ? "bg-slate-700 text-white"
                   : "bg-white text-slate-600 border border-slate-200"
               }`}
             >
+              <img src={`${getAccountsImg(account)}`} alt={`${account}`} className="w-5 h-5" />
               <span className="text-sm font-medium">{account}</span>
             </div>
           );

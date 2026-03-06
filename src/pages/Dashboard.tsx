@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTransactions } from "../hooks/transactions/useTransactions";
 import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
 import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
-import Header from "../components/navigation/Header";
 import MonthNavigator from "../components/dashboards/MonthNavigator";
 import CurrentBalance from "../components/dashboards/CurrentBalance";
 import AccountBalances from "../components/dashboards/AccountBalances";
@@ -32,7 +31,6 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-700">
-        <Header title="Cashflow 2026" textColor="text-white" />
         <DashboardSkeleton />
       </div>
     );
@@ -40,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <div className="bg-slate-700 flex flex-col">
-      <Header title="Cashflow 2026" textColor="text-white" />
+      {/* <Header title="Cashflow 2026" textColor="text-white" /> */}
 
       <MonthNavigator
         selectedMonth={selectedMonth}

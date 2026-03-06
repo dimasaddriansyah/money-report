@@ -26,7 +26,7 @@ export default function MonthNavigator({
     startYear === endYear ? `${endYear}` : `${startYear} - ${endYear}`;
 
   return (
-    <section className="flex justify-between items-center gap-4 px-4 py-2">
+    <section className="flex justify-between items-center gap-4 px-4 py-6">
       <ArrowLeft01Icon
         onClick={onPrev}
         strokeWidth={2}

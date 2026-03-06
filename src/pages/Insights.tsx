@@ -1,5 +1,4 @@
 import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
-import Header from "../components/navigation/Header";
 import MonthNavigator from "../components/dashboards/MonthNavigator";
 import { formatRupiah, MONTHS } from "../helpers/Format";
 import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
@@ -10,6 +9,8 @@ import CategoriesChart from "../components/insights/CategoriesChart";
 import { useMemo, useState } from "react";
 import FilterAccounts from "../components/insights/FilterAccounts";
 
+const COLORS = ["#5070DD", "#B6D634", "#FF994D", "#0CA8DF", "#505372"];
+
 export default function Insight() {
   const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation();
   const selectedMonth = MONTHS[monthIndex];
@@ -17,7 +18,6 @@ export default function Insight() {
   const [hideBalance, setHideBalance] = useLocalStorage("hideBalance", false);
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
 
-  // transaksi sesuai periode bulan
   const { transactions } = useTransactions(startDate, endDate);
 
   // filter account
@@ -63,15 +63,69 @@ export default function Insight() {
     };
   }, [filteredTransactions]);
 
-  // hanya expenses untuk chart
   const expenseTransactions = useMemo(() => {
     return filteredTransactions.filter((trx) => trx.type === "expenses");
   }, [filteredTransactions]);
 
+  // 🔥 PIE DATA
+  const pieData = useMemo(() => {
+    const grouped: Record<string, number> = {};
+
+    expenseTransactions.forEach((trx) => {
+      const category = trx.category;
+
+      if (!grouped[category]) grouped[category] = 0;
+
+      grouped[category] += Number(trx.nominal);
+    });
+
+    const sorted = Object.entries(grouped)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value);
+
+    const top4 = sorted.slice(0, 4);
+    const rest = sorted.slice(4);
+
+    const othersValue = rest.reduce((sum, item) => sum + item.value, 0);
+
+    if (othersValue > 0) {
+      top4.push({
+        name: "Others",
+        value: othersValue,
+      });
+    }
+
+    return top4;
+  }, [expenseTransactions]);
+
+  const categorySummary = useMemo(() => {
+    const grouped: Record<string, { total: number; count: number }> = {};
+
+    expenseTransactions.forEach((trx) => {
+      const category = trx.category;
+
+      if (!grouped[category]) {
+        grouped[category] = {
+          total: 0,
+          count: 0,
+        };
+      }
+
+      grouped[category].total += Number(trx.nominal);
+      grouped[category].count += 1;
+    });
+
+    return Object.entries(grouped)
+      .map(([name, data]) => ({
+        name,
+        total: data.total,
+        count: data.count,
+      }))
+      .sort((a, b) => b.total - a.total);
+  }, [expenseTransactions]);
+
   return (
     <div className="bg-slate-700 flex flex-col">
-      <Header title="Insight" textColor="text-white" />
-
       <MonthNavigator
         selectedMonth={selectedMonth}
         onPrev={prev}
@@ -81,7 +135,7 @@ export default function Insight() {
       />
 
       <section className="p-4 flex flex-col gap-4">
-        <div className="flex flex-1 justify-between items-center bg-white/20 rounded-xl p-4">
+        <div className="flex justify-between items-center bg-white/20 rounded-xl p-4">
           <div className="flex flex-col">
             <span className="text-sm text-white/60">Balance</span>
             <span className="text-2xl text-white font-semibold">
@@ -118,9 +172,7 @@ export default function Insight() {
         </div>
       </section>
 
-      <section className="bg-slate-50 min-h-dvh p-4 space-y-4">
-        {/* 🔥 IMPORTANT */}
-        {/* pakai transactions (periode bulan) */}
+      <section className="bg-slate-50 min-h-dvh p-4 space-y-4 pb-24">
         <FilterAccounts
           transactions={transactions}
           selectedAccount={selectedAccount}
@@ -131,6 +183,7 @@ export default function Insight() {
           <span className="text-base font-medium">
             Grafik Pengeluaran Harian
           </span>
+
           <ExpensesChart transactions={expenseTransactions} />
         </section>
 
@@ -138,7 +191,41 @@ export default function Insight() {
           <span className="text-base font-medium">
             Grafik Pengeluaran Kategori
           </span>
-          <CategoriesChart transactions={expenseTransactions} />
+
+          <CategoriesChart data={pieData} colors={COLORS} />
+
+          {/* LEGEND */}
+          <div className="space-y-3">
+            {categorySummary.map((item, i) => {
+              const color = COLORS[i] || COLORS[COLORS.length - 1];
+
+              return (
+                <div
+                  key={item.name}
+                  className="flex justify-between items-center border border-slate-200/60 rounded-2xl px-4 py-3 hover:bg-slate-50 cursor-pointer"
+                >
+                  <div className="flex items-start gap-3">
+                    <span
+                      className="w-5 h-2 mt-2 rounded-sm"
+                      style={{ background: color }}
+                    />
+
+                    <div className="flex flex-col">
+                      <span className="font-medium text-sm">{item.name}</span>
+
+                      <span className="text-xs text-slate-400">
+                        {item.count} transaksi
+                      </span>
+                    </div>
+                  </div>
+
+                  <span className="text-sm font-semibold">
+                    {formatRupiah(item.total)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </section>
       </section>
     </div>

@@ -22,6 +22,27 @@ export const getCategoriesImg = (category: string) => {
   );
 };
 
+export const getAccountsImg = (account: string) => {
+  const accountImages = import.meta.glob("../assets/accounts/*.webp", {
+    eager: true,
+    import: "default",
+  }) as Record<string, string>;
+
+  if (account === "All Account") {
+    return accountImages["../assets/accounts/Default.webp"];
+  }
+
+  const accountMap: Record<string, string> = {
+    Investment: "Jago",
+  };
+
+  const filterAccount = accountMap[account] ?? account;
+
+  const path = `../assets/accounts/${filterAccount}.webp`;
+
+  return accountImages[path] ?? accountImages["../assets/accounts/Default.webp"];
+};
+
 export const getAccountClass = (account?: string) => {
   if (!account) return "bg-slate-100 text-slate-600 border-slate-300";
 

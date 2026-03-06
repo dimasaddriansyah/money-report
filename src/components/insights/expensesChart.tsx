@@ -58,6 +58,7 @@ export default function ExpensesChart({ transactions }: Props) {
         type: "line",
         smooth: true,
         data: chartData.data,
+        color : "red"
       },
     ],
   };

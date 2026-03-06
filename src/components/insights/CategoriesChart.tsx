@@ -1,53 +1,16 @@
 import { useMemo } from "react";
 import EChartsReact from "echarts-for-react";
 import type { EChartsOption } from "echarts";
-import type { Transactions } from "../../types/Transactions";
 
 interface Props {
-  transactions: Transactions[];
+  data: { name: string; value: number }[];
+  colors: string[];
 }
 
-export default function CategoriesChart({ transactions }: Props) {
-  // Semua kategori
-  const allData = useMemo(() => {
-    const grouped: Record<string, number> = {};
-
-    transactions
-      .filter((trx) => trx.type === "expenses")
-      .forEach((trx) => {
-        const category = trx.category;
-
-        if (!grouped[category]) grouped[category] = 0;
-
-        grouped[category] += Number(trx.nominal);
-      });
-
-    return Object.entries(grouped)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
-  }, [transactions]);
-
-  // Top 4 + Others
-  const pieData = useMemo(() => {
-    const top4 = allData.slice(0, 4);
-    const rest = allData.slice(4);
-
-    const othersValue = rest.reduce((sum, item) => sum + item.value, 0);
-
-    if (othersValue > 0) {
-      top4.push({
-        name: "Others",
-        value: othersValue,
-      });
-    }
-
-    return top4;
-  }, [allData]);
-
-  // Total expenses
+export default function CategoriesChart({ data, colors }: Props) {
   const totalExpenses = useMemo(() => {
-    return allData.reduce((sum, item) => sum + item.value, 0);
-  }, [allData]);
+    return data.reduce((sum, item) => sum + item.value, 0);
+  }, [data]);
 
   const option: EChartsOption = {
     tooltip: {
@@ -55,15 +18,16 @@ export default function CategoriesChart({ transactions }: Props) {
     },
 
     legend: {
-      top: "5%",
+      show: false,
     },
 
-    // Text di tengah donut
+    color: colors,
+
     graphic: [
       {
         type: "text",
         left: "center",
-        top: "59%",
+        top: "50%",
         style: {
           text: "Total",
           align: "center",
@@ -74,7 +38,7 @@ export default function CategoriesChart({ transactions }: Props) {
       {
         type: "text",
         left: "center",
-        top: "65%",
+        top: "60%",
         style: {
           text: "Rp " + totalExpenses.toLocaleString("id-ID"),
           align: "center",
@@ -89,12 +53,12 @@ export default function CategoriesChart({ transactions }: Props) {
       {
         name: "Expenses",
         type: "pie",
-        radius: ["40%", "70%"],
+        radius: ["60%", "100%"],
         center: ["50%", "70%"],
         startAngle: 180,
         endAngle: 360,
 
-        data: pieData,
+        data: data,
 
         label: {
           show: true,
@@ -105,6 +69,7 @@ export default function CategoriesChart({ transactions }: Props) {
           },
           fontSize: 12,
           fontWeight: "bold",
+          color: "#FFF",
         },
 
         labelLine: {
@@ -114,5 +79,5 @@ export default function CategoriesChart({ transactions }: Props) {
     ],
   };
 
-  return <EChartsReact option={option} style={{ height: 350 }} />;
+  return <EChartsReact option={option} style={{ height: 250 }} />;
 }

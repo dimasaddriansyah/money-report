@@ -40,7 +40,7 @@ export default function Budgets() {
 
   return (
     <div className="min-h-screen bg-slate-700">
-      <Header title="Budgeting" textColor="text-white" />
+      {/* <Header title="Budgeting" textColor="text-white" /> */}
 
       <MonthNavigator
         selectedMonth={selectedMonth}

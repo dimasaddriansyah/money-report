@@ -7,7 +7,13 @@ export const getCategoriesImg = (category: string) => {
     import: "default",
   }) as Record<string, string>;
 
-  const filterCategory = category === "Interest" ? "Saving" : category;
+  const categoryMap: Record<string, string> = {
+    Interest: "Saving",
+    Cashback: "Saving",
+    Bonus: "Payroll",
+  };
+
+  const filterCategory = categoryMap[category] ?? category;
 
   const path = `../assets/categories/${filterCategory}.png`;
 

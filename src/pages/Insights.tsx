@@ -125,7 +125,7 @@ export default function Insight() {
   }, [expenseTransactions]);
 
   return (
-    <div className="bg-slate-700 flex flex-col">
+    <div className="bg-slate-900 flex flex-col">
       <MonthNavigator
         selectedMonth={selectedMonth}
         onPrev={prev}
@@ -135,7 +135,7 @@ export default function Insight() {
       />
 
       <section className="p-4 flex flex-col gap-4">
-        <div className="flex justify-between items-center bg-white/20 rounded-xl p-4">
+        <div className="flex justify-between items-center bg-white/5 rounded-xl p-4">
           <div className="flex flex-col">
             <span className="text-sm text-white/60">Balance</span>
             <span className="text-2xl text-white font-semibold">
@@ -195,7 +195,7 @@ export default function Insight() {
           <CategoriesChart data={pieData} colors={COLORS} />
 
           {/* LEGEND */}
-          <div className="space-y-3">
+          <div className="space-y-3 -mt-10">
             {categorySummary.map((item, i) => {
               const color = COLORS[i] || COLORS[COLORS.length - 1];
 

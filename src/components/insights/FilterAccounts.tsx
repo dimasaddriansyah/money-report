@@ -42,7 +42,7 @@ export default function FilterAccounts({
               className={`min-w-28 rounded-2xl px-4 py-2 flex gap-2 shrink-0 snap-start cursor-pointer transition-all
               ${
                 isActive
-                  ? "bg-slate-700 text-white"
+                  ? "bg-slate-900 text-white"
                   : "bg-white text-slate-600 border border-slate-200"
               }`}
             >

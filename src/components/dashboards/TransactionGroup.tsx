@@ -57,7 +57,7 @@ export default function TransactionGroup({
         <span className="text-red-500">{formatRupiah(totalExpenses)}</span>
       </div>
 
-      <ul className="divide-y divide-red-100/40">
+      <ul className="divide-y divide-slate-100/40">
         {transactions.map((trx) => (
           <TransactionItem
             key={trx.transaction_id}

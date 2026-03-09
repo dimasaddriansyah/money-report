@@ -23,7 +23,7 @@ export default function AccountBalances({ transactions, hide }: Props) {
         {accounts.map(([account, balance]) => (
           <div
             key={account}
-            className="min-w-36 rounded-2xl p-4 bg-white/20 shrink-0 snap-start transition-all cursor-pointer"
+            className="min-w-36 rounded-2xl p-4 bg-white/5 shrink-0 snap-start transition-all cursor-pointer"
           >
             <div className="text-sm text-white/70">{account}</div>
             <div className="text-base font-semibold text-white">

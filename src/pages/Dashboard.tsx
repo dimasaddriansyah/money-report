@@ -30,14 +30,14 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-700">
+      <div className="min-h-screen bg-slate-900">
         <DashboardSkeleton />
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-700 flex flex-col">
+    <div className="bg-slate-900 flex flex-col">
       {/* <Header title="Cashflow 2026" textColor="text-white" /> */}
 
       <MonthNavigator

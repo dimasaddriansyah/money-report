@@ -5,7 +5,11 @@ import TransactionForm from "../../components/transactions/TransactionForm";
 import type { Transactions, TransactionType } from "../../types/Transactions";
 import { useAccounts } from "../../hooks/accounts/useAccounts";
 import { useCategories } from "../../hooks/categories/useCategories";
-import { formatISODatetoID, getTodayISO, smartCapitalize } from "../../helpers/Format";
+import {
+  formatISODatetoID,
+  getTodayISO,
+  smartCapitalize,
+} from "../../helpers/Format";
 import { toast } from "sonner";
 import { CapitalizeType } from "../../helpers/CapitalizeType";
 import { parseTransactionInput } from "../../helpers/ParseTransactionInput";
@@ -188,7 +192,7 @@ export default function TransactionPage() {
   // ============================================================
 
   return (
-    <main className="min-h-screen bg-slate-700">
+    <main className="min-h-screen bg-slate-900">
       <Header
         title={isEdit ? "Edit Transaction" : "Add Transaction"}
         showBack

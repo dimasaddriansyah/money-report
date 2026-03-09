@@ -55,7 +55,7 @@ export default function BottomNav() {
           <div className="absolute z-50 -translate-x-1/2 left-1/2 -top-7">
             <button
               onClick={() => setOpenFab(true)}
-              className="flex items-center justify-center text-white rounded-full shadow-lg cursor-pointer h-14 w-14 bg-slate-600 active:scale-95"
+              className="flex items-center justify-center text-white rounded-full shadow-lg cursor-pointer h-14 w-14 bg-slate-900 active:scale-95"
             >
               <PlusSignIcon strokeWidth={2} className="w-6 h-6" />
             </button>

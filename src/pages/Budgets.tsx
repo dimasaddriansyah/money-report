@@ -31,7 +31,7 @@ export default function Budgets() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-700">
+      <div className="min-h-screen bg-slate-900">
         <Header title="Budgeting" textColor="text-white" />
         {/* <DashboardSkeleton /> */}
       </div>
@@ -39,7 +39,7 @@ export default function Budgets() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-700">
+    <div className="min-h-screen bg-slate-900">
       {/* <Header title="Budgeting" textColor="text-white" /> */}
 
       <MonthNavigator
@@ -60,8 +60,8 @@ export default function Budgets() {
         selectedPeriod={selectedPeriod}
       />
 
-      <div className="flex flex-col rounded-t-3xl bg-slate-500 overflow-hidden">
-        <button className="flex justify-center text-white font-semibold gap-2 py-3.5 cursor-pointer hover:bg-slate-400">
+      <div className="flex flex-col rounded-t-3xl bg-slate-700 overflow-hidden">
+        <button className="flex justify-center text-white font-semibold gap-2 py-3.5 cursor-pointer hover:bg-slate-800">
           <PlusSignIcon />
           <span>Add Budgets</span>
         </button>

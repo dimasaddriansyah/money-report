@@ -47,8 +47,8 @@ export default function GenerateForm() {
         <button
           onClick={handleGenerate}
           disabled={!text.trim() || loading}
-          className="mt-auto w-full rounded-xl bg-slate-700 py-3 text-sm font-medium
-              text-white hover:bg-slate-500 active:scale-95 transition
+          className="mt-auto w-full rounded-xl bg-slate-900 py-3 text-sm font-medium
+              text-white hover:bg-slate-800 active:scale-95 transition
               disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
         >
           {loading ? "Processing..." : "Generate Transaction"}

@@ -257,8 +257,8 @@ export default function TransactionForm({
           <button
             onClick={onSubmit}
             disabled={isDisabled}
-            className="w-full rounded-xl bg-slate-600 py-3 text-sm font-medium
-            text-white hover:bg-slate-700 active:scale-95 transition
+            className="w-full rounded-xl bg-slate-900 py-3 text-sm font-medium
+            text-white hover:bg-slate-800 active:scale-95 transition
             disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
           >
             Create Transaction

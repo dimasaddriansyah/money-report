@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import Header from "../../components/navigation/Header";
-import TransactionForm from "../../components/transactions/TransactionForm";
+import TransactionForm from "../../components/dashboards/TransactionForm";
 import type { Transactions, TransactionType } from "../../types/Transactions";
 import { useAccounts } from "../../hooks/accounts/useAccounts";
 import { useCategories } from "../../hooks/categories/useCategories";
@@ -36,6 +36,8 @@ export default function TransactionPage() {
 
   const { accounts, loading: loadingAccounts } = useAccounts();
   const { categories, loading: loadingCategories } = useCategories();
+
+  const [submitting, setSubmitting] = useState(false);
 
   // ============================================================
   // INITIAL FORM STATE
@@ -130,6 +132,9 @@ export default function TransactionPage() {
   // ============================================================
 
   const handleSubmit = async () => {
+    if (submitting) return;
+    setSubmitting(true);
+
     const accountMapping = mapAccountsByType(form);
 
     const payload = {
@@ -157,13 +162,11 @@ export default function TransactionPage() {
       const result = await response.json();
 
       if (result.status === "success") {
-        toast.success(
-          `Transaction ${isEdit ? "edited" : "created"} successfully!`,
-          {
-            duration: 2000,
-            onAutoClose: () => navigate("/"),
-          },
-        );
+        toast.success("Success", {
+          description: `Transaction ${isEdit ? "edited" : "created"} successfully`,
+          duration: 2000,
+          onAutoClose: () => navigate("/"),
+        });
       } else {
         toast.error("Failed to save transaction", { duration: 2000 });
       }
@@ -207,6 +210,8 @@ export default function TransactionPage() {
         loadingCategories={loadingCategories}
         onChange={handleChange}
         onSubmit={handleSubmit}
+        submitting={submitting}
+        isEdit={isEdit}
       />
     </main>
   );

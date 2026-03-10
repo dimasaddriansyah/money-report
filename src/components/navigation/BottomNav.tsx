@@ -1,20 +1,20 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
-  Chart01Icon,
-  Edit01Icon,
+  TaskEdit01Icon,
   FireIcon,
   Settings02Icon,
   PlusSignIcon,
-  SparklesIcon,
-  Wallet02Icon,
+  AiContentGenerator01Icon,
+  MoneySavingJarIcon,
+  Chart02Icon,
 } from "hugeicons-react";
 import BottomSheet from "../utils/BottomSheet";
 
 const menus = [
   { label: "Home", path: "/", Icon: FireIcon },
-  { label: "Insights", path: "/insights", Icon: Chart01Icon },
-  { label: "Budgets", path: "/budgets", Icon: Wallet02Icon },
+  { label: "Insights", path: "/insights", Icon: Chart02Icon },
+  { label: "Budgets", path: "/budgets", Icon: MoneySavingJarIcon },
   { label: "Settings", path: "/settings", Icon: Settings02Icon },
 ];
 
@@ -85,9 +85,9 @@ export default function BottomNav() {
               setOpenFab(false);
               setTimeout(() => navigate("/transaction/create"), 150);
             }}
-            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-100 hover:bg-slate-50 cursor-pointer"
+            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-100 hover:bg-slate-100 cursor-pointer"
           >
-            <Edit01Icon className="w-5 h-5 text-blue-600" />
+            <TaskEdit01Icon className="w-5 h-5 text-blue-900" />
             <div>
               <div className="text-sm font-medium">Manual Input</div>
               <div className="text-xs text-slate-500">
@@ -103,20 +103,13 @@ export default function BottomNav() {
             }}
             className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-100 hover:bg-slate-50 cursor-pointer"
           >
-            <SparklesIcon className="w-5 h-5 text-amber-500" />
+            <AiContentGenerator01Icon className="w-5 h-5 text-amber-500" />
             <div>
               <div className="text-sm font-medium">Generate Input</div>
               <div className="text-xs text-slate-500">
                 Generate otomatis dari template
               </div>
             </div>
-          </button>
-
-          <button
-            onClick={() => setOpenFab(false)}
-            className="w-full mt-4 p-2 text-sm text-slate-500 hover:text-red-500 hover:font-medium cursor-pointer"
-          >
-            Cancel
           </button>
         </div>
       </BottomSheet>

@@ -1,4 +1,4 @@
-import { Dollar01Icon, Edit01Icon, Wallet01Icon } from "hugeicons-react";
+import { DollarCircleIcon, NoteEditIcon, Target02Icon } from "hugeicons-react";
 import { formatNumber, formatRupiah } from "../../helpers/Format";
 import type { Budgets } from "../../types/Budgets";
 import { toast } from "sonner";
@@ -90,8 +90,8 @@ export default function BudgetSummaryCard({
         <div className="bg-white p-4 rounded-2xl flex flex-col gap-5">
           <div className="flex justify-between">
             <div className="flex gap-3 items-center">
-              <div className="flex justify-center items-center bg-blue-50 rounded-lg p-2">
-                <Wallet01Icon className="w-5 h-5 text-blue-500" />
+              <div className="flex justify-center items-center bg-slate-50 rounded-lg p-2">
+                <Target02Icon className="w-5 h-5 text-slate-900" />
               </div>
               <div className="flex flex-col">
                 <span className="font-medium text-base text-slate-900">
@@ -106,7 +106,7 @@ export default function BudgetSummaryCard({
               onClick={handleEditBudget}
               className="px-2 text-sm bg-amber-50 font-medium flex items-center rounded-lg gap-2 border text-amber-500 hover:bg-amber-100/70 cursor-pointer"
             >
-              <Edit01Icon className="w-4 h-4" />
+              <NoteEditIcon className="w-4 h-4" />
               <span>Edit</span>
             </div>
           </div>
@@ -143,15 +143,15 @@ export default function BudgetSummaryCard({
       <BottomSheet
         open={openEdit}
         onClose={() => setOpenEdit(false)}
-        title={`Edit Budget ${selectedPeriod}`}
+        title={`Budget ${selectedPeriod}`}
       >
         <div className="pb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-slate-900 mb-1">
             Nominal
           </label>
           <div className="relative flex items-center justify-center">
             <div className="absolute left-4 pointer-events-none">
-              <Dollar01Icon className="w-5 h-5 text-slate-400" />
+              <DollarCircleIcon className="w-5 h-5 text-slate-400" />
             </div>
             <input
               value={formattedNominal}
@@ -161,24 +161,15 @@ export default function BudgetSummaryCard({
             />
           </div>
         </div>
-        <div>
-          <button
-            onClick={onSubmit}
-            disabled={isDisabled}
-            className="w-full rounded-xl bg-slate-600 py-3 text-sm font-medium
-            text-white hover:bg-slate-700 active:scale-95 transition
+        <button
+          onClick={onSubmit}
+          disabled={isDisabled}
+          className="w-full rounded-full bg-slate-900 py-3 text-sm font-medium
+            text-white hover:bg-slate-800 active:scale-95 transition
             disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
-          >
-            Create Transaction
-          </button>
-
-          <button
-            onClick={() => setOpenEdit(false)}
-            className="w-full p-3 text-sm text-slate-500 hover:text-red-500 hover:font-medium cursor-pointer"
-          >
-            Cancel
-          </button>
-        </div>
+        >
+          Edit Budget
+        </button>
       </BottomSheet>
     </div>
   );

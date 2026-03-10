@@ -16,7 +16,10 @@ function AppContent() {
     <Suspense fallback={<DashboardSkeleton />}>
       <AppRoutes />
       {!hideBottomNav && <BottomNav />}
-      <Toaster position="top-center" richColors />
+      <Toaster
+        position="top-center"
+        richColors
+      />
     </Suspense>
   );
 }

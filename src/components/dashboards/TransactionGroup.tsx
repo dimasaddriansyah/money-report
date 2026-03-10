@@ -73,31 +73,32 @@ export default function TransactionGroup({
       <BottomSheet
         open={!!selectedTrx}
         onClose={() => setSelectedTrx(null)}
-        title="Hapus Transaksi"
+        title="Delete Transaction"
       >
         {selectedTrx && (
-          <div className="">
-            <div className="pt-4 pb-8">
-              <p>
-                Yakin ingin menghapus transaksi{" "}
-                <strong>{selectedTrx.remark}</strong>?
-              </p>
+          <div className="flex flex-col gap-5">
+            <span>
+              Apakah anda yakin ingin menghapus transaksi{" "}
+              <strong>{selectedTrx.remark}</strong>?
+            </span>
+            <div className="flex gap-4">
+              <button className="text-slate-500">Cancel</button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={loadingDelete}
+                className="w-full bg-red-600 hover:bg-red-500 text-white font-semibold py-3 rounded-full flex items-center justify-center min-h-12 cursor-pointer"
+              >
+                {loadingDelete ? (
+                  <span className="flex gap-1">
+                    <span className="w-2 h-2 bg-white rounded-full animate-bounce" />
+                    <span className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
+                    <span className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+                  </span>
+                ) : (
+                  "Delete"
+                )}
+              </button>
             </div>
-            <button
-              onClick={handleConfirmDelete}
-              disabled={loadingDelete}
-              className="w-full bg-red-500 text-white py-3 rounded-lg flex items-center justify-center min-h-12"
-            >
-              {loadingDelete ? (
-                <span className="flex gap-1">
-                  <span className="w-2 h-2 bg-white rounded-full animate-bounce" />
-                  <span className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
-                  <span className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
-                </span>
-              ) : (
-                "Hapus"
-              )}
-            </button>
           </div>
         )}
       </BottomSheet>

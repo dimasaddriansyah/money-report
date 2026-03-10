@@ -3,11 +3,15 @@ import { formatISODatetoID, formatRupiahInput } from "../../helpers/Format";
 import {
   ArrowDown01Icon,
   Calendar01Icon,
+  CardExchange02Icon,
   CreditCardIcon,
-  NoteIcon,
+  LicenseIcon,
 } from "hugeicons-react";
 import type { Accounts } from "../../types/Accounts";
 import type { Categories } from "../../types/Categories";
+import { useState } from "react";
+import BottomSheet from "../utils/BottomSheet";
+import { getAccountsImg, getCategoriesImg } from "../../helpers/UI";
 
 interface FormState {
   remark?: string;
@@ -28,6 +32,8 @@ interface Props {
   loadingCategories: boolean;
   onChange: <K extends keyof FormState>(field: K, value: FormState[K]) => void;
   onSubmit: () => void;
+  submitting: boolean;
+  isEdit: boolean;
 }
 
 export default function TransactionForm({
@@ -38,7 +44,11 @@ export default function TransactionForm({
   loadingAccounts,
   categories,
   loadingCategories,
+  submitting,
+  isEdit,
 }: Props) {
+  const [openCategorySheet, setOpenCategorySheet] = useState(false);
+  const [openAccountSheet, setOpenAccountSheet] = useState(false);
   const formattedNominal = formatRupiahInput(form.nominal.toString());
 
   const handleNominalChange = (value: string) => {
@@ -56,7 +66,10 @@ export default function TransactionForm({
     form.type !== "transfer" && (!form.category || !form.remark);
 
   const isDisabled =
-    form.nominal <= 0 || isTransferInvalid || isNonTransferInvalid;
+    form.nominal <= 0 ||
+    isTransferInvalid ||
+    isNonTransferInvalid ||
+    submitting;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -128,26 +141,21 @@ export default function TransactionForm({
 
           {form.type !== "transfer" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-900 mb-1">
                 Account
               </label>
-              <div className="relative flex items-center justify-center">
+              <div
+                onClick={() => setOpenAccountSheet(true)}
+                className="relative flex items-center justify-center"
+              >
                 <div className="absolute left-4 pointer-events-none">
                   <CreditCardIcon className="w-5 h-5 text-slate-400" />
                 </div>
-                <select
-                  disabled={loadingAccounts}
-                  value={form.account}
-                  onChange={(e) => onChange("account", e.target.value)}
-                  className="block w-full ps-11 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
+                <span
+                  className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${form.account ? "text-slate-900" : "text-slate-400"} border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
                 >
-                  <option value="">Select account</option>
-                  {accounts.map((data) => (
-                    <option key={data.account_id} value={data.name}>
-                      {data.name}
-                    </option>
-                  ))}
-                </select>
+                  {form.account || "Select account"}
+                </span>
                 <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
               </div>
             </div>
@@ -157,18 +165,18 @@ export default function TransactionForm({
           {form.type === "transfer" && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-900 mb-1">
                   From Account
                 </label>
                 <div className="relative flex items-center justify-center">
                   <div className="absolute left-4 pointer-events-none">
-                    <CreditCardIcon className="w-5 h-5 text-slate-400" />
+                    <CardExchange02Icon className="w-5 h-5 text-slate-400" />
                   </div>
                   <select
                     disabled={loadingAccounts}
                     value={form.from_account}
                     onChange={(e) => onChange("from_account", e.target.value)}
-                    className="block w-full ps-11 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
+                    className="block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
                   >
                     <option value="">Select account</option>
                     {accounts.map((data) => (
@@ -182,18 +190,18 @@ export default function TransactionForm({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-900 mb-1">
                   To Account
                 </label>
                 <div className="relative flex items-center justify-center">
                   <div className="absolute left-4 pointer-events-none">
-                    <CreditCardIcon className="w-5 h-5 text-slate-400" />
+                    <CardExchange02Icon className="w-5 h-5 text-slate-400" />
                   </div>
                   <select
                     disabled={loadingAccounts}
                     value={form.to_account}
                     onChange={(e) => onChange("to_account", e.target.value)}
-                    className="block w-full ps-11 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
+                    className="block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
                   >
                     <option value="">Select account</option>
                     {accounts.map((data) => (
@@ -211,26 +219,21 @@ export default function TransactionForm({
           {/* CATEGORY */}
           {form.type !== "transfer" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-900 mb-1">
                 Category
               </label>
-              <div className="relative flex items-center justify-center">
+              <div
+                onClick={() => setOpenCategorySheet(true)}
+                className="relative flex items-center justify-center"
+              >
                 <div className="absolute left-4 pointer-events-none">
-                  <NoteIcon className="w-5 h-5 text-slate-400" />
+                  <LicenseIcon className="w-5 h-5 text-slate-400" />
                 </div>
-                <select
-                  disabled={loadingCategories}
-                  value={form.category}
-                  onChange={(e) => onChange("category", e.target.value)}
-                  className="block w-full ps-11 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
+                <span
+                  className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${form.category ? "text-slate-900" : "text-slate-400"} border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
                 >
-                  <option value="">Select Category</option>
-                  {categories.map((data) => (
-                    <option key={data.category_id} value={data.name}>
-                      {data.name}
-                    </option>
-                  ))}
-                </select>
+                  {form.category || "Select category"}
+                </span>
                 <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
               </div>
             </div>
@@ -239,7 +242,7 @@ export default function TransactionForm({
           {/* REMARK */}
           {form.type !== "transfer" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-900 mb-1">
                 Remark
               </label>
               <textarea
@@ -261,10 +264,81 @@ export default function TransactionForm({
             text-white hover:bg-slate-800 active:scale-95 transition
             disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
           >
-            Create Transaction
+            {submitting
+              ? isEdit
+                ? "Updating..."
+                : "Creating..."
+              : isEdit
+                ? "Edit Transaction"
+                : "Create Transaction"}
           </button>
         </div>
       </div>
+
+      {/* Account Sheet */}
+      <BottomSheet
+        open={openAccountSheet}
+        onClose={() => setOpenAccountSheet(false)}
+        title="Select Account"
+      >
+        <div className="divide-y divide-slate-100/60">
+          {accounts.map((data) => (
+            <div
+              key={data.account_id}
+              onClick={() => {
+                onChange("account", data.name);
+                setOpenAccountSheet(false);
+              }}
+              className={`w-full flex items-center gap-3 text-left px-2 py-3 rounded-2xl transition cursor-pointer
+                ${
+                  form.account === data.name
+                    ? "bg-slate-900 font-medium text-white"
+                    : "hover:bg-slate-100"
+                }`}
+            >
+              <img
+                src={getAccountsImg(data.name)}
+                alt={data.name}
+                className="w-8 h-8"
+              />
+              <span>{data.name}</span>
+            </div>
+          ))}
+        </div>
+      </BottomSheet>
+
+      {/* Categories Sheet */}
+      <BottomSheet
+        open={openCategorySheet}
+        onClose={() => setOpenCategorySheet(false)}
+        title="Select Category"
+      >
+        <div className="divide-y divide-slate-100/60">
+          {categories.map((data) => (
+            <div
+              key={data.category_id}
+              onClick={() => {
+                onChange("category", data.name);
+                setOpenCategorySheet(false);
+              }}
+              className={`w-full flex items-center gap-3 text-left px-2 py-3 rounded-2xl transition cursor-pointer
+                ${
+                  form.category === data.name
+                    ? "bg-slate-900 font-medium text-white"
+                    : "hover:bg-slate-100"
+                }`}
+            >
+              <img
+                src={getCategoriesImg(data.name)}
+                alt={data.name}
+                className="w-8 h-8"
+              />
+              <span>{data.name}</span>
+            </div>
+          ))}
+        </div>
+      </BottomSheet>
+      {/* Transfer Mode Sheet */}
     </div>
   );
 }

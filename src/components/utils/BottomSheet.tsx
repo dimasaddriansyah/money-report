@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface BottomSheetProps {
   open: boolean;
@@ -15,6 +15,38 @@ export default function BottomSheet({
   children,
   hideDragHandle = false,
 }: BottomSheetProps) {
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  const [startY, setStartY] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+  const [dragging, setDragging] = useState(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartY(e.touches[0].clientY);
+    setDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!dragging) return;
+
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+
+    if (diff > 0) {
+      setTranslateY(diff);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setDragging(false);
+
+    if (translateY > 80) {
+      onClose();
+    }
+
+    setTranslateY(0);
+  };
+
   // lock scroll saat sheet terbuka
   useEffect(() => {
     if (open) {
@@ -33,15 +65,23 @@ export default function BottomSheet({
       {/* Overlay */}
       <div
         onClick={onClose}
-        className={`fixed inset-0 z-40 bg-black/70 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-black/70 transition-opacity duration-500 ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       />
 
       {/* Sheet */}
       <div
+        ref={sheetRef}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          transform: `translateY(${open ? translateY : 100}%)`,
+        }}
         className={`fixed inset-x-0 bottom-0 z-50 bg-white 
-          flex flex-col transition-transform duration-300 ease-out rounded-t-3xl overflow-hidden
+          flex flex-col rounded-t-3xl overflow-hidden
+          ${dragging ? "" : "transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"}
           ${open ? "translate-y-0" : "translate-y-full"}`}
       >
         {/* HEADER */}

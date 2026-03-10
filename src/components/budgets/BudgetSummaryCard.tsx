@@ -4,6 +4,7 @@ import type { Budgets } from "../../types/Budgets";
 import { toast } from "sonner";
 import { useState } from "react";
 import BottomSheet from "../utils/BottomSheet";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   balance: number;
@@ -27,6 +28,7 @@ export default function BudgetSummaryCard({
   budget,
   selectedPeriod,
 }: Props) {
+  const navigate = useNavigate();
   const [openEdit, setOpenEdit] = useState(false);
 
   const [form, setForm] = useState({
@@ -66,7 +68,7 @@ export default function BudgetSummaryCard({
     setOpenEdit(true);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!budget) return;
 
     const updatedBudget = {
@@ -75,11 +77,32 @@ export default function BudgetSummaryCard({
       period: selectedPeriod,
     };
 
-    console.log("Updated Budget:", updatedBudget);
+    try {
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbzBik6KxU6D4Dt5x5DshCFuR3qn0xhsP2EfheR0oB8uuP6KCOAHgDyc5L7cHa8xKnuj/exec",
+        {
+          method: "POST",
+          body: JSON.stringify(updatedBudget),
+        },
+      );
 
-    toast.success("Budget berhasil diupdate", {
-      duration: 2000,
-    });
+      const result = await response.json();
+
+      if (result.status === "success") {
+        toast.success("Success", {
+          description: `Budget edited successfully`,
+          duration: 2000,
+          onAutoClose: () => navigate("/"),
+        });
+      } else {
+        toast.error("Failed to save budget", { duration: 2000 });
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      toast.error("Something went wrong!", {
+        duration: 2000,
+      });
+    }
 
     setOpenEdit(false);
   };
@@ -116,7 +139,6 @@ export default function BudgetSummaryCard({
               dari total {formatRupiah(totalBudget)}
             </span>
           </div>
-
           <div className="space-y-2">
             <div className="w-full bg-indigo-50 h-2 rounded-full overflow-hidden">
               <div
@@ -140,6 +162,7 @@ export default function BudgetSummaryCard({
           </div>
         </div>
       </section>
+
       <BottomSheet
         open={openEdit}
         onClose={() => setOpenEdit(false)}

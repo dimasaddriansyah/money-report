@@ -1,16 +1,18 @@
-import Header from "../components/navigation/Header";
-import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
-import { useBudgets } from "../hooks/budgets/useBudgets";
-import MonthNavigator from "../components/dashboards/MonthNavigator";
-import BudgetSummaryCard from "../components/budgets/BudgetSummaryCard";
-import BudgetAccountList from "../components/budgets/BudgetAccountList";
-import { MONTHS } from "../helpers/Format";
-import { useBudgetSummary } from "../hooks/budgets/useBudgetSummary";
-import { getProgressStyles } from "../helpers/UI";
-import { useTransactions } from "../hooks/transactions/useTransactions";
+import Header from "../../components/navigation/Header";
+import { useMonthNavigation } from "../../hooks/utils/useMonthNavigation";
+import { useBudgets } from "../../hooks/budgets/useBudgets";
+import MonthNavigator from "../../components/dashboards/MonthNavigator";
+import BudgetSummaryCard from "../../components/budgets/BudgetSummaryCard";
+import BudgetAccountList from "../../components/budgets/BudgetAccountList";
+import { MONTHS } from "../../helpers/Format";
+import { useBudgetSummary } from "../../hooks/budgets/useBudgetSummary";
+import { getProgressStyles } from "../../helpers/UI";
+import { useTransactions } from "../../hooks/transactions/useTransactions";
 import { TaskAdd02Icon } from "hugeicons-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Budgets() {
+  const navigate = useNavigate();
   const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation(1);
   const selectedMonth = MONTHS[monthIndex];
 
@@ -61,7 +63,10 @@ export default function Budgets() {
       />
 
       <div className="flex flex-col rounded-t-3xl bg-slate-700 overflow-hidden">
-        <button className="flex justify-center items-center text-white font-semibold gap-2 py-3.5 cursor-pointer hover:bg-slate-800">
+        <button
+          onClick={() => navigate("/budget/create")}
+          className="flex justify-center items-center text-white font-semibold gap-2 py-3.5 cursor-pointer hover:bg-slate-800"
+        >
           <TaskAdd02Icon className="w-5 h-5" />
           <span>Add Budgets</span>
         </button>

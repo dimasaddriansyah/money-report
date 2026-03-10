@@ -28,9 +28,9 @@ export default function GenerateForm() {
     <main className="min-h-dvh flex flex-col">
       <Header title="Generate Transaction" showBack />
 
-      <div className="flex-1 p-4 flex flex-col">
-        <div className="max-w-md mx-auto w-full">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+      <section className="">
+        <div className="w-full p-4">
+          <label className="block text-sm font-medium text-gray-900 mb-1">
             Describe your transaction
           </label>
 
@@ -44,16 +44,18 @@ export default function GenerateForm() {
             rows={4}
           />
         </div>
-        <button
-          onClick={handleGenerate}
-          disabled={!text.trim() || loading}
-          className="mt-auto w-full rounded-xl bg-slate-900 py-3 text-sm font-medium
-              text-white hover:bg-slate-800 active:scale-95 transition
-              disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
-        >
-          {loading ? "Processing..." : "Generate Transaction"}
-        </button>
-      </div>
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+          <button
+            onClick={handleGenerate}
+            disabled={!text.trim() || loading}
+            className="mt-auto w-full rounded-xl bg-slate-900 py-3 text-sm font-medium
+            text-white hover:bg-slate-800 active:scale-95 transition
+            disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
+          >
+            {loading ? "Processing..." : "Generate Transaction"}
+          </button>
+        </div>
+      </section>
     </main>
   );
 }

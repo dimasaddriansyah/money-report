@@ -41,14 +41,15 @@ export default function TransactionForm({
   onChange,
   onSubmit,
   accounts,
-  loadingAccounts,
   categories,
-  loadingCategories,
   submitting,
   isEdit,
 }: Props) {
   const [openCategorySheet, setOpenCategorySheet] = useState(false);
   const [openAccountSheet, setOpenAccountSheet] = useState(false);
+  const [accountField, setAccountField] = useState<
+    "account" | "from_account" | "to_account"
+  >("account");
   const formattedNominal = formatRupiahInput(form.nominal.toString());
 
   const handleNominalChange = (value: string) => {
@@ -73,40 +74,6 @@ export default function TransactionForm({
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* TYPE SELECTOR */}
-      <div className="relative flex bg-gray-100 rounded-xl mx-4 mt-2">
-        <div
-          className={`absolute top-1 bottom-1 w-1/3 rounded-lg bg-white shadow transition-all duration-300
-            ${
-              form.type === "income"
-                ? "left-0"
-                : form.type === "expenses"
-                  ? "left-1/3"
-                  : "left-2/3"
-            }`}
-        />
-
-        {(["income", "expenses", "transfer"] as TransactionType[]).map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => onChange("type", t)}
-            className={`relative flex-1 py-2 text-sm font-medium z-10 transition cursor-pointer
-                ${
-                  form.type === t
-                    ? t === "income"
-                      ? "text-green-600"
-                      : t === "expenses"
-                        ? "text-red-500"
-                        : "text-blue-600"
-                    : "text-gray-500"
-                }`}
-          >
-            {t[0].toUpperCase() + t.slice(1)}
-          </button>
-        ))}
-      </div>
-
       {/* NOMINAL */}
       <input
         value={formattedNominal || 0}
@@ -118,8 +85,8 @@ export default function TransactionForm({
 
       {/* DATE */}
       <div className="m-4">
-        <div className="relative flex items-center justify-center rounded-xl border border-gray-300 bg-white  cursor-pointer">
-          <Calendar01Icon className="absolute left-4 w-5 h-5 text-slate-400 pointer-events-none" />
+        <div className="relative flex items-center justify-center rounded-xl border border-white/20 bg-white/5 cursor-pointer">
+          <Calendar01Icon className="absolute left-4 w-5 h-5 text-white/70 pointer-events-none" />
           <div className="relative text-center">
             <input
               type="date"
@@ -127,25 +94,63 @@ export default function TransactionForm({
               onChange={(e) => onChange("date", e.target.value)}
               className="absolute inset-0 opacity-0 cursor-pointer"
             />
-            <div className="py-3 text-base font-semibold text-slate-800">
+            <div className="py-3 text-base font-semibold text-white">
               {formatISODatetoID(form.date)}
             </div>
           </div>
-          <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
+          <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-white/70 pointer-events-none" />
         </div>
       </div>
 
-      <div className="bg-white p-4 flex flex-col flex-1">
+      <div className="bg-white px-4 py-6 pb-4 flex flex-col flex-1 rounded-3xl">
         <div className="w-full mx-auto space-y-4">
-          {/* SINGLE ACCOUNT INPUT (income & expenses) */}
+          {/* TYPE SELECTOR */}
+          <div className="relative flex bg-gray-100 rounded-xl py-1">
+            <div
+              className={`absolute top-1 bottom-1 w-1/3 rounded-lg bg-white shadow transition-all duration-300
+            ${
+              form.type === "income"
+                ? "left-0"
+                : form.type === "expenses"
+                  ? "left-1/3"
+                  : "left-2/3"
+            }`}
+            />
 
+            {(["income", "expenses", "transfer"] as TransactionType[]).map(
+              (t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => onChange("type", t)}
+                  className={`relative flex-1 py-2 text-sm font-medium z-10 transition cursor-pointer
+                ${
+                  form.type === t
+                    ? t === "income"
+                      ? "text-green-600"
+                      : t === "expenses"
+                        ? "text-red-500"
+                        : "text-blue-600"
+                    : "text-gray-500"
+                }`}
+                >
+                  {t[0].toUpperCase() + t.slice(1)}
+                </button>
+              ),
+            )}
+          </div>
+
+          {/* SINGLE ACCOUNT INPUT (income & expenses) */}
           {form.type !== "transfer" && (
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1">
                 Account
               </label>
               <div
-                onClick={() => setOpenAccountSheet(true)}
+                onClick={() => {
+                  setAccountField("account");
+                  setOpenAccountSheet(true);
+                }}
                 className="relative flex items-center justify-center"
               >
                 <div className="absolute left-4 pointer-events-none">
@@ -159,61 +164,6 @@ export default function TransactionForm({
                 <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
               </div>
             </div>
-          )}
-
-          {/* TRANSFER MODE */}
-          {form.type === "transfer" && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">
-                  From Account
-                </label>
-                <div className="relative flex items-center justify-center">
-                  <div className="absolute left-4 pointer-events-none">
-                    <CardExchange02Icon className="w-5 h-5 text-slate-400" />
-                  </div>
-                  <select
-                    disabled={loadingAccounts}
-                    value={form.from_account}
-                    onChange={(e) => onChange("from_account", e.target.value)}
-                    className="block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
-                  >
-                    <option value="">Select account</option>
-                    {accounts.map((data) => (
-                      <option key={data.account_id} value={data.name}>
-                        {data.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">
-                  To Account
-                </label>
-                <div className="relative flex items-center justify-center">
-                  <div className="absolute left-4 pointer-events-none">
-                    <CardExchange02Icon className="w-5 h-5 text-slate-400" />
-                  </div>
-                  <select
-                    disabled={loadingAccounts}
-                    value={form.to_account}
-                    onChange={(e) => onChange("to_account", e.target.value)}
-                    className="block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
-                  >
-                    <option value="">Select account</option>
-                    {accounts.map((data) => (
-                      <option key={data.account_id} value={data.name}>
-                        {data.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-            </>
           )}
 
           {/* CATEGORY */}
@@ -253,6 +203,57 @@ export default function TransactionForm({
               />
             </div>
           )}
+
+          {/* TRANSFER MODE */}
+          {form.type === "transfer" && (
+            <section className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  From Account
+                </label>
+                <div
+                  onClick={() => {
+                    setAccountField("from_account");
+                    setOpenAccountSheet(true);
+                  }}
+                  className="relative flex items-center justify-center"
+                >
+                  <div className="absolute left-4 pointer-events-none">
+                    <CardExchange02Icon className="w-5 h-5 text-slate-400" />
+                  </div>
+                  <span
+                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${form.from_account ? "text-slate-900" : "text-slate-400"} border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                  >
+                    {form.from_account || "Select account"}
+                  </span>
+                  <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  To Account
+                </label>
+                <div
+                  onClick={() => {
+                    setAccountField("to_account");
+                    setOpenAccountSheet(true);
+                  }}
+                  className="relative flex items-center justify-center"
+                >
+                  <div className="absolute left-4 pointer-events-none">
+                    <CardExchange02Icon className="w-5 h-5 text-slate-400" />
+                  </div>
+                  <span
+                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${form.to_account ? "text-slate-900" : "text-slate-400"} border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                  >
+                    {form.to_account || "Select account"}
+                  </span>
+                  <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+            </section>
+          )}
         </div>
 
         {/* SUBMIT */}
@@ -286,7 +287,7 @@ export default function TransactionForm({
             <div
               key={data.account_id}
               onClick={() => {
-                onChange("account", data.name);
+                onChange(accountField, data.name);
                 setOpenAccountSheet(false);
               }}
               className={`w-full flex items-center gap-3 text-left px-2 py-3 rounded-2xl transition cursor-pointer
@@ -338,7 +339,6 @@ export default function TransactionForm({
           ))}
         </div>
       </BottomSheet>
-      {/* Transfer Mode Sheet */}
     </div>
   );
 }

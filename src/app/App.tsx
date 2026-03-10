@@ -8,18 +8,18 @@ import { Toaster } from "sonner";
 function AppContent() {
   const location = useLocation();
 
+  const hiddenRoutes = ["/generate-form"];
+
   const hideBottomNav =
     matchPath("/transaction/*", location.pathname) ||
-    location.pathname === "/generate-form";
+    matchPath("/budget/*", location.pathname) ||
+    hiddenRoutes.includes(location.pathname);
 
   return (
     <Suspense fallback={<DashboardSkeleton />}>
       <AppRoutes />
       {!hideBottomNav && <BottomNav />}
-      <Toaster
-        position="top-center"
-        richColors
-      />
+      <Toaster position="top-center" richColors />
     </Suspense>
   );
 }

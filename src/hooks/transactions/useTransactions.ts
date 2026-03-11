@@ -3,9 +3,7 @@ import type { Transactions } from "../../types/Transactions";
 import { calculateNetCashflow } from "../../helpers/CalculateNetCashflow";
 import { fetchTransactions } from "../../services/TransactionServices";
 import { toast } from "sonner";
-
-const DELETE_URL =
-  "https://script.google.com/macros/s/AKfycbzBik6KxU6D4Dt5x5DshCFuR3qn0xhsP2EfheR0oB8uuP6KCOAHgDyc5L7cHa8xKnuj/exec";
+import { API_URL } from "../../services/APIServices";
 
 export function useTransactions(startDate?: Date, endDate?: Date) {
   const [allTransactions, setAllTransactions] = useState<Transactions[]>([]);
@@ -61,7 +59,7 @@ export function useTransactions(startDate?: Date, endDate?: Date) {
     );
 
     try {
-      const response = await fetch(DELETE_URL, {
+      const response = await fetch(API_URL, {
         method: "POST",
         body: JSON.stringify(payload),
       });

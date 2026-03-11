@@ -1,10 +1,15 @@
 import { DollarCircleIcon, NoteEditIcon, Target02Icon } from "hugeicons-react";
-import { formatNumber, formatRupiah } from "../../helpers/Format";
+import {
+  formatMonthYear,
+  formatNumber,
+  formatRupiah,
+} from "../../helpers/Format";
 import type { Budgets } from "../../types/Budgets";
 import { toast } from "sonner";
 import { useState } from "react";
 import BottomSheet from "../utils/BottomSheet";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../services/APIServices";
 
 interface Props {
   balance: number;
@@ -72,27 +77,26 @@ export default function BudgetSummaryCard({
     if (!budget) return;
 
     const updatedBudget = {
+      module: "budgets",
+      action: "edit",
       ...budget,
       nominal: form.nominal,
       period: selectedPeriod,
     };
 
     try {
-      const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbzBik6KxU6D4Dt5x5DshCFuR3qn0xhsP2EfheR0oB8uuP6KCOAHgDyc5L7cHa8xKnuj/exec",
-        {
-          method: "POST",
-          body: JSON.stringify(updatedBudget),
-        },
-      );
+      const response = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(updatedBudget),
+      });
 
       const result = await response.json();
 
       if (result.status === "success") {
         toast.success("Success", {
-          description: `Budget edited successfully`,
+          description: result.message,
           duration: 2000,
-          onAutoClose: () => navigate("/"),
+          onAutoClose: () => navigate("/budgets"),
         });
       } else {
         toast.error("Failed to save budget", { duration: 2000 });
@@ -166,7 +170,7 @@ export default function BudgetSummaryCard({
       <BottomSheet
         open={openEdit}
         onClose={() => setOpenEdit(false)}
-        title={`Budget ${selectedPeriod}`}
+        title={`Budget ${formatMonthYear(selectedPeriod)}`}
       >
         <div className="pb-6">
           <label className="block text-sm font-medium text-slate-900 mb-1">
@@ -180,7 +184,7 @@ export default function BudgetSummaryCard({
               value={formattedNominal}
               onChange={(e) => handleNominalChange(e.target.value)}
               inputMode="numeric"
-              className="block w-full ps-11 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer"
+              className="block w-full ps-11 pe-3 py-2.5 text-base rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
             />
           </div>
         </div>

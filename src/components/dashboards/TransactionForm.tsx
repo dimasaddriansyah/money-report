@@ -105,15 +105,15 @@ export default function TransactionForm({
       <div className="bg-white px-4 py-6 pb-4 flex flex-col flex-1 rounded-3xl">
         <div className="w-full mx-auto space-y-4">
           {/* TYPE SELECTOR */}
-          <div className="relative flex bg-gray-100 rounded-xl py-1">
+          <div className="relative flex bg-slate-50 rounded-xl py-1">
             <div
-              className={`absolute top-1 bottom-1 w-1/3 rounded-lg bg-white shadow transition-all duration-300
+              className={`absolute top-1 bottom-1 w-1/3 rounded-lg shadow transition-all duration-300
             ${
               form.type === "income"
-                ? "left-0"
+                ? "left-0 bg-green-100"
                 : form.type === "expenses"
-                  ? "left-1/3"
-                  : "left-2/3"
+                  ? "left-1/3 bg-red-100"
+                  : "left-2/3 bg-blue-100"
             }`}
             />
 

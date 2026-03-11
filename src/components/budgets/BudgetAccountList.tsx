@@ -10,12 +10,14 @@ interface Props {
     bar: string;
     text: string;
   };
+  onDeleteRequest: (id: string) => void;
 }
 
 export default function BudgetAccountList({
   budgetsByAccount,
   transactions,
   getProgressStyles,
+  onDeleteRequest,
 }: Props) {
   return (
     <section className="bg-white rounded-t-3xl overflow-hidden pb-24">
@@ -31,6 +33,7 @@ export default function BudgetAccountList({
             items={items}
             transactions={transactions}
             getProgressStyles={getProgressStyles}
+            onDeleteRequest={onDeleteRequest}
           />
         ))}
       </ul>

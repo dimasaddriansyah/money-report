@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Budgets } from "../../types/Budgets";
 import { fetchBudgets } from "../../services/BudgetServices";
+import { API_URL } from "../../services/APIServices";
+import { toast } from "sonner";
 
 export function useBudgets(startDate?: Date, endDate?: Date) {
   const [allBudgets, setAllBudgets] = useState<Budgets[]>([]);
@@ -44,9 +46,51 @@ export function useBudgets(startDate?: Date, endDate?: Date) {
     });
   }, [allBudgets, startDate, endDate]);
 
+  // =========================================================
+  // DELETE (OPTIMISTIC UPDATE)
+  // =========================================================
+  const deleteBudget = async (id: string) => {
+    const payload = {
+      module: "budgets",
+      action: "delete",
+      budget_id: id,
+    };
+
+    const previousState = allBudgets;
+
+    setAllBudgets((prev) => prev.filter((t) => t.budget_id !== id));
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        toast.success("Success", {
+          description: result.message,
+          duration: 2000,
+        });
+        return true;
+      }
+      setAllBudgets(previousState);
+      toast.error("Something went wrong!", {
+        duration: 2000,
+      });
+      return false;
+    } catch (error) {
+      console.error(error);
+      setAllBudgets(previousState);
+      return false;
+    }
+  };
+
   return {
     budgets: periodBudgets,
     loading,
     error,
+    deleteBudget,
   };
 }

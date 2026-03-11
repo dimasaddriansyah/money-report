@@ -15,6 +15,7 @@ interface Props {
     bar: string;
     text: string;
   };
+  onDeleteRequest: (id: string) => void;
 }
 
 export default function BudgetAccountItem({
@@ -22,6 +23,7 @@ export default function BudgetAccountItem({
   items,
   transactions,
   getProgressStyles,
+  onDeleteRequest,
 }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -96,7 +98,11 @@ export default function BudgetAccountItem({
         </div>
       </div>
 
-      <BudgetAccountDetail open={open} items={detailStatuses} />
+      <BudgetAccountDetail
+        open={open}
+        items={detailStatuses}
+        onDeleteRequest={onDeleteRequest}
+      />
     </li>
   );
 }

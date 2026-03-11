@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { CapitalizeType } from "../../helpers/CapitalizeType";
 import { parseTransactionInput } from "../../helpers/ParseTransactionInput";
+import { API_URL } from "../../services/APIServices";
 
 interface FormState {
   remark?: string;
@@ -151,13 +152,10 @@ export default function TransactionPage() {
     };
 
     try {
-      const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbzBik6KxU6D4Dt5x5DshCFuR3qn0xhsP2EfheR0oB8uuP6KCOAHgDyc5L7cHa8xKnuj/exec",
-        {
-          method: "POST",
-          body: JSON.stringify(payload),
-        },
-      );
+      const response = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
 
       const result = await response.json();
 

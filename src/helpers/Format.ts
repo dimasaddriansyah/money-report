@@ -124,9 +124,14 @@ export function extractShortDate(text: string): string | null {
 // ----------------------------------------------------------------------------
 export const getTodayISO = () => new Date().toLocaleDateString("sv-SE");
 
-// -----------------------------------------------------------------------------
-// END DATE UTILITIES (ISO as source of truth)
-// -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// FORMAT DATE YYYY-MM -> Februari 2026
+// ----------------------------------------------------------------------------
+export const formatMonthYear = (value: string): string => {
+  const [year, month] = value.split("-");
+  const monthName = MONTHS[parseInt(month, 10) - 1];
+  return `${monthName} ${year}`;
+};
 
 // -------------------------------------------------------------------------------
 // RUPIAH FORMAT

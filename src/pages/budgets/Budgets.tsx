@@ -10,6 +10,8 @@ import { getProgressStyles } from "../../helpers/UI";
 import { useTransactions } from "../../hooks/transactions/useTransactions";
 import { TaskAdd02Icon } from "hugeicons-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import BottomSheet from "../../components/utils/BottomSheet";
 
 export default function Budgets() {
   const navigate = useNavigate();
@@ -20,7 +22,10 @@ export default function Budgets() {
     endDate.getMonth() + 1,
   ).padStart(2, "0")}`;
 
-  const { budgets, loading } = useBudgets(startDate, endDate);
+  const { budgets, loading, deleteBudget } = useBudgets(startDate, endDate);
+
+  const [selectedBudget, setSelectedBudget] = useState<string | null>(null);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const { totalBudget, totalAllocated, balance, percentage, budgetsByAccount } =
     useBudgetSummary(budgets);
@@ -30,6 +35,24 @@ export default function Budgets() {
   const { transactions } = useTransactions(startDate, endDate);
 
   const currentBudget = budgets[0];
+
+  const handleDeleteRequest = (id: string) => {
+    setSelectedBudget(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedBudget) return;
+
+    setLoadingDelete(true);
+
+    const success = await deleteBudget(selectedBudget);
+
+    if (success) {
+      setSelectedBudget(null);
+    }
+
+    setLoadingDelete(false);
+  };
 
   if (loading) {
     return (
@@ -75,8 +98,29 @@ export default function Budgets() {
           totalBudget={totalBudget}
           transactions={transactions}
           getProgressStyles={getProgressStyles}
+          onDeleteRequest={handleDeleteRequest}
         />
       </div>
+
+      <BottomSheet
+        open={!!selectedBudget}
+        onClose={() => setSelectedBudget(null)}
+        title="Delete Budget"
+      >
+        {selectedBudget && (
+          <div className="flex flex-col gap-5">
+            <span>Apakah anda yakin ingin menghapus budget ini?</span>
+
+            <button
+              onClick={handleConfirmDelete}
+              disabled={loadingDelete}
+              className="w-full bg-red-700 hover:bg-red-500 text-white font-semibold py-3 rounded-full flex items-center justify-center min-h-12"
+            >
+              {loadingDelete ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        )}
+      </BottomSheet>
     </div>
   );
 }

@@ -69,7 +69,7 @@ export default function TransactionGroup({
         ))}
       </ul>
 
-      {/* Bottom Sheet Confirmation */}
+      {/* Bottom Sheet Delete Confirmation */}
       <BottomSheet
         open={!!selectedTrx}
         onClose={() => setSelectedTrx(null)}
@@ -81,22 +81,13 @@ export default function TransactionGroup({
               Apakah anda yakin ingin menghapus transaksi{" "}
               <strong>{selectedTrx.remark}</strong>?
             </span>
-            <div className="flex gap-4">
-              <button className="text-slate-500">Cancel</button>
+            <div className="flex">
               <button
                 onClick={handleConfirmDelete}
                 disabled={loadingDelete}
-                className="w-full bg-red-600 hover:bg-red-500 text-white font-semibold py-3 rounded-full flex items-center justify-center min-h-12 cursor-pointer"
+                className="w-full bg-red-700 hover:bg-red-500 text-white font-semibold py-3 rounded-full flex items-center justify-center min-h-12 cursor-pointer"
               >
-                {loadingDelete ? (
-                  <span className="flex gap-1">
-                    <span className="w-2 h-2 bg-white rounded-full animate-bounce" />
-                    <span className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
-                    <span className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
-                  </span>
-                ) : (
-                  "Delete"
-                )}
+                {loadingDelete ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>

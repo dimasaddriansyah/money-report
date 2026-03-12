@@ -10,8 +10,10 @@ import { getGreeting } from "../helpers/UI";
 import BottomSheet from "../components/utils/BottomSheet";
 import { useState } from "react";
 import { ExportSpreedsheet } from "../helpers/ExportSpreedsheet";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
+  const navigate = useNavigate();
   const greeting = getGreeting();
 
   const [openExport, setOpenExport] = useState(false);
@@ -49,7 +51,10 @@ export default function Settings() {
         <section className="flex flex-col gap-2">
           <span className="font-medium">Master Data</span>
           <div className="flex flex-col bg-white rounded-xl overflow-hidden">
-            <div className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer">
+            <div
+              onClick={() => navigate("/accounts")}
+              className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer"
+            >
               <div className="flex gap-4">
                 <CreditCardIcon className="h-6 w-6 text-slate-400" />
                 <span className="">Accounts</span>
@@ -57,7 +62,10 @@ export default function Settings() {
               <ArrowRight01Icon className="h-6 w-6 text-slate-400" />
             </div>
             <div className="h-px bg-slate-100" />
-            <div className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer">
+            <div
+              onClick={() => navigate("/categories")}
+              className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer"
+            >
               <div className="flex gap-4">
                 <LicenseIcon className="h-6 w-6 text-slate-400" />
                 <span className="">Categories</span>

@@ -101,7 +101,7 @@ export default function BudgetFormPages() {
   };
 
   return (
-    <main className="min-h-dvh flex flex-col">
+    <main className="min-h-dvh flex flex-col bg-slate-50">
       <Header title={isEdit ? "Edit Budget" : "Create Budget"} showBack />
 
       <section className="p-4 space-y-4">
@@ -115,7 +115,7 @@ export default function BudgetFormPages() {
             </div>
             <span
               onClick={() => setOpenAccountSheet(true)}
-              className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${form.account ? "text-slate-900" : "text-slate-400"} border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+              className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${form.account ? "text-slate-900" : "text-slate-400"} border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
             >
               {selectedAccount || "Select account"}
             </span>
@@ -140,7 +140,7 @@ export default function BudgetFormPages() {
                   nominal: handleNominalChange(e.target.value),
                 }))
               }
-              className="block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-900 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              className="block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-900 border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
             />
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function BudgetFormPages() {
                 remark: e.target.value,
               }))
             }
-            className="w-full rounded-xl border border-gray-300 p-3"
+            className="w-full rounded-xl border border-gray-300 bg-white p-3"
           />
         </div>
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">

@@ -41,7 +41,7 @@ export default function BottomNav() {
       >
         <div className="relative flex items-center justify-between px-6 py-3 bg-white pb-[calc(env(safe-area-inset-bottom)+12px)]">
           {/* LEFT */}
-          <div className="flex justify-between flex-1 pr-10">
+          <div className="flex justify-between flex-1 pr-13">
             {menus.slice(0, 2).map((menu) => (
               <NavItem
                 key={menu.path}
@@ -62,7 +62,7 @@ export default function BottomNav() {
           </div>
 
           {/* RIGHT */}
-          <div className="flex justify-between flex-1 pl-10">
+          <div className="flex justify-between flex-1 pl-13">
             {menus.slice(2).map((menu) => (
               <NavItem
                 key={menu.path}

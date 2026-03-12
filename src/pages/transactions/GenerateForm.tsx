@@ -31,7 +31,7 @@ export default function GenerateForm() {
   }, []);
 
   return (
-    <main className="min-h-dvh flex flex-col">
+    <main className="min-h-dvh flex flex-col bg-slate-50">
       <Header title="Generate Transaction" showBack />
 
       <section className="">
@@ -45,7 +45,7 @@ export default function GenerateForm() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Contoh: Makan nasi padang 35 ribu pakai gopay"
-            className="w-full rounded-xl border border-gray-300 p-4 text-base
+            className="w-full rounded-xl border border-gray-300 bg-white p-4 text-base
               focus:outline-none focus:ring-2 focus:ring-indigo-500
               transition resize-none"
             rows={4}

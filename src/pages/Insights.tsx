@@ -8,6 +8,7 @@ import ExpensesChart from "../components/insights/ExpensesChart";
 import CategoriesChart from "../components/insights/CategoriesChart";
 import { useMemo, useState } from "react";
 import FilterAccounts from "../components/insights/FilterAccounts";
+import TopExpensesChart from "../components/insights/TopExpensesChart";
 
 const COLORS = ["#5070DD", "#B6D634", "#FF994D", "#0CA8DF", "#505372"];
 
@@ -180,22 +181,23 @@ export default function Insight() {
         />
 
         <section className="bg-white rounded-2xl p-4">
-          <span className="text-base font-medium">
-            Grafik Pengeluaran Harian
-          </span>
-
+          <span className="text-base font-medium">Daily Expenses</span>
+          <div className="h-px bg-slate-100/60 my-3" />
           <ExpensesChart transactions={expenseTransactions} />
         </section>
 
         <section className="bg-white rounded-2xl p-4">
-          <span className="text-base font-medium">
-            Grafik Pengeluaran Kategori
-          </span>
+          <span className="text-base font-medium">Top 5 Expenses</span>
+          <div className="h-px bg-slate-100/60 my-3" />
+          <TopExpensesChart transactions={expenseTransactions} />
+        </section>
 
+        <section className="bg-white rounded-2xl p-4">
+          <span className="text-base font-medium">Expenses by Category</span>
+          <div className="h-px bg-slate-100/60 my-3" />
           <CategoriesChart data={pieData} colors={COLORS} />
-
-          {/* LEGEND */}
-          <div className="space-y-3 -mt-10">
+          {/* LEGEND CategoriesChart */}
+          <div className="space-y-3 -mt-15">
             {categorySummary.map((item, i) => {
               const color = COLORS[i] || COLORS[COLORS.length - 1];
 

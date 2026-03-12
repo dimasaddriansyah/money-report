@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/navigation/Header";
 
@@ -24,6 +24,12 @@ export default function GenerateForm() {
     }
   };
 
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <main className="min-h-dvh flex flex-col">
       <Header title="Generate Transaction" showBack />
@@ -35,6 +41,7 @@ export default function GenerateForm() {
           </label>
 
           <textarea
+            ref={inputRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Contoh: Makan nasi padang 35 ribu pakai gopay"

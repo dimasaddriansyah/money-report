@@ -36,6 +36,13 @@ export default function ExpensesChart({ transactions }: Props) {
   }, [transactions]);
 
   const option: EChartsOption = {
+    grid: {
+      left: 100,
+      right: 20,
+      top: 20,
+      bottom: 30,
+    },
+
     tooltip: {
       trigger: "axis",
     },
@@ -47,6 +54,11 @@ export default function ExpensesChart({ transactions }: Props) {
 
     yAxis: {
       type: "value",
+      splitLine: {
+        lineStyle: {
+          opacity: 0.15,
+        },
+      },
       axisLabel: {
         formatter: (val: number) => formatRupiah(val),
       },
@@ -58,7 +70,7 @@ export default function ExpensesChart({ transactions }: Props) {
         type: "line",
         smooth: true,
         data: chartData.data,
-        color : "red"
+        color: "red",
       },
     ],
   };

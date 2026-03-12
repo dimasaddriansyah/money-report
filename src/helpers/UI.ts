@@ -40,7 +40,9 @@ export const getAccountsImg = (account: string) => {
 
   const path = `../assets/accounts/${filterAccount}.webp`;
 
-  return accountImages[path] ?? accountImages["../assets/accounts/Default.webp"];
+  return (
+    accountImages[path] ?? accountImages["../assets/accounts/Default.webp"]
+  );
 };
 
 export const getAccountClass = (account?: string) => {
@@ -133,3 +135,15 @@ export const getProgressStyles = (value: number) => {
     text: "text-blue-500",
   };
 };
+
+export function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 12) {
+    return "Good Morning";
+  } else if (hour < 18) {
+    return "Good Afternoon";
+  } else {
+    return "Good Evening";
+  }
+}

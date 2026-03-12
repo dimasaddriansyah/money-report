@@ -9,7 +9,7 @@ import {
 } from "hugeicons-react";
 import type { Accounts } from "../../types/Accounts";
 import type { Categories } from "../../types/Categories";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BottomSheet from "../utils/BottomSheet";
 import { getAccountsImg, getCategoriesImg } from "../../helpers/UI";
 
@@ -72,10 +72,17 @@ export default function TransactionForm({
     isNonTransferInvalid ||
     submitting;
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* NOMINAL */}
       <input
+        ref={inputRef}
         value={formattedNominal || 0}
         onChange={(e) => handleNominalChange(e.target.value)}
         inputMode="numeric"
@@ -105,16 +112,17 @@ export default function TransactionForm({
       <div className="bg-white px-4 py-6 pb-4 flex flex-col flex-1 rounded-3xl">
         <div className="w-full mx-auto space-y-4">
           {/* TYPE SELECTOR */}
-          <div className="relative flex bg-slate-50 rounded-xl py-1">
+          <div className="relative flex bg-slate-50/50 border border-slate-200 rounded-xl py-1">
             <div
-              className={`absolute top-1 bottom-1 w-1/3 rounded-lg shadow transition-all duration-300
-            ${
-              form.type === "income"
-                ? "left-0 bg-green-100"
-                : form.type === "expenses"
-                  ? "left-1/3 bg-red-100"
-                  : "left-2/3 bg-blue-100"
-            }`}
+              className={`
+                absolute top-0 bottom-0 w-1/3 rounded-lg transition-all duration-300
+                ${
+                  form.type === "income"
+                    ? "left-0 bg-green-100"
+                    : form.type === "expenses"
+                      ? "left-1/3 bg-red-100"
+                      : "left-2/3 bg-blue-100"
+                }`}
             />
 
             {(["income", "expenses", "transfer"] as TransactionType[]).map(

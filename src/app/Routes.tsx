@@ -5,7 +5,7 @@ import Settings from "../pages/Settings";
 import GenerateForm from "../pages/transactions/GenerateForm";
 import { lazy } from "react";
 import TransactionPage from "../pages/transactions/TransactionPage";
-import BudgetFormPages from "../pages/budgets/BudgetFormPages";
+import BudgetFormPages from "../pages/budgets/BudgetFormPage";
 
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 

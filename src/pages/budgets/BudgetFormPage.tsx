@@ -48,6 +48,7 @@ export default function BudgetFormPages() {
   useEffect(() => {
     if (!budget) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setForm({
       account: budget.account,
       nominal: budget.nominal,
@@ -131,6 +132,7 @@ export default function BudgetFormPages() {
             </div>
             <input
               placeholder="Input nominal"
+              type="numeric"
               value={formattedNominal}
               onChange={(e) =>
                 setForm((prev) => ({

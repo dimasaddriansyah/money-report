@@ -7,13 +7,13 @@ import {
   PlusSignIcon,
   AiContentGenerator01Icon,
   MoneySavingJarIcon,
-  Chart02Icon,
+  SparklesIcon,
 } from "hugeicons-react";
 import BottomSheet from "../utils/BottomSheet";
 
 const menus = [
   { label: "Home", path: "/", Icon: FireIcon },
-  { label: "Insights", path: "/insights", Icon: Chart02Icon },
+  { label: "Insights", path: "/insights", Icon: SparklesIcon },
   { label: "Budgets", path: "/budgets", Icon: MoneySavingJarIcon },
   { label: "Settings", path: "/settings", Icon: Settings02Icon },
 ];

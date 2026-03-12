@@ -6,7 +6,7 @@ import {
 } from "../../helpers/Format";
 import type { Budgets } from "../../types/Budgets";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BottomSheet from "../utils/BottomSheet";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../services/APIServices";
@@ -111,6 +111,18 @@ export default function BudgetSummaryCard({
     setOpenEdit(false);
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!openEdit) return;
+
+    const timer = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [openEdit]);
+
   return (
     <div>
       <section className="mx-4 mt-4 mb-6">
@@ -181,6 +193,7 @@ export default function BudgetSummaryCard({
               <DollarCircleIcon className="w-5 h-5 text-slate-400" />
             </div>
             <input
+              ref={inputRef}
               value={formattedNominal}
               onChange={(e) => handleNominalChange(e.target.value)}
               inputMode="numeric"

@@ -27,7 +27,7 @@ export default function CategoriesChart({ data, colors }: Props) {
       {
         type: "text",
         left: "center",
-        top: "50%",
+        top: "40%",
         style: {
           text: "Total",
           align: "center",
@@ -38,7 +38,7 @@ export default function CategoriesChart({ data, colors }: Props) {
       {
         type: "text",
         left: "center",
-        top: "60%",
+        top: "50%",
         style: {
           text: "Rp " + totalExpenses.toLocaleString("id-ID"),
           align: "center",
@@ -54,7 +54,7 @@ export default function CategoriesChart({ data, colors }: Props) {
         name: "Expenses",
         type: "pie",
         radius: ["60%", "100%"],
-        center: ["50%", "70%"],
+        center: ["50%", "60%"],
         startAngle: 180,
         endAngle: 360,
 

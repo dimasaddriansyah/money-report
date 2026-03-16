@@ -22,7 +22,8 @@ export default function TopExpensesChart({ transactions }: Props) {
 
     const sorted = Object.entries(grouped)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 5);
+      .slice(0, 5)
+      .reverse();
 
     return {
       categories: sorted.map(([remark]) => remark),
@@ -63,8 +64,8 @@ export default function TopExpensesChart({ transactions }: Props) {
           <div style="padding:4px 4px">
             <div>Expenses</div>
             <div style="margin-top:4px">
-              <span style=" display:inline-block; width:8px; height:8px; border-radius:50%; background:#5470C6; "></span>
-              ${remark}
+              <span style=" display:inline-block; width:8px; height:8px; border-radius:50%; background:#FF0000; "></span>
+                ${remark}
               <span style="float:right;font-weight:600;margin-left:20px">
                 ${formatNumber(value)}
               </span>
@@ -76,17 +77,24 @@ export default function TopExpensesChart({ transactions }: Props) {
 
     xAxis: {
       type: "value",
-      splitNumber: 3,
+      splitNumber: 4,
+
+      axisLine: {
+        show: false, // hilangkan garis hitam
+      },
+
       splitLine: {
         lineStyle: {
-          opacity: 0.15,
+          color: "#F1F5F9 ", // abu-abu soft
+          width: 1,
         },
       },
+
       axisLabel: {
         formatter: (value: number) => {
           if (value >= 1000000) return `${value / 1000000}jt`;
           if (value >= 1000) return `${value / 1000}k`;
-          return `${value}`; // ubah ke string
+          return `${value}`;
         },
       },
     },
@@ -96,6 +104,14 @@ export default function TopExpensesChart({ transactions }: Props) {
       data: chartData.categories.map((r) =>
         r.length > 10 ? r.substring(0, 10) + "..." : r,
       ),
+
+      axisLine: {
+        show: false, // ini yang hilangkan garis hitam di kiri
+      },
+
+      axisTick: {
+        show: false,
+      },
     },
 
     series: [
@@ -103,15 +119,18 @@ export default function TopExpensesChart({ transactions }: Props) {
         name: "bar",
         type: "bar",
         data: chartData.data,
-        barWidth: 50,
-        // showBackground: true,
+        barWidth: 40,
+        showBackground: true,
+        backgroundStyle: {
+          color: "#F8FAFC",
+        },
         itemStyle: {
           borderRadius: [0, 10, 10, 0],
-          color: "#5470C6",
+          color: "#EF4444 ",
         },
         emphasis: {
           itemStyle: {
-            color: "#2B2E3C",
+            color: "#FF9A9A",
           },
         },
       },
@@ -120,7 +139,7 @@ export default function TopExpensesChart({ transactions }: Props) {
         type: "bar",
         data: insideData,
         barGap: "-100%",
-        barWidth: 50,
+        barWidth: 40,
         label: {
           show: true,
           position: "insideRight",
@@ -134,7 +153,7 @@ export default function TopExpensesChart({ transactions }: Props) {
         type: "bar",
         data: outsideData,
         barGap: "-100%",
-        barWidth: 50,
+        barWidth: 40,
         label: {
           show: true,
           position: "right",

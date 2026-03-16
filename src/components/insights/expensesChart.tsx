@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { Transactions } from "../../types/Transactions";
 import { formatRupiah } from "../../helpers/Format";
 import EChartsReact from "echarts-for-react";
-import type { EChartsOption } from "echarts";
+import { graphic, type EChartsOption } from "echarts";
 
 interface Props {
   transactions: Transactions[];
@@ -50,6 +50,9 @@ export default function ExpensesChart({ transactions }: Props) {
     xAxis: {
       type: "category",
       data: chartData.categories,
+      axisLine: {
+        show: false, // hilangkan garis hitam
+      },
     },
 
     yAxis: {
@@ -70,7 +73,13 @@ export default function ExpensesChart({ transactions }: Props) {
         type: "line",
         smooth: true,
         data: chartData.data,
-        color: "red",
+        color: "#EF4444",
+        areaStyle: {
+          color: new graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: "rgba(255,158,68,0.4)" },
+            { offset: 1, color: "rgba(255,70,131,0.05)" },
+          ]),
+        },
       },
     ],
   };

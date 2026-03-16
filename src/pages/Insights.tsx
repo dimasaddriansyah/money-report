@@ -9,6 +9,7 @@ import CategoriesChart from "../components/insights/CategoriesChart";
 import { useMemo, useState } from "react";
 import FilterAccounts from "../components/insights/FilterAccounts";
 import TopExpensesChart from "../components/insights/TopExpensesChart";
+import InsightSkeleton from "../components/skeletons/InsightSkeleton";
 
 const COLORS = ["#5070DD", "#B6D634", "#FF994D", "#0CA8DF", "#505372"];
 
@@ -19,7 +20,7 @@ export default function Insight() {
   const [hideBalance, setHideBalance] = useLocalStorage("hideBalance", false);
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
 
-  const { transactions } = useTransactions(startDate, endDate);
+  const { transactions, loading } = useTransactions(startDate, endDate);
 
   // filter account
   const filteredTransactions = useMemo(() => {
@@ -124,6 +125,10 @@ export default function Insight() {
       }))
       .sort((a, b) => b.total - a.total);
   }, [expenseTransactions]);
+
+  if (loading) {
+    return <InsightSkeleton />;
+  }
 
   return (
     <div className="bg-slate-900 flex flex-col">

@@ -182,7 +182,7 @@ export const smartCapitalize = (text: string): string => {
     .map((word, index) => {
       const lowerWord = word.toLowerCase();
 
-      if (word === word.toUpperCase()) {
+      if (word.length >= 2 && word === word.toUpperCase()) {
         return word;
       }
 

@@ -58,7 +58,7 @@ export default function Dashboard() {
 
       <section
         className={`bg-white rounded-t-3xl overflow-hidden flex flex-col ${
-          isEmpty ? "flex-1" : "pb-24"
+          isEmpty ? "flex-1 min-h-dvh" : "pb-24"
         }`}
       >
         <div

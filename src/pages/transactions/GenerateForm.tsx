@@ -12,10 +12,6 @@ export default function GenerateForm() {
 
     try {
       setLoading(true);
-
-      // Kalau nanti pakai AI API, taruh di sini
-      // const response = await generateTransaction(text);
-
       navigate("/transaction/create", {
         state: { generatedText: text },
       });

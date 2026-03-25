@@ -1,14 +1,16 @@
 import { useState } from "react";
+import AccountBalances from "../components/dashboards/AccountBalances";
+import CurrentBalance from "../components/dashboards/CurrentBalance";
+import MonthNavigator from "../components/dashboards/MonthNavigator";
+import TransactionGroup from "../components/dashboards/TransactionGroup";
+import DesktopLayout from "../components/utils/DesktopLayout";
+import EmptyState from "../components/utils/EmptyState";
+import MobileLayout from "../components/utils/MobileLayout";
+import { useLocalStorage } from "../hooks/utils/useLocalStorage";
+import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
+import { MONTHS } from "../helpers/Format";
 import { useTransactions } from "../hooks/transactions/useTransactions";
 import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
-import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
-import MonthNavigator from "../components/dashboards/MonthNavigator";
-import CurrentBalance from "../components/dashboards/CurrentBalance";
-import AccountBalances from "../components/dashboards/AccountBalances";
-import { MONTHS } from "../helpers/Format";
-import TransactionGroup from "../components/dashboards/TransactionGroup";
-import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
-import { useLocalStorage } from "../hooks/utils/useLocalStorage";
 
 export default function Dashboard() {
   const PAGE_SIZE = 20;
@@ -28,80 +30,91 @@ export default function Dashboard() {
     useGroupedTransactions(transactions, visibleCount);
   const isEmpty = flatTransactions.length === 0;
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-900">
-        <DashboardSkeleton />
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-slate-900 flex flex-col">
-      {/* <Header title="Cashflow 2026" textColor="text-white" /> */}
-
-      <MonthNavigator
-        selectedMonth={selectedMonth}
-        onPrev={prev}
-        onNext={next}
-        startDate={startDate}
-        endDate={endDate}
-      />
-
-      <CurrentBalance
-        balance={currentBalance}
-        hide={hideBalance}
-        toggle={() => setHideBalance((prev) => !prev)}
-      />
-
-      <AccountBalances transactions={allTransactions} hide={hideBalance} />
-
-      <section
-        className={`bg-white rounded-t-3xl overflow-hidden flex flex-col ${
-          isEmpty ? "flex-1 min-h-dvh" : "pb-24"
-        }`}
-      >
-        <div
-          className={`${isEmpty ? "bg-white" : "bg-slate-50"} h-8 flex items-center`}
-        >
-          <div className="mx-auto h-1.5 w-12 rounded-full bg-slate-300" />
+    <>
+      {/* DESKTOP */}
+      <DesktopLayout>
+        {/* HEADER */}
+        <div className="px-4 h-14 flex justify-between items-center bg-white border-b border-slate-100 shrink-0">
+          <span className="text-base font-semibold">HEADER CONTENT</span>
+          <MonthNavigator
+            variant="desktop"
+            selectedMonth={selectedMonth}
+            onPrev={prev}
+            onNext={next}
+            startDate={startDate}
+            endDate={endDate}
+          />
         </div>
-        {isEmpty ? (
-          <div className="flex flex-col text-slate-400 gap-4 items-center py-8 px-4">
-            <div className="text-4xl opacity-30">📭</div>
-            <div className="text-center">
-              <p className="text-lg font-medium">Belum ada transaksi</p>
-              <p className="text-sm">
-                Yuk mulai catat pemasukan atau pengeluaran
-              </p>
-            </div>
-          </div>
-        ) : (
-          <>
-            {visibleDates.map((date) => (
-              <TransactionGroup
-                key={date}
-                date={date}
-                transactions={visibleGrouped[date]}
-                openSwipe={openSwipe}
-                setOpenSwipe={setOpenSwipe}
-                onDeleteConfirm={deleteTransaction}
-              />
-            ))}
-          </>
-        )}
 
-        {!loading && visibleCount < flatTransactions.length && (
-          <div className="my-4 px-4">
-            <button
-              className="w-full border border-slate-200 text-slate-900 py-3 rounded-lg cursor-pointer hover:bg-slate-200 text-sm font-medium transition-all"
-              onClick={() => setVisibleCount((p) => p + PAGE_SIZE)}
-            >
-              Load more data
-            </button>
+        {/* CONTENT */}
+        <div className="flex-1 overflow-y-auto p-4">HAI</div>
+
+        {/* FOOTER */}
+        <div className="px-4 h-12 flex items-center justify-between text-xs text-slate-400 bg-white border-t border-slate-100 shrink-0">
+          <span>CASHFLOW v1.0</span>
+          <span>Copyright &#169; 2026</span>
+        </div>
+      </DesktopLayout>
+
+      {/* MOBILE */}
+      <MobileLayout>
+        <MonthNavigator
+          variant="mobile"
+          selectedMonth={selectedMonth}
+          onPrev={prev}
+          onNext={next}
+          startDate={startDate}
+          endDate={endDate}
+        />
+
+        <CurrentBalance
+          balance={currentBalance}
+          hide={hideBalance}
+          toggle={() => setHideBalance((prev) => !prev)}
+        />
+
+        <AccountBalances transactions={allTransactions} hide={hideBalance} />
+
+        <section
+          className={`bg-white rounded-t-3xl overflow-hidden flex flex-col ${
+            isEmpty ? "flex-1 min-h-dvh" : "pb-24"
+          }`}
+        >
+          <div
+            className={`${isEmpty ? "bg-white" : "bg-slate-50"} h-8 flex items-center`}
+          >
+            <div className="mx-auto h-1.5 w-12 rounded-full bg-slate-300" />
           </div>
-        )}
-      </section>
-    </div>
+          {isEmpty ? (
+            <EmptyState />
+          ) : (
+            <>
+              {visibleDates.map((date) => (
+                <TransactionGroup
+                  key={date}
+                  date={date}
+                  transactions={visibleGrouped[date]}
+                  openSwipe={openSwipe}
+                  setOpenSwipe={setOpenSwipe}
+                  onDeleteConfirm={deleteTransaction}
+                />
+              ))}
+            </>
+          )}
+
+          {!loading && visibleCount < flatTransactions.length && (
+            <div className="my-4 px-4">
+              <button
+                className="w-full border border-slate-200 text-slate-900 py-3 rounded-lg cursor-pointer hover:bg-slate-200 text-sm font-medium transition-all"
+                onClick={() => setVisibleCount((p) => p + PAGE_SIZE)}
+              >
+                Load more data
+              </button>
+            </div>
+          )}
+        </section>
+      </MobileLayout>
+    </>
   );
 }

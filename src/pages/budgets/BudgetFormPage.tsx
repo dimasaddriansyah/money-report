@@ -101,10 +101,10 @@ export default function BudgetFormPages() {
   };
 
   return (
-    <main className="min-h-dvh flex flex-col bg-slate-50">
-      <Header title={isEdit ? "Edit Budget" : "Create Budget"} showBack />
+    <main className="flex flex-col">
+      <Header title={isEdit ? "Edit Budget" : "Create Budget"} textColor="text-white" showBack />
 
-      <section className="p-4 space-y-4">
+      <section className="p-4 space-y-4 bg-slate-50 min-h-dvh">
         <div>
           <label className="block text-sm font-medium text-gray-900 mb-1">
             Account
@@ -160,7 +160,7 @@ export default function BudgetFormPages() {
             className="w-full rounded-xl border border-gray-300 bg-white p-3"
           />
         </div>
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-8">
           <button
             onClick={handleSubmit}
             className="mt-auto w-full rounded-xl bg-slate-900 py-3 text-sm font-medium

@@ -38,7 +38,7 @@ export default function BudgetAccountDetail({
         open ? "max-h-200 mt-2" : "max-h-0"
       }`}
     >
-      <div className="divide-y divide-slate-50/90 bg-slate-200 rounded-xl overflow-hidden">
+      <div className="divide-y divide-slate-50/90 bg-slate-100 rounded-xl overflow-hidden">
         <div className="px-2 py-3 text-slate-900 font-medium text-sm">
           Detail Budget
         </div>
@@ -108,7 +108,7 @@ export default function BudgetAccountDetail({
                   transform: `translateX(-${swipe[item.budget.budget_id] || 0}px)`,
                 }}
                 className={`flex justify-between items-center text-sm py-3 px-2 
-                  ${index % 2 === 0 ? "bg-slate-50" : "bg-slate-100"}
+                  ${index % 2 === 0 ? "bg-white" : "bg-slate-50"}
                   relative z-10 transition-transform duration-200 touch-pan-y select-none`}
               >
                 <div className="flex flex-col">

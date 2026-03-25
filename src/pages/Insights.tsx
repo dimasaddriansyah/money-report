@@ -10,17 +10,33 @@ import { useMemo, useState } from "react";
 import FilterAccounts from "../components/insights/FilterAccounts";
 import TopExpensesChart from "../components/insights/TopExpensesChart";
 import InsightSkeleton from "../components/skeletons/InsightSkeleton";
+import TransactionGroup from "../components/dashboards/TransactionGroup";
+import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
+import { useNavigate } from "react-router-dom";
+import EmptyState from "../components/utils/EmptyState";
 
 const COLORS = ["#5070DD", "#B6D634", "#FF994D", "#0CA8DF", "#505372"];
 
 export default function Insight() {
+  const navigate = useNavigate();
   const { monthIndex, prev, next, startDate, endDate } = useMonthNavigation();
   const selectedMonth = MONTHS[monthIndex];
 
   const [hideBalance, setHideBalance] = useLocalStorage("hideBalance", false);
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
 
-  const { transactions, loading } = useTransactions(startDate, endDate);
+  const PAGE_SIZE = 5;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const isExpanded = visibleCount > PAGE_SIZE;
+
+  const { transactions, loading, deleteTransaction } = useTransactions(
+    startDate,
+    endDate,
+  );
+  const { flatTransactions, visibleGrouped, visibleDates } =
+    useGroupedTransactions(transactions, visibleCount);
+  const [openSwipe, setOpenSwipe] = useState<string | null>(null);
+  const isEmpty = flatTransactions.length === 0;
 
   // filter account
   const filteredTransactions = useMemo(() => {
@@ -126,6 +142,11 @@ export default function Insight() {
       .sort((a, b) => b.total - a.total);
   }, [expenseTransactions]);
 
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const visibleCategories = showAllCategories
+    ? categorySummary
+    : categorySummary.slice(0, 4);
+
   if (loading) {
     return <InsightSkeleton />;
   }
@@ -179,60 +200,135 @@ export default function Insight() {
       </section>
 
       <section className="bg-slate-50 min-h-dvh p-4 space-y-4 pb-24">
-        <FilterAccounts
-          transactions={transactions}
-          selectedAccount={selectedAccount}
-          onSelectAccount={setSelectedAccount}
-        />
+        {isEmpty ? (
+          ""
+        ) : (
+          <FilterAccounts
+            transactions={transactions}
+            selectedAccount={selectedAccount}
+            onSelectAccount={setSelectedAccount}
+          />
+        )}
 
         <section className="bg-white rounded-2xl p-4">
           <span className="text-base font-medium">Daily Expenses</span>
           <div className="h-px bg-slate-100/60 my-3" />
-          <ExpensesChart transactions={expenseTransactions} />
+          {isEmpty ? (
+            <EmptyState />
+          ) : (
+            <ExpensesChart transactions={expenseTransactions} />
+          )}
         </section>
 
         <section className="bg-white rounded-2xl p-4">
           <span className="text-base font-medium">Top 5 Expenses</span>
           <div className="h-px bg-slate-100/60 my-3" />
-          <TopExpensesChart transactions={expenseTransactions} />
+          {isEmpty ? (
+            <EmptyState />
+          ) : (
+            <TopExpensesChart transactions={expenseTransactions} />
+          )}
         </section>
 
         <section className="bg-white rounded-2xl p-4">
           <span className="text-base font-medium">Expenses by Category</span>
           <div className="h-px bg-slate-100/60 my-3" />
-          <CategoriesChart data={pieData} colors={COLORS} />
-          {/* LEGEND CategoriesChart */}
-          <div className="space-y-3 -mt-15">
-            {categorySummary.map((item, i) => {
-              const color = COLORS[i] || COLORS[COLORS.length - 1];
+          {isEmpty ? (
+            <EmptyState />
+          ) : (
+            <>
+              <CategoriesChart data={pieData} colors={COLORS} />
+              {/* LEGEND CategoriesChart */}
+              <div className="space-y-3 -mt-15">
+                {visibleCategories.map((item, i) => {
+                  const color = COLORS[i] || COLORS[COLORS.length - 1];
 
-              return (
-                <div
-                  key={item.name}
-                  className="flex justify-between items-center border border-slate-200/60 rounded-2xl px-4 py-3 hover:bg-slate-50 cursor-pointer"
-                >
-                  <div className="flex items-start gap-3">
-                    <span
-                      className="w-5 h-2 mt-2 rounded-sm"
-                      style={{ background: color }}
-                    />
+                  return (
+                    <div
+                      key={item.name}
+                      className="flex justify-between items-center border border-slate-200/60 rounded-2xl px-4 py-3 hover:bg-slate-50 cursor-pointer"
+                    >
+                      <div className="flex items-start gap-3">
+                        <span
+                          className="w-5 h-2 mt-2 rounded-sm"
+                          style={{ background: color }}
+                        />
 
-                    <div className="flex flex-col">
-                      <span className="font-medium text-sm">{item.name}</span>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">
+                            {item.name}
+                          </span>
 
-                      <span className="text-xs text-slate-400">
-                        {item.count} transaksi
+                          <span className="text-xs text-slate-400">
+                            {item.count} transaksi
+                          </span>
+                        </div>
+                      </div>
+
+                      <span className="text-sm font-semibold">
+                        {formatRupiah(item.total)}
                       </span>
                     </div>
-                  </div>
+                  );
+                })}
+                {categorySummary.length > 4 && (
+                  <button
+                    onClick={() => setShowAllCategories((prev) => !prev)}
+                    className="w-full border border-slate-200/60 rounded-2xl px-4 py-3 text-sm font-medium hover:bg-slate-50 cursor-pointer"
+                  >
+                    {showAllCategories ? "Show less" : "Show more"}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </section>
 
-                  <span className="text-sm font-semibold">
-                    {formatRupiah(item.total)}
-                  </span>
-                </div>
-              );
-            })}
+        <section className="bg-white rounded-2xl py-4">
+          <div className="flex justify-between px-4">
+            <span className="text-base font-medium">List Transactions</span>
+            {isEmpty ? (
+              ""
+            ) : (
+              <span className="text-sm text-slate-400 cursor-pointer">
+                Show All
+              </span>
+            )}
           </div>
+          <div className="h-px bg-slate-100/60 mt-3" />
+          {isEmpty ? (
+            <EmptyState />
+          ) : (
+            <>
+              {visibleDates.map((date) => (
+                <TransactionGroup
+                  key={date}
+                  date={date}
+                  transactions={visibleGrouped[date]}
+                  openSwipe={openSwipe}
+                  setOpenSwipe={setOpenSwipe}
+                  onDeleteConfirm={deleteTransaction}
+                />
+              ))}
+            </>
+          )}
+
+          {!loading && flatTransactions.length > PAGE_SIZE && (
+            <div className="my-4 px-4">
+              <button
+                className="w-full border border-slate-200 text-slate-900 py-3 rounded-lg cursor-pointer hover:bg-slate-200 text-sm font-medium transition-all"
+                onClick={() => {
+                  if (!isExpanded) {
+                    setVisibleCount(PAGE_SIZE * 2);
+                  } else {
+                    navigate("/transactions");
+                  }
+                }}
+              >
+                {isExpanded ? "Show all transactions" : "Load more"}
+              </button>
+            </div>
+          )}
         </section>
       </section>
     </div>

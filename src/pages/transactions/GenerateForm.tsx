@@ -27,10 +27,10 @@ export default function GenerateForm() {
   }, []);
 
   return (
-    <main className="min-h-dvh flex flex-col bg-slate-50">
-      <Header title="Generate Transaction" showBack />
+    <main className="flex flex-col">
+      <Header title="Generate Transaction" textColor="text-white" showBack/>
 
-      <section className="">
+      <section className="bg-slate-50 min-h-dvh ">
         <div className="w-full p-4">
           <label className="block text-sm font-medium text-gray-900 mb-1">
             Describe your transaction
@@ -47,7 +47,7 @@ export default function GenerateForm() {
             rows={4}
           />
         </div>
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-8">
           <button
             onClick={handleGenerate}
             disabled={!text.trim() || loading}

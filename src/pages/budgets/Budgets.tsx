@@ -1,4 +1,3 @@
-import Header from "../../components/navigation/Header";
 import { useMonthNavigation } from "../../hooks/utils/useMonthNavigation";
 import { useBudgets } from "../../hooks/budgets/useBudgets";
 import MonthNavigator from "../../components/dashboards/MonthNavigator";
@@ -8,10 +7,11 @@ import { MONTHS } from "../../helpers/Format";
 import { useBudgetSummary } from "../../hooks/budgets/useBudgetSummary";
 import { getProgressStyles } from "../../helpers/UI";
 import { useTransactions } from "../../hooks/transactions/useTransactions";
-import { TaskAdd02Icon } from "hugeicons-react";
+import { AddMoneyCircleIcon } from "hugeicons-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BottomSheet from "../../components/utils/BottomSheet";
+import BudgetSkeleton from "../../components/skeletons/BudgetSkeleton";
 
 export default function Budgets() {
   const navigate = useNavigate();
@@ -55,12 +55,7 @@ export default function Budgets() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-900">
-        <Header title="Budgeting" textColor="text-white" />
-        {/* <DashboardSkeleton /> */}
-      </div>
-    );
+    return <BudgetSkeleton />;
   }
 
   return (
@@ -85,14 +80,18 @@ export default function Budgets() {
         selectedPeriod={selectedPeriod}
       />
 
-      <div className="flex flex-col rounded-t-3xl bg-slate-700 overflow-hidden">
+      {/* Add Budget */}
+      <section className="px-4 pb-4 flex">
         <button
           onClick={() => navigate("/budget/create")}
-          className="flex justify-center items-center text-white font-semibold gap-2 py-3.5 cursor-pointer hover:bg-slate-800"
+          className="flex flex-1 items-center justify-center gap-2 py-2.5 bg-white/5 border border-dashed border-slate-400 font-semibold text-white rounded-2xl hover:bg-white/20 cursor-pointer"
         >
-          <TaskAdd02Icon className="w-5 h-5" />
+          <AddMoneyCircleIcon className="w-5 h-5 text-white/50" />
           <span>Add Budgets</span>
         </button>
+      </section>
+
+      <div className="flex flex-col rounded-t-3xl bg-slate-700 overflow-hidden">
         <BudgetAccountList
           budgetsByAccount={budgetsByAccount}
           totalBudget={totalBudget}

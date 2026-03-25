@@ -109,7 +109,7 @@ export default function TransactionForm({
         </div>
       </div>
 
-      <div className="bg-white px-4 py-6 pb-4 flex flex-col flex-1 rounded-3xl">
+      <div className="bg-white px-4 py-6 pb-4 flex flex-col flex-1 rounded-t-3xl">
         <div className="w-full mx-auto space-y-4">
           {/* TYPE SELECTOR */}
           <div className="relative flex bg-slate-50/50 border border-slate-200 rounded-xl py-1">
@@ -265,7 +265,7 @@ export default function TransactionForm({
         </div>
 
         {/* SUBMIT */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-8">
           <button
             onClick={onSubmit}
             disabled={isDisabled}

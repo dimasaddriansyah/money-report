@@ -36,6 +36,9 @@ export default function TransactionItem({
     delta: 60,
   });
 
+  const isSpecialRemark =
+    trx.remark?.includes("[") && trx.remark?.includes("]");
+
   return (
     <li className="relative overflow-hidden">
       {/* ACTIONS */}
@@ -64,9 +67,9 @@ export default function TransactionItem({
 
       <div
         {...handlers}
-        className={`flex items-center px-4 py-4 gap-4 bg-white transition-transform touch-pan-y select-none ${
-          isOpen ? "-translate-x-32" : "translate-x-0"
-        }`}
+        className={`flex items-center px-4 py-4 gap-4 transition-transform touch-pan-y select-none ${
+          isSpecialRemark ? "bg-red-50" : "bg-white"
+        } ${isOpen ? "-translate-x-32" : "translate-x-0"}`}
       >
         <img
           src={getCategoriesImg(trx.category)}

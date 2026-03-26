@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { CapitalizeType } from "../../helpers/CapitalizeType";
 import { parseTransactionInput } from "../../helpers/ParseTransactionInput";
 import { API_URL } from "../../services/APIServices";
+import { SparklesIcon } from "hugeicons-react";
 
 interface FormState {
   remark?: string;
@@ -121,6 +122,8 @@ export default function TransactionPage() {
         return {
           from_account: form.from_account,
           to_account: form.to_account,
+          category: "Internal Transfer",
+          remark: `Transfer dari ${form.from_account} ke ${form.to_account}`,
         };
 
       default:
@@ -143,8 +146,8 @@ export default function TransactionPage() {
       action: isEdit ? "edit" : "create",
       ...(isEdit && { transaction_id: id }),
       ...accountMapping,
-      remark: form.remark,
-      category: form.category,
+      remark: form.remark || accountMapping.remark || "",
+      category: form.category || accountMapping.category || "",
       nominal: form.nominal,
       date: form.date,
       dateID: formatISODatetoID(form.date),
@@ -180,10 +183,23 @@ export default function TransactionPage() {
   // LOADING STATE
   // ============================================================
 
-  if (loadingAccounts || loadingCategories) {
+  const isGenerating = Boolean(generatedText);
+
+  if (isGenerating && (loadingAccounts || loadingCategories)) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative">
+            <SparklesIcon className="h-12 w-12 animate-pulse" />
+            <div className="absolute inset-0 rounded-full bg-white/10 blur-lg animate-ping" />
+          </div>
+
+          <span className="text-sm font-semibold">
+            Generating transaction...
+          </span>
+
+          <span className="text-xs text-slate-400">Analyzing your input</span>
+        </div>
       </div>
     );
   }

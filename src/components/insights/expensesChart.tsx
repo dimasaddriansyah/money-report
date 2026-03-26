@@ -3,6 +3,7 @@ import type { Transactions } from "../../types/Transactions";
 import { formatRupiah } from "../../helpers/Format";
 import EChartsReact from "echarts-for-react";
 import { graphic, type EChartsOption } from "echarts";
+import EmptyState from "../utils/EmptyState";
 
 interface Props {
   transactions: Transactions[];
@@ -34,6 +35,8 @@ export default function ExpensesChart({ transactions }: Props) {
       data: dates.map((d) => grouped[d]),
     };
   }, [transactions]);
+
+  const isEmpty = chartData.data.length === 0;
 
   const option: EChartsOption = {
     grid: {
@@ -84,5 +87,9 @@ export default function ExpensesChart({ transactions }: Props) {
     ],
   };
 
-  return <EChartsReact option={option} style={{ height: 350 }} />;
+  if (isEmpty) {
+    return <EmptyState />;
+  }
+
+  return <EChartsReact option={option} style={{ height: 350 }} />
 }

@@ -4,6 +4,7 @@ import type { Transactions } from "../../types/Transactions";
 import { formatNumber } from "../../helpers/Format";
 import EChartsReact from "echarts-for-react";
 import type { EChartsOption } from "echarts";
+import EmptyState from "../utils/EmptyState";
 
 interface Props {
   transactions: Transactions[];
@@ -31,6 +32,8 @@ export default function TopExpensesChart({ transactions }: Props) {
       remarks: sorted.map(([remark]) => remark),
     };
   }, [transactions]);
+
+  const isEmpty = chartData.data.length === 0;
 
   const maxValue = Math.max(...chartData.data, 0);
 
@@ -167,5 +170,9 @@ export default function TopExpensesChart({ transactions }: Props) {
     ],
   };
 
+  if (isEmpty) {
+    return <EmptyState />;
+  }
+  
   return <EChartsReact option={option} style={{ height: 350 }} />;
 }

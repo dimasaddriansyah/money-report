@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BottomSheet from "../../components/utils/BottomSheet";
 import BudgetSkeleton from "../../components/skeletons/BudgetSkeleton";
+import ListTransfer from "../../components/budgets/ListTransfer";
 
 export default function Budgets() {
   const navigate = useNavigate();
@@ -35,6 +36,37 @@ export default function Budgets() {
   const { transactions } = useTransactions(startDate, endDate);
 
   const currentBudget = budgets[0];
+
+  const ACCOUNT_GROUP: Record<string, string> = {
+    jago: "Jago",
+    investment: "Jago",
+    bibit: "Jago",
+    gopay: "Jago",
+  };
+
+  const transferData = Object.entries(budgetsByAccount).reduce(
+    (acc, [account, items]) => {
+      const key = ACCOUNT_GROUP[account.toLowerCase()] || account;
+
+      const total = items.reduce((sum, item) => sum + item.nominal, 0);
+
+      if (!acc[key]) {
+        acc[key] = 0;
+      }
+
+      acc[key] += total;
+
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  const groupedData = Object.entries(transferData)
+    .map(([account, total]) => ({
+      account,
+      total,
+    }))
+    .sort((a, b) => b.total - a.total);
 
   const handleDeleteRequest = (id: string) => {
     setSelectedBudget(id);
@@ -79,6 +111,8 @@ export default function Budgets() {
         budget={currentBudget}
         selectedPeriod={selectedPeriod}
       />
+
+      <ListTransfer data={groupedData} />
 
       {/* Add Budget */}
       <section className="px-4 pb-4 flex">

@@ -1,11 +1,9 @@
 import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
 import MonthNavigator from "../components/dashboards/MonthNavigator";
 import { formatRupiah, MONTHS } from "../helpers/Format";
-import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import { useTransactions } from "../hooks/transactions/useTransactions";
 import { useLocalStorage } from "../hooks/utils/useLocalStorage";
 import ExpensesChart from "../components/insights/ExpensesChart";
-import CategoriesChart from "../components/insights/CategoriesChart";
 import { useMemo, useState } from "react";
 import FilterAccounts from "../components/insights/FilterAccounts";
 import TopExpensesChart from "../components/insights/TopExpensesChart";
@@ -14,6 +12,8 @@ import TransactionGroup from "../components/dashboards/TransactionGroup";
 import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
 import { useNavigate } from "react-router-dom";
 import EmptyState from "../components/utils/EmptyState";
+import BalanceSummary from "../components/insights/BalanceSummary";
+import CategoryExpensesSection from "../components/insights/CategoryExpensesSection";
 
 const COLORS = ["#5070DD", "#B6D634", "#FF994D", "#0CA8DF", "#505372"];
 
@@ -33,12 +33,8 @@ export default function Insight() {
     startDate,
     endDate,
   );
-  const { flatTransactions, visibleGrouped, visibleDates } =
-    useGroupedTransactions(transactions, visibleCount);
-  const [openSwipe, setOpenSwipe] = useState<string | null>(null);
-  const isEmpty = flatTransactions.length === 0;
 
-  // filter account
+    // filter account
   const filteredTransactions = useMemo(() => {
     if (!selectedAccount) return transactions;
 
@@ -61,6 +57,13 @@ export default function Insight() {
       return false;
     });
   }, [transactions, selectedAccount]);
+
+  const { flatTransactions, visibleGrouped, visibleDates } =
+    useGroupedTransactions(filteredTransactions, visibleCount);
+
+  const [openSwipe, setOpenSwipe] = useState<string | null>(null);
+  
+  const isEmptyTransaction = flatTransactions.length === 0;
 
   // summary
   const { income, expenses, balance } = useMemo(() => {
@@ -161,48 +164,17 @@ export default function Insight() {
         endDate={endDate}
       />
 
-      <section className="p-4 flex flex-col gap-4">
-        <div className="flex justify-between items-center bg-white/5 rounded-xl p-4">
-          <div className="flex flex-col">
-            <span className="text-sm text-white/60">Balance</span>
-            <span className="text-2xl text-white font-semibold">
-              {hideBalance ? "Rp •••••••••••" : formatRupiah(balance)}
-            </span>
-          </div>
-
-          <button
-            onClick={() => setHideBalance((prev) => !prev)}
-            className="cursor-pointer"
-          >
-            {hideBalance ? (
-              <ViewIcon strokeWidth={2} className="text-white" />
-            ) : (
-              <ViewOffSlashIcon strokeWidth={2} className="text-white" />
-            )}
-          </button>
-        </div>
-
-        <div className="flex gap-4 py-2">
-          <div className="flex-1">
-            <span className="text-sm text-white/60">Income</span>
-            <div className="text-base text-white font-medium">
-              {hideBalance ? "Rp •••••••••••" : formatRupiah(income)}
-            </div>
-          </div>
-
-          <div className="flex-1">
-            <span className="text-sm text-white/60">Expenses</span>
-            <div className="text-base text-white font-medium">
-              {hideBalance ? "Rp •••••••••••" : formatRupiah(expenses)}
-            </div>
-          </div>
-        </div>
-      </section>
+      <BalanceSummary
+        balance={balance}
+        income={income}
+        expenses={expenses}
+        hideBalance={hideBalance}
+        setHideBalance={setHideBalance}
+        formatRupiah={formatRupiah}
+      />
 
       <section className="bg-slate-50 min-h-dvh p-4 space-y-4 pb-24">
-        {isEmpty ? (
-          ""
-        ) : (
+        {!isEmptyTransaction && (
           <FilterAccounts
             transactions={transactions}
             selectedAccount={selectedAccount}
@@ -213,7 +185,7 @@ export default function Insight() {
         <section className="bg-white rounded-2xl p-4">
           <span className="text-base font-medium">Daily Expenses</span>
           <div className="h-px bg-slate-100/60 my-3" />
-          {isEmpty ? (
+          {isEmptyTransaction ? (
             <EmptyState />
           ) : (
             <ExpensesChart transactions={expenseTransactions} />
@@ -223,71 +195,28 @@ export default function Insight() {
         <section className="bg-white rounded-2xl p-4">
           <span className="text-base font-medium">Top 5 Expenses</span>
           <div className="h-px bg-slate-100/60 my-3" />
-          {isEmpty ? (
+          {isEmptyTransaction ? (
             <EmptyState />
           ) : (
             <TopExpensesChart transactions={expenseTransactions} />
           )}
         </section>
 
-        <section className="bg-white rounded-2xl p-4">
-          <span className="text-base font-medium">Expenses by Category</span>
-          <div className="h-px bg-slate-100/60 my-3" />
-          {isEmpty ? (
-            <EmptyState />
-          ) : (
-            <>
-              <CategoriesChart data={pieData} colors={COLORS} />
-              {/* LEGEND CategoriesChart */}
-              <div className="space-y-3 -mt-15">
-                {visibleCategories.map((item, i) => {
-                  const color = COLORS[i] || COLORS[COLORS.length - 1];
-
-                  return (
-                    <div
-                      key={item.name}
-                      className="flex justify-between items-center border border-slate-200/60 rounded-2xl px-4 py-3 hover:bg-slate-50 cursor-pointer"
-                    >
-                      <div className="flex items-start gap-3">
-                        <span
-                          className="w-5 h-2 mt-2 rounded-sm"
-                          style={{ background: color }}
-                        />
-
-                        <div className="flex flex-col">
-                          <span className="font-medium text-sm">
-                            {item.name}
-                          </span>
-
-                          <span className="text-xs text-slate-400">
-                            {item.count} transaksi
-                          </span>
-                        </div>
-                      </div>
-
-                      <span className="text-sm font-semibold">
-                        {formatRupiah(item.total)}
-                      </span>
-                    </div>
-                  );
-                })}
-                {categorySummary.length > 4 && (
-                  <button
-                    onClick={() => setShowAllCategories((prev) => !prev)}
-                    className="w-full border border-slate-200/60 rounded-2xl px-4 py-3 text-sm font-medium hover:bg-slate-50 cursor-pointer"
-                  >
-                    {showAllCategories ? "Show less" : "Show more"}
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-        </section>
+        <CategoryExpensesSection
+          isEmpty={isEmptyTransaction}
+          pieData={pieData}
+          COLORS={COLORS}
+          visibleCategories={visibleCategories}
+          categorySummary={categorySummary}
+          showAllCategories={showAllCategories}
+          setShowAllCategories={setShowAllCategories}
+          formatRupiah={formatRupiah}
+        />
 
         <section className="bg-white rounded-2xl py-4">
           <div className="flex justify-between px-4">
             <span className="text-base font-medium">List Transactions</span>
-            {isEmpty ? (
+            {isEmptyTransaction ? (
               ""
             ) : (
               <span className="text-sm text-slate-400 cursor-pointer">
@@ -296,7 +225,7 @@ export default function Insight() {
             )}
           </div>
           <div className="h-px bg-slate-100/60 mt-3" />
-          {isEmpty ? (
+          {isEmptyTransaction ? (
             <EmptyState />
           ) : (
             <>

@@ -14,10 +14,10 @@ interface Props {
 export default function ListTransfer({ data }: Props) {
   const bgClass = (account: string) => {
     const map: Record<string, string> = {
-      jago: "bg-amber-500",
-      gopay: "bg-cyan-500",
+      jago: "bg-yellow-400",
       bca: "bg-blue-700",
       "blu by bca": "bg-sky-400",
+      seabank: "bg-amber-600"
     };
 
     return map[account.toLowerCase()] || "bg-slate-400";

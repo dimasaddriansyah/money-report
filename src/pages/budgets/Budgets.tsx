@@ -103,7 +103,7 @@ export default function Budgets() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-slate-900 overflow-x-hidden">
       {/* <Header title="Budgeting" textColor="text-white" /> */}
 
       <MonthNavigator

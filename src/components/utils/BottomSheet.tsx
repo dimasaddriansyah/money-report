@@ -73,9 +73,6 @@ export default function BottomSheet({
       {/* Sheet */}
       <div
         ref={sheetRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
         style={{
           transform: `translateY(${open ? translateY : 100}%)`,
         }}
@@ -85,7 +82,11 @@ export default function BottomSheet({
           ${open ? "translate-y-0" : "translate-y-full"}`}
       >
         {/* HEADER */}
-        <div className="sticky top-0 bg-white px-4 pt-4 pb-3 z-10 border-b border-slate-100">
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd} 
+          className="sticky top-0 bg-white px-4 pt-4 pb-3 z-10 border-b border-slate-100">
           {!hideDragHandle && (
             <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-slate-200" />
           )}

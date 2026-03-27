@@ -78,6 +78,9 @@ export default function TransactionForm({
     inputRef.current?.focus();
   }, []);
 
+  const types: TransactionType[] = ["income", "expenses", "transfer"];
+  const activeIndex = types.indexOf(form.type);
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* NOMINAL */}
@@ -112,40 +115,48 @@ export default function TransactionForm({
       <div className="bg-white px-4 py-6 pb-4 flex flex-col flex-1 rounded-t-3xl">
         <div className="w-full mx-auto space-y-4">
           {/* TYPE SELECTOR */}
-          <div className="relative flex bg-slate-50/50 border border-slate-200 rounded-xl py-1">
+          <div className="relative flex border-b border-slate-200">
+            {/* 🔥 Sliding Indicator */}
             <div
               className={`
-                absolute top-0 bottom-0 w-1/3 rounded-lg transition-all duration-300
+                absolute bottom-0 h-[2px]
+                transition-all duration-300 ease-in-out will-change-transform
                 ${
                   form.type === "income"
-                    ? "left-0 bg-green-100"
+                    ? "bg-green-500"
                     : form.type === "expenses"
-                      ? "left-1/3 bg-red-100"
-                      : "left-2/3 bg-blue-100"
-                }`}
+                      ? "bg-red-500"
+                      : "bg-blue-500"
+                }
+              `}
+              style={{
+                width: `${100 / types.length}%`,
+                transform: `translateX(${activeIndex * 100}%)`,
+              }}
             />
 
-            {(["income", "expenses", "transfer"] as TransactionType[]).map(
-              (t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => onChange("type", t)}
-                  className={`relative flex-1 py-2 text-sm font-medium z-10 transition cursor-pointer
-                ${
-                  form.type === t
-                    ? t === "income"
-                      ? "text-green-600"
-                      : t === "expenses"
-                        ? "text-red-500"
-                        : "text-blue-600"
-                    : "text-gray-500"
-                }`}
-                >
-                  {t[0].toUpperCase() + t.slice(1)}
-                </button>
-              ),
-            )}
+            {/* 🔥 Tabs */}
+            {types.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => onChange("type", t)}
+                className={`
+                  relative flex-1 py-2 text-sm font-medium transition-all duration-200 cursor-pointer
+                  ${
+                    form.type === t
+                      ? t === "income"
+                        ? "text-green-600 bg-gradient-to-t from-green-500/10 to-transparent backdrop-blur-[1px]"
+                        : t === "expenses"
+                          ? "text-red-500 bg-gradient-to-t from-red-500/10 to-transparent backdrop-blur-[1px]"
+                          : "text-blue-600 bg-gradient-to-t from-blue-500/10 to-transparent backdrop-blur-[1px]"
+                      : "text-gray-500 hover:text-slate-700 hover:bg-gradient-to-t hover:from-slate-100 hover:to-transparent"
+                  }
+                `}
+              >
+                {t[0].toUpperCase() + t.slice(1)}
+              </button>
+            ))}
           </div>
 
           {/* SINGLE ACCOUNT INPUT (income & expenses) */}

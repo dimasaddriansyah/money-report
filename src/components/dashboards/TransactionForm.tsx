@@ -12,6 +12,7 @@ import type { Categories } from "../../types/Categories";
 import { useEffect, useRef, useState } from "react";
 import BottomSheet from "../utils/BottomSheet";
 import { getAccountsImg, getCategoriesImg } from "../../helpers/UI";
+import Picker from "react-mobile-picker";
 
 interface FormState {
   remark?: string;
@@ -81,6 +82,57 @@ export default function TransactionForm({
   const types: TransactionType[] = ["income", "expenses", "transfer"];
   const activeIndex = types.indexOf(form.type);
 
+  const [openDateSheet, setOpenDateSheet] = useState(false);
+
+  const [value, setValue] = useState({
+    day: "1",
+    month: "Jan",
+    year: "2026",
+  });
+
+  const monthMap: Record<string, number> = {
+    Januari: 0, Februari: 1, Maret: 2, April: 3, Mei: 4, Juni: 5,
+    Juli: 6, Agustus: 7, September: 8, Oktober: 9, November: 10, Desember: 11,
+  };
+
+  const monthReverse = Object.keys(monthMap);
+
+  useEffect(() => {
+    if (!openDateSheet) return;
+
+    let date: Date;
+
+    if (form.date) {
+      // EDIT
+      date = new Date(form.date);
+    } else {
+      // CREATE
+      date = new Date();
+    }
+
+    setValue({
+      day: String(date.getDate()),
+      month: monthReverse[date.getMonth()],
+      year: String(date.getFullYear()),
+    });
+  }, [openDateSheet]);
+
+  const maxDay = new Date(
+    Number(value.year),
+    monthMap[value.month] + 1,
+    0
+  ).getDate();
+
+  const days = Array.from({ length: maxDay }, (_, i) =>
+    String(i + 1)
+  );
+
+  const months = monthReverse;
+
+  const years = Array.from({ length: 50 }, (_, i) =>
+    String(2000 + i)
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* NOMINAL */}
@@ -94,25 +146,20 @@ export default function TransactionForm({
       />
 
       {/* DATE */}
-      <div className="m-4">
-        <div className="relative flex items-center justify-center rounded-xl border border-white/20 bg-white/5 cursor-pointer">
-          <Calendar01Icon className="absolute left-4 w-5 h-5 text-white/70 pointer-events-none" />
-          <div className="relative text-center">
-            <input
-              type="date"
-              value={form.date}
-              onChange={(e) => onChange("date", e.target.value)}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-            />
-            <div className="py-3 text-base font-semibold text-white">
-              {formatISODatetoID(form.date)}
-            </div>
+     <div className="m-4">
+        <div 
+          onClick={() => setOpenDateSheet(true)}
+          className="relative flex items-center justify-center rounded-xl border border-white/20 bg-white/5 cursor-pointer"
+        >
+          <Calendar01Icon className="absolute left-4 w-5 h-5 text-white/70" />
+          <div className="py-3 text-base font-semibold text-white">
+            {formatISODatetoID(form.date)}
           </div>
-          <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-white/70 pointer-events-none" />
+          <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-white/70" />
         </div>
       </div>
 
-      <div className="bg-white px-4 py-6 pb-4 flex flex-col flex-1 rounded-t-3xl">
+      <div className="bg-white px-4 py-6 pb-24 flex flex-col flex-1 rounded-t-3xl">
         <div className="w-full mx-auto space-y-4">
           {/* TYPE SELECTOR */}
           <div className="relative flex border-b border-slate-200">
@@ -357,6 +404,86 @@ export default function TransactionForm({
             </div>
           ))}
         </div>
+      </BottomSheet>
+
+      {/* Date Sheet */}
+      <BottomSheet
+        open={openDateSheet}
+        onClose={() => setOpenDateSheet(false)}
+        title="Select Date"
+      >
+        <div className="divide-y divide-slate-100/60">
+          <Picker
+            value={value}
+            onChange={setValue}
+            wheelMode="natural"
+          >
+            <Picker.Column name="day">
+              {days.map((d) => {
+                const isSelectedDay = value.day === d;
+
+                return (
+                  <Picker.Item key={d} value={d}>
+                    <div
+                      className={`transition ${isSelectedDay ? "text-slate-900 font-semibold" : "text-slate-400"}`}
+                    >
+                      {d}
+                    </div>
+                  </Picker.Item>
+                );
+              })}
+            </Picker.Column>
+
+            <Picker.Column name="month">
+              {months.map((m) => {
+                const isSelectedMonth = value.month === m;
+
+                return (
+                  <Picker.Item key={m} value={m}>
+                    <div
+                      className={`transition ${isSelectedMonth ? "text-slate-900 font-semibold" : "text-slate-400"}`}
+                    >
+                      {m}
+                    </div>
+                  </Picker.Item>
+                );
+              })}
+            </Picker.Column>
+
+            <Picker.Column name="year">
+              {years.map((y) => {
+                const isSelectedYear = value.year === y;
+
+                return (
+                  <Picker.Item key={y} value={y}>
+                    <div
+                      className={`transition ${isSelectedYear ? "text-slate-900 font-semibold" : "text-slate-400"}`}
+                    >
+                      {y}
+                    </div>
+                  </Picker.Item>
+                );
+              })}
+            </Picker.Column>
+          </Picker>
+        </div>
+        
+        <button
+          onClick={() => {
+            const date = new Date(
+              Number(value.year),
+              monthMap[value.month],
+              Number(value.day)
+            );
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+
+            const iso = `${year}-${month}-${day}`;
+            onChange("date", iso);
+            setOpenDateSheet(false);
+          }} 
+          className="w-full py-2 rounded-3xl text-white bg-slate-900 font-semibold">Done</button>
       </BottomSheet>
     </div>
   );

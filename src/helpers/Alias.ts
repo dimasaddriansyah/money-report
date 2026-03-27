@@ -34,7 +34,8 @@ export const accountAlias: Record<string, string> = {
 };
 
 export const ACCOUNT_GROUPS: Record<string, string[]> = {
-  bca: ["blu by bca", "bca"],
+  bca: ["bca"],
+  "blu by bca": ["blu by bca"],
   jago: [
     "jago",
     "foods and beverages",
@@ -47,15 +48,16 @@ export const ACCOUNT_GROUPS: Record<string, string[]> = {
   ],
   gopay: ["gopay"],
   emoney: ["e-money mandiri"],
-  loan: ["loan"],
+  bibit: ["bibit"],
 };
 
 export const ACCOUNT_STYLES: Record<string, string> = {
-  bca: "bg-[#00529C1A] border-[#00529C33] text-[#00529C]",
-  jago: "bg-[#FCA3111A] border-[#FCA31133] text-[#FCA311]",
-  gopay: "bg-[#00AEEF1A] border-[#00AEEF33] text-[#00AEEF]",
-  emoney: "bg-[#00A1911A] border-[#00A19133] text-[#00A191]",
-  loan: "bg-[#0025A31A] border-[#0025A333] text-[#0025A3]",
+  bca: "bg-blue-50 border border-blue-100 text-blue-700",
+  jago: "bg-yellow-50 border border-yellow-100 text-yellow-500",
+  gopay: "bg-cyan-50 border border-cyan-100 text-cyan-500",
+  emoney: "bg-orange-50 border border-orange-100 text-orange-500",
+  "blu by bca": "bg-sky-50 border border-sky-100 text-sky-500",
+  bibit: "bg-green-50 border border-green-100 text-green-500",
 };
 
 export const MONTH_ALIAS: Record<string, string> = {

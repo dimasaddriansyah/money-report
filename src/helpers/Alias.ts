@@ -53,7 +53,7 @@ export const ACCOUNT_GROUPS: Record<string, string[]> = {
 
 export const ACCOUNT_STYLES: Record<string, string> = {
   bca: "bg-blue-50 border border-blue-100 text-blue-700",
-  jago: "bg-yellow-50 border border-yellow-100 text-yellow-500",
+  jago: "bg-yellow-50 border border-yellow-200 text-yellow-500",
   gopay: "bg-cyan-50 border border-cyan-100 text-cyan-500",
   emoney: "bg-orange-50 border border-orange-100 text-orange-500",
   "blu by bca": "bg-sky-50 border border-sky-100 text-sky-500",

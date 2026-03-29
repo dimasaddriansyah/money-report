@@ -119,7 +119,13 @@ export function useBudgetDetailStatus(
               };
 
               const rules = jagoRules[item.remark];
-              if (!rules) return false;
+              if (!rules) {
+                return (
+                  trx.type === "expenses" &&
+                  trx.from_account === "Jago" &&
+                  trx.remark === item.remark
+                );
+              }
 
               return (
                 trx.from_account === "Jago" &&

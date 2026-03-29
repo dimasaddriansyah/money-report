@@ -34,7 +34,7 @@ export default function Insight() {
     endDate,
   );
 
-    // filter account
+  // filter account
   const filteredTransactions = useMemo(() => {
     if (!selectedAccount) return transactions;
 
@@ -62,24 +62,27 @@ export default function Insight() {
     useGroupedTransactions(filteredTransactions, visibleCount);
 
   const [openSwipe, setOpenSwipe] = useState<string | null>(null);
-  
+
   const isEmptyTransaction = flatTransactions.length === 0;
 
   // summary
-  const { income, expenses, balance } = useMemo(() => {
+  const { income, expenses, balance, transfer } = useMemo(() => {
     let income = 0;
     let expenses = 0;
+    let transfer = 0;
 
     filteredTransactions.forEach((trx) => {
       const amount = Number(trx.nominal);
 
       if (trx.type === "income") income += amount;
-      if (trx.type === "expenses") expenses += amount;
+      else if (trx.type === "expenses") expenses += amount;
+      else if (trx.type === "transfer") transfer += amount;
     });
 
     return {
       income,
       expenses,
+      transfer,
       balance: income - expenses,
     };
   }, [filteredTransactions]);
@@ -168,6 +171,7 @@ export default function Insight() {
         balance={balance}
         income={income}
         expenses={expenses}
+        transfer={transfer}
         hideBalance={hideBalance}
         setHideBalance={setHideBalance}
         formatRupiah={formatRupiah}

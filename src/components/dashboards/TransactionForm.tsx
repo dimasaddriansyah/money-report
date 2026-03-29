@@ -91,8 +91,18 @@ export default function TransactionForm({
   });
 
   const monthMap: Record<string, number> = {
-    Januari: 0, Februari: 1, Maret: 2, April: 3, Mei: 4, Juni: 5,
-    Juli: 6, Agustus: 7, September: 8, Oktober: 9, November: 10, Desember: 11,
+    Januari: 0,
+    Februari: 1,
+    Maret: 2,
+    April: 3,
+    Mei: 4,
+    Juni: 5,
+    Juli: 6,
+    Agustus: 7,
+    September: 8,
+    Oktober: 9,
+    November: 10,
+    Desember: 11,
   };
 
   const monthReverse = Object.keys(monthMap);
@@ -120,18 +130,14 @@ export default function TransactionForm({
   const maxDay = new Date(
     Number(value.year),
     monthMap[value.month] + 1,
-    0
+    0,
   ).getDate();
 
-  const days = Array.from({ length: maxDay }, (_, i) =>
-    String(i + 1)
-  );
+  const days = Array.from({ length: maxDay }, (_, i) => String(i + 1));
 
   const months = monthReverse;
 
-  const years = Array.from({ length: 50 }, (_, i) =>
-    String(2000 + i)
-  );
+  const years = Array.from({ length: 50 }, (_, i) => String(2000 + i));
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -146,8 +152,8 @@ export default function TransactionForm({
       />
 
       {/* DATE */}
-     <div className="m-4">
-        <div 
+      <div className="m-4">
+        <div
           onClick={() => setOpenDateSheet(true)}
           className="relative flex items-center justify-center rounded-xl border border-white/20 bg-white/5 cursor-pointer"
         >
@@ -166,7 +172,7 @@ export default function TransactionForm({
             {/* 🔥 Sliding Indicator */}
             <div
               className={`
-                absolute bottom-0 h-[2px]
+                absolute bottom-0 h-0.5
                 transition-all duration-300 ease-in-out will-change-transform
                 ${
                   form.type === "income"
@@ -193,11 +199,11 @@ export default function TransactionForm({
                   ${
                     form.type === t
                       ? t === "income"
-                        ? "text-green-600 bg-gradient-to-t from-green-500/10 to-transparent backdrop-blur-[1px]"
+                        ? "text-green-600 bg-linear-to-t from-green-500/10 to-transparent backdrop-blur-[1px]"
                         : t === "expenses"
-                          ? "text-red-500 bg-gradient-to-t from-red-500/10 to-transparent backdrop-blur-[1px]"
-                          : "text-blue-600 bg-gradient-to-t from-blue-500/10 to-transparent backdrop-blur-[1px]"
-                      : "text-gray-500 hover:text-slate-700 hover:bg-gradient-to-t hover:from-slate-100 hover:to-transparent"
+                          ? "text-red-500 bg-linear-to-t from-red-500/10 to-transparent backdrop-blur-[1px]"
+                          : "text-blue-600 bg-linear-to-t from-blue-500/10 to-transparent backdrop-blur-[1px]"
+                      : "text-gray-500 hover:text-slate-700 hover:bg-linear-to-t hover:from-slate-100 hover:to-transparent"
                   }
                 `}
               >
@@ -229,44 +235,6 @@ export default function TransactionForm({
                 </span>
                 <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
               </div>
-            </div>
-          )}
-
-          {/* CATEGORY */}
-          {form.type !== "transfer" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1">
-                Category
-              </label>
-              <div
-                onClick={() => setOpenCategorySheet(true)}
-                className="relative flex items-center justify-center"
-              >
-                <div className="absolute left-4 pointer-events-none">
-                  <LicenseIcon className="w-5 h-5 text-slate-400" />
-                </div>
-                <span
-                  className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${form.category ? "text-slate-900" : "text-slate-400"} border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
-                >
-                  {form.category || "Select category"}
-                </span>
-                <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
-              </div>
-            </div>
-          )}
-
-          {/* REMARK */}
-          {form.type !== "transfer" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1">
-                Remark
-              </label>
-              <textarea
-                value={form.remark ?? ""}
-                onChange={(e) => onChange("remark", e.target.value)}
-                className="w-full rounded-xl border border-gray-300 p-3"
-                rows={3}
-              />
             </div>
           )}
 
@@ -320,6 +288,42 @@ export default function TransactionForm({
               </div>
             </section>
           )}
+
+          {/* CATEGORY */}
+          {form.type !== "transfer" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-1">
+                Category
+              </label>
+              <div
+                onClick={() => setOpenCategorySheet(true)}
+                className="relative flex items-center justify-center"
+              >
+                <div className="absolute left-4 pointer-events-none">
+                  <LicenseIcon className="w-5 h-5 text-slate-400" />
+                </div>
+                <span
+                  className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${form.category ? "text-slate-900" : "text-slate-400"} border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                >
+                  {form.category || "Select category"}
+                </span>
+                <ArrowDown01Icon className="absolute right-4 w-5 h-5 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
+          )}
+
+          {/* REMARK */}
+          <div>
+            <label className="block text-sm font-medium text-gray-900 mb-1">
+              Remark {form.type === "transfer" &&(<span className="font-light text-slate-400">(optional)</span>)}
+            </label>
+            <textarea
+              value={form.remark ?? ""}
+              onChange={(e) => onChange("remark", e.target.value)}
+              className="w-full rounded-xl border border-gray-300 p-3"
+              rows={3}
+            />
+          </div>
         </div>
 
         {/* SUBMIT */}
@@ -413,11 +417,7 @@ export default function TransactionForm({
         title="Select Date"
       >
         <div className="divide-y divide-slate-100/60">
-          <Picker
-            value={value}
-            onChange={setValue}
-            wheelMode="natural"
-          >
+          <Picker value={value} onChange={setValue} wheelMode="natural">
             <Picker.Column name="day">
               {days.map((d) => {
                 const isSelectedDay = value.day === d;
@@ -467,13 +467,13 @@ export default function TransactionForm({
             </Picker.Column>
           </Picker>
         </div>
-        
+
         <button
           onClick={() => {
             const date = new Date(
               Number(value.year),
               monthMap[value.month],
-              Number(value.day)
+              Number(value.day),
             );
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -482,8 +482,11 @@ export default function TransactionForm({
             const iso = `${year}-${month}-${day}`;
             onChange("date", iso);
             setOpenDateSheet(false);
-          }} 
-          className="w-full py-2 rounded-3xl text-white bg-slate-900 font-semibold">Done</button>
+          }}
+          className="w-full py-2 rounded-3xl text-white bg-slate-900 font-semibold"
+        >
+          Done
+        </button>
       </BottomSheet>
     </div>
   );

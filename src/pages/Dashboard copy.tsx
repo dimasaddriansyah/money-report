@@ -39,6 +39,7 @@ export default function Dashboard() {
 
   return (
     <div className="bg-slate-900 flex flex-col">
+      <span className="bg-slate-50"></span>
       {/* <Header title="Cashflow 2026" textColor="text-white" /> */}
 
       <MonthNavigator

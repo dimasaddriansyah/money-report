@@ -11,6 +11,13 @@ import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
 import { MONTHS } from "../helpers/Format";
 import { useTransactions } from "../hooks/transactions/useTransactions";
 import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
+import {
+  ArrowDown01Icon,
+  Menu01Icon,
+  Notification01Icon,
+  PlusSignIcon,
+  Search01Icon,
+} from "hugeicons-react";
 
 export default function Dashboard() {
   const PAGE_SIZE = 20;
@@ -35,26 +42,80 @@ export default function Dashboard() {
       {/* DESKTOP */}
       <DesktopLayout>
         {/* HEADER */}
-        <div className="px-4 h-14 flex justify-between items-center bg-white border-b border-slate-100 shrink-0">
-          <span className="text-base font-semibold">HEADER CONTENT</span>
-          <MonthNavigator
-            variant="desktop"
-            selectedMonth={selectedMonth}
-            onPrev={prev}
-            onNext={next}
-            startDate={startDate}
-            endDate={endDate}
-          />
-        </div>
+        {({ collapsed, setCollapsed }: any) => (
+          <>
+            {/* HEADER */}
+            <div className="px-6 h-18 flex justify-between items-center bg-white border-b border-slate-100 shrink-0">
+              <button
+                onClick={() => setCollapsed(!collapsed)}
+                className="cursor-pointer"
+              >
+                <Menu01Icon size={20} className="text-slate-900" />
+              </button>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
+                  <Search01Icon className="w-5 h-5 text-slate-900" />
+                  <Notification01Icon className="w-5 h-5 text-slate-900" />
+                </div>
+                <div className="w-px h-8 bg-neutral-100"></div>
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold">
+                      Dimas Addriansyah
+                    </span>
+                    <span className="text-xs text-slate-400">Owner</span>
+                  </div>
+                  <ArrowDown01Icon className="h-5 w-5 text-neutral-400" />
+                </div>
+              </div>
+            </div>
 
-        {/* CONTENT */}
-        <div className="flex-1 overflow-y-auto p-4">HAI</div>
+            {/* CONTENT */}
+            <div className="flex flex-col flex-1 overflow-y-auto px-6 py-8 gap-6">
+              <div className="flex justify-between gap-6">
+                <button className="flex items-center px-4 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl gap-2 cursor-pointer">
+                  <PlusSignIcon className="w-5 h-5 text-white" />
+                  <span>Add Transaction</span>
+                </button>
+                <button className="flex items-center px-4 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl gap-2 cursor-pointer">
+                  <PlusSignIcon className="w-5 h-5 text-white" />
+                  <span>Add Transaction</span>
+                </button>
+              </div>
+              <div className="flex justify-between gap-6">
+                <section className="flex-1 bg-white rounded-2xl p-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-slate-400">Total Balance</span>
+                    <h1 className="text-2xl font-bold">Rp 20.000</h1>
+                  </div>
+                </section>
+                <section className="flex-1 bg-white rounded-2xl p-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-slate-400">Total Income</span>
+                    <h1 className="text-2xl font-bold">Rp 20.000</h1>
+                  </div>
+                </section>
+                <section className="flex-1 bg-white rounded-2xl p-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-slate-400">Total Expenses</span>
+                    <h1 className="text-2xl font-bold">Rp 20.000</h1>
+                  </div>
+                </section>
+                <section className="flex-1 bg-white rounded-2xl p-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-slate-400">Total Transactions</span>
+                    <h1 className="text-2xl font-bold">Rp 20.000</h1>
+                  </div>
+                </section>
+              </div>
+            </div>
 
-        {/* FOOTER */}
-        <div className="px-4 h-12 flex items-center justify-between text-xs text-slate-400 bg-white border-t border-slate-100 shrink-0">
-          <span>CASHFLOW v1.0</span>
-          <span>Copyright &#169; 2026</span>
-        </div>
+            {/* FOOTER */}
+            <div className="px-6 h-10 flex items-center justify-between text-xs text-slate-400 bg-white border-t border-slate-100 shrink-0">
+              <span>CASHFLOW v1.0</span>
+            </div>
+          </>
+        )}
       </DesktopLayout>
 
       {/* MOBILE */}

@@ -4,6 +4,7 @@ interface Props {
   balance: number;
   income: number;
   expenses: number;
+  transfer: number;
   hideBalance: boolean;
   setHideBalance: React.Dispatch<React.SetStateAction<boolean>>;
   formatRupiah: (value: number) => string;
@@ -13,6 +14,7 @@ export default function BalanceSummary({
   balance,
   income,
   expenses,
+  transfer,
   hideBalance,
   setHideBalance,
   formatRupiah,
@@ -53,6 +55,16 @@ export default function BalanceSummary({
           <span className="text-sm text-white/60">Expenses</span>
           <div className="text-base text-white font-medium">
             {hideBalance ? "Rp •••••••••••" : formatRupiah(expenses)}
+          </div>
+        </div>
+
+        <div className="flex-1">
+          <div className="flex items-center gap-1">
+            <span className="text-sm text-white/60">Transfer</span>
+            <span className="text-xs text-white/30">(internal)</span>
+          </div>
+          <div className="text-base text-white font-medium">
+            {hideBalance ? "Rp •••••••••••" : formatRupiah(transfer)}
           </div>
         </div>
       </div>

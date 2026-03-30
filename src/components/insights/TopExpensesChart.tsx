@@ -8,9 +8,11 @@ import EmptyState from "../utils/EmptyState";
 
 interface Props {
   transactions: Transactions[];
+  data: number;
+  labelLength: number;
 }
 
-export default function TopExpensesChart({ transactions }: Props) {
+export default function TopExpensesChart({ transactions, data, labelLength }: Props) {
   const chartData = useMemo(() => {
     const grouped: Record<string, number> = {};
 
@@ -23,7 +25,7 @@ export default function TopExpensesChart({ transactions }: Props) {
 
     const sorted = Object.entries(grouped)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
+      .slice(0, data)
       .reverse();
 
     return {
@@ -105,7 +107,7 @@ export default function TopExpensesChart({ transactions }: Props) {
     yAxis: {
       type: "category",
       data: chartData.categories.map((r) =>
-        r.length > 10 ? r.substring(0, 10) + "..." : r,
+        r.length > labelLength ? r.substring(0, labelLength) + "..." : r,
       ),
 
       axisLine: {
@@ -173,6 +175,8 @@ export default function TopExpensesChart({ transactions }: Props) {
   if (isEmpty) {
     return <EmptyState />;
   }
-  
-  return <EChartsReact option={option} style={{ height: 350 }} />;
+
+  const chartHeight = Math.max(350, data * 55);
+
+  return <EChartsReact option={option}  style={{ height: chartHeight }} />;
 }

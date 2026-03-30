@@ -119,7 +119,6 @@ export function useBudgetDetailStatus(
               };
 
               const rules = jagoRules[item.remark];
-              
               if (!rules) {
                 return (
                   trx.type === "expenses" &&

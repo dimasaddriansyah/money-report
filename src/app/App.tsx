@@ -4,7 +4,6 @@ import AppRoutes from "./Routes";
 import BottomNav from "../components/navigation/BottomNav";
 import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
 import { Toaster } from "sonner";
-import Sidebar from "../components/utils/Sidebar";
 
 function AppContent() {
   const location = useLocation();
@@ -20,8 +19,6 @@ function AppContent() {
     <Suspense fallback={<DashboardSkeleton />}>
       {/* TABLET + DESKTOP */}
       <div className="hidden md:flex min-h-screen">
-        <Sidebar />
-
         <div className="flex-1 bg-slate-50">
           <AppRoutes />
         </div>
@@ -33,7 +30,7 @@ function AppContent() {
         {!hideBottomNav && <BottomNav />}
       </div>
 
-      <Toaster position="top-center" richColors />
+      <Toaster position="bottom-center" richColors />
     </Suspense>
   );
 }

@@ -34,7 +34,7 @@ export default function Insight() {
     endDate,
   );
 
-    // filter account
+  // filter account
   const filteredTransactions = useMemo(() => {
     if (!selectedAccount) return transactions;
 
@@ -201,7 +201,11 @@ export default function Insight() {
           {isEmptyTransaction ? (
             <EmptyState />
           ) : (
-            <TopExpensesChart transactions={expenseTransactions} data={5} labelLength={20}/>
+            <TopExpensesChart
+              transactions={expenseTransactions}
+              data={5}
+              labelLength={20}
+              hideBalance={hideBalance} />
           )}
         </section>
 
@@ -214,6 +218,7 @@ export default function Insight() {
           showAllCategories={showAllCategories}
           setShowAllCategories={setShowAllCategories}
           formatRupiah={formatRupiah}
+          hideBalance={hideBalance}
         />
 
         <section className="bg-white rounded-2xl py-4">

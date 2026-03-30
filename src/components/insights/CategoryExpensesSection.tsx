@@ -10,6 +10,7 @@ interface Props {
   showAllCategories: boolean;
   setShowAllCategories: React.Dispatch<React.SetStateAction<boolean>>;
   formatRupiah: (value: number) => string;
+  hideBalance: boolean;
 }
 
 export default function CategoryExpensesSection({
@@ -21,6 +22,7 @@ export default function CategoryExpensesSection({
   showAllCategories,
   setShowAllCategories,
   formatRupiah,
+  hideBalance
 }: Props) {
   return (
     <section className="bg-white rounded-2xl p-4">
@@ -33,7 +35,7 @@ export default function CategoryExpensesSection({
         <EmptyState />
       ) : (
         <>
-          <CategoriesChart data={pieData} colors={COLORS} />
+          <CategoriesChart data={pieData} colors={COLORS} hideBalance={hideBalance} />
 
           {visibleCategories.length > 0 && (
             <div className="space-y-3 -mt-15">
@@ -62,7 +64,7 @@ export default function CategoryExpensesSection({
                     </div>
 
                     <span className="text-sm font-semibold">
-                      {formatRupiah(item.total)}
+                      {hideBalance ? "Rp ••••••" : formatRupiah(item.total)}
                     </span>
                   </div>
                 );

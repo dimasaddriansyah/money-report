@@ -112,6 +112,20 @@ export default function Dashboard() {
       .sort((a, b) => b.total - a.total);
   }, [expenseTransactions]);
 
+  const totalIncome = useMemo(() => {
+    return flatTransactions
+      .filter((trx) => trx.type === "income")
+      .reduce((sum, trx) => sum + Number(trx.nominal), 0);
+  }, [flatTransactions]);
+
+  const totalExpenses = useMemo(() => {
+    return flatTransactions
+      .filter((trx) => trx.type === "expenses")
+      .reduce((sum, trx) => sum + Number(trx.nominal), 0);
+  }, [flatTransactions]);
+
+  const totalTransactions = flatTransactions.length;
+
   const [showAllCategories, setShowAllCategories] = useState(false);
   const visibleCategories = showAllCategories
     ? categorySummary
@@ -211,7 +225,7 @@ export default function Dashboard() {
                     <Money01Icon className="text-blue-500" />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h1 className="text-lg font-bold">{hideBalance ? "Rp ••••••" : formatRupiah(25000)}</h1>
+                    <h1 className="text-lg font-bold">{hideBalance ? "Rp ••••••" : formatRupiah(currentBalance)}</h1>
                     <span className="text-sm text-slate-400">Total Balance</span>
                   </div>
                 </section>
@@ -220,7 +234,7 @@ export default function Dashboard() {
                     <MoneyReceive02Icon className="text-green-500" />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h1 className="text-lg font-bold">{hideBalance ? "Rp ••••••" : formatRupiah(25000)}</h1>
+                    <h1 className="text-lg font-bold">{hideBalance ? "Rp ••••••" : formatRupiah(totalIncome)}</h1>
                     <span className="text-sm text-slate-400">Total Income</span>
                   </div>
                 </section>
@@ -229,7 +243,7 @@ export default function Dashboard() {
                     <MoneySend02Icon className="text-red-500" />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h1 className="text-lg font-bold">{hideBalance ? "Rp ••••••" : formatRupiah(25000)}</h1>
+                    <h1 className="text-lg font-bold">{hideBalance ? "Rp ••••••" : formatRupiah(totalExpenses)}</h1>
                     <span className="text-sm text-slate-400">Total Expenses</span>
                   </div>
                 </section>
@@ -238,7 +252,7 @@ export default function Dashboard() {
                     <Invoice01Icon className="text-slate-900" />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h1 className="text-lg font-bold">200</h1>
+                    <h1 className="text-lg font-bold">{totalTransactions}</h1>
                     <span className="text-sm text-slate-400">Total Transactions</span>
                   </div>
                 </section>
@@ -265,7 +279,11 @@ export default function Dashboard() {
                   {isEmpty ? (
                     <EmptyState />
                   ) : (
-                    <TopExpensesChart transactions={expenseTransactions} data={10} labelLength={20} />
+                    <TopExpensesChart
+                      transactions={expenseTransactions}
+                      data={10}
+                      labelLength={20}
+                      hideBalance={hideBalance} />
                   )}
                 </section>
                 <CategoryExpensesSection
@@ -277,6 +295,7 @@ export default function Dashboard() {
                   showAllCategories={showAllCategories}
                   setShowAllCategories={setShowAllCategories}
                   formatRupiah={formatRupiah}
+                  hideBalance={hideBalance}
                 />
               </div>
 
@@ -302,13 +321,13 @@ export default function Dashboard() {
                         <tbody>
                           {transactions
                             .slice()
-                            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                            .sort((a, b) => b.transaction_id.localeCompare(a.transaction_id))
                             .slice(0, 10).map((trx) => (
                               <tr
                                 key={trx.transaction_id}
                                 className="border-b border-slate-50 hover:bg-slate-50 transition"
                               >
-                                <td className="py-3">
+                                <td className="py-3 text-slate-500">
                                   {trx.date || "-"}
                                 </td>
                                 <td className="py-3">
@@ -319,12 +338,18 @@ export default function Dashboard() {
                                 </td>
                                 <td className="py-3">
                                   <div className="flex flex-col">
-                                    <span className="text-slate-900 font-medium">{trx.to_account || "-"}</span>
+                                    <span className="text-slate-900 font-medium">
+                                      {trx.type === "expenses"
+                                        ? trx.from_account
+                                        : trx.type === "income"
+                                          ? trx.to_account
+                                          : "-"}
+                                    </span>
                                     <span className="text-slate-500">{trx.category || "-"}</span>
                                   </div>
                                 </td>
                                 <td className="py-3 text-right font-semibold">
-                                  {formatRupiah(trx.nominal)}
+                                  {hideBalance ? "Rp ••••••" : formatRupiah(trx.nominal)}
                                 </td>
                                 <td className="py-3 pl-2">
                                   <div className="flex justify-center gap-2">

@@ -10,9 +10,10 @@ interface Props {
   transactions: Transactions[];
   data: number;
   labelLength: number;
+  hideBalance: boolean;
 }
 
-export default function TopExpensesChart({ transactions, data, labelLength }: Props) {
+export default function TopExpensesChart({ transactions, data, labelLength, hideBalance }: Props) {
   const chartData = useMemo(() => {
     const grouped: Record<string, number> = {};
 
@@ -72,7 +73,7 @@ export default function TopExpensesChart({ transactions, data, labelLength }: Pr
               <span style=" display:inline-block; width:8px; height:8px; border-radius:50%; background:#FF0000; "></span>
                 ${remark}
               <span style="float:right;font-weight:600;margin-left:20px">
-                ${formatNumber(value)}
+                ${hideBalance ? "••••••" : formatNumber(value)}
               </span>
             </div>
           </div>
@@ -148,7 +149,7 @@ export default function TopExpensesChart({ transactions, data, labelLength }: Pr
         label: {
           show: true,
           position: "insideRight",
-          formatter: (p: any) => formatNumber(p.value),
+          formatter: (p: any) => hideBalance ? "••••••" : formatNumber(p.value),
           color: "#fff",
           fontWeight: 600,
         },
@@ -163,7 +164,7 @@ export default function TopExpensesChart({ transactions, data, labelLength }: Pr
           show: true,
           position: "right",
           distance: 8,
-          formatter: (p: any) => formatNumber(p.value),
+          formatter: (p: any) => hideBalance ? "••••••" : formatNumber(p.value),
           color: "#333",
           fontWeight: 600,
         },
@@ -178,5 +179,5 @@ export default function TopExpensesChart({ transactions, data, labelLength }: Pr
 
   const chartHeight = Math.max(350, data * 55);
 
-  return <EChartsReact option={option}  style={{ height: chartHeight }} />;
+  return <EChartsReact option={option} style={{ height: chartHeight }} />;
 }

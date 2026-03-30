@@ -2,17 +2,19 @@ import { useMemo } from "react";
 import EChartsReact from "echarts-for-react";
 import type { EChartsOption } from "echarts";
 import EmptyState from "../utils/EmptyState";
+import { formatRupiah } from "../../helpers/Format";
 
 interface Props {
   data: { name: string; value: number }[];
-  colors: string[];
+  colors: string[]; 
+  hideBalance: boolean;
 }
 
-export default function CategoriesChart({ data, colors }: Props) {
+export default function CategoriesChart({ data, colors, hideBalance }: Props) {
   const totalExpenses = useMemo(() => {
     return data.reduce((sum, item) => sum + item.value, 0);
   }, [data]);
-  
+
   const isEmpty = totalExpenses === 0;
 
   const option: EChartsOption = {
@@ -43,7 +45,7 @@ export default function CategoriesChart({ data, colors }: Props) {
         left: "center",
         top: "50%",
         style: {
-          text: "Rp " + totalExpenses.toLocaleString("id-ID"),
+          text: hideBalance ? "Rp ••••••" : formatRupiah(totalExpenses),
           align: "center",
           fill: "#0f172a",
           fontSize: 20,
@@ -85,6 +87,6 @@ export default function CategoriesChart({ data, colors }: Props) {
   if (isEmpty) {
     return <EmptyState />;
   }
-  
+
   return <EChartsReact option={option} style={{ height: 250 }} />;
 }

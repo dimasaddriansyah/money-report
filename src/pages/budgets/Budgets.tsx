@@ -44,27 +44,39 @@ export default function Budgets() {
     gopay: "Jago",
   };
 
-  const transferData = Object.entries(budgetsByAccount).reduce(
-    (acc, [account, items]) => {
+  const groupedData = Object.entries(budgetsByAccount)
+    .reduce((acc, [account, items]) => {
       const key = ACCOUNT_GROUP[account.toLowerCase()] || account;
 
       const total = items.reduce((sum, item) => sum + item.nominal, 0);
 
       if (!acc[key]) {
-        acc[key] = 0;
+        acc[key] = {
+          account: key,
+          total: 0,
+          details: [],
+        };
       }
 
-      acc[key] += total;
+      acc[key].total += total;
+
+      acc[key].details.push({
+        name: account,
+        total,
+      });
 
       return acc;
-    },
-    {} as Record<string, number>,
-  );
+    }, {} as Record<string, {
+      account: string;
+      total: number;
+      details: { name: string; total: number }[];
+    }>);
 
-  const groupedData = Object.entries(transferData)
-    .map(([account, total]) => ({
-      account,
-      total,
+  // convert ke array + sort
+  const finalData = Object.values(groupedData)
+    .map((item) => ({
+      ...item,
+      details: item.details.sort((a, b) => b.total - a.total), // 👈 ini
     }))
     .sort((a, b) => b.total - a.total);
 
@@ -91,7 +103,7 @@ export default function Budgets() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-slate-900 overflow-x-hidden">
       {/* <Header title="Budgeting" textColor="text-white" /> */}
 
       <MonthNavigator
@@ -112,7 +124,7 @@ export default function Budgets() {
         selectedPeriod={selectedPeriod}
       />
 
-      <ListTransfer data={groupedData} />
+      <ListTransfer data={finalData} />
 
       {/* Add Budget */}
       <section className="px-4 pb-4 flex">

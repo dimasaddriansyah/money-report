@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import EChartsReact from "echarts-for-react";
 import type { EChartsOption } from "echarts";
+import EmptyState from "../utils/EmptyState";
 
 interface Props {
   data: { name: string; value: number }[];
@@ -11,6 +12,8 @@ export default function CategoriesChart({ data, colors }: Props) {
   const totalExpenses = useMemo(() => {
     return data.reduce((sum, item) => sum + item.value, 0);
   }, [data]);
+  
+  const isEmpty = totalExpenses === 0;
 
   const option: EChartsOption = {
     tooltip: {
@@ -79,5 +82,9 @@ export default function CategoriesChart({ data, colors }: Props) {
     ],
   };
 
+  if (isEmpty) {
+    return <EmptyState />;
+  }
+  
   return <EChartsReact option={option} style={{ height: 250 }} />;
 }

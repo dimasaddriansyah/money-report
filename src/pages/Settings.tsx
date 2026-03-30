@@ -49,44 +49,44 @@ export default function Settings() {
 
       <section className="bg-slate-50 min-h-dvh p-4 space-y-6 pb-24">
         <section className="flex flex-col gap-2">
-          <span className="font-medium">Master Data</span>
+          <span className="">Master Data</span>
           <div className="flex flex-col bg-white rounded-xl overflow-hidden">
             <div
               onClick={() => navigate("/accounts")}
               className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer"
             >
-              <div className="flex gap-4">
-                <CreditCardIcon className="h-6 w-6 text-slate-400" />
+              <div className="flex items-center gap-4">
+                <CreditCardIcon className="h-5 w-5 text-slate-400" />
                 <span className="">Accounts</span>
               </div>
-              <ArrowRight01Icon className="h-6 w-6 text-slate-400" />
+              <ArrowRight01Icon className="h-5 w-5 text-slate-400" />
             </div>
             <div className="h-px bg-slate-100" />
             <div
               onClick={() => navigate("/categories")}
               className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer"
             >
-              <div className="flex gap-4">
-                <LicenseIcon className="h-6 w-6 text-slate-400" />
+              <div className="flex items-center gap-4">
+                <LicenseIcon className="h-5 w-5 text-slate-400" />
                 <span className="">Categories</span>
               </div>
-              <ArrowRight01Icon className="h-6 w-6 text-slate-400" />
+              <ArrowRight01Icon className="h-5 w-5 text-slate-400" />
             </div>
           </div>
         </section>
 
         <section className="flex flex-col gap-2">
-          <span className="font-medium">Others</span>
+          <span className="">Others</span>
           <div className="flex flex-col bg-white rounded-xl overflow-hidden">
             <div
               onClick={() => setOpenExport(true)}
               className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer"
             >
-              <div className="flex gap-4">
-                <FileExportIcon className="h-6 w-6 text-slate-400" />
+              <div className="flex items-center gap-4">
+                <FileExportIcon className="h-5 w-5 text-slate-400" />
                 <span className="">Export Data</span>
               </div>
-              <ArrowRight01Icon className="h-6 w-6 text-slate-400" />
+              <ArrowRight01Icon className="h-5 w-5 text-slate-400" />
             </div>
           </div>
         </section>

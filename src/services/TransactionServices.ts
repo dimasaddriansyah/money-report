@@ -16,6 +16,7 @@ export async function fetchTransactions(): Promise<Transactions[]> {
 
   return rows.map((row: string[]) => ({
     transaction_id: row[0],
+    day: row[1],
     date: formatISODatetoID(row[2]),
     type: row[3].toLowerCase() as Transactions["type"],
     category: row[4],

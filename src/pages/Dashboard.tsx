@@ -219,7 +219,7 @@ export default function Dashboard() {
               </div>
 
               {/* ROW 2 */}
-              <div className="flex justify-between gap-6">
+              <div className="flex gap-6">
                 <section className="flex-1 bg-white rounded-2xl p-6 space-y-4">
                   <div className="bg-blue-50 w-fit p-2 rounded-xl">
                     <Money01Icon className="text-blue-500" />
@@ -259,20 +259,20 @@ export default function Dashboard() {
               </div>
 
               {/* ROW 3 */}
-              <div className="flex justify-between gap-6">
+              <div className="flex gap-6 min-w-0">
                 <section className="flex-1 bg-white rounded-2xl p-6">
                   <span className="text-base font-medium">Daily Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
                   {isEmpty ? (
                     <EmptyState />
                   ) : (
-                    <ExpensesChart transactions={expenseTransactions} />
+                    <ExpensesChart transactions={expenseTransactions} hideBalance={hideBalance} />
                   )}
                 </section>
               </div>
 
               {/* ROW 4 */}
-              <div className="flex justify-between gap-6">
+              <div className="flex gap-6">
                 <section className="flex-1 bg-white rounded-2xl p-6">
                   <span className="text-base font-medium">Top Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
@@ -300,7 +300,7 @@ export default function Dashboard() {
               </div>
 
               {/* ROW 5 */}
-              <div className="flex justify-between gap-6">
+              <div className="flex gap-6">
                 <section className="flex-1 bg-white rounded-2xl p-6">
                   <span className="text-base font-medium">Recently Transaction</span>
                   <div className="h-px bg-slate-100/60 my-3" />
@@ -328,7 +328,11 @@ export default function Dashboard() {
                                 className="border-b border-slate-50 hover:bg-slate-50 transition"
                               >
                                 <td className="py-3 text-slate-500">
-                                  {trx.date || "-"}
+                                  <div className="flex flex-col">
+                                    <span className="font-medium text-slate-900">{trx.day || "-"}</span>
+                                    <span className="text-slate-500">{trx.date || "-"} </span>
+                                  </div>
+
                                 </td>
                                 <td className="py-3">
                                   <div className="flex flex-col">

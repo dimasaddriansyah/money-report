@@ -191,7 +191,7 @@ export default function Insight() {
           {isEmptyTransaction ? (
             <EmptyState />
           ) : (
-            <ExpensesChart transactions={expenseTransactions} />
+            <ExpensesChart transactions={expenseTransactions} hideBalance={hideBalance}/>
           )}
         </section>
 

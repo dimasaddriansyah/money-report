@@ -7,9 +7,10 @@ import EmptyState from "../utils/EmptyState";
 
 interface Props {
   transactions: Transactions[];
+  hideBalance: boolean;
 }
 
-export default function ExpensesChart({ transactions }: Props) {
+export default function ExpensesChart({ transactions, hideBalance }: Props) {
   const chartData = useMemo(() => {
     const grouped: Record<string, number> = {};
 
@@ -48,6 +49,23 @@ export default function ExpensesChart({ transactions }: Props) {
 
     tooltip: {
       trigger: "axis",
+      formatter: (params: any) => {
+        const item = params[0];
+        const value = item.value;
+
+        return `
+          <div style="padding:4px 4px">
+            <div>${item.axisValue}</div>
+            <div style="margin-top:4px">
+              <span style=" display:inline-block; width:8px; height:8px; border-radius:50%; background:#FF0000; "></span>
+              <span>Expenses</span>
+              <span style="float:right;font-weight:600;margin-left:20px">
+                ${hideBalance ? "Rp ••••••" : formatRupiah(value)}
+              </span>
+            </div>
+          </div>
+        `;
+      },
     },
 
     xAxis: {

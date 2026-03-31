@@ -6,7 +6,7 @@ import { formatRupiah } from "../../helpers/Format";
 
 interface Props {
   data: { name: string; value: number }[];
-  colors: string[]; 
+  colors: string[];
   hideBalance: boolean;
 }
 
@@ -20,6 +20,25 @@ export default function CategoriesChart({ data, colors, hideBalance }: Props) {
   const option: EChartsOption = {
     tooltip: {
       trigger: "item",
+      formatter: (params: any) => {
+        const name = params.name;
+        const value = params.value;
+        const percent = Math.round(params.percent ?? 0);
+
+        return `
+          <div style="padding:4px 4px">
+            <div>${name}</div>
+            <div style="margin-top:4px">
+              <span style=" display:inline-block; width:8px; height:8px; border-radius:50%; background:#90A1B9; "></span>
+              <span>Expenses</span>
+              <span style="float:right;font-weight:600;margin-left:20px">
+                ${hideBalance ? "Rp ••••••" : formatRupiah(value)}
+                <span>(${percent}%)</span>
+              </span>
+            </div>
+          </div>
+        `;
+      },
     },
 
     legend: {

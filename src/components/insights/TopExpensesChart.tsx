@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from "react";
 import type { Transactions } from "../../types/Transactions";
-import { formatNumber } from "../../helpers/Format";
+import { formatRupiah } from "../../helpers/Format";
 import EChartsReact from "echarts-for-react";
 import type { EChartsOption } from "echarts";
 import EmptyState from "../utils/EmptyState";
@@ -73,7 +73,7 @@ export default function TopExpensesChart({ transactions, data, labelLength, hide
               <span style=" display:inline-block; width:8px; height:8px; border-radius:50%; background:#FF0000; "></span>
                 ${remark}
               <span style="float:right;font-weight:600;margin-left:20px">
-                ${hideBalance ? "••••••" : formatNumber(value)}
+                ${hideBalance ? "Rp ••••••" : formatRupiah(value)}
               </span>
             </div>
           </div>
@@ -149,7 +149,7 @@ export default function TopExpensesChart({ transactions, data, labelLength, hide
         label: {
           show: true,
           position: "insideRight",
-          formatter: (p: any) => hideBalance ? "••••••" : formatNumber(p.value),
+          formatter: (p: any) => hideBalance ? "Rp ••••••" : formatRupiah(p.value),
           color: "#fff",
           fontWeight: 600,
         },
@@ -164,7 +164,7 @@ export default function TopExpensesChart({ transactions, data, labelLength, hide
           show: true,
           position: "right",
           distance: 8,
-          formatter: (p: any) => hideBalance ? "••••••" : formatNumber(p.value),
+          formatter: (p: any) => hideBalance ? "Rp ••••••" : formatRupiah(p.value),
           color: "#333",
           fontWeight: 600,
         },

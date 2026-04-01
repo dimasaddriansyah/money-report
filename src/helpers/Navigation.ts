@@ -1,33 +1,61 @@
 import {
+  CreditCardIcon,
   FireIcon,
-  SparklesIcon,
+  Invoice01Icon,
   MoneySavingJarIcon,
-  Settings02Icon,
+  Note05Icon,
 } from "hugeicons-react";
 
-export const NAV_MENUS = [
+type NavItem =
+  | {
+    type: "menu";
+    labelDesktop: string;
+    path: string;
+    icon?: any;
+  }
+  | {
+    type: "label";
+    label: string;
+  };
+
+export const NAV_MENUS_DESKTOP: NavItem[] = [
   {
-    labelMobile: "Home",
+    type: "menu",
     labelDesktop: "Dashboard",
     path: "/",
-    Icon: FireIcon,
+    icon: FireIcon,
+  },
+
+  {
+    type: "label",
+    label: "MASTER DATA",
   },
   {
-    labelMobile: "Insights",
-    labelDesktop: "Insights",
-    path: "/insights",
-    Icon: SparklesIcon,
+    type: "menu",
+    labelDesktop: "Accounts",
+    path: "/accounts",
+    icon: CreditCardIcon
   },
   {
-    labelMobile: "Budgets",
+    type: "menu",
+    labelDesktop: "Categories",
+    path: "/categories",
+    icon: Note05Icon
+  },
+  {
+    type: "label",
+    label: "TRANSACTIONS",
+  },
+  {
+    type: "menu",
+    labelDesktop: "Transactions",
+    path: "/transactions",
+    icon: Invoice01Icon,
+  },
+  {
+    type: "menu",
     labelDesktop: "Budgets",
     path: "/budgets",
-    Icon: MoneySavingJarIcon,
-  },
-  {
-    labelMobile: "Settings",
-    labelDesktop: "Settings",
-    path: "/settings",
-    Icon: Settings02Icon,
+    icon: MoneySavingJarIcon,
   },
 ];

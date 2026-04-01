@@ -26,10 +26,15 @@ import {
   UserIcon,
   NoteEditIcon,
   Delete02Icon,
+  LicenseIcon,
+  CreditCardIcon,
+  DollarCircleIcon,
+  Calendar01Icon,
 } from "hugeicons-react";
 import ExpensesChart from "../components/insights/ExpensesChart";
 import TopExpensesChart from "../components/insights/TopExpensesChart";
 import CategoryExpensesSection from "../components/insights/CategoryExpensesSection";
+import Modal from "../components/utils/Modal";
 
 export default function Dashboard() {
   const PAGE_SIZE = 20;
@@ -140,8 +145,21 @@ export default function Dashboard() {
     { label: "Yesterday", value: "YESTERDAY" },
   ];
 
+  const [type, setType] = useState<"income" | "expenses" | "transfer">("expenses");
+
+  const [openModal, setOpenModal] = useState(false);
+  const [Loading, setLoading] = useState(false);
+  const handleSubmit = async () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      setOpenModal(false);
+    }, 300);
+  }
+
   return (
-    <>
+    <div>
       {/* DESKTOP */}
       <DesktopLayout>
         {/* HEADER */}
@@ -212,8 +230,10 @@ export default function Dashboard() {
                   })}
                 </div>
 
-                <button className="flex items-center px-4 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl gap-2 cursor-pointer">
-                  <PlusSignIcon className="w-5 h-5 text-white" />
+                <button
+                  onClick={() => setOpenModal(true)}
+                  className="flex items-center p-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl gap-2 cursor-pointer">
+                  <PlusSignIcon className="text-white" size={20} />
                   <span>Add Transaction</span>
                 </button>
               </div>
@@ -273,7 +293,7 @@ export default function Dashboard() {
 
               {/* ROW 4 */}
               <div className="flex gap-6">
-                <section className="flex-1 bg-white rounded-2xl p-6">
+                <section className="flex-7 bg-white rounded-2xl p-6">
                   <span className="text-base font-medium">Top Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
                   {isEmpty ? (
@@ -286,17 +306,19 @@ export default function Dashboard() {
                       hideBalance={hideBalance} />
                   )}
                 </section>
-                <CategoryExpensesSection
-                  isEmpty={isEmpty}
-                  pieData={pieData}
-                  COLORS={COLORS}
-                  visibleCategories={visibleCategories}
-                  categorySummary={categorySummary}
-                  showAllCategories={showAllCategories}
-                  setShowAllCategories={setShowAllCategories}
-                  formatRupiah={formatRupiah}
-                  hideBalance={hideBalance}
-                />
+                <section className="flex-3">
+                  <CategoryExpensesSection
+                    isEmpty={isEmpty}
+                    pieData={pieData}
+                    COLORS={COLORS}
+                    visibleCategories={visibleCategories}
+                    categorySummary={categorySummary}
+                    showAllCategories={showAllCategories}
+                    setShowAllCategories={setShowAllCategories}
+                    formatRupiah={formatRupiah}
+                    hideBalance={hideBalance}
+                  />
+                </section>
               </div>
 
               {/* ROW 5 */}
@@ -440,6 +462,133 @@ export default function Dashboard() {
           )}
         </section>
       </MobileLayout>
-    </>
+
+      {/* MODAL */}
+      {openModal && (
+        <Modal
+          size="large"
+          title="Add Transaction"
+          textButton="Create Transaction"
+          loading={Loading}
+          onSubmit={handleSubmit}
+          onClose={() => setOpenModal(false)}
+        >
+          <div className="flex flex-col gap-3">
+            <div className="flex w-fit border border-slate-200 rounded-xl overflow-hidden">
+              {[
+                { key: "income", label: "Income", active: "bg-green-50 text-green-500 font-medium" },
+                { key: "expenses", label: "Expenses", active: "bg-red-50 text-red-500 font-medium" },
+                { key: "transfer", label: "Transfer", active: "bg-blue-50 text-blue-500 font-medium" },
+              ].map((item) => {
+                const isActive = type === item.key;
+
+                return (
+                  <button
+                    key={item.key}
+                    onClick={() => setType(item.key as any)}
+                    className={`px-6 py-2.5 text-sm transition cursor-pointer
+                      ${isActive
+                        ? item.active
+                        : "text-slate-400 hover:bg-slate-50"
+                      }
+                    `}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex gap-3">
+              <div id="date" className="flex-1">
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Date
+                </label>
+                <div
+                  // onClick={() => setOpenCategorySheet(true)}
+                  className="relative flex items-center justify-center"
+                >
+                  <div className="absolute left-4 pointer-events-none">
+                    <Calendar01Icon className="text-slate-400" size={20} />
+                  </div>
+                  <span
+                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                  >
+                    Select date
+                  </span>
+                  <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                </div>
+              </div>
+              <div id="nominal" className="flex-1">
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Nominal
+                </label>
+                <div
+                  // onClick={() => setOpenCategorySheet(true)}
+                  className="relative flex items-center justify-center"
+                >
+                  <div className="absolute left-4 pointer-events-none">
+                    <DollarCircleIcon className="text-slate-400" size={20} />
+                  </div>
+                  <span
+                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition appearance-none`}
+                  >
+                    Input nominal
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div id="account" className="flex-1">
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Account
+                </label>
+                <div
+                  // onClick={() => setOpenCategorySheet(true)}
+                  className="relative flex items-center justify-center"
+                >
+                  <div className="absolute left-4 pointer-events-none">
+                    <CreditCardIcon className="text-slate-400" size={20} />
+                  </div>
+                  <span
+                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                  >
+                    Select account
+                  </span>
+                  <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                </div>
+              </div>
+              <div id="category" className="flex-1">
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Category
+                </label>
+                <div
+                  // onClick={() => setOpenCategorySheet(true)}
+                  className="relative flex items-center justify-center"
+                >
+                  <div className="absolute left-4 pointer-events-none">
+                    <LicenseIcon className="text-slate-400" size={20} />
+                  </div>
+                  <span
+                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                  >
+                    Select category
+                  </span>
+                  <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                </div>
+              </div>
+            </div>
+            <div id="remark">
+              <label className="block text-sm font-medium text-gray-900 mb-1">
+                Remark
+              </label>
+              <textarea
+                className="w-full rounded-xl border border-gray-200 p-3"
+                rows={3}
+              />
+            </div>
+          </div>
+        </Modal>
+      )}
+    </div>
   );
 }

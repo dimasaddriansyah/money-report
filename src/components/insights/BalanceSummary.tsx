@@ -59,10 +59,7 @@ export default function BalanceSummary({
         </div>
 
         <div className="flex-1">
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-white/60">Transfer</span>
-            <span className="text-xs text-white/30">(internal)</span>
-          </div>
+          <span className="text-sm text-white/60">Transfer</span>
           <div className="text-base text-white font-medium">
             {hideBalance ? "Rp •••••••••••" : formatRupiah(transfer)}
           </div>

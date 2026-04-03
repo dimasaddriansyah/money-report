@@ -97,8 +97,7 @@ export default function ExpensesChart({ transactions, hideBalance }: Props) {
         color: "#EF4444",
         areaStyle: {
           color: new graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: "rgba(255,158,68,0.4)" },
-            { offset: 1, color: "rgba(255,70,131,0.05)" },
+            { offset: 0, color: "rgba(255,70,131,0.05)" },
           ]),
         },
       },

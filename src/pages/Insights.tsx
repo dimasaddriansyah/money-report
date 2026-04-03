@@ -3,7 +3,6 @@ import MonthNavigator from "../components/dashboards/MonthNavigator";
 import { formatRupiah, MONTHS } from "../helpers/Format";
 import { useTransactions } from "../hooks/transactions/useTransactions";
 import { useLocalStorage } from "../hooks/utils/useLocalStorage";
-import ExpensesChart from "../components/insights/ExpensesChart";
 import { useMemo, useState } from "react";
 import FilterAccounts from "../components/insights/FilterAccounts";
 import TopExpensesChart from "../components/insights/TopExpensesChart";
@@ -14,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import EmptyState from "../components/utils/EmptyState";
 import BalanceSummary from "../components/insights/BalanceSummary";
 import CategoryExpensesSection from "../components/insights/CategoryExpensesSection";
+import ExpensesChart from "../components/insights/ExpensesChart";
 
 const COLORS = ["#5070DD", "#B6D634", "#FF994D", "#0CA8DF", "#505372"];
 

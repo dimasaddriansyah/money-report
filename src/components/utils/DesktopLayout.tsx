@@ -48,8 +48,8 @@ export default function DesktopLayout({ children }: any) {
           <div className="flex flex-col gap-2">
             <span className="text-slate-600">Apakah anda ingin export semua data transaksi?</span>
             <div className="flex flex-col bg-green-50 p-3 gap-1 rounded-lg">
-              <span className="text-sm text-slate-500">File Name</span>
-              <div className="flex items-center px-4 py-2 w-fit border border-slate-200 gap-2 rounded-lg">
+              <span className="text-sm text-slate-900">File Name</span>
+              <div className="flex items-center px-4 py-2 w-fit border border-green-200 gap-2 rounded-lg">
                 <Xls02Icon className="text-green-600" size={20} />
                 <span className="text-sm text-green-600 font-medium">Cashflow_{year}.xlsx</span>
               </div>

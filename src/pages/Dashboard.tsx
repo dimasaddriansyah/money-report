@@ -35,6 +35,7 @@ import ExpensesChart from "../components/insights/ExpensesChart";
 import TopExpensesChart from "../components/insights/TopExpensesChart";
 import CategoryExpensesSection from "../components/insights/CategoryExpensesSection";
 import Modal from "../components/utils/Modal";
+import { getAccountsImg, getCategoriesImg } from "../helpers/UI";
 
 export default function Dashboard() {
   const PAGE_SIZE = 20;
@@ -194,7 +195,7 @@ export default function Dashboard() {
                     <div className="bg-slate-50/40 p-2 rounded-xl">
                       <UserIcon className="text-slate-900" />
                     </div>
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-1 border-white rounded-full"></span>
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border border-white rounded-full"></span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold">
@@ -281,7 +282,7 @@ export default function Dashboard() {
               {/* ROW 3 */}
               <div className="flex gap-6 min-w-0">
                 <section className="flex-1 bg-white rounded-2xl p-6">
-                  <span className="text-base font-medium">Daily Expenses</span>
+                  <span className="text-base font-semibold">Daily Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
                   {isEmpty ? (
                     <EmptyState />
@@ -294,7 +295,7 @@ export default function Dashboard() {
               {/* ROW 4 */}
               <div className="flex gap-6">
                 <section className="flex-7 bg-white rounded-2xl p-6">
-                  <span className="text-base font-medium">Top Expenses</span>
+                  <span className="text-base font-semibold">Top Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
                   {isEmpty ? (
                     <EmptyState />
@@ -324,20 +325,21 @@ export default function Dashboard() {
               {/* ROW 5 */}
               <div className="flex gap-6">
                 <section className="flex-1 bg-white rounded-2xl p-6">
-                  <span className="text-base font-medium">Recently Transaction</span>
-                  <div className="h-px bg-slate-100/60 my-3" />
+                  <span className="text-base font-semibold">Recently Transaction</span>
+                  <div className="h-px bg-slate-100/60 mt-3" />
                   {isEmpty ? (
                     <EmptyState />
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
-                        <thead>
+                        <thead className="bg-slate-50">
                           <tr className="text-left text-slate-500 border-b border-slate-100">
-                            <th className="py-2">Date</th>
-                            <th className="py-2">Remark</th>
-                            <th className="py-2">Category</th>
-                            <th className="py-2 text-right">Amount</th>
-                            <th className="py-2 text-center">Action</th>
+                            <th className="py-3">Date</th>
+                            <th className="py-3">Type</th>
+                            <th className="py-3">Account</th>
+                            <th className="py-3">Category</th>
+                            <th className="py-3 text-right">Amount</th>
+                            <th className="py-3 text-center">Action</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -354,27 +356,57 @@ export default function Dashboard() {
                                     <span className="font-medium text-slate-900">{trx.day || "-"}</span>
                                     <span className="text-slate-500">{trx.date || "-"} </span>
                                   </div>
-
                                 </td>
                                 <td className="py-3">
                                   <div className="flex flex-col">
-                                    <span className={`${trx.type === "expenses" ? "text-red-500" : trx.type === "income" ? "text-green-500" : "text-slate-500"} font-medium`}>{smartCapitalize(trx.type) || "-"}</span>
-                                    <span className="text-slate-500">{trx.remark || "-"}</span>
-                                  </div>
-                                </td>
-                                <td className="py-3">
-                                  <div className="flex flex-col">
-                                    <span className="text-slate-900 font-medium">
-                                      {trx.type === "expenses"
-                                        ? trx.from_account
-                                        : trx.type === "income"
-                                          ? trx.to_account
-                                          : "-"}
+                                    <span className={`w-fit px-2 py-1 text-xs font-medium rounded-full
+                                      ${trx.type === "expenses" ? "bg-red-50 text-red-500"
+                                        : trx.type === "income" ? "bg-green-50 text-green-500"
+                                          : "bg-slate-50 text-slate-500"}`}>
+                                      {smartCapitalize(trx.type) || "-"}
                                     </span>
-                                    <span className="text-slate-500">{trx.category || "-"}</span>
                                   </div>
                                 </td>
-                                <td className="py-3 text-right font-semibold">
+                                <td className="py-3">
+                                  <div className="flex flex-col">
+                                    {(() => {
+                                      const account =
+                                        trx.type === "expenses"
+                                          ? trx.from_account
+                                          : trx.type === "income"
+                                            ? trx.to_account
+                                            : trx.from_account;
+
+                                      return (
+                                        <span className="flex items-center gap-3 text-slate-900 font-medium">
+                                          <img
+                                            src={getAccountsImg(account)}
+                                            alt={account}
+                                            className="w-8 h-8"
+                                          />
+                                          {account}
+                                        </span>
+                                      );
+                                    })()}
+                                  </div>
+                                </td>
+                                <td className="py-3">
+                                  <div className="flex items-center gap-3">
+                                    <img
+                                      src={getCategoriesImg(trx.category)}
+                                      alt={trx.category}
+                                      className="w-8 h-8"
+                                    />
+                                    <div className="flex flex-col">
+                                      <span className="text-slate-900 font-medium">{trx.category || "-"}</span>
+                                      <span className="text-slate-500">{trx.remark || "-"}</span>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className={`py-3 text-right font-semibold
+                                  ${trx.type === "expenses" ? "text-red-500"
+                                    : trx.type === "income" ? "text-green-500"
+                                      : "text-slate-500"}`}>
                                   {hideBalance ? "Rp ••••••" : formatRupiah(trx.nominal)}
                                 </td>
                                 <td className="py-3 pl-2">

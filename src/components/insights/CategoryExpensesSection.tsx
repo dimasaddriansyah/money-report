@@ -26,7 +26,7 @@ export default function CategoryExpensesSection({
 }: Props) {
   return (
     <section className="bg-white rounded-2xl p-4">
-      <span className="text-base font-medium">
+      <span className="text-base font-semibold">
         Expenses by Category
       </span>
       <div className="h-px bg-slate-100/60 my-3" />

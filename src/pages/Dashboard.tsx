@@ -13,29 +13,26 @@ import { useTransactions } from "../hooks/transactions/useTransactions";
 import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
 import {
   ArrowDown01Icon,
-  ViewIcon,
-  Menu01Icon,
   Money01Icon,
-  Notification01Icon,
   PlusSignIcon,
-  Search01Icon,
-  ViewOffSlashIcon,
   MoneySend02Icon,
   MoneyReceive02Icon,
   Invoice01Icon,
-  UserIcon,
   NoteEditIcon,
   Delete02Icon,
   LicenseIcon,
   CreditCardIcon,
   DollarCircleIcon,
   Calendar01Icon,
+  InvoiceIcon,
 } from "hugeicons-react";
 import ExpensesChart from "../components/insights/ExpensesChart";
 import TopExpensesChart from "../components/insights/TopExpensesChart";
 import CategoryExpensesSection from "../components/insights/CategoryExpensesSection";
 import Modal from "../components/utils/Modal";
 import { getAccountsImg, getCategoriesImg } from "../helpers/UI";
+import FooterDesktop from "../components/utils/FooterDesktop";
+import HeaderDesktop from "../components/utils/HeaderDesktop";
 
 export default function Dashboard() {
   const PAGE_SIZE = 20;
@@ -167,46 +164,13 @@ export default function Dashboard() {
         {({ collapsed, setCollapsed }: any) => (
           <>
             {/* HEADER */}
-            <div className="px-6 h-18 flex justify-between items-center bg-white border-b border-slate-100 shrink-0">
-              <button
-                onClick={() => setCollapsed(!collapsed)}
-                className="cursor-pointer"
-              >
-                <Menu01Icon size={20} className="text-slate-900" />
-              </button>
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-6">
-                  {hideBalance ?
-                    <ViewIcon
-                      onClick={() => setHideBalance(false)}
-                      className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer"
-                      strokeWidth={2} />
-                    : <ViewOffSlashIcon
-                      onClick={() => setHideBalance(true)}
-                      className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer"
-                      strokeWidth={2} />
-                  }
-                  <Search01Icon className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer" />
-                  <Notification01Icon className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer" />
-                </div>
-                <div className="w-px h-8 bg-neutral-100"></div>
-                <div className="flex items-center gap-3 cursor-pointer">
-                  <div className="relative w-fit">
-                    <div className="bg-slate-50/40 p-2 rounded-xl">
-                      <UserIcon className="text-slate-900" />
-                    </div>
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border border-white rounded-full"></span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold">
-                      Dimas Addriansyah
-                    </span>
-                    <span className="text-xs text-slate-400">Owner</span>
-                  </div>
-                  <ArrowDown01Icon className="h-5 w-5 text-neutral-400" />
-                </div>
-              </div>
-            </div>
+            <HeaderDesktop
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+              hideBalance={hideBalance}
+              setHideBalance={setHideBalance}
+              showBalanceToggle={true}
+            />
 
             {/* CONTENT */}
             <div className="flex flex-col flex-1 overflow-y-auto px-6 py-8 gap-6">
@@ -285,7 +249,7 @@ export default function Dashboard() {
                   <span className="text-base font-semibold">Daily Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
                   {isEmpty ? (
-                    <EmptyState />
+                    <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow."  />
                   ) : (
                     <ExpensesChart transactions={expenseTransactions} hideBalance={hideBalance} />
                   )}
@@ -298,7 +262,7 @@ export default function Dashboard() {
                   <span className="text-base font-semibold">Top Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
                   {isEmpty ? (
-                    <EmptyState />
+                    <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow."  />
                   ) : (
                     <TopExpensesChart
                       transactions={expenseTransactions}
@@ -328,42 +292,45 @@ export default function Dashboard() {
                   <span className="text-base font-semibold">Recently Transaction</span>
                   <div className="h-px bg-slate-100/60 mt-3" />
                   {isEmpty ? (
-                    <EmptyState />
+                    <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow."  />
                   ) : (
                     <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
+                      <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
                         <thead className="bg-slate-50">
                           <tr className="text-left text-slate-500 border-b border-slate-100">
-                            <th className="py-3">Date</th>
-                            <th className="py-3">Type</th>
-                            <th className="py-3">Account</th>
-                            <th className="py-3">Category</th>
-                            <th className="py-3 text-right">Amount</th>
-                            <th className="py-3 text-center">Action</th>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Account</th>
+                            <th>Category</th>
+                            <th className="text-right">Amount</th>
+                            <th className="text-center">Action</th>
                           </tr>
                         </thead>
                         <tbody>
                           {transactions
                             .slice()
                             .sort((a, b) => b.transaction_id.localeCompare(a.transaction_id))
-                            .slice(0, 10).map((trx) => (
+                            .slice(0, 10)
+                            .map((row, index) => (
                               <tr
-                                key={trx.transaction_id}
+                                key={row.transaction_id}
                                 className="border-b border-slate-50 hover:bg-slate-50 transition"
                               >
+                                <td className="w-12 text-slate-500 font-medium">{index + 1}</td>
                                 <td className="py-3 text-slate-500">
                                   <div className="flex flex-col">
-                                    <span className="font-medium text-slate-900">{trx.day || "-"}</span>
-                                    <span className="text-slate-500">{trx.date || "-"} </span>
+                                    <span className="font-medium text-slate-900">{row.day || "-"}</span>
+                                    <span className="text-slate-500">{row.date || "-"} </span>
                                   </div>
                                 </td>
                                 <td className="py-3">
                                   <div className="flex flex-col">
                                     <span className={`w-fit px-2 py-1 text-xs font-medium rounded-full
-                                      ${trx.type === "expenses" ? "bg-red-50 text-red-500"
-                                        : trx.type === "income" ? "bg-green-50 text-green-500"
+                                      ${row.type === "expenses" ? "bg-red-50 text-red-500"
+                                        : row.type === "income" ? "bg-green-50 text-green-500"
                                           : "bg-slate-50 text-slate-500"}`}>
-                                      {smartCapitalize(trx.type) || "-"}
+                                      {smartCapitalize(row.type) || "-"}
                                     </span>
                                   </div>
                                 </td>
@@ -371,11 +338,11 @@ export default function Dashboard() {
                                   <div className="flex flex-col">
                                     {(() => {
                                       const account =
-                                        trx.type === "expenses"
-                                          ? trx.from_account
-                                          : trx.type === "income"
-                                            ? trx.to_account
-                                            : trx.from_account;
+                                        row.type === "expenses"
+                                          ? row.from_account
+                                          : row.type === "income"
+                                            ? row.to_account
+                                            : row.from_account;
 
                                       return (
                                         <span className="flex items-center gap-3 text-slate-900 font-medium">
@@ -393,21 +360,21 @@ export default function Dashboard() {
                                 <td className="py-3">
                                   <div className="flex items-center gap-3">
                                     <img
-                                      src={getCategoriesImg(trx.category)}
-                                      alt={trx.category}
+                                      src={getCategoriesImg(row.category)}
+                                      alt={row.category}
                                       className="w-8 h-8"
                                     />
                                     <div className="flex flex-col">
-                                      <span className="text-slate-900 font-medium">{trx.category || "-"}</span>
-                                      <span className="text-slate-500">{trx.remark || "-"}</span>
+                                      <span className="text-slate-900 font-medium">{row.category || "-"}</span>
+                                      <span className="text-slate-500">{row.remark || "-"}</span>
                                     </div>
                                   </div>
                                 </td>
                                 <td className={`py-3 text-right font-semibold
-                                  ${trx.type === "expenses" ? "text-red-500"
-                                    : trx.type === "income" ? "text-green-500"
+                                  ${row.type === "expenses" ? "text-red-500"
+                                    : row.type === "income" ? "text-green-500"
                                       : "text-slate-500"}`}>
-                                  {hideBalance ? "Rp ••••••" : formatRupiah(trx.nominal)}
+                                  {hideBalance ? "Rp ••••••" : formatRupiah(row.nominal)}
                                 </td>
                                 <td className="py-3 pl-2">
                                   <div className="flex justify-center gap-2">
@@ -430,9 +397,7 @@ export default function Dashboard() {
             </div>
 
             {/* FOOTER */}
-            <div className="px-6 h-10 flex items-center justify-between text-xs text-slate-400 bg-white border-t border-slate-100 shrink-0">
-              <span>CASHFLOW v1.0</span>
-            </div>
+            <FooterDesktop />
           </>
         )}
       </DesktopLayout>
@@ -466,7 +431,7 @@ export default function Dashboard() {
             <div className="mx-auto h-1.5 w-12 rounded-full bg-slate-300" />
           </div>
           {isEmpty ? (
-            <EmptyState />
+            <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow."  />
           ) : (
             <>
               {visibleDates.map((date) => (

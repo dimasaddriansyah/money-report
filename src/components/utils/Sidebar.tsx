@@ -66,11 +66,6 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
                   : "text-slate-900 hover:bg-slate-50"
                 }`}
             >
-              {/* 🔥 ACTIVE INDICATOR (kiri) */}
-              {active && !collapsed && (
-                <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-md bg-slate-300" />
-              )}
-
               {/* ICON (optional) */}
               <div className="w-6 h-6 flex items-center justify-center">
                 {item.icon ? <item.icon size={20} /> : null}

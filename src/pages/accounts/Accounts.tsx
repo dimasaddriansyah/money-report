@@ -2,15 +2,12 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Add01Icon,
-  ArrowDown01Icon,
   CreditCardIcon,
   Delete02Icon,
-  Menu01Icon,
   NoteEditIcon,
-  Notification01Icon,
+  CreditCardNotAcceptIcon,
   PlusSignIcon,
-  Search01Icon,
-  UserIcon,
+  Search02Icon,
 } from "hugeicons-react";
 import Header from "../../components/navigation/Header";
 import { useAccounts } from "../../hooks/accounts/useAccounts";
@@ -19,6 +16,12 @@ import BottomSheet from "../../components/utils/BottomSheet";
 import DesktopLayout from "../../components/utils/DesktopLayout";
 import MobileLayout from "../../components/utils/MobileLayout";
 import Breadcrumbs from "../../components/utils/Breadcrumbs";
+import EmptyState from "../../components/utils/EmptyState";
+import FooterDesktop from "../../components/utils/FooterDesktop";
+import HeaderDesktop from "../../components/utils/HeaderDesktop";
+import { usePagination } from "../../hooks/utils/usePagination";
+import TablePagination from "../../components/tables/TablePagination";
+import TablePageSize from "../../components/tables/TablePageSize";
 
 type ActionType = "create" | "edit" | "delete";
 
@@ -83,6 +86,21 @@ export default function Accounts() {
 
   const isDisabled = action !== "delete" && accountName.trim().length === 0;
 
+  const isEmpty = accounts.length === 0;
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    paginatedData,
+    startItem,
+    endItem,
+    pages,
+  } = usePagination({ data: accounts });
+
   return (
     <div>
       {/* DESKTOP */}
@@ -91,36 +109,10 @@ export default function Accounts() {
         {({ collapsed, setCollapsed }: any) => (
           <>
             {/* HEADER */}
-            <div className="px-6 h-18 flex justify-between items-center bg-white border-b border-slate-100 shrink-0">
-              <button
-                onClick={() => setCollapsed(!collapsed)}
-                className="cursor-pointer"
-              >
-                <Menu01Icon size={20} className="text-slate-900" />
-              </button>
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-6">
-                  <Search01Icon className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer" />
-                  <Notification01Icon className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer" />
-                </div>
-                <div className="w-px h-8 bg-neutral-100"></div>
-                <div className="flex items-center gap-3 cursor-pointer">
-                  <div className="relative w-fit">
-                    <div className="bg-slate-50/40 p-2 rounded-xl">
-                      <UserIcon className="text-slate-900" />
-                    </div>
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-1 border-white rounded-full"></span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold">
-                      Dimas Addriansyah
-                    </span>
-                    <span className="text-xs text-slate-400">Owner</span>
-                  </div>
-                  <ArrowDown01Icon className="h-5 w-5 text-neutral-400" />
-                </div>
-              </div>
-            </div>
+            <HeaderDesktop
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+            />
 
             {/* CONTENT */}
             <div className="flex flex-col flex-1 overflow-y-auto px-6 py-8 gap-6">
@@ -133,19 +125,98 @@ export default function Accounts() {
 
               {/* ROW 2 */}
               <div className="flex-1">
-                <div className="bg-white p-4 rounded-lg">
+                <div className="flex flex-col bg-white p-4 rounded-lg gap-4">
                   <div className="flex justify-between items-center">
                     <h1 className="font-semibold text-lg">List of Account</h1>
-                    <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg cursor-pointer">Add Account</button>
+                    <button className="flex items-center px-4 py-2 gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg cursor-pointer">
+                      <PlusSignIcon size={16} />
+                      <span>Add Account</span>
+                    </button>
                   </div>
+                  <div className="h-px bg-slate-100/60" />
+                  {isEmpty ? (
+                    <EmptyState icon={<CreditCardNotAcceptIcon />} title="No accounts yet" subtitle="Add your first account to start tracking your cash flow." />
+                  ) : (
+                    <>
+                      <div className="flex justify-between items-center">
+                        <TablePageSize
+                          pageSize={pageSize}
+                          onChange={(value) => {
+                            setPageSize(value);
+                            setCurrentPage(1);
+                          }}
+                        />
+                        <div>
+                          <div className="relative flex items-center justify-center">
+                            <div className="absolute left-4 pointer-events-none">
+                              <Search02Icon className="text-slate-400" size={16} />
+                            </div>
+                            <span
+                              className="block w-full ps-10 pe-20 py-2 text-sm rounded-xl border text-slate-400 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none"
+                            >
+                              Search account
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
+                          <thead className="bg-slate-50">
+                            <tr className="text-left text-slate-500 border-b border-slate-100">
+                              <th className="w-12">#</th>
+                              <th>Account Name</th>
+                              <th className="w-12 text-center">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {paginatedData.map((row, index) => (
+                              <tr
+                                key={row.account_id}
+                                className="border-b border-slate-50 hover:bg-slate-50 transition"
+                              >
+                                <td className="text-slate-500 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
+                                <td className="text-slate-500">
+                                  <div className="flex items-center gap-4">
+                                    <img
+                                      src={getAccountsImg(row.name)}
+                                      alt={row.name}
+                                      className="w-8 h-8"
+                                    />
+                                    <span className="text-slate-900">{row.name || "-"}</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="flex gap-2">
+                                    <div className="bg-amber-50 hover:bg-amber-200 p-2 rounded-xl cursor-pointer">
+                                      <NoteEditIcon className="w-5 h-5 text-amber-500" />
+                                    </div>
+                                    <div className="bg-red-50 hover:bg-red-200 p-2 rounded-xl cursor-pointer">
+                                      <Delete02Icon className="w-5 h-5 text-red-500" />
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <TablePagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={totalItems}
+                        startItem={startItem}
+                        endItem={endItem}
+                        pages={pages}
+                        onPageChange={(page) => setCurrentPage(page)}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* FOOTER */}
-            <div className="px-6 h-10 flex items-center justify-between text-xs text-slate-400 bg-white border-t border-slate-100 shrink-0">
-              <span>CASHFLOW v1.0</span>
-            </div>
+            <FooterDesktop />
           </>
         )}
       </DesktopLayout>
@@ -306,6 +377,5 @@ export default function Accounts() {
         </div>
       </MobileLayout>
     </div>
-
   );
 }

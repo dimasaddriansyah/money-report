@@ -1,3 +1,4 @@
+import { InvoiceIcon } from "hugeicons-react";
 import EmptyState from "../utils/EmptyState";
 import CategoriesChart from "./CategoriesChart";
 
@@ -32,7 +33,7 @@ export default function CategoryExpensesSection({
       <div className="h-px bg-slate-100/60 my-3" />
 
       {isEmpty ? (
-        <EmptyState />
+        <EmptyState icon={<InvoiceIcon />} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
       ) : (
         <>
           <CategoriesChart data={pieData} colors={COLORS} hideBalance={hideBalance} />

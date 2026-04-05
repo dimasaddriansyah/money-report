@@ -14,7 +14,12 @@ import { toast } from "sonner";
 import { CapitalizeType } from "../../helpers/CapitalizeType";
 import { parseTransactionInput } from "../../helpers/ParseTransactionInput";
 import { API_URL } from "../../services/APIServices";
-import { SparklesIcon } from "hugeicons-react";
+import { ArrowLeft01Icon, SparklesIcon } from "hugeicons-react";
+import MobileLayout from "../../components/utils/MobileLayout";
+import DesktopLayout from "../../components/utils/DesktopLayout";
+import HeaderDesktop from "../../components/utils/HeaderDesktop";
+import FooterDesktop from "../../components/utils/FooterDesktop";
+import Breadcrumbs from "../../components/utils/Breadcrumbs";
 
 interface FormState {
   remark?: string;
@@ -27,7 +32,7 @@ interface FormState {
   date: string;
 }
 
-export default function TransactionPage() {
+export default function TransactionFormPage() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -209,24 +214,69 @@ export default function TransactionPage() {
   // ============================================================
 
   return (
-    <main className="min-h-screen bg-slate-900">
-      <Header
-        title={isEdit ? "Edit Transaction" : "Add Transaction"}
-        showBack
-        textColor="text-white"
-      />
+    <div>
+      <DesktopLayout>
+        {({ collapsed, setCollapsed }: any) => (
+          <>
+            {/* HEADER */}
+            <HeaderDesktop
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+              showBalanceToggle={true}
+            />
 
-      <TransactionForm
-        form={form}
-        accounts={accounts}
-        loadingAccounts={loadingAccounts}
-        categories={categories}
-        loadingCategories={loadingCategories}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        submitting={submitting}
-        isEdit={isEdit}
-      />
-    </main>
-  );
+            {/* CONTENT */}
+            <div className="flex flex-col flex-1 overflow-y-auto px-6 py-8 gap-6">
+              {/* ROW 1 */}
+              <Breadcrumbs
+                items={[
+                  { label: "Dashboard", path: "/" },
+                  { label: "Transactions", path: "/transactions" },
+                  { label: "Add Transaction" },
+                ]} />
+
+              {/* ROW 2 */}
+              <div className="flex-1">
+                <div className="flex flex-col bg-white p-4 rounded-lg gap-4">
+                  <div className="flex items-center gap-3">
+                    <div 
+                      onClick={() => navigate(-1)}
+                      className="p-1.5 border border-slate-400 hover:bg-slate-100 rounded-xl cursor-pointer">
+                      <ArrowLeft01Icon size={16}/>
+                    </div>
+                    <h1 className="font-semibold text-lg">Create Transaction</h1>
+                  </div>
+                  <div className="h-px bg-slate-100/60" />
+                </div>
+              </div>
+            </div>
+
+            {/* FOOTER */}
+            <FooterDesktop />
+          </>
+        )}
+      </DesktopLayout>
+      <MobileLayout>
+        <main className="min-h-screen bg-slate-900">
+          <Header
+            title={isEdit ? "Edit Transaction" : "Add Transaction"}
+            showBack
+            textColor="text-white"
+          />
+
+          <TransactionForm
+            form={form}
+            accounts={accounts}
+            loadingAccounts={loadingAccounts}
+            categories={categories}
+            loadingCategories={loadingCategories}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            submitting={submitting}
+            isEdit={isEdit}
+          />
+        </main>
+      </MobileLayout>
+    </div>
+  )
 }

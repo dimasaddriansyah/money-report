@@ -9,12 +9,13 @@ import EmptyState from "../../components/utils/EmptyState";
 import { formatRupiah, smartCapitalize } from "../../helpers/Format";
 import { getAccountsImg, getCategoriesImg } from "../../helpers/UI";
 import { useLocalStorage } from "../../hooks/utils/useLocalStorage";
-import { useState } from "react";
 import TablePagination from "../../components/tables/TablePagination";
 import TablePageSize from "../../components/tables/TablePageSize";
 import { usePagination } from "../../hooks/utils/usePagination";
+import { useNavigate } from "react-router-dom";
 
 export default function Transactions() {
+  const navigate = useNavigate();
   const [hideBalance, setHideBalance] = useLocalStorage("hideBalance", false);
 
   const { transactions } = useTransactions();
@@ -68,7 +69,11 @@ export default function Transactions() {
                 <div className="flex flex-col bg-white p-4 rounded-lg gap-4">
                   <div className="flex justify-between items-center">
                     <h1 className="font-semibold text-lg">List of Transaction</h1>
-                    <button className="flex items-center px-4 py-2 gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg cursor-pointer">
+                    <button
+                      onClick={() => {
+                        navigate("/transaction/create");
+                      }}
+                      className="flex items-center px-4 py-2 gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg cursor-pointer">
                       <PlusSignIcon size={16} />
                       <span>Add Transaction</span>
                     </button>

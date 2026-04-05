@@ -10,6 +10,7 @@ import TransactionGroup from "../components/dashboards/TransactionGroup";
 import DashboardSkeleton from "../components/skeletons/DashboardSkeleton";
 import { useLocalStorage } from "../hooks/utils/useLocalStorage";
 import EmptyState from "../components/utils/EmptyState";
+import { InvoiceIcon } from "hugeicons-react";
 
 export default function Dashboard() {
   const PAGE_SIZE = 20;
@@ -69,7 +70,7 @@ export default function Dashboard() {
           <div className="mx-auto h-1.5 w-12 rounded-full bg-slate-300" />
         </div>
         {isEmpty ? (
-          <EmptyState />
+          <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
         ) : (
           <>
             {visibleDates.map((date) => (

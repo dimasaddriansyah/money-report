@@ -5,6 +5,7 @@ import { formatRupiah } from "../../helpers/Format";
 import EChartsReact from "echarts-for-react";
 import type { EChartsOption } from "echarts";
 import EmptyState from "../utils/EmptyState";
+import { InvoiceIcon } from "hugeicons-react";
 
 interface Props {
   transactions: Transactions[];
@@ -174,7 +175,7 @@ export default function TopExpensesChart({ transactions, data, labelLength, hide
   };
 
   if (isEmpty) {
-    return <EmptyState />;
+    return <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />;
   }
 
   const chartHeight = Math.max(350, data * 55);

@@ -3,6 +3,7 @@ import EChartsReact from "echarts-for-react";
 import type { EChartsOption } from "echarts";
 import EmptyState from "../utils/EmptyState";
 import { formatRupiah } from "../../helpers/Format";
+import { InvoiceIcon } from "hugeicons-react";
 
 interface Props {
   data: { name: string; value: number }[];
@@ -104,7 +105,7 @@ export default function CategoriesChart({ data, colors, hideBalance }: Props) {
   };
 
   if (isEmpty) {
-    return <EmptyState />;
+    return <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />;
   }
 
   return <EChartsReact option={option} style={{ height: 250 }} />;

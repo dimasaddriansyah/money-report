@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AccountBalances from "../components/dashboards/AccountBalances";
 import CurrentBalance from "../components/dashboards/CurrentBalance";
 import MonthNavigator from "../components/dashboards/MonthNavigator";
@@ -8,7 +8,7 @@ import EmptyState from "../components/utils/EmptyState";
 import MobileLayout from "../components/utils/MobileLayout";
 import { useLocalStorage } from "../hooks/utils/useLocalStorage";
 import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
-import { formatRupiah, MONTHS, smartCapitalize } from "../helpers/Format";
+import { formatRupiah, formatRupiahInput, MONTHS, smartCapitalize } from "../helpers/Format";
 import { useTransactions } from "../hooks/transactions/useTransactions";
 import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
 import {
@@ -33,6 +33,7 @@ import Modal from "../components/utils/Modal";
 import { getAccountsImg, getCategoriesImg } from "../helpers/UI";
 import FooterDesktop from "../components/utils/FooterDesktop";
 import HeaderDesktop from "../components/utils/HeaderDesktop";
+import { useAccounts } from "../hooks/accounts/useAccounts";
 
 export default function Dashboard() {
   const PAGE_SIZE = 20;
@@ -143,8 +144,6 @@ export default function Dashboard() {
     { label: "Yesterday", value: "YESTERDAY" },
   ];
 
-  const [type, setType] = useState<"income" | "expenses" | "transfer">("expenses");
-
   const [openModal, setOpenModal] = useState(false);
   const [Loading, setLoading] = useState(false);
   const handleSubmit = async () => {
@@ -155,6 +154,95 @@ export default function Dashboard() {
       setOpenModal(false);
     }, 300);
   }
+
+  const { accounts, loading: loadingAccounts } = useAccounts();
+  // Form
+  const [isActiveDate, setIsActiveDate] = useState(false);
+  const [type, setType] = useState<"income" | "expenses" | "transfer">("expenses");
+  const [openAccount, setOpenAccount] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
+  const [date, setDate] = useState("");
+  const [rawNominal, setRawNominal] = useState("");
+  const formattedNominal = formatRupiahInput(rawNominal);
+
+  const dateRef = useRef<HTMLInputElement>(null);
+  const accountRef = useRef<HTMLDivElement>(null);
+
+  const [formAccount, setFormAccount] = useState({
+    from_account: "",
+    to_account: "",
+  });
+  const [remark, setRemark] = useState("");
+
+  const getAccountField = (): "from_account" | "to_account" => {
+    if (type === "expenses") return "from_account";
+    if (type === "income") return "to_account";
+    return "from_account";
+  };
+
+  const [activeAccountField, setActiveAccountField] = useState<
+    "from_account" | "to_account"
+  >("from_account");
+
+  const accountValue =
+    type === "expenses"
+      ? formAccount.from_account
+      : formAccount.to_account;
+
+  const handleSelectAccount = (
+    acc: string,
+    field: "from_account" | "to_account"
+  ) => {
+    console.log("SELECTED:", acc, field);
+
+    setFormAccount((prev) => {
+      const updated = {
+        ...prev,
+        [field]: acc,
+      };
+
+      console.log("UPDATED FORM:", updated);
+      return updated;
+    });
+
+    setOpenAccount(false);
+  };
+
+  const handleChangeNominal = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numeric = e.target.value.replace(/\D/g, "");
+    setRawNominal(numeric);
+  };
+
+  const formatDisplayDate = (value?: string) => {
+    if (!value) return "Select date";
+    const d = new Date(value);
+    return d.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const openDatePicker = () => {
+    setIsActiveDate(true);
+    dateRef.current?.showPicker();
+  };
+
+  useEffect(() => {
+    if (!date) {
+      setDate(new Date().toISOString().split("T")[0]);
+    }
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest("#account")) {
+        setOpenAccount(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () =>
+      document.removeEventListener("click", handleClickOutside);
+  }, []);
+
 
   return (
     <div>
@@ -249,7 +337,7 @@ export default function Dashboard() {
                   <span className="text-base font-semibold">Daily Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
                   {isEmpty ? (
-                    <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow."  />
+                    <EmptyState icon={<InvoiceIcon />} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
                   ) : (
                     <ExpensesChart transactions={expenseTransactions} hideBalance={hideBalance} />
                   )}
@@ -262,7 +350,7 @@ export default function Dashboard() {
                   <span className="text-base font-semibold">Top Expenses</span>
                   <div className="h-px bg-slate-100/60 my-3" />
                   {isEmpty ? (
-                    <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow."  />
+                    <EmptyState icon={<InvoiceIcon />} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
                   ) : (
                     <TopExpensesChart
                       transactions={expenseTransactions}
@@ -292,7 +380,7 @@ export default function Dashboard() {
                   <span className="text-base font-semibold">Recently Transaction</span>
                   <div className="h-px bg-slate-100/60 mt-3" />
                   {isEmpty ? (
-                    <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow."  />
+                    <EmptyState icon={<InvoiceIcon />} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
@@ -431,7 +519,7 @@ export default function Dashboard() {
             <div className="mx-auto h-1.5 w-12 rounded-full bg-slate-300" />
           </div>
           {isEmpty ? (
-            <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow."  />
+            <EmptyState icon={<InvoiceIcon />} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
           ) : (
             <>
               {visibleDates.map((date) => (
@@ -471,47 +559,46 @@ export default function Dashboard() {
           onClose={() => setOpenModal(false)}
         >
           <div className="flex flex-col gap-3">
-            <div className="flex w-fit border border-slate-200 rounded-xl overflow-hidden">
-              {[
-                { key: "income", label: "Income", active: "bg-green-50 text-green-500 font-medium" },
-                { key: "expenses", label: "Expenses", active: "bg-red-50 text-red-500 font-medium" },
-                { key: "transfer", label: "Transfer", active: "bg-blue-50 text-blue-500 font-medium" },
-              ].map((item) => {
-                const isActive = type === item.key;
-
-                return (
-                  <button
-                    key={item.key}
-                    onClick={() => setType(item.key as any)}
-                    className={`px-6 py-2.5 text-sm transition cursor-pointer
-                      ${isActive
-                        ? item.active
-                        : "text-slate-400 hover:bg-slate-50"
-                      }
-                    `}
-                  >
-                    {item.label}
-                  </button>
-                );
-              })}
+            <div className="flex border rounded-xl overflow-hidden">
+              {["income", "expenses", "transfer"].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setType(item as any)}
+                  className={`px-6 py-2 text-sm ${type === item ? "bg-slate-900 text-white" : "text-slate-400"
+                    }`}
+                >
+                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                </button>
+              ))}
             </div>
             <div className="flex gap-3">
               <div id="date" className="flex-1">
-                <label className="block text-sm font-medium text-gray-900 mb-1">
-                  Date
-                </label>
-                <div
-                  // onClick={() => setOpenCategorySheet(true)}
-                  className="relative flex items-center justify-center"
-                >
+                <label className="block text-sm font-medium text-gray-900 mb-1">Date</label>
+                <div className="relative flex items-center">
                   <div className="absolute left-4 pointer-events-none">
                     <Calendar01Icon className="text-slate-400" size={20} />
                   </div>
                   <span
-                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                    onClick={openDatePicker}
+                    className={`block w-full ps-13 pe-10 py-2.5 text-base rounded-xl border cursor-pointer transition-all duration-200
+                      ${date ? "text-gray-900" : "text-slate-400"}
+                      ${isActiveDate
+                        ? "ring-1 ring-slate-900"
+                        : "border-gray-200 hover:border-gray-300"}
+                    `}
                   >
-                    Select date
+                    {formatDisplayDate(date)}
                   </span>
+                  <input
+                    ref={dateRef}
+                    type="date"
+                    value={date}
+                    onChange={(e) => {
+                      setDate(e.target.value);
+                      setIsActiveDate(false);
+                    }}
+                    className="absolute inset-0 opacity-0 pointer-events-none"
+                  />
                   <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
                 </div>
               </div>
@@ -519,68 +606,133 @@ export default function Dashboard() {
                 <label className="block text-sm font-medium text-gray-900 mb-1">
                   Nominal
                 </label>
-                <div
-                  // onClick={() => setOpenCategorySheet(true)}
-                  className="relative flex items-center justify-center"
-                >
+                <div className="relative flex items-center">
                   <div className="absolute left-4 pointer-events-none">
                     <DollarCircleIcon className="text-slate-400" size={20} />
                   </div>
-                  <span
-                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition appearance-none`}
-                  >
-                    Input nominal
-                  </span>
+                  <input
+                    type="text"
+                    value={formattedNominal}
+                    onChange={handleChangeNominal}
+                    placeholder="Input nominal"
+                    className="block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-slate-900 transition"
+                  />
                 </div>
               </div>
             </div>
-            <div className="flex gap-3">
-              <div id="account" className="flex-1">
-                <label className="block text-sm font-medium text-gray-900 mb-1">
-                  Account
-                </label>
-                <div
-                  // onClick={() => setOpenCategorySheet(true)}
-                  className="relative flex items-center justify-center"
-                >
-                  <div className="absolute left-4 pointer-events-none">
-                    <CreditCardIcon className="text-slate-400" size={20} />
+            {type !== "transfer" && (
+              <div className="flex gap-3">
+                <div id="account" className="relative w-full flex-1" ref={accountRef}>
+                  <label className="text-sm font-medium">Account</label>
+                  <div className="relative flex items-center">
+                    <div className="absolute left-4 pointer-events-none">
+                      <CreditCardIcon className="text-slate-400" size={20} />
+                    </div>
+                    <div
+                      onClick={() => {
+                        setActiveAccountField(getAccountField());
+                        setOpenAccount(true);
+                        setOpenCategory(false);
+                      }}
+                      className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border border-gray-200 hover:border-gray-300 transition cursor-pointer
+                        ${accountValue ? "text-gray-900" : "text-slate-400"}
+                      `}
+                    >
+                      {accountValue || "Select account"}
+                    </div>
+                    <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
                   </div>
-                  <span
-                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
-                  >
-                    Select account
-                  </span>
-                  <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                  {openAccount && (
+                    <div className="absolute mt-2 w-full bg-white border rounded-xl shadow max-h-60 overflow-y-auto">
+                      {loadingAccounts ? (
+                        <div className="p-3 text-sm text-slate-400">Loading...</div>
+                      ) : accounts.length === 0 ? (
+                        <div className="p-3 text-sm text-slate-400">No accounts</div>
+                      ) : (
+                        accounts.map((acc) => (
+                          <div
+                            key={acc.account_id}
+                            onClick={() => {
+                              handleSelectAccount(acc.name, getAccountField());
+                            }}
+                            className="flex items-center gap-4 px-4 py-2 hover:bg-slate-100 cursor-pointer"
+                          >
+                            <img
+                              src={getAccountsImg(acc.name)}
+                              className="w-6 h-6"
+                            />
+                            <span>{acc.name}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div id="category" className="flex-1">
+                  <label className="block text-sm font-medium text-gray-900 mb-1">Category</label>
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute left-4 pointer-events-none">
+                      <LicenseIcon className="text-slate-400" size={20} />
+                    </div>
+                    <span
+                      className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                    >
+                      Select category
+                    </span>
+                    <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                  </div>
                 </div>
               </div>
-              <div id="category" className="flex-1">
-                <label className="block text-sm font-medium text-gray-900 mb-1">
-                  Category
-                </label>
-                <div
-                  // onClick={() => setOpenCategorySheet(true)}
-                  className="relative flex items-center justify-center"
-                >
-                  <div className="absolute left-4 pointer-events-none">
-                    <LicenseIcon className="text-slate-400" size={20} />
+            )}
+            {type === "transfer" && (
+              <div className="flex gap-3">
+                {/* FROM ACCOUNT*/}
+                <div id="from_account" className="flex-1">
+                  <label className="text-sm font-medium">From Account</label>
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute left-4 pointer-events-none">
+                      <LicenseIcon className="text-slate-400" size={20} />
+                    </div>
+                    <div
+                      onClick={() => {
+                        setActiveAccountField(getAccountField());
+                        setOpenAccount(true);
+                      }}
+                      className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border transition cursor-pointer
+                        ${accountValue ? "text-gray-900" : "text-slate-400"}
+                        border-gray-200 hover:border-gray-300
+                      `}
+                    >
+                      {accountValue || "Select account"}
+                    </div>
+                    <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
                   </div>
-                  <span
-                    className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                </div>
+                {/* TO ACCOUNT*/}
+                <div id="to_account" className="flex-1">
+                  <label className="text-sm font-medium">To Account</label>
+                  <div
+                    onClick={() => {
+                      setActiveAccountField("to_account");
+                      setOpenAccount(true);
+                    }}
+                    className="border rounded-xl px-3 py-2.5 cursor-pointer"
                   >
-                    Select category
-                  </span>
-                  <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                    {formAccount.to_account || "Select account"}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div id="remark">
+            )}
+            <div id="remark" className="mt-2">
               <label className="block text-sm font-medium text-gray-900 mb-1">
-                Remark
-              </label>
+                Remark {type === "transfer" && (
+                  <span className="text-slate-400">(optional)</span>
+                )}</label>
               <textarea
-                className="w-full rounded-xl border border-gray-200 p-3"
                 rows={3}
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+                className="w-full rounded-xl border border-gray-200 p-3"
               />
             </div>
           </div>

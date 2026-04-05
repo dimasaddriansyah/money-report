@@ -4,7 +4,7 @@ import Insights from "../pages/Insights";
 import Settings from "../pages/Settings";
 import GenerateForm from "../pages/transactions/GenerateForm";
 import { lazy } from "react";
-import TransactionPage from "../pages/transactions/TransactionPage";
+import TransactionFormPage from "../pages/transactions/TransactionFormPage";
 import BudgetFormPages from "../pages/budgets/BudgetFormPage";
 import Accounts from "../pages/accounts/Accounts";
 import Categories from "../pages/categories/Categories";
@@ -18,8 +18,8 @@ export default function AppRoutes() {
       <Route path="/" element={<Dashboard />} />
       <Route path="/generate-form" element={<GenerateForm />} />
       <Route path="/transactions" element={<Transactions />} />
-      <Route path="/transaction/create" element={<TransactionPage />} />
-      <Route path="/transaction/edit/:id" element={<TransactionPage />} />
+      <Route path="/transaction/create" element={<TransactionFormPage />} />
+      <Route path="/transaction/edit/:id" element={<TransactionFormPage />} />
       <Route path="/insights" element={<Insights />} />
       <Route path="/budgets" element={<Budgets />} />
       <Route path="/budget/create" element={<BudgetFormPages />} />

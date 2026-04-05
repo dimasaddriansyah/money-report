@@ -14,6 +14,7 @@ import EmptyState from "../components/utils/EmptyState";
 import BalanceSummary from "../components/insights/BalanceSummary";
 import CategoryExpensesSection from "../components/insights/CategoryExpensesSection";
 import ExpensesChart from "../components/insights/ExpensesChart";
+import { InvoiceIcon } from "hugeicons-react";
 
 const COLORS = ["#5070DD", "#B6D634", "#FF994D", "#0CA8DF", "#505372"];
 
@@ -189,7 +190,7 @@ export default function Insight() {
           <span className="text-base font-medium">Daily Expenses</span>
           <div className="h-px bg-slate-100/60 my-3" />
           {isEmptyTransaction ? (
-            <EmptyState />
+            <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
           ) : (
             <ExpensesChart transactions={expenseTransactions} hideBalance={hideBalance}/>
           )}
@@ -199,7 +200,7 @@ export default function Insight() {
           <span className="text-base font-medium">Top 5 Expenses</span>
           <div className="h-px bg-slate-100/60 my-3" />
           {isEmptyTransaction ? (
-            <EmptyState />
+            <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
           ) : (
             <TopExpensesChart
               transactions={expenseTransactions}
@@ -234,7 +235,7 @@ export default function Insight() {
           </div>
           <div className="h-px bg-slate-100/60 mt-3" />
           {isEmptyTransaction ? (
-            <EmptyState />
+            <EmptyState icon={<InvoiceIcon/>} title="No transactions yet" subtitle="Add your first income or expense to start tracking your cash flow." />
           ) : (
             <>
               {visibleDates.map((date) => (

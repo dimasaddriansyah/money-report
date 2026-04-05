@@ -14,7 +14,7 @@ export const categoryAlias: Record<string, string> = {
   kost: "Kost",
   service: "Service",
   saving: "Saving",
-  subscription: "Subscription",
+  subs: "Subscription",
   others: "Others",
   payroll: "Payroll",
   bonus: "Bonus",
@@ -38,13 +38,10 @@ export const ACCOUNT_GROUPS: Record<string, string[]> = {
   "blu by bca": ["blu by bca"],
   jago: [
     "jago",
-    "foods and beverages",
-    "gasoline",
-    "laundry and gallon",
-    "top up",
     "transportation",
     "saving",
     "investment",
+    "subscription"
   ],
   gopay: ["gopay"],
   emoney: ["e-money mandiri"],

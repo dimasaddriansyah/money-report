@@ -89,7 +89,7 @@ export function useBudgetDetailStatus(
                   },
                 ],
 
-                Kouta: [
+                Kuota: [
                   {
                     type: "expenses",
                     categories: ["Quota"],

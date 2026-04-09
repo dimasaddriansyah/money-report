@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { CapitalizeType } from "../../helpers/CapitalizeType";
 import { parseTransactionInput } from "../../helpers/ParseTransactionInput";
 import { API_URL } from "../../services/APIServices";
-import { ArrowLeft01Icon, SparklesIcon } from "hugeicons-react";
+import { ArrowLeft01Icon, Calendar01Icon, SparklesIcon } from "hugeicons-react";
 import MobileLayout from "../../components/utils/MobileLayout";
 import DesktopLayout from "../../components/utils/DesktopLayout";
 import HeaderDesktop from "../../components/utils/HeaderDesktop";
@@ -208,10 +208,15 @@ export default function TransactionFormPage() {
       </div>
     );
   }
-
+  
   // ============================================================
   // RENDER
   // ============================================================
+
+  // ============================================================
+  // FORM DESKTOP
+  // ============================================================
+  const [remark, setRemark] = useState("");
 
   return (
     <div>
@@ -239,14 +244,192 @@ export default function TransactionFormPage() {
               <div className="flex-1">
                 <div className="flex flex-col bg-white p-4 rounded-lg gap-4">
                   <div className="flex items-center gap-3">
-                    <div 
+                    <div
                       onClick={() => navigate(-1)}
                       className="p-1.5 border border-slate-400 hover:bg-slate-100 rounded-xl cursor-pointer">
-                      <ArrowLeft01Icon size={16}/>
+                      <ArrowLeft01Icon size={16} />
                     </div>
                     <h1 className="font-semibold text-lg">Create Transaction</h1>
                   </div>
                   <div className="h-px bg-slate-100/60" />
+                  <div className="flex flex-col gap-3">
+                    {/* <div className="flex border rounded-xl overflow-hidden">
+                      {["income", "expenses", "transfer"].map((item) => (
+                        <button
+                          key={item}
+                          onClick={() => setType(item as any)}
+                          className={`px-6 py-2 text-sm ${type === item ? "bg-slate-900 text-white" : "text-slate-400"
+                            }`}
+                        >
+                          {item.charAt(0).toUpperCase() + item.slice(1)}
+                        </button>
+                      ))}
+                    </div> */}
+                    {/* <div className="flex gap-3">
+                      <div id="date" className="flex-1">
+                        <label className="block text-sm font-medium text-gray-900 mb-1">Date</label>
+                        <div className="relative flex items-center">
+                          <div className="absolute left-4 pointer-events-none">
+                            <Calendar01Icon className="text-slate-400" size={20} />
+                          </div>
+                          <span
+                            // onClick={openDatePicker}
+                            className={`block w-full ps-13 pe-10 py-2.5 text-base rounded-xl border cursor-pointer transition-all duration-200
+                              ${date ? "text-gray-900" : "text-slate-400"}
+                              ${isActiveDate
+                                        ? "ring-1 ring-slate-900"
+                                        : "border-gray-200 hover:border-gray-300"}
+                            `}
+                          >
+                            {formatDisplayDate(date)}
+                          </span>
+                          <input
+                            ref={dateRef}
+                            type="date"
+                            value={date}
+                            onChange={(e) => {
+                              setDate(e.target.value);
+                              setIsActiveDate(false);
+                            }}
+                            className="absolute inset-0 opacity-0 pointer-events-none"
+                          />
+                          <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                        </div>
+                      </div>
+                      <div id="nominal" className="flex-1">
+                        <label className="block text-sm font-medium text-gray-900 mb-1">
+                          Nominal
+                        </label>
+                        <div className="relative flex items-center">
+                          <div className="absolute left-4 pointer-events-none">
+                            <DollarCircleIcon className="text-slate-400" size={20} />
+                          </div>
+                          <input
+                            type="text"
+                            value={formattedNominal}
+                            onChange={handleChangeNominal}
+                            placeholder="Input nominal"
+                            className="block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-slate-900 transition"
+                          />
+                        </div>
+                      </div>
+                    </div> */}
+                    {/* {type !== "transfer" && (
+                      <div className="flex gap-3">
+                        <div id="account" className="relative w-full flex-1" ref={accountRef}>
+                          <label className="text-sm font-medium">Account</label>
+                          <div className="relative flex items-center">
+                            <div className="absolute left-4 pointer-events-none">
+                              <CreditCardIcon className="text-slate-400" size={20} />
+                            </div>
+                            <div
+                              onClick={() => {
+                                setActiveAccountField(getAccountField());
+                                setOpenAccount(true);
+                                setOpenCategory(false);
+                              }}
+                              className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border border-gray-200 hover:border-gray-300 transition cursor-pointer
+                        ${accountValue ? "text-gray-900" : "text-slate-400"}
+                      `}
+                            >
+                              {accountValue || "Select account"}
+                            </div>
+                            <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                          </div>
+                          {openAccount && (
+                            <div className="absolute mt-2 w-full bg-white border rounded-xl shadow max-h-60 overflow-y-auto">
+                              {loadingAccounts ? (
+                                <div className="p-3 text-sm text-slate-400">Loading...</div>
+                              ) : accounts.length === 0 ? (
+                                <div className="p-3 text-sm text-slate-400">No accounts</div>
+                              ) : (
+                                accounts.map((acc) => (
+                                  <div
+                                    key={acc.account_id}
+                                    onClick={() => {
+                                      handleSelectAccount(acc.name, getAccountField());
+                                    }}
+                                    className="flex items-center gap-4 px-4 py-2 hover:bg-slate-100 cursor-pointer"
+                                  >
+                                    <img
+                                      src={getAccountsImg(acc.name)}
+                                      className="w-6 h-6"
+                                    />
+                                    <span>{acc.name}</span>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        <div id="category" className="flex-1">
+                          <label className="block text-sm font-medium text-gray-900 mb-1">Category</label>
+                          <div className="relative flex items-center justify-center">
+                            <div className="absolute left-4 pointer-events-none">
+                              <LicenseIcon className="text-slate-400" size={20} />
+                            </div>
+                            <span
+                              className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border text-slate-400 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer appearance-none`}
+                            >
+                              Select category
+                            </span>
+                            <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {type === "transfer" && (
+                      <div className="flex gap-3">
+                        <div id="from_account" className="flex-1">
+                          <label className="text-sm font-medium">From Account</label>
+                          <div className="relative flex items-center justify-center">
+                            <div className="absolute left-4 pointer-events-none">
+                              <LicenseIcon className="text-slate-400" size={20} />
+                            </div>
+                            <div
+                              onClick={() => {
+                                setActiveAccountField(getAccountField());
+                                setOpenAccount(true);
+                              }}
+                              className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border transition cursor-pointer
+                        ${accountValue ? "text-gray-900" : "text-slate-400"}
+                        border-gray-200 hover:border-gray-300
+                      `}
+                            >
+                              {accountValue || "Select account"}
+                            </div>
+                            <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
+                          </div>
+                        </div>
+                        <div id="to_account" className="flex-1">
+                          <label className="text-sm font-medium">To Account</label>
+                          <div
+                            onClick={() => {
+                              setActiveAccountField("to_account");
+                              setOpenAccount(true);
+                            }}
+                            className="border rounded-xl px-3 py-2.5 cursor-pointer"
+                          >
+                            {formAccount.to_account || "Select account"}
+                          </div>
+                        </div>
+                      </div>
+                    )} */}
+                    <div id="remark" className="mt-2">
+                      <label className="block text-sm font-medium text-gray-900 mb-1">
+                        Remark 
+                        {type === "transfer" && (
+                          <span className="text-slate-400">(optional)</span>
+                        )}
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={remark}
+                        onChange={(e) => setRemark(e.target.value)}
+                        className="w-full rounded-xl border border-gray-200 p-3"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { 
+  //useEffect, 
+  useMemo, 
+  // useRef, 
+  useState } from "react";
 import AccountBalances from "../components/dashboards/AccountBalances";
 import CurrentBalance from "../components/dashboards/CurrentBalance";
 import MonthNavigator from "../components/dashboards/MonthNavigator";
@@ -8,11 +12,15 @@ import EmptyState from "../components/utils/EmptyState";
 import MobileLayout from "../components/utils/MobileLayout";
 import { useLocalStorage } from "../hooks/utils/useLocalStorage";
 import { useMonthNavigation } from "../hooks/utils/useMonthNavigation";
-import { formatRupiah, formatRupiahInput, MONTHS, smartCapitalize } from "../helpers/Format";
+import { 
+  formatRupiah, 
+  // formatRupiahInput, 
+  MONTHS, 
+  smartCapitalize } from "../helpers/Format";
 import { useTransactions } from "../hooks/transactions/useTransactions";
 import { useGroupedTransactions } from "../hooks/transactions/useGroupedTransactions";
 import {
-  ArrowDown01Icon,
+  // ArrowDown01Icon,
   Money01Icon,
   PlusSignIcon,
   MoneySend02Icon,
@@ -20,20 +28,20 @@ import {
   Invoice01Icon,
   NoteEditIcon,
   Delete02Icon,
-  LicenseIcon,
-  CreditCardIcon,
-  DollarCircleIcon,
-  Calendar01Icon,
+  // LicenseIcon,
+  // CreditCardIcon,
+  // DollarCircleIcon,
+  // Calendar01Icon,
   InvoiceIcon,
 } from "hugeicons-react";
 import ExpensesChart from "../components/insights/ExpensesChart";
 import TopExpensesChart from "../components/insights/TopExpensesChart";
 import CategoryExpensesSection from "../components/insights/CategoryExpensesSection";
-import Modal from "../components/utils/Modal";
+// import Modal from "../components/utils/Modal";
 import { getAccountsImg, getCategoriesImg } from "../helpers/UI";
 import FooterDesktop from "../components/utils/FooterDesktop";
 import HeaderDesktop from "../components/utils/HeaderDesktop";
-import { useAccounts } from "../hooks/accounts/useAccounts";
+// import { useAccounts } from "../hooks/accounts/useAccounts";
 
 export default function Dashboard() {
   const PAGE_SIZE = 20;
@@ -144,104 +152,103 @@ export default function Dashboard() {
     { label: "Yesterday", value: "YESTERDAY" },
   ];
 
-  const [openModal, setOpenModal] = useState(false);
-  const [Loading, setLoading] = useState(false);
-  const handleSubmit = async () => {
-    setLoading(true);
+  // const [openModal, setOpenModal] = useState(false);
+  // const [Loading, setLoading] = useState(false);
+  // const handleSubmit = async () => {
+  //   setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-      setOpenModal(false);
-    }, 300);
-  }
-
-  const { accounts, loading: loadingAccounts } = useAccounts();
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     setOpenModal(false);
+  //   }, 300);
+  // }
+  // const { accounts, loading: loadingAccounts } = useAccounts();
   // Form
-  const [isActiveDate, setIsActiveDate] = useState(false);
-  const [type, setType] = useState<"income" | "expenses" | "transfer">("expenses");
-  const [openAccount, setOpenAccount] = useState(false);
-  const [openCategory, setOpenCategory] = useState(false);
-  const [date, setDate] = useState("");
-  const [rawNominal, setRawNominal] = useState("");
-  const formattedNominal = formatRupiahInput(rawNominal);
+  // const [isActiveDate, setIsActiveDate] = useState(false);
+  // const [type, setType] = useState<"income" | "expenses" | "transfer">("expenses");
+  // const [openAccount, setOpenAccount] = useState(false);
+  // // const [openCategory, setOpenCategory] = useState(false);
+  // const [date, setDate] = useState("");
+  // const [rawNominal, setRawNominal] = useState("");
+  // const formattedNominal = formatRupiahInput(rawNominal);
 
-  const dateRef = useRef<HTMLInputElement>(null);
-  const accountRef = useRef<HTMLDivElement>(null);
+  // const dateRef = useRef<HTMLInputElement>(null);
+  // const accountRef = useRef<HTMLDivElement>(null);
 
-  const [formAccount, setFormAccount] = useState({
-    from_account: "",
-    to_account: "",
-  });
-  const [remark, setRemark] = useState("");
+  // const [formAccount, setFormAccount] = useState({
+  //   from_account: "",
+  //   to_account: "",
+  // });
+  // const [remark, setRemark] = useState("");
 
-  const getAccountField = (): "from_account" | "to_account" => {
-    if (type === "expenses") return "from_account";
-    if (type === "income") return "to_account";
-    return "from_account";
-  };
+  // const getAccountField = (): "from_account" | "to_account" => {
+  //   if (type === "expenses") return "from_account";
+  //   if (type === "income") return "to_account";
+  //   return "from_account";
+  // };
 
-  const [activeAccountField, setActiveAccountField] = useState<
-    "from_account" | "to_account"
-  >("from_account");
+  // const [activeAccountField, setActiveAccountField] = useState<
+  //   "from_account" | "to_account"
+  // >("from_account");
 
-  const accountValue =
-    type === "expenses"
-      ? formAccount.from_account
-      : formAccount.to_account;
+  // const accountValue =
+  //   type === "expenses"
+  //     ? formAccount.from_account
+  //     : formAccount.to_account;
 
-  const handleSelectAccount = (
-    acc: string,
-    field: "from_account" | "to_account"
-  ) => {
-    console.log("SELECTED:", acc, field);
+  // const handleSelectAccount = (
+  //   acc: string,
+  //   field: "from_account" | "to_account"
+  // ) => {
+  //   console.log("SELECTED:", acc, field);
 
-    setFormAccount((prev) => {
-      const updated = {
-        ...prev,
-        [field]: acc,
-      };
+  //   setFormAccount((prev) => {
+  //     const updated = {
+  //       ...prev,
+  //       [field]: acc,
+  //     };
 
-      console.log("UPDATED FORM:", updated);
-      return updated;
-    });
+  //     console.log("UPDATED FORM:", updated);
+  //     return updated;
+  //   });
 
-    setOpenAccount(false);
-  };
+  //   setOpenAccount(false);
+  // };
 
-  const handleChangeNominal = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numeric = e.target.value.replace(/\D/g, "");
-    setRawNominal(numeric);
-  };
+  // const handleChangeNominal = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const numeric = e.target.value.replace(/\D/g, "");
+  //   setRawNominal(numeric);
+  // };
 
-  const formatDisplayDate = (value?: string) => {
-    if (!value) return "Select date";
-    const d = new Date(value);
-    return d.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
+  // const formatDisplayDate = (value?: string) => {
+  //   if (!value) return "Select date";
+  //   const d = new Date(value);
+  //   return d.toLocaleDateString("id-ID", {
+  //     day: "2-digit",
+  //     month: "long",
+  //     year: "numeric",
+  //   });
+  // };
 
-  const openDatePicker = () => {
-    setIsActiveDate(true);
-    dateRef.current?.showPicker();
-  };
+  // const openDatePicker = () => {
+  //   setIsActiveDate(true);
+  //   dateRef.current?.showPicker();
+  // };
 
-  useEffect(() => {
-    if (!date) {
-      setDate(new Date().toISOString().split("T")[0]);
-    }
-    const handleClickOutside = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest("#account")) {
-        setOpenAccount(false);
-      }
-    };
+  // useEffect(() => {
+  //   if (!date) {
+  //     setDate(new Date().toISOString().split("T")[0]);
+  //   }
+  //   const handleClickOutside = (e: MouseEvent) => {
+  //     if (!(e.target as HTMLElement).closest("#account")) {
+  //       setOpenAccount(false);
+  //     }
+  //   };
 
-    document.addEventListener("click", handleClickOutside);
-    return () =>
-      document.removeEventListener("click", handleClickOutside);
-  }, []);
+  //   document.addEventListener("click", handleClickOutside);
+  //   return () =>
+  //     document.removeEventListener("click", handleClickOutside);
+  // }, []);
 
 
   return (
@@ -284,7 +291,7 @@ export default function Dashboard() {
                 </div>
 
                 <button
-                  onClick={() => setOpenModal(true)}
+                  // onClick={() => setOpenModal(true)}
                   className="flex items-center p-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl gap-2 cursor-pointer">
                   <PlusSignIcon className="text-white" size={20} />
                   <span>Add Transaction</span>
@@ -549,7 +556,7 @@ export default function Dashboard() {
       </MobileLayout>
 
       {/* MODAL */}
-      {openModal && (
+      {/* {openModal && (
         <Modal
           size="large"
           title="Add Transaction"
@@ -686,7 +693,6 @@ export default function Dashboard() {
             )}
             {type === "transfer" && (
               <div className="flex gap-3">
-                {/* FROM ACCOUNT*/}
                 <div id="from_account" className="flex-1">
                   <label className="text-sm font-medium">From Account</label>
                   <div className="relative flex items-center justify-center">
@@ -708,7 +714,6 @@ export default function Dashboard() {
                     <ArrowDown01Icon className="absolute right-4 text-slate-400 pointer-events-none" size={20} />
                   </div>
                 </div>
-                {/* TO ACCOUNT*/}
                 <div id="to_account" className="flex-1">
                   <label className="text-sm font-medium">To Account</label>
                   <div
@@ -737,7 +742,7 @@ export default function Dashboard() {
             </div>
           </div>
         </Modal>
-      )}
+      )} */}
     </div>
   );
 }

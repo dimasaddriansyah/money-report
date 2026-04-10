@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "../../shared/navigation/Sidebar";
 import Modal from "./Modal";
 import { Xls02Icon } from "hugeicons-react";
 import { ExportSpreedsheet } from "../../helpers/ExportSpreedsheet";

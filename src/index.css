@@ -2,6 +2,18 @@
 
 @theme {
   --font-sans: "Inter", sans-serif;
+  --color-gold-25: oklch(0.95 0.063 89.94);
+  --color-gold-50: oklch(0.895 0.134 89.94);
+  --color-gold-100: oklch(0.84 0.171 89.94);
+  --color-gold-200: oklch(0.785 0.159 89.94);
+  --color-gold-300: oklch(0.731 0.148 89.94);
+  --color-gold-400: oklch(0.676 0.137 89.94);
+  --color-gold-500: oklch(0.621 0.126 89.94);
+  --color-gold-600: oklch(0.566 0.115 89.94);
+  --color-gold-700: oklch(0.511 0.104 89.94);
+  --color-gold-800: oklch(0.456 0.093 89.94);
+  --color-gold-900: oklch(0.401 0.081 89.94);
+  --color-gold-950: oklch(0.346 0.07 89.94);
 }
 
 /* Hide scrollbar */
@@ -10,7 +22,8 @@
 }
 
 .no-scrollbar {
-  -ms-overflow-style: none; /* IE & Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE & Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
-

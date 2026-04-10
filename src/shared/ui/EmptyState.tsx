@@ -10,9 +10,9 @@ export default function EmptyState({ title, subtitle, icon }: Props) {
   const finalIcon =
     isValidElement(icon)
       ? cloneElement(icon as React.ReactElement<any>, {
-        size: 40,
-        className: `opacity-40 ${(icon as any).props?.className || ""}`,
-      })
+          size: 40,
+          className: `opacity-40 ${(icon as any).props?.className || ""}`,
+        })
       : icon;
 
   return (
@@ -20,9 +20,15 @@ export default function EmptyState({ title, subtitle, icon }: Props) {
       {finalIcon}
 
       <div className="text-center max-w-xs">
-        <p className="text-lg font-medium text-slate-900"> {title} </p>
+        <p className="text-lg font-medium text-slate-900">
+          {title}
+        </p>
 
-        {subtitle && ( <p className="text-sm text-slate-500"> {subtitle} </p> )}
+        {subtitle && (
+          <p className="text-sm text-slate-500">
+            {subtitle}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLocation, useNavigate } from "react-router-dom";
-import { NAV_MENUS_DESKTOP } from "../../helpers/Navigation";
+import { NAV_MENUS_DESKTOP } from "../utils/navigation.sidebar.helper";
 import CashflowLogo from "../../assets/cashflow.png";
 import { FileExportIcon } from "hugeicons-react";
 

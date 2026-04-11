@@ -8,15 +8,16 @@ import {
 
 type NavItem =
   | {
-    type: "menu";
-    labelDesktop: string;
-    path: string;
-    icon?: any;
-  }
+      type: "menu";
+      labelDesktop: string;
+      path: string;
+      matchPaths?: string[];
+      icon?: any;
+    }
   | {
-    type: "label";
-    label: string;
-  };
+      type: "label";
+      label: string;
+    };
 
 export const NAV_MENUS_DESKTOP: NavItem[] = [
   {
@@ -34,13 +35,15 @@ export const NAV_MENUS_DESKTOP: NavItem[] = [
     type: "menu",
     labelDesktop: "Accounts",
     path: "/accounts",
-    icon: CreditCardIcon
+    matchPaths: ["/accounts", "/account"],
+    icon: CreditCardIcon,
   },
   {
     type: "menu",
     labelDesktop: "Categories",
     path: "/categories",
-    icon: Note05Icon
+    matchPaths: ["/categories", "/category"],
+    icon: Note05Icon,
   },
   {
     type: "label",
@@ -50,12 +53,14 @@ export const NAV_MENUS_DESKTOP: NavItem[] = [
     type: "menu",
     labelDesktop: "Transactions",
     path: "/transactions",
+    matchPaths: ["/transactions", "/transaction"],
     icon: Invoice01Icon,
   },
   {
     type: "menu",
     labelDesktop: "Budgets",
     path: "/budgets",
+    matchPaths: ["/budgets", "/budget"],
     icon: MoneySavingJarIcon,
   },
 ];

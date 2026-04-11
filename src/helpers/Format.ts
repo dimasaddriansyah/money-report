@@ -167,10 +167,6 @@ const LOWERCASE_WORDS = [
   "dan",
   "di",
   "yang",
-  "from",
-  "to",
-  "of",
-  "and",
 ];
 
 export const smartCapitalize = (text: string): string => {

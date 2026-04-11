@@ -53,7 +53,11 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
           // ======================
           // ✅ MENU ITEM
           // ======================
-          const active = location.pathname === item.path;
+          const active =
+            item.matchPaths?.some((p: string) =>
+              location.pathname === p || location.pathname.startsWith(p + "/")
+            );
+
 
           return (
             <button

@@ -4,15 +4,16 @@ import Insights from "../pages/Insights";
 import Settings from "../pages/Settings";
 import GenerateForm from "../pages/transactions/GenerateForm";
 import { lazy } from "react";
-import TransactionFormPage from "../pages/transactions/TransactionFormPage";
 import BudgetFormPages from "../pages/budgets/BudgetFormPage";
-import Transactions from "../pages/transactions/Transactions";
 import AccountCreatePage from "../features/accounts/pages/AccountCreatePage";
 import AccountEditPage from "../features/accounts/pages/AccountEditPage";
 import AccountPage from "../features/accounts/pages/AccountPage";
 import CategoryPage from "../features/categories/pages/CategoryPage";
 import CategoryEditPage from "../features/categories/pages/CategoryEditPage";
 import CategoryCreatePage from "../features/categories/pages/CategoryCreatePage";
+import TransactionPage from "../features/transactions/pages/TransactionPage";
+import TransactionCreatePage from "../features/transactions/pages/TransactionCreatePage";
+import TransactionEditPage from "../features/transactions/pages/TransactionEditPage";
 
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 
@@ -20,15 +21,15 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/generate-form" element={<GenerateForm />} />
-      <Route path="/transactions" element={<Transactions />} />
-      <Route path="/transaction/create" element={<TransactionFormPage />} />
-      <Route path="/transaction/edit/:id" element={<TransactionFormPage />} />
       <Route path="/insights" element={<Insights />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/generate-form" element={<GenerateForm />} />
+      <Route path="/transactions" element={<TransactionPage />} />
+      <Route path="/transaction/create" element={<TransactionCreatePage />} />
+      <Route path="/transaction/edit/:id" element={<TransactionEditPage />} />
       <Route path="/budgets" element={<Budgets />} />
       <Route path="/budget/create" element={<BudgetFormPages />} />
       <Route path="/budget/edit/:id" element={<BudgetFormPages />} />
-      <Route path="/settings" element={<Settings />} />
       <Route path="/accounts" element={<AccountPage />} />
       <Route path="/account/create" element={<AccountCreatePage />} />
       <Route path="/account/edit/:id" element={<AccountEditPage />} />

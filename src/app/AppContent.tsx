@@ -16,7 +16,7 @@ export default function AppContent() {
         <AppRoutes />
       </AppLayout>
 
-      <Toaster position="bottom-center" richColors />
+      <Toaster position="top-center" richColors />
     </Suspense>
   );
 }

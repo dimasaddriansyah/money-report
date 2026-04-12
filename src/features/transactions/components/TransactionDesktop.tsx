@@ -7,13 +7,13 @@ import type { Transaction } from "../types/transaction";
 import { useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import Modal from "../../../components/utils/Modal";
 import { useTransactionActions } from "../hooks/useTransactionActions";
 import { getAccountDisplay, getAmountDisplay, getCategoryName, getTypeDisplay } from "../utils/ui.helpers";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
-import { formatDateToString, getDay } from "../../../shared/utils/format.helper";
+import Modal from "../../../shared/ui/Modal";
+import { formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 
 export default function TransactionDesktop({
   transactions,
@@ -118,8 +118,8 @@ export default function TransactionDesktop({
                       <td className="text-slate-500 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
                       <td>
                         <div className="flex flex-col">
-                          <span className="text-black font-medium">{getDay(row.date)}</span>
-                          <span className="text-slate-400">{formatDateToString(row.date) || "-"}</span>
+                          <span className="text-black font-medium">{formatDateDay(row.date)}</span>
+                          <span className="text-slate-400">{formatDateDayMonthYear(row.date) || "-"}</span>
                         </div>
                       </td>
                       <td className="">
@@ -131,7 +131,7 @@ export default function TransactionDesktop({
                         <div className="flex items-center gap-1">
                           {getAccountDisplay(row, accountMap).map((name, index, arr) => (
                             <span key={index} className="flex items-center gap-2">
-                              <img src={getAccountsImg(name)} alt={name} className="w-8 h-8"/>
+                              <img src={getAccountsImg(name)} alt={name} className="w-8 h-8" />
                               <span className="font-medium">{name}</span>
                               {index < arr.length - 1 && (
                                 <span className="text-slate-400 px-1.5">→</span>
@@ -141,7 +141,7 @@ export default function TransactionDesktop({
                         </div>
                       </td>
                       <td className="flex items-center gap-3">
-                        <img src={getCategoriesImg(categoryName)} alt={categoryName} className="w-8 h-8"/>
+                        <img src={getCategoriesImg(categoryName)} alt={categoryName} className="w-8 h-8" />
                         <div className="flex flex-col">
                           <span className="text-black font-medium">{categoryName}</span>
                           <span className="text-slate-400">{row.remark || "-"}</span>
@@ -187,7 +187,6 @@ export default function TransactionDesktop({
       {open && (
         <Modal
           title="Delete Transaction"
-          textButton="Delete"
           loading={loading}
           onSubmit={handleDelete}
           onClose={() => {

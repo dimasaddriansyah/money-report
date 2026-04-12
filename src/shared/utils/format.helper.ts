@@ -1,14 +1,4 @@
-export function formatDateToString(date: string | Date) {
-  const d = typeof date === "string" ? new Date(date) : date;
-
-  return d.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-export function formatDateDisplay(value: string) {
+export function formatDateFull(value: string) {
   if (!value) return "";
 
   return new Date(value).toLocaleDateString("id-ID", {
@@ -19,7 +9,25 @@ export function formatDateDisplay(value: string) {
   });
 }
 
-export function getDay(date: string) {
+export function formatDateDayMonthYear(date: string | Date) {
+  const d = typeof date === "string" ? new Date(date) : date;
+
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+
+export function formatDateDayMonth(value: string) {
+  return new Date(value).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+  });
+}
+
+export function formatDateDay(date: string) {
   return new Date(date).toLocaleDateString("en-US", {
     weekday: "long",
   });

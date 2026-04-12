@@ -17,7 +17,7 @@ export default function DesktopShell({ children }: any) {
       />
 
       {/* MAIN */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         <HeaderDesktop
           collapsed={collapsed}
           setCollapsed={setCollapsed}

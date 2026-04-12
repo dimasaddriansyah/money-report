@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Budgets from "../pages/budgets/Budgets";
-import Insights from "../pages/Insights";
+// import Insights from "../pages/Insights";
 import Settings from "../pages/Settings";
 import GenerateForm from "../pages/transactions/GenerateForm";
 import { lazy } from "react";
@@ -15,13 +15,13 @@ import TransactionPage from "../features/transactions/pages/TransactionPage";
 import TransactionCreatePage from "../features/transactions/pages/TransactionCreatePage";
 import TransactionEditPage from "../features/transactions/pages/TransactionEditPage";
 
-const Dashboard = lazy(() => import("../pages/Dashboard"));
+const DashboardPage = lazy(() => import("../features/dashboards/pages/DashboardPage"));
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/insights" element={<Insights />} />
+      <Route path="/" element={<DashboardPage />} />
+      {/* <Route path="/insights" element={<Insights />} /> */}
       <Route path="/settings" element={<Settings />} />
       <Route path="/generate-form" element={<GenerateForm />} />
       <Route path="/transactions" element={<TransactionPage />} />

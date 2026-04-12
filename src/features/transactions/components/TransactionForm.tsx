@@ -3,8 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Transaction, TransactionType } from "../types/transaction";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
-import { formatDateDisplay, formatNumber } from "../../../shared/utils/format.helper";
 import { getAccountFields } from "../utils/ui.helpers";
+import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
 
 type Props = {
   defaultValues?: Transaction;
@@ -164,7 +164,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                   onChange={(e) => setDate(e.target.value)}
                   className="absolute opacity-0 pointer-events-none"
                 />
-                <span className="capitalize">{formatDateDisplay(date) || "Select date"}</span>
+                <span className="capitalize">{formatDateFull(date) || "Select date"}</span>
               </div>
               <ArrowDown01Icon className="text-slate-400" size={20} />
             </div>

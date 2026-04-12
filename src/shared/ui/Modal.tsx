@@ -1,45 +1,74 @@
+import { Cancel01Icon } from "hugeicons-react";
+import { useEffect, useState } from "react";
+
 type Props = {
-  open: boolean;
   title?: string;
   description?: string;
-  onCancel: () => void;
-  onConfirm: () => void;
+  onClose: () => void;
+  onSubmit: () => void;
   loading?: boolean;
+  children: React.ReactNode;
 };
 
 export default function Modal({
-  open,
   title,
   description,
-  onCancel,
-  onConfirm,
+  onClose,
+  onSubmit,
   loading,
+  children
 }: Props) {
-  if (!open) return null;
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    setShow(true);
+  }, []);
+  const handleClose = () => {
+    setShow(false);
+    setTimeout(onClose, 300); 
+  };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-      <div className="bg-white rounded-xl p-6 w-80 shadow-lg">
-        <h2 className="text-lg font-semibold">{title}</h2>
-        <p className="text-sm text-slate-500 mt-2">{description}</p>
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className={`absolute inset-0 bg-black/60 backdrop-blur-lg transition-opacity duration-300 ${show ? "opacity-100" : "opacity-0"}`} onClick={handleClose} />
 
-        <div className="flex justify-end gap-2 mt-6">
+      <div
+        className={`relative bg-white rounded-2xl w-full max-w-md shadow-lg transform transition-all duration-300 overflow-hidden
+          ${show
+            ? "translate-y-0 opacity-100"
+            : "translate-y-full opacity-0"
+          }`}
+        onClick={(e) => e.stopPropagation()}>
+        {/* MODAL HEADER */}
+        <div className="flex justify-between items-center px-4 py-3 border-b border-slate-100/60">
+          <h1 className="text-lg font-semibold">{title}</h1>
+          <Cancel01Icon
+            onClick={handleClose}
+            className="text-slate-400 cursor-pointer"
+            size={20} />
+        </div>
+
+        {/* MODAL BODY */}
+        <div className="p-4">
+          {children}
+        </div>
+
+        {/* MODAL FOOTER */}
+        <div className="flex justify-end bg-slate-50 gap-2 px-4 py-2 border-t border-slate-100/60">
           <button
-            onClick={onCancel}
-            className="px-4 py-2 text-sm text-slate-500"
-          >
+            onClick={handleClose}
+            disabled={loading}
+            className="px-4 py-2 text-sm text-slate-500 cursor-pointer">
             Cancel
           </button>
-
           <button
-            onClick={onConfirm}
+            onClick={onSubmit}
             disabled={loading}
-            className={`px-4 py-2 text-sm text-white rounded-lg ${loading
-              ? "bg-red-300"
-              : "bg-red-600 hover:bg-red-700"
-              }`}
-          >
-            {loading ? "Deleting..." : "Delete"}
+            className="px-4 py-2 text-sm rounded-lg bg-slate-900 text-white font-semibold hover:bg-slate-800 cursor-pointer">
+            {loading ? (
+              <span>Processing...</span>
+            ) : (
+              "Delete"
+            )}
           </button>
         </div>
       </div>

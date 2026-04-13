@@ -10,7 +10,7 @@ export default function DashboardSectionLayout({ title, button, children }: Prop
   const navigate = useNavigate();
 
   return (
-    <section className="flex flex-col p-4 bg-white rounded-lg gap-4">
+    <section className="flex flex-col p-4 bg-white border border-slate-100 rounded-lg gap-4">
       <div className="flex justify-between items-center">
         <h1 className="font-semibold text-lg">{title}</h1>
         {button && (

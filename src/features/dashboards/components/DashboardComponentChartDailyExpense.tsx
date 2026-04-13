@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { graphic, type EChartsOption } from "echarts";
+import { useBalance } from "../../../shared/context/BalanceContext";
+import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
+import EmptyState from "../../../shared/ui/EmptyState";
 
 type Props = {
   data: {
@@ -9,8 +12,11 @@ type Props = {
   };
 };
 
-export default function DashboardComponentDailyExpense({ data }: Props) {
+export default function DashboardComponentChartDailyExpense({ data }: Props) {
+  const { hideBalance } = useBalance();
   const [ready, setReady] = useState(false);
+
+  const isEmpty = data.amounts.length === 0;
 
   useEffect(() => {
     const timer = setTimeout(() => setReady(true), 50);
@@ -28,6 +34,23 @@ export default function DashboardComponentDailyExpense({ data }: Props) {
   const option: EChartsOption = {
     tooltip: {
       trigger: "axis",
+      formatter: (params: any) => {
+        const item = params[0];
+        const value = item.value;
+
+        return `
+          <div style="padding:4px 4px">
+            <div>${item.axisValue}</div>
+            <div style="margin-top:4px">
+              <span style=" display:inline-block; width:8px; height:8px; border-radius:50%; background:#FF0000; "></span>
+              <span>Expenses</span>
+              <span style="float:right;font-weight:600;margin-left:20px">
+               ${formatBalance(formatCurrency(value), hideBalance)}
+              </span>
+            </div>
+          </div>
+        `;
+      },
     },
 
     grid: {
@@ -75,12 +98,21 @@ export default function DashboardComponentDailyExpense({ data }: Props) {
   };
 
   return (
-    <div className="w-full">
-      <ReactECharts
-        option={option}
-        style={{ height: 400, width: "100%" }}
-        autoResize
-      />
-    </div>
+    <>
+      {isEmpty ? (
+        <EmptyState
+          title="No transactions yet"
+          subtitle="Create your first transaction to start tracking"
+        />
+      ) : (
+        <div className="w-full">
+          <ReactECharts
+            option={option}
+            style={{ height: 400, width: "100%" }}
+            autoResize
+          />
+        </div>
+      )}
+    </>
   );
 }

@@ -1,9 +1,10 @@
+import { BalanceProvider } from "../context/BalanceContext";
 import DesktopShell from "./DesktopShell";
 import MobileShell from "./MobileShell";
 
 export default function AppLayout({ children }: any) {
   return (
-    <>
+    <BalanceProvider>
       {/* DESKTOP */}
       <div className="hidden md:block">
         <DesktopShell>{children}</DesktopShell>
@@ -13,6 +14,6 @@ export default function AppLayout({ children }: any) {
       <div className="md:hidden">
         <MobileShell>{children}</MobileShell>
       </div>
-    </>
+    </BalanceProvider>
   );
 }

@@ -63,13 +63,13 @@ export function getAmountDisplay(row: Transaction) {
   switch (row.type) {
     case "income":
       return {
-        label: `+${formatted}`,
+        label: `+ ${formatted}`,
         className: "text-green-500 font-semibold",
       };
 
     case "expense":
       return {
-        label: `-${formatted}`,
+        label: `- ${formatted}`,
         className: "text-red-500 font-semibold",
       };
 

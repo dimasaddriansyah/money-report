@@ -13,7 +13,8 @@ import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
 import Modal from "../../../shared/ui/Modal";
-import { formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { formatBalance, formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { useBalance } from "../../../shared/context/BalanceContext";
 
 export default function TransactionDesktop({
   transactions,
@@ -26,6 +27,7 @@ export default function TransactionDesktop({
     refetch: () => void;
   }) {
   const navigate = useNavigate();
+  const { hideBalance } = useBalance();
   const isEmpty = transactions.length === 0;
 
   const accountMap = useMemo(
@@ -148,7 +150,7 @@ export default function TransactionDesktop({
                         </div>
                       </td>
                       <td className={`text-right ${amountConfig.className}`}>
-                        <span className="">{amountConfig.label}</span>
+                        <span className="">{formatBalance(amountConfig.label, hideBalance)}</span>
                       </td>
                       <td>
                         <div className="flex gap-2">

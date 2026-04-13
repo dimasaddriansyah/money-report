@@ -10,7 +10,8 @@ import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../../shared/ui/Modal";
-import { formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { formatBalance, formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { useBalance } from "../../../shared/context/BalanceContext";
 
 export default function DashboardSectionRecentTransactions({
   transactions,
@@ -23,6 +24,7 @@ export default function DashboardSectionRecentTransactions({
     refetch: () => void;
   }) {
   const navigate = useNavigate();
+  const { hideBalance } = useBalance();
   const isEmpty = transactions.length === 0;
 
   const accountMap = useMemo(
@@ -71,9 +73,9 @@ export default function DashboardSectionRecentTransactions({
             <thead className="bg-slate-50">
               <tr className="text-left text-slate-500 border-b border-slate-100">
                 <th className="w-12">#</th>
-                <th className="w-50">Date</th>
-                <th className="w-50">Type</th>
-                <th className="w-90">Account</th>
+                <th className="">Date</th>
+                <th className="">Type</th>
+                <th className="">Account</th>
                 <th className="">Category</th>
                 <th className="w-40 text-right">Nominal</th>
                 <th className="w-12 text-center">Action</th>
@@ -122,7 +124,7 @@ export default function DashboardSectionRecentTransactions({
                       </div>
                     </td>
                     <td className={`text-right ${amountConfig.className}`}>
-                      <span className="">{amountConfig.label}</span>
+                      <span className="">{formatBalance(amountConfig.label, hideBalance)}</span>
                     </td>
                     <td>
                       <div className="flex gap-2">

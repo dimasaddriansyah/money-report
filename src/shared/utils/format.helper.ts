@@ -49,3 +49,7 @@ export function formatCurrency(amount: number): string {
 export function formatNumber(value: number) {
   return value.toLocaleString("id-ID");
 }
+
+export function formatBalance(value: string, hide: boolean) {
+  return hide ? "Rp ••••••••" : value;
+}

@@ -94,6 +94,5 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
         </button>
       </div>
     </aside>
-
   );
 }

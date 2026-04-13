@@ -1,5 +1,5 @@
 import { useLocation, matchPath } from "react-router-dom";
-import BottomNav from "../../components/navigation/BottomNav";
+import BottomNavigationMobile from "../navigation/BottomNavigationMobile";
 
 export default function MobileShell({ children }: any) {
   const location = useLocation();
@@ -15,7 +15,7 @@ export default function MobileShell({ children }: any) {
     <div className="min-h-screen bg-slate-50">
       <main className="pb-20">{children}</main>
 
-      {!hideBottomNav && <BottomNav />}
+      {!hideBottomNav && <BottomNavigationMobile />}
     </div>
   );
 }

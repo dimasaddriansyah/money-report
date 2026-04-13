@@ -147,7 +147,7 @@ export default function DashboardComponentChartTopExpense({ data }: Props) {
         <div className="w-full">
           <ReactECharts
             option={option}
-            style={{ height: 500, width: "100%" }}
+            style={{ height: 507, width: "100%" }}
             autoResize
           />
         </div >

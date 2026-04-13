@@ -1,10 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import Budgets from "../pages/budgets/Budgets";
-// import Insights from "../pages/Insights";
 import Settings from "../pages/Settings";
 import GenerateForm from "../pages/transactions/GenerateForm";
 import { lazy } from "react";
-import BudgetFormPages from "../pages/budgets/BudgetFormPage";
 import AccountCreatePage from "../features/accounts/pages/AccountCreatePage";
 import AccountEditPage from "../features/accounts/pages/AccountEditPage";
 import AccountPage from "../features/accounts/pages/AccountPage";
@@ -14,6 +11,9 @@ import CategoryCreatePage from "../features/categories/pages/CategoryCreatePage"
 import TransactionPage from "../features/transactions/pages/TransactionPage";
 import TransactionCreatePage from "../features/transactions/pages/TransactionCreatePage";
 import TransactionEditPage from "../features/transactions/pages/TransactionEditPage";
+import BudgetCreatePage from "../features/budgets/pages/BudgetCreatePage";
+import BudgetEditPage from "../features/budgets/pages/BudgetEditPage";
+import BudgetPage from "../features/budgets/pages/BudgetPage";
 
 const DashboardPage = lazy(() => import("../features/dashboards/pages/DashboardPage"));
 
@@ -21,15 +21,14 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<DashboardPage />} />
-      {/* <Route path="/insights" element={<Insights />} /> */}
       <Route path="/settings" element={<Settings />} />
       <Route path="/generate-form" element={<GenerateForm />} />
       <Route path="/transactions" element={<TransactionPage />} />
       <Route path="/transaction/create" element={<TransactionCreatePage />} />
       <Route path="/transaction/edit/:id" element={<TransactionEditPage />} />
-      <Route path="/budgets" element={<Budgets />} />
-      <Route path="/budget/create" element={<BudgetFormPages />} />
-      <Route path="/budget/edit/:id" element={<BudgetFormPages />} />
+      <Route path="/budgets" element={<BudgetPage />} />
+      <Route path="/budget/create" element={<BudgetCreatePage />} />
+      <Route path="/budget/edit/:id" element={<BudgetEditPage />} />
       <Route path="/accounts" element={<AccountPage />} />
       <Route path="/account/create" element={<AccountCreatePage />} />
       <Route path="/account/edit/:id" element={<AccountEditPage />} />

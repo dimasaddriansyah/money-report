@@ -1,0 +1,24 @@
+import { buildSheetUrl } from "../../../shared/services/googleSheets.service";
+import { parseRupiah } from "../../../shared/utils/format.helper";
+import type { Budget } from "../types/budget";
+
+export async function fetchBudgets(): Promise<Budget[]> {
+  const url = buildSheetUrl("accounts", "A2:I");
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch accounts");
+  }
+
+  const result = await response.json();
+  const rows = result.values ?? [];
+
+  return rows.map((row: string[]) => ({
+    id: row[0],
+    date: row[1],
+    AccountId: row[2] || undefined,
+    remark: row[3] || "",
+    amount: parseRupiah(row[4]),
+  }));
+}

@@ -2,7 +2,7 @@ import { buildSheetUrl } from "../../../shared/services/googleSheets.service";
 import type { Category } from "../types/category";
 
 export async function fetchCategories(): Promise<Category[]> {
-  const url = buildSheetUrl("categories", "A2:I");
+  const url = buildSheetUrl("categories", "A2:D");
 
   const response = await fetch(url);
 

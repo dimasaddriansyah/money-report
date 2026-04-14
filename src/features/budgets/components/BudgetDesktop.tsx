@@ -1,53 +1,39 @@
-import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import EmptyState from "../../../shared/ui/EmptyState";
-import { usePagination } from "../../../shared/hooks/usePagination";
-import TablePageSize from "../../../shared/ui/tables/TablePageSize";
-import TablePagination from "../../../shared/ui/tables/TablePagination";
 import type { Budget } from "../types/budget";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useMemo, useState } from "react";
 import Modal from "../../../components/utils/Modal";
 import { useBudgetActions } from "../hooks/useBudgetActions";
+import { getAccountsImg } from "../../../helpers/UI";
+import { useAccounts } from "../../accounts/hooks/useAccounts";
 
 export default function BudgetDesktop({ budgets, refetch }: { budgets: Budget[]; refetch: () => void; }) {
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
-  const { deleteBudget, loading } = useBudgetActions(refetch);
+  const { accounts } = useAccounts()
 
   const isEmpty = budgets.length === 0;
-  const {
-    currentPage,
-    setCurrentPage,
-    pageSize,
-    setPageSize,
-    totalPages,
-    totalItems,
-    paginatedData,
-    startItem,
-    endItem,
-    pages,
-  } = usePagination<Budget>({ data: budgets });
 
-  async function handleDelete() {
-    if (!selectedBudget) return;
+  const accountMap = useMemo(
+    () => Object.fromEntries(accounts.map(row => [row.id, row.name])),
+    [accounts]
+  );
 
-    try {
-      const result = await deleteBudget(selectedBudget.id);
+  const budgetsByAccount = useMemo(() => {
+    const map: Record<string, Budget[]> = {};
 
-      toast.success("Deleted", {
-        description: result.message,
-      });
+    budgets.forEach((item) => {
+      if (!item.accountId) return;
 
-      setOpen(false);
-      setSelectedBudget(null);
-    } catch (error: any) {
-      toast.error("Failed to delete", {
-        description: error.message,
-      });
-    }
-  }
+      const key = item.accountId;
+
+      if (!map[key]) {
+        map[key] = [];
+      }
+
+      map[key].push(item);
+    });
+
+    return map;
+  }, [budgets]);
 
   return (
     <>
@@ -57,87 +43,28 @@ export default function BudgetDesktop({ budgets, refetch }: { budgets: Budget[];
           subtitle="Create your first budget to start tracking"
         />
       ) : (
-        <>
-          <div className="flex justify-between items-center">
-            <TablePageSize
-              pageSize={pageSize}
-              onChange={(value) => {
-                setPageSize(value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
-              <thead className="bg-slate-50">
-                <tr className="text-left text-slate-500 border-b border-slate-100">
-                  <th className="w-12">#</th>
-                  <th>Budget Name</th>
-                  <th className="w-12 text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedData.map((row, index) => (
-                  <tr
-                    key={`${row.id}-${index}`}
-                    className="border-b border-slate-50 hover:bg-slate-50 transition"
-                  >
-                    <td className="text-slate-500 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
-                    <td className="text-slate-500">
-                      <div className="flex items-center gap-4">
-                        <span className="text-slate-900">{row.remark || "-"}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="flex gap-2">
-                        <div
-                          onClick={() => navigate(`/budget/edit/${row.id}`)}
-                          className="bg-amber-50 hover:bg-amber-200 p-2 rounded-xl cursor-pointer">
-                          <NoteEditIcon className="w-5 h-5 text-amber-500" />
-                        </div>
-                        <div
-                          onClick={() => {
-                            setSelectedBudget(row);
-                            setOpen(true);
-                          }}
-                          className="bg-red-50 hover:bg-red-200 p-2 rounded-xl cursor-pointer">
-                          <Delete02Icon className="w-5 h-5 text-red-500" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <TablePagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            startItem={startItem}
-            endItem={endItem}
-            pages={pages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
-        </>
-      )}
-      {open && (
-        <Modal
-          title="Delete Budget"
-          textButton="Delete"
-          loading={loading}
-          onSubmit={handleDelete}
-          onClose={() => {
-            setOpen(false);
-            setSelectedBudget(null);
-          }}
-        >
-          <p className="text-sm text-slate-500">
-            {selectedBudget
-              ? `Delete "${selectedBudget.remark}"? This cannot be undone.`
-              : ""}
-          </p>
-        </Modal>
+        <div className="grid grid-cols-4 gap-4">
+          {Object.entries(budgetsByAccount).map(([accountId, items]) => {
+            const accountName = accountMap[accountId] ?? "No Account";
+
+            return (
+              <div
+                key={accountId}
+                className="p-4 bg-white border border-slate-100 rounded-lg space-y-3 hover:bg-slate-100 transition cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <img
+                    src={getAccountsImg(accountName)}
+                    className="w-9 h-9"
+                  />
+                  <div className="font-medium text-slate-900">
+                    {accountName}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
     </>
   )

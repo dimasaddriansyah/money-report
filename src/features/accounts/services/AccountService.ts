@@ -2,7 +2,7 @@ import { buildSheetUrl } from "../../../shared/services/googleSheets.service";
 import type { Account } from "../types/account";
 
 export async function fetchAccounts(): Promise<Account[]> {
-  const url = buildSheetUrl("accounts", "A2:I");
+  const url = buildSheetUrl("accounts", "A2:D");
 
   const response = await fetch(url);
 

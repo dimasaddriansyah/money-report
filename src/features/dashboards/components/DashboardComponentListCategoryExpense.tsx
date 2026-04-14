@@ -60,8 +60,8 @@ export function DashboardComponentListCategoryExpense({ data }: Props) {
           onClose={() => {
             setOpen(false);
           }}>
-          <div className="grid grid-cols-[30%_70%] gap-4">
-            <div className="flex items-center justify-center">
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-4 flex items-center justify-center">
               <DashboardComponenChartCategoryExpense
                 data={data.map(item => ({
                   name: item.name,
@@ -70,27 +70,28 @@ export function DashboardComponentListCategoryExpense({ data }: Props) {
                 }))}
               />
             </div>
-
-            <div className="max-h-[60vh] overflow-y-auto pr-2">
-              <div className="grid grid-cols-2 gap-2">
-                {data.map((item) => (
-                  <div
-                    key={item.categoryId}
-                    className="flex items-center justify-between border border-slate-200/60 rounded-xl px-4 py-3 hover:bg-slate-100 cursor-pointer">
-                    <div className="flex items-start gap-3">
-                      <span
-                        className="w-5 h-2 mt-2 rounded-sm"
-                        style={{ background: item.color }} />
-                      <div className="flex flex-col">
-                        <span className="font-medium text-sm">{item.name}</span>
-                        <span className="text-xs text-slate-400">{item.count} transaksi</span>
+            <div className="col-span-8">
+              <div className="max-h-[60vh] overflow-y-auto pr-2">
+                <div className="grid grid-cols-2 gap-2">
+                  {data.map((item) => (
+                    <div
+                      key={item.categoryId}
+                      className="flex items-center justify-between border border-slate-200/60 rounded-xl px-4 py-3 hover:bg-slate-100 cursor-pointer">
+                      <div className="flex items-start gap-3">
+                        <span
+                          className="w-5 h-2 mt-2 rounded-sm"
+                          style={{ background: item.color }} />
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">{item.name}</span>
+                          <span className="text-xs text-slate-400">{item.count} transaksi</span>
+                        </div>
                       </div>
+                      <span className="text-sm font-semibold">
+                        {formatBalance(formatCurrency(item.total), hideBalance)}
+                      </span>
                     </div>
-                    <span className="text-sm font-semibold">
-                      {formatBalance(formatCurrency(item.total), hideBalance)}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>

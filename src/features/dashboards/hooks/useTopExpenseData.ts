@@ -3,15 +3,24 @@ import type { Transaction } from "../../transactions/types/transaction";
 
 export function useTopExpenseData(transactions: Transaction[]) {
   return useMemo(() => {
-    const top10 = transactions
-      .filter(t => t.type === "expense")
-      .sort((a, b) => b.amount - a.amount)
-      .slice(0, 10)
-      .reverse();
+    const map = new Map<string, number>();
+
+    transactions
+      .filter(row => row.type === "expense")
+      .forEach(row => {
+        const key = row.remark ?? "-";
+        map.set(key, (map.get(key) || 0) + row.amount);
+      });
+
+    const sorted = Array.from(map.entries())
+      .map(([remark, amount]) => ({ remark, amount }))
+      .sort((a, b) => b.amount - a.amount);
+
+    const top10 = sorted.slice(0, 10).reverse();
 
     return {
-      remarks: top10.map(t => t.remark ?? "-"),
-      amounts: top10.map(t => t.amount),
+      remarks: top10.map(row => row.remark),
+      amounts: top10.map(row => row.amount),
     };
   }, [transactions]);
 }

@@ -20,14 +20,13 @@ export default function AccountPage() {
         <AccountLayout
           title="List of Account"
           breadcrumb={[{ label: "Dashboard", path: "/" }, { label: "Accounts" }]}
-          button={{ label: "Create Account", url: "/account/create" }}
-        >
+          button={{ label: "Create Account", url: "/account/create" }}>
           <AccountDesktop accounts={accounts} refetch={refetch}/>
         </AccountLayout>
       </div>
 
       <div className="md:hidden">
-        <AccountMobile accounts={accounts} />
+        <AccountMobile accounts={accounts} refetch={refetch}/>
       </div>
     </>
   );

@@ -17,9 +17,9 @@ export default function TransactionCreatePage() {
     id?: string;
     type: string;
     date: string;
+    categoryId?: string;
     fromAccountId?: string;
     toAccountId?: string;
-    categoryId?: string;
     amount: number;
     remark: string;
   }) {

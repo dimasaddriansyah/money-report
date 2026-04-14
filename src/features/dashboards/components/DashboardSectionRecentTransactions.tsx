@@ -91,7 +91,7 @@ export default function DashboardSectionRecentTransactions({
                   <tr
                     key={`${row.id}-${index}`}
                     className="border-b border-slate-50 hover:bg-slate-50 transition">
-                    <td className="text-slate-500 font-medium">{ index + 1}</td>
+                    <td className="text-slate-500 font-medium">{index + 1}</td>
                     <td>
                       <div className="flex flex-col">
                         <span className="text-black font-medium">{formatDateDay(row.date)}</span>
@@ -119,8 +119,8 @@ export default function DashboardSectionRecentTransactions({
                     <td className="flex items-center gap-3">
                       <img src={getCategoriesImg(categoryName)} alt={categoryName} className="w-8 h-8" />
                       <div className="flex flex-col">
-                        <span className="text-black font-medium">{categoryName}</span>
-                        <span className="text-slate-400">{row.remark || "-"}</span>
+                        <span className="text-black font-medium">{row.remark || "-"}</span>
+                        <span className="text-slate-400">{categoryName}</span>
                       </div>
                     </td>
                     <td className={`text-right ${amountConfig.className}`}>

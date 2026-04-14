@@ -99,9 +99,9 @@ export default function TransactionDesktop({
               <thead className="bg-slate-50">
                 <tr className="text-left text-slate-500 border-b border-slate-100">
                   <th className="w-12">#</th>
-                  <th className="w-50">Date</th>
-                  <th className="w-50">Type</th>
-                  <th className="w-90">Account</th>
+                  <th className="">Date</th>
+                  <th className="">Type</th>
+                  <th className="">Account</th>
                   <th className="">Category</th>
                   <th className="w-40 text-right">Nominal</th>
                   <th className="w-12 text-center">Action</th>
@@ -110,6 +110,7 @@ export default function TransactionDesktop({
               <tbody>
                 {paginatedData.map((row, index) => {
                   const typeConfig = getTypeDisplay(row.type);
+                  const Icon = typeConfig.icon;
                   const amountConfig = getAmountDisplay(row);
                   const categoryName = getCategoryName(row.categoryId, categoryMap);
 
@@ -125,28 +126,27 @@ export default function TransactionDesktop({
                         </div>
                       </td>
                       <td className="">
-                        <span className={`text-xs capitalize ${typeConfig.className}`}>
-                          {typeConfig.label}
-                        </span>
+                        <div className={`flex w-fit text-xs capitalize gap-1 ${typeConfig.className}`}>
+                          <span><Icon size={16} /></span>
+                          <span>{typeConfig.label}</span>
+                        </div>
                       </td>
                       <td className="">
-                        <div className="flex items-center gap-1">
-                          {getAccountDisplay(row, accountMap).map((name, index, arr) => (
-                            <span key={index} className="flex items-center gap-2">
+                        <div className="flex flex-col gap-1.5">
+                          {getAccountDisplay(row, accountMap).map((name, index) => (
+                            <div key={index} className="flex items-center gap-1.5">
+                              {index > 0 && ( <span className="text-slate-400">→</span> )}
                               <img src={getAccountsImg(name)} alt={name} className="w-8 h-8" />
                               <span className="font-medium">{name}</span>
-                              {index < arr.length - 1 && (
-                                <span className="text-slate-400 px-1.5">→</span>
-                              )}
-                            </span>
+                            </div>
                           ))}
                         </div>
                       </td>
-                      <td className="flex items-center gap-3">
+                      <td className="flex items-center gap-3.5">
                         <img src={getCategoriesImg(categoryName)} alt={categoryName} className="w-8 h-8" />
                         <div className="flex flex-col">
-                          <span className="text-black font-medium">{categoryName}</span>
-                          <span className="text-slate-400">{row.remark || "-"}</span>
+                          <span className="text-black font-medium">{row.remark || "-"}</span>
+                          <span className="text-slate-400">{categoryName}</span>
                         </div>
                       </td>
                       <td className={`text-right ${amountConfig.className}`}>
@@ -189,6 +189,7 @@ export default function TransactionDesktop({
       {open && (
         <Modal
           title="Delete Transaction"
+          textButton="Delete"
           loading={loading}
           onSubmit={handleDelete}
           onClose={() => {

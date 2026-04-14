@@ -27,7 +27,7 @@ export default function TransactionPage() {
           button={{ label: "Create Transaction", url: "/transaction/create" }}
         >
           <TransactionDesktop
-            transactions={transactions} 
+            transactions={transactions}
             accounts={accounts}
             categories={categories}
             refetch={refetch} />
@@ -35,7 +35,11 @@ export default function TransactionPage() {
       </div>
 
       <div className="md:hidden">
-        <TransactionMobile transactions={transactions} />
+        <TransactionMobile
+          transactions={transactions}
+          accounts={accounts}
+          categories={categories}
+          refetch={refetch} />
       </div>
     </>
   );

@@ -81,6 +81,20 @@ export default function DashboardComponentChartDailyExpense({ data }: Props) {
       ]),
     },
 
+    dataZoom: [
+      {
+        type: "inside",
+        xAxisIndex: 0,
+
+        zoomLock: true, // 🔥 disable zoom → cuma bisa geser
+        moveOnMouseMove: true, // drag mouse
+        moveOnMouseWheel: true, // scroll = geser (bukan zoom)
+
+        start: 10,
+        end: 100, // window yang ditampilkan (misal 30%)
+      },
+    ],
+
     series: [
       {
         type: "line",

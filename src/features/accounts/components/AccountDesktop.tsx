@@ -10,6 +10,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Modal from "../../../components/utils/Modal";
 import { useAccountActions } from "../hooks/useAccountActions";
+import { formatDateDayMonthYear, formatDateFull } from "../../../shared/utils/format.helper";
 
 export default function AccountDesktop({ accounts, refetch }: { accounts: Account[]; refetch: () => void; }) {
   const navigate = useNavigate();
@@ -74,6 +75,8 @@ export default function AccountDesktop({ accounts, refetch }: { accounts: Accoun
                 <tr className="text-left text-slate-500 border-b border-slate-100">
                   <th className="w-12">#</th>
                   <th>Account Name</th>
+                  <th>Created Date</th>
+                  <th>Updated Date</th>
                   <th className="w-12 text-center">Action</th>
                 </tr>
               </thead>
@@ -94,6 +97,8 @@ export default function AccountDesktop({ accounts, refetch }: { accounts: Accoun
                         <span className="text-slate-900">{row.name || "-"}</span>
                       </div>
                     </td>
+                    <td className="text-slate-500">{formatDateDayMonthYear(row.createdAt) || "-"}</td>
+                    <td className="text-slate-500">{formatDateDayMonthYear(row.updatedAt) || "-"}</td>
                     <td>
                       <div className="flex gap-2">
                         <div

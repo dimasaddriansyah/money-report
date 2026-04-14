@@ -90,6 +90,7 @@ export default function DashboardComponentChartTopExpense({ data }: Props) {
       type: "category",
       data: data.remarks,
       axisTick: { show: false },
+      axisLine: { show: false },
     },
 
     series: [

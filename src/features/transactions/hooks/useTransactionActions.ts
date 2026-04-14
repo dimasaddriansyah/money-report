@@ -8,11 +8,11 @@ export function useTransactionActions(refetch?: () => void) {
 
   async function saveTransaction(data: {
     id?: string;
-    type: string;
     date: string;
+    type: string;
+    categoryId?: string;
     fromAccountId?: string;
     toAccountId?: string;
-    categoryId?: string;
     amount: number;
     remark: string;
   }) {
@@ -22,12 +22,12 @@ export function useTransactionActions(refetch?: () => void) {
       module: "transactions",
       action: isEdit ? "edit" : "create",
       id: data.id,
-      type: smartCapitalize(data.type),
-      date: data.date,
       day: formatDateDay(data.date),
+      date: data.date,
+      type: smartCapitalize(data.type),
+      categoryId: data.type === "transfer" ? "" : data.categoryId,
       fromAccountId: data.fromAccountId,
       toAccountId: data.toAccountId,
-      categoryId: data.type === "transfer" ? "" : data.categoryId,
       remark: data.remark,
       amount: data.amount,
     };

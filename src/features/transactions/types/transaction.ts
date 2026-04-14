@@ -5,8 +5,8 @@ export interface Transaction {
   date: string;
   type: TransactionType;
   categoryId?: string;
-  remark?: string;
-  amount: number;
   fromAccountId?: string;
   toAccountId?: string;
+  remark?: string;
+  amount: number;
 }

@@ -9,7 +9,7 @@ import {
   MoneySavingJarIcon,
   Invoice01Icon,
 } from "hugeicons-react";
-import BottomSheet from "../../components/utils/BottomSheet";
+import BottomSheet from "../ui/BottomSheet";
 
 const menus = [
   { label: "Home", path: "/", Icon: FireIcon },
@@ -28,17 +28,13 @@ export default function BottomNavigationMobile() {
       {/* OVERLAY */}
       <div
         onClick={() => setOpenFab(false)}
-        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${
-          openFab ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      />
+        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${openFab ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`} />
 
       {/* BOTTOM NAV */}
       <nav
-        className={`fixed inset-x-0 bottom-0 z-30 shadow-blue-950 transition-opacity duration-200 ${
-          openFab ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
-      >
+        className={`fixed inset-x-0 bottom-0 z-30 shadow-blue-950 transition-opacity duration-200 ${openFab ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}>
         <div className="relative flex items-center justify-between px-6 py-3 bg-white pb-[calc(env(safe-area-inset-bottom)+12px)]">
           {/* LEFT */}
           <div className="flex justify-between flex-1 pr-13">
@@ -55,8 +51,7 @@ export default function BottomNavigationMobile() {
           <div className="absolute z-50 -translate-x-1/2 left-1/2 -top-7">
             <button
               onClick={() => setOpenFab(true)}
-              className="flex items-center justify-center text-white rounded-full shadow-lg cursor-pointer h-14 w-14 bg-slate-900 active:scale-95"
-            >
+              className="flex items-center justify-center text-white rounded-full shadow-lg cursor-pointer h-14 w-14 bg-slate-900 active:scale-95">
               <PlusSignIcon strokeWidth={2} className="w-6 h-6" />
             </button>
           </div>
@@ -67,8 +62,7 @@ export default function BottomNavigationMobile() {
               <NavItem
                 key={menu.path}
                 {...menu}
-                active={location.pathname === menu.path}
-              />
+                active={location.pathname === menu.path} />
             ))}
           </div>
         </div>
@@ -77,22 +71,18 @@ export default function BottomNavigationMobile() {
       <BottomSheet
         open={openFab}
         onClose={() => setOpenFab(false)}
-        title="Add Transaction"
-      >
+        title="Add Transaction">
         <div className="space-y-2">
           <button
             onClick={() => {
               setOpenFab(false);
               setTimeout(() => navigate("/transaction/create"), 150);
             }}
-            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-100 hover:bg-slate-100 cursor-pointer"
-          >
+            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-200 hover:bg-slate-100 cursor-pointer">
             <TaskEdit01Icon className="w-5 h-5 text-blue-900" />
-            <div>
-              <div className="text-sm font-medium">Manual Input</div>
-              <div className="text-xs text-slate-500">
-                Input transaksi secara manual
-              </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">Manual Input</span>
+              <span className="text-xs text-slate-500">Input transaksi secara manual</span>
             </div>
           </button>
 
@@ -101,14 +91,11 @@ export default function BottomNavigationMobile() {
               setOpenFab(false);
               setTimeout(() => navigate("/generate-form"), 150);
             }}
-            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-100 hover:bg-slate-50 cursor-pointer"
-          >
+            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-200 hover:bg-slate-50 cursor-pointer">
             <AiContentGenerator01Icon className="w-5 h-5 text-amber-500" />
-            <div>
-              <div className="text-sm font-medium">Generate Input</div>
-              <div className="text-xs text-slate-500">
-                Generate otomatis dari template
-              </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">Generate Input</span>
+              <span className="text-xs text-slate-500">Generate otomatis dari template</span>
             </div>
           </button>
         </div>
@@ -131,12 +118,9 @@ function NavItem({
   return (
     <Link
       to={path}
-      className={`flex flex-col items-center gap-1 text-xs transition ${
-        active ? "font-semibold text-black" : "text-gray-400"
-      }`}
-    >
+      className={`flex flex-col items-center gap-1 text-xs transition ${active ? "font-semibold text-black" : "text-gray-400"}`}>
       <Icon className="w-5 h-5" />
-      {label}
+      <span>{label}</span>
     </Link>
   );
 }

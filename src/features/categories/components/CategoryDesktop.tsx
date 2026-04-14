@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import Modal from "../../../components/utils/Modal";
 import { getCategoriesImg } from "../../../helpers/UI";
 import { useCategoryActions } from "../hooks/useCategoryActions";
+import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 
 export default function CategoryDesktop({ categories, refetch }: { categories: Category[]; refetch: () => void; }) {
   const navigate = useNavigate();
@@ -74,6 +75,8 @@ export default function CategoryDesktop({ categories, refetch }: { categories: C
                 <tr className="text-left text-slate-500 border-b border-slate-100">
                   <th className="w-12">#</th>
                   <th>Category Name</th>
+                  <th>Created Date</th>
+                  <th>Updated Date</th>
                   <th className="w-12 text-center">Action</th>
                 </tr>
               </thead>
@@ -94,6 +97,8 @@ export default function CategoryDesktop({ categories, refetch }: { categories: C
                         <span className="text-slate-900">{row.name || "-"}</span>
                       </div>
                     </td>
+                    <td className="text-slate-500">{formatDateDayMonthYear(row.createdAt) || "-"}</td>
+                    <td className="text-slate-500">{formatDateDayMonthYear(row.updatedAt) || "-"}</td>
                     <td>
                       <div className="flex gap-2">
                         <div

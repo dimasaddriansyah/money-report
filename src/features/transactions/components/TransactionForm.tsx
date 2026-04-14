@@ -96,12 +96,12 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
 
     onSubmit({
       id: defaultValues?.id,
-      type,
       date,
-      ...accountsState,
+      type,
       categoryId: type === "transfer" ? undefined : category,
-      amount,
+      ...accountsState,
       remark,
+      amount,
     });
   }
 
@@ -198,7 +198,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                         }}
                         className={`px-4 py-3 cursor-pointer ${accountsState[field.key] === acc.id
                           ? "bg-slate-50 text-black font-medium"
-                          : "text-slate-400 hover:bg-slate-50"
+                          : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
                           }`}
                       >
                         {acc.name}
@@ -231,7 +231,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                           setCategory(row.id);
                           setOpenCategory(false);
                         }}
-                        className={`px-4 py-3 cursor-pointer ${category === row.id ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50"}`}>
+                        className={`px-4 py-3 cursor-pointer ${category === row.id ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"}`}>
                         {row.name}
                       </div>
                     ))}

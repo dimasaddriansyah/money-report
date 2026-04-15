@@ -21,9 +21,10 @@ export default function ComponentAccountItem({
         </div>
       </div>
       <SwipeableItem isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
-        <div className="p-4 bg-white">
-          <div className="flex items-center gap-3">
-            <img src={getAccountsImg(row.name)} className="w-10 h-10" />
+        <div className="p-4 bg-white hover:bg-slate-50 transition cursor-pointer">
+          <div className="flex items-center gap-4">
+            <img src={getAccountsImg(row.name)} className="w-8 h-8" />
+            <span>{row.name}</span>
           </div>
         </div>
       </SwipeableItem>

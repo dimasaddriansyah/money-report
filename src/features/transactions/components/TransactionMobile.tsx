@@ -10,6 +10,9 @@ import EmptyState from "../../../shared/ui/EmptyState";
 import { useGroupTransactionsByDate } from "../hooks/useGroupTransactionsByDate";
 import TransactionGroupMobile from "./TransactionGroupMobile";
 import BottomSheet from "../../../shared/ui/BottomSheet";
+import { useTransactionPeriod } from "../hooks/useTransactionPeriod";
+import TransactionComponentFilterDate from "./TransactionComponentFilterDate";
+import TransactionComponentFilterAccount from "./TransactionComponentFilterAccount";
 
 export default function TransactionMobile({
   transactions,
@@ -23,8 +26,27 @@ export default function TransactionMobile({
   }) {
   const navigate = useNavigate();
   const { hideBalance } = useBalance();
+  const { start, end, prev, next, isCurrentPeriod } = useTransactionPeriod();
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
 
-  const grouped = useGroupTransactionsByDate(transactions);
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter(t => {
+      const txDate = new Date(t.date);
+
+      const matchDate = txDate >= start && txDate <= end;
+
+      const matchAccount = selectedAccountId
+        ? (
+          t.fromAccountId === selectedAccountId ||
+          t.toAccountId === selectedAccountId
+        )
+        : true;
+
+      return matchDate && matchAccount;
+    });
+  }, [transactions, start, end, selectedAccountId]);
+
+  const grouped = useGroupTransactionsByDate(filteredTransactions);
   const isEmpty = grouped.length === 0;
 
   const accountMap = useMemo(
@@ -60,14 +82,21 @@ export default function TransactionMobile({
 
   return (
     <>
-      {isEmpty ? (
-        <EmptyState
-          title="No transactions yet"
-          subtitle="Create your first transaction to start tracking"
-        />
-      ) : (
-        <div className="bg-white">
-          {grouped.map((group) => (
+      <div className="bg-white">
+        <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod }} />
+
+        <TransactionComponentFilterAccount
+          accounts={accounts}
+          selectedAccountId={selectedAccountId}
+          onSelect={setSelectedAccountId} />
+
+        {isEmpty ? (
+          <EmptyState
+            title="No transactions"
+            subtitle="No data in this period"
+          />
+        ) : (
+          grouped.map((group) => (
             <TransactionGroupMobile
               key={group.date}
               group={group}
@@ -80,9 +109,9 @@ export default function TransactionMobile({
               setSelectedTransaction={setSelectedTransaction}
               setOpen={setOpen}
             />
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
       <BottomSheet
         open={open}
         onClose={() => {

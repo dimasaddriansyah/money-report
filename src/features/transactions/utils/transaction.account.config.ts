@@ -1,13 +1,13 @@
 export const TRANSACTION_ACCOUNT_CONFIG = {
-  income: {
+  "TP001": {
     fields: ["toAccountId"],
     label: ["Account"],
   },
-  expense: {
+  "TP002": {
     fields: ["fromAccountId"],
     label: ["Account"],
   },
-  transfer: {
+  "TP003": {
     fields: ["fromAccountId", "toAccountId"],
     label: ["From Account", "To Account"],
   },

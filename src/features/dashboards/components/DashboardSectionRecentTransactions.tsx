@@ -9,7 +9,7 @@ import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../../shared/ui/Modal";
-import { formatBalance, formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { formatBalance, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import { useBalance } from "../../../shared/context/BalanceContext";
 import EmptyState from "../../../shared/ui/EmptyState";
 
@@ -83,7 +83,8 @@ export default function DashboardSectionRecentTransactions({
             </thead>
             <tbody>
               {transactions.slice(0, 10).map((row, index) => {
-                const typeConfig = getTypeDisplay(row.type);
+                const typeConfig = getTypeDisplay(row.typeId);
+                const Icon = typeConfig.icon;
                 const amountConfig = getAmountDisplay(row);
                 const categoryName = getCategoryName(row.categoryId, categoryMap);
 
@@ -94,14 +95,15 @@ export default function DashboardSectionRecentTransactions({
                     <td className="text-slate-500 font-medium">{index + 1}</td>
                     <td>
                       <div className="flex flex-col">
-                        <span className="text-black font-medium">{formatDateDay(row.date)}</span>
+                        <span className="text-black font-medium">{row.day}</span>
                         <span className="text-slate-400">{formatDateDayMonthYear(row.date) || "-"}</span>
                       </div>
                     </td>
                     <td className="">
-                      <span className={`text-xs capitalize ${typeConfig.className}`}>
-                        {typeConfig.label}
-                      </span>
+                      <div className={`flex w-fit text-xs capitalize gap-1 ${typeConfig.className}`}>
+                        <span><Icon size={16} /></span>
+                        <span>{typeConfig.label}</span>
+                      </div>
                     </td>
                     <td className="">
                       <div className="flex items-center gap-1">

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { formatDateDay } from "../../../shared/utils/format.helper";
-import { smartCapitalize } from "../../../shared/utils/word.helper";
 import { API_URL } from "../../../shared/config/api.config";
 
 export function useTransactionActions(refetch?: () => void) {
@@ -24,8 +23,8 @@ export function useTransactionActions(refetch?: () => void) {
       id: data.id,
       day: formatDateDay(data.date),
       date: data.date,
-      type: smartCapitalize(data.type),
-      categoryId: data.type === "transfer" ? "" : data.categoryId,
+      type: data.type,
+      categoryId: data.type === "TP003" ? "" : data.categoryId,
       fromAccountId: data.fromAccountId,
       toAccountId: data.toAccountId,
       remark: data.remark,

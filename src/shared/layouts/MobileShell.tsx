@@ -1,62 +1,91 @@
 import { useLocation, matchPath } from "react-router-dom";
-import BottomNavigationMobile from "../navigation/BottomNavigationMobile";
-import HeaderNavigationMobile from "../navigation/HeaderNavigationMobile";
 import { Settings01Icon } from "hugeicons-react";
+import NavigationBottomMobile from "../navigation/NavigationBottomMobile";
+import NavigationHeaderMobile from "../navigation/NavigationHeaderMobile";
 
 export default function MobileShell({ children }: any) {
   const location = useLocation();
 
+  const pathname = location.pathname;
+
   const hiddenRoutes = ["/generate-form"];
 
   const hideBottomNav =
-    matchPath("/transaction/*", location.pathname) ||
-    matchPath("/budget/*", location.pathname) ||
-    hiddenRoutes.includes(location.pathname);
+    matchPath("/transaction/*", pathname) ||
+    matchPath("/budget/*", pathname) ||
+    hiddenRoutes.includes(pathname);
 
-  // 🔥 mapping header per route
-  const getHeaderConfig = () => {
-    if (matchPath("/transactions", location.pathname)) {
-      return {
-        title: "Transactions",
-        showBack: true,
-        rightIcon: <Settings01Icon size={20} />,
-      };
-    }
-
-    if (matchPath("/accounts", location.pathname)) {
+  const headerConfig = (() => {
+    if (matchPath("/account/*", pathname)) {
       return {
         title: "Accounts",
         showBack: true,
       };
     }
 
-    if (matchPath("/budget", location.pathname)) {
+    if (matchPath("/accounts", pathname)) {
       return {
-        title: "Budget",
+        title: "Accounts",
+        rightIcon: <Settings01Icon size={20} />,
+        showBack: true,
       };
     }
 
-    if (matchPath("/transaction/*", location.pathname)) {
+    if (matchPath("/category/*", pathname)) {
       return {
-        title: "Detail",
+        title: "Categories",
         showBack: true,
+      };
+    }
+
+    if (matchPath("/categories", pathname)) {
+      return {
+        title: "Categories",
+        rightIcon: <Settings01Icon size={20} />,
+        showBack: true,
+      };
+    }
+
+    if (matchPath("/transaction/*", pathname)) {
+      return {
+        title: "Transactions",
+        showBack: true,
+      };
+    }
+
+    if (matchPath("/transactions", pathname)) {
+      return {
+        title: "Transactions",
+        rightIcon: <Settings01Icon size={20} />,
+      };
+    }
+
+    if (matchPath("/budget/*", pathname)) {
+      return {
+        title: "Budgets",
+        showBack: true,
+      };
+    }
+
+    if (matchPath("/budgets", pathname)) {
+      return {
+        title: "Budgets",
+        rightIcon: <Settings01Icon size={20} />,
       };
     }
 
     return {
       title: "App",
     };
-  };
-
-  const headerConfig = getHeaderConfig();
+  })();
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <HeaderNavigationMobile {...headerConfig} />
+    <div className="min-h-screen">
+      <NavigationHeaderMobile {...headerConfig} />
 
       <main className="pb-28">{children}</main>
 
-      {!hideBottomNav && <BottomNavigationMobile />}
+      {!hideBottomNav && <NavigationBottomMobile />}
     </div>
   );
 }

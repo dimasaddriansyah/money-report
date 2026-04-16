@@ -2,17 +2,23 @@ import { useEffect, useState } from "react";
 import type { Transaction } from "../types/transaction";
 import { fetchTransactions } from "../services/TransactionService";
 
-export function useTransactions() {
+export function useTransactions(initialPage: number = 1, limit: number = 10) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [page, setPage] = useState(initialPage);
+  const [meta, setMeta] = useState({
+    page: 1,
+    totalPages: 1,
+    total: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadTransactions() {
+  async function loadTransactions(currentPage: number) {
     try {
       setLoading(true);
-      const data = await fetchTransactions();
-      const sorted = data.sort((a, b) => b.id.localeCompare(a.id));
-      setTransactions(sorted);
+      const result = await fetchTransactions(currentPage, limit);
+      setTransactions(result.data);
+      setMeta(result.meta);
     } catch (err) {
       setError("Failed to load transactions");
     } finally {
@@ -21,13 +27,30 @@ export function useTransactions() {
   }
 
   useEffect(() => {
-    loadTransactions();
-  }, []);
+    loadTransactions(page);
+  }, [page]);
+
+  function nextPage() {
+    if (page < meta.totalPages) {
+      setPage(prev => prev + 1);
+    }
+  }
+
+  function prevPage() {
+    if (page > 1) {
+      setPage(prev => prev - 1);
+    }
+  }
 
   return {
     transactions,
     loading,
     error,
-    refetch: loadTransactions,
+    page,
+    meta,
+    nextPage,
+    prevPage,
+    setPage,
+    refetch: () => loadTransactions(page),
   };
 }

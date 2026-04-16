@@ -15,13 +15,13 @@ export default function TransactionCreatePage() {
 
   async function handleSubmit(data: {
     id?: string;
-    type: string;
     date: string;
+    type: string;
     categoryId?: string;
     fromAccountId?: string;
     toAccountId?: string;
-    amount: number;
     remark: string;
+    amount: number;
   }) {
     try {
       const result = await saveTransaction(data);

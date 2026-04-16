@@ -18,7 +18,7 @@ const menus = [
   { label: "Settings", path: "/settings", Icon: Settings02Icon },
 ];
 
-export default function BottomNavigationMobile() {
+export default function NavigationBottomMobile() {
   const location = useLocation();
   const navigate = useNavigate();
   const [openFab, setOpenFab] = useState(false);

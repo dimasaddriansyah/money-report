@@ -53,7 +53,7 @@ export default function AccountMobile({ accounts, refetch }:
               isOpen={activeSwipeId === row.id}
               onOpen={() => setActiveSwipeId(row.id)}
               onClose={() => setActiveSwipeId(null)}
-              onEdit={() => navigate(`/transaction/edit/${row.id}`)}
+              onEdit={() => navigate(`/account/edit/${row.id}`)}
               onDelete={() => { setSelectedAccount(row); setOpen(true) }} />
           ))}
         </div>

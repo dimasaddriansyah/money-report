@@ -1,8 +1,8 @@
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import SwipeableItem from "../../../shared/ui/SwipeableItem";
-import { getAccountsImg } from "../../../helpers/UI";
+import { getCategoriesImg } from "../../../helpers/UI";
 
-export default function ComponentAccountItem({
+export default function ComponentCategoryItem({
   row,
   isOpen,
   onOpen,
@@ -23,7 +23,7 @@ export default function ComponentAccountItem({
       <SwipeableItem isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
         <div className="p-4 bg-white hover:bg-slate-50 transition cursor-pointer">
           <div className="flex items-center gap-4">
-            <img src={getAccountsImg(row.name)} className="w-8 h-8" />
+            <img src={getCategoriesImg(row.name)} className="w-8 h-8" />
             <span>{row.name}</span>
           </div>
         </div>

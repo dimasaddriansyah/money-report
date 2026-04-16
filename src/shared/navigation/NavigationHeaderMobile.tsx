@@ -7,7 +7,7 @@ type Props = {
   rightIcon?: React.ReactNode;
 };
 
-export default function HeaderNavigationMobile({
+export default function NavigationHeaderMobile({
   title,
   showBack = false,
   rightIcon,
@@ -15,7 +15,7 @@ export default function HeaderNavigationMobile({
   const navigate = useNavigate();
 
   return (
-    <div className="px-6 h-20 flex items-center justify-between">
+    <div className="px-4 h-20 flex items-center justify-between border-b border-slate-50">
       <div>
         {showBack ? (
           <div

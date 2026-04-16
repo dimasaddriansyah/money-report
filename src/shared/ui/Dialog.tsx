@@ -1,5 +1,5 @@
-import BottomSheet from "../../components/utils/BottomSheet";
-import Modal from "../../components/utils/Modal";
+import BottomSheet from "./BottomSheet";
+import Modal from "./Modal";
 
 export default function Dialog(props: any) {
   return (

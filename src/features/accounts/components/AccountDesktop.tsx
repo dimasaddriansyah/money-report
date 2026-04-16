@@ -8,9 +8,9 @@ import type { Account } from "../types/account";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import Modal from "../../../components/utils/Modal";
 import { useAccountActions } from "../hooks/useAccountActions";
-import { formatDateDayMonthYear, formatDateFull } from "../../../shared/utils/format.helper";
+import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import Modal from "../../../shared/ui/Modal";
 
 export default function AccountDesktop({ accounts, refetch }: { accounts: Account[]; refetch: () => void; }) {
   const navigate = useNavigate();

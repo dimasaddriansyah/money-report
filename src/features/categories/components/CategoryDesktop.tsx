@@ -7,10 +7,10 @@ import type { Category } from "../types/category";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import Modal from "../../../components/utils/Modal";
 import { getCategoriesImg } from "../../../helpers/UI";
 import { useCategoryActions } from "../hooks/useCategoryActions";
 import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import Modal from "../../../shared/ui/Modal";
 
 export default function CategoryDesktop({ categories, refetch }: { categories: Category[]; refetch: () => void; }) {
   const navigate = useNavigate();

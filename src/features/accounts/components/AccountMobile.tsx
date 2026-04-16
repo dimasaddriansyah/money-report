@@ -5,6 +5,7 @@ import { useAccountActions } from "../hooks/useAccountActions";
 import { toast } from "sonner";
 import EmptyState from "../../../shared/ui/EmptyState";
 import BottomSheet from "../../../shared/ui/BottomSheet";
+import ComponentAccountItem from "./ComponentAccountItem";
 
 export default function AccountMobile({ accounts, refetch }:
   {
@@ -46,7 +47,7 @@ export default function AccountMobile({ accounts, refetch }:
       ) : (
         <div className="bg-white">
           {accounts.map((row: any) => (
-            <ComponentTransactionItem
+            <ComponentAccountItem
               key={row.id}
               row={row}
               isOpen={activeSwipeId === row.id}

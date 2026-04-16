@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_URL } from "../../../services/APIServices";
+import { API_URL } from "../../../shared/config/api.config";
 
 export function useBudgetActions(refetch?: () => void) {
   const [loading, setLoading] = useState(false);

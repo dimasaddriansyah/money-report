@@ -1,43 +1,45 @@
-import EmptyState from "../../../shared/ui/EmptyState";
-import type { Budget } from "../types/budget";
-import { useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
-import Modal from "../../../components/utils/Modal";
-import { useBudgetActions } from "../hooks/useBudgetActions";
-import { getAccountsImg } from "../../../helpers/UI";
-import { useAccounts } from "../../accounts/hooks/useAccounts";
+// import EmptyState from "../../../shared/ui/EmptyState";
+// import type { Budget } from "../types/budget";
+// import { useNavigate } from "react-router-dom";
+// import { useMemo, useState } from "react";
+// import Modal from "../../../components/utils/Modal";
+// import { useBudgetActions } from "../hooks/useBudgetActions";
+// import { getAccountsImg } from "../../../helpers/UI";
+// import { useAccounts } from "../../accounts/hooks/useAccounts";
 
-export default function BudgetDesktop({ budgets, refetch }: { budgets: Budget[]; refetch: () => void; }) {
-  const { accounts } = useAccounts()
+export default function BudgetDesktop(
+  // { budgets, refetch }: { budgets: Budget[]; refetch: () => void; }
+) {
+  // const { accounts } = useAccounts()
 
-  const isEmpty = budgets.length === 0;
+  // const isEmpty = budgets.length === 0;
 
-  const accountMap = useMemo(
-    () => Object.fromEntries(accounts.map(row => [row.id, row.name])),
-    [accounts]
-  );
+  // const accountMap = useMemo(
+  //   () => Object.fromEntries(accounts.map(row => [row.id, row.name])),
+  //   [accounts]
+  // );
 
-  const budgetsByAccount = useMemo(() => {
-    const map: Record<string, Budget[]> = {};
+  // const budgetsByAccount = useMemo(() => {
+  //   const map: Record<string, Budget[]> = {};
 
-    budgets.forEach((item) => {
-      if (!item.accountId) return;
+  //   budgets.forEach((item) => {
+  //     if (!item.accountId) return;
 
-      const key = item.accountId;
+  //     const key = item.accountId;
 
-      if (!map[key]) {
-        map[key] = [];
-      }
+  //     if (!map[key]) {
+  //       map[key] = [];
+  //     }
 
-      map[key].push(item);
-    });
+  //     map[key].push(item);
+  //   });
 
-    return map;
-  }, [budgets]);
+  //   return map;
+  // }, [budgets]);
 
   return (
     <>
-      {isEmpty ? (
+      {/* {isEmpty ? (
         <EmptyState
           title="No budgets yet"
           subtitle="Create your first budget to start tracking"
@@ -65,7 +67,7 @@ export default function BudgetDesktop({ budgets, refetch }: { budgets: Budget[];
             );
           })}
         </div>
-      )}
+      )} */}
     </>
   )
 }

@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import EmptyState from "../../../components/utils/EmptyState";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import type { Transaction } from "../../transactions/types/transaction";
@@ -12,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../../../shared/ui/Modal";
 import { formatBalance, formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import { useBalance } from "../../../shared/context/BalanceContext";
+import EmptyState from "../../../shared/ui/EmptyState";
 
 export default function DashboardSectionRecentTransactions({
   transactions,

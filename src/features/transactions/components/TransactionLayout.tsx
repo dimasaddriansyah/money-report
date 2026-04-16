@@ -3,7 +3,7 @@ import Breadcrumb from "../../../shared/ui/Breadcrumb";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
-  title: string;  
+  title: string;
   showBack?: boolean;
   button?: { label: string; url: string; };
   breadcrumb: { label: string; path?: string }[];
@@ -22,8 +22,7 @@ export default function TransactionLayout({ title, breadcrumb, button, showBack 
             {showBack && (
               <button
                 onClick={() => navigate(-1)}
-                className="p-1.5 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer"
-              >
+                className="p-1.5 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer">
                 <ArrowLeft01Icon size={20} />
               </button>
             )}

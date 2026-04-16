@@ -1,7 +1,5 @@
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import EmptyState from "../../../shared/ui/EmptyState";
-import { usePagination } from "../../../shared/hooks/usePagination";
-import TablePageSize from "../../../shared/ui/tables/TablePageSize";
 import TablePagination from "../../../shared/ui/tables/TablePagination";
 import type { Transaction } from "../types/transaction";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +11,9 @@ import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
 import Modal from "../../../shared/ui/Modal";
-import { formatBalance, formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { formatBalance, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import { useBalance } from "../../../shared/context/BalanceContext";
+import TablePageSize from "../../../shared/ui/tables/TablePageSize";
 
 type Props = {
   transactions: Transaction[];
@@ -28,6 +27,8 @@ type Props = {
     total: number;
   };
   setPage: (page: number) => void;
+  limit: number;
+  setLimit: (value: number) => void;
 };
 
 export default function TransactionDesktop({
@@ -37,17 +38,18 @@ export default function TransactionDesktop({
   refetch,
   page,
   meta,
+  limit,
+  setLimit,
   setPage }: Props) {
   const navigate = useNavigate();
   const { hideBalance } = useBalance();
   const isEmpty = !transactions || transactions.length === 0;
 
-  const limit = 10; // samakan dengan backend
   const currentPage = page;
   const totalPages = meta?.totalPages ?? 1;
   const totalItems = meta?.total ?? 0;
-  const startItem = totalItems === 0 ? 0 : (page - 1) * 10 + 1;
-  const endItem = Math.min(page * 10, totalItems);
+  const startItem = totalItems === 0 ? 0 : (page - 1) * limit + 1;
+  const endItem = Math.min(page * limit, totalItems);
 
   const pages = (() => {
     const delta = 2;
@@ -97,9 +99,15 @@ export default function TransactionDesktop({
 
       setOpen(false);
       setSelectedTransaction(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Something went wrong";
+
+      if (error instanceof Error) {
+        message = error.message;
+      }
+
       toast.error("Failed to delete", {
-        description: error.message,
+        description: message,
       });
     }
   }
@@ -109,18 +117,17 @@ export default function TransactionDesktop({
       {isEmpty ? (
         <EmptyState
           title="No transactions yet"
-          subtitle="Create your first transaction to start tracking"
-        />
+          subtitle="Create your first transaction to start tracking" />
       ) : (
         <>
           <div className="flex justify-between items-center">
-            {/* <TablePageSize
-              pageSize={pageSize}
+            <TablePageSize
+              pageSize={limit}
               onChange={(value) => {
-                setPageSize(value);
-                setCurrentPage(1);
+                setLimit(value);
+                setPage(1);
               }}
-            /> */}
+            />
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
@@ -137,7 +144,7 @@ export default function TransactionDesktop({
               </thead>
               <tbody>
                 {transactions.map((row, index) => {
-                  const typeConfig = getTypeDisplay(row.type);
+                  const typeConfig = getTypeDisplay(row.typeId);
                   const Icon = typeConfig.icon;
                   const amountConfig = getAmountDisplay(row);
                   const categoryName = getCategoryName(row.categoryId, categoryMap);
@@ -210,8 +217,7 @@ export default function TransactionDesktop({
             startItem={startItem}
             endItem={endItem}
             pages={pages}
-            onPageChange={setPage}
-          />
+            onPageChange={setPage} />
         </>
       )}
       {open && (
@@ -223,12 +229,9 @@ export default function TransactionDesktop({
           onClose={() => {
             setOpen(false);
             setSelectedTransaction(null);
-          }}
-        >
+          }}>
           <p className="text-sm text-slate-500">
-            {selectedTransaction
-              ? `Delete "${selectedTransaction.remark}"? This cannot be undone.`
-              : ""}
+            {selectedTransaction ? `Delete "${selectedTransaction.remark}"? This cannot be undone.` : ""}
           </p>
         </Modal>
       )}

@@ -16,7 +16,7 @@ export default function TransactionCreatePage() {
   async function handleSubmit(data: {
     id?: string;
     date: string;
-    type: string;
+    typeId: string;
     categoryId?: string;
     fromAccountId?: string;
     toAccountId?: string;
@@ -25,13 +25,15 @@ export default function TransactionCreatePage() {
   }) {
     try {
       const result = await saveTransaction(data);
-      navigate("/transactions")
+      navigate("/transactions");
       toast.success("Success", {
-        description: result.message
+        description: result.message,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Failed to save transaction";
+      if (error instanceof Error) { message = error.message }
       toast.error("Failed to save transaction", {
-        description: error.message,
+        description: message,
         duration: 2000,
       });
     }
@@ -47,14 +49,21 @@ export default function TransactionCreatePage() {
             { label: "Transactions", path: "/transactions" },
             { label: "Create Transaction" },
           ]}
-          showBack
-        >
-          <TransactionForm onSubmit={handleSubmit} accounts={accounts} categories={categories} loading={loading} />
+          showBack>
+          <TransactionForm
+            onSubmit={handleSubmit}
+            accounts={accounts}
+            categories={categories}
+            loading={loading} />
         </TransactionLayout>
       </div>
 
       <div className="md:hidden">
-        <TransactionForm onSubmit={handleSubmit} accounts={accounts} categories={categories} loading={loading} />
+        <TransactionForm
+          onSubmit={handleSubmit}
+          accounts={accounts}
+          categories={categories}
+          loading={loading} />
       </div>
     </>
   );

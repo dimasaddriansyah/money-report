@@ -1,8 +1,9 @@
-import { ArrowDown01Icon, CreditCardIcon, DateTimeIcon, DollarCircleIcon, Note05Icon, PencilEdit02Icon } from "hugeicons-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Transaction } from "../types/transaction";
+import { ArrowDown01Icon, CreditCardIcon, DateTimeIcon, DollarCircleIcon, Note05Icon, PencilEdit02Icon } from "hugeicons-react";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
+import { useTransactionForm } from "../hooks/useTransactionForm";
+import type { Transaction } from "../types/transaction";
 import { getAccountFields, TYPE_OPTIONS } from "../utils/ui.helpers";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
 
@@ -10,41 +11,43 @@ type Props = {
   defaultValues?: Transaction;
   accounts: Account[];
   categories: Category[];
-  onSubmit: (
-    data: {
-      id?: string;
-      date: string;
-      type: string;
-      categoryId?: string;
-      fromAccountId?: string;
-      toAccountId?: string;
-      remark: string
-      amount: number;
-    }) => void;
+  onSubmit: (data: {
+    id?: string;
+    date: string;
+    typeId: string;
+    categoryId?: string;
+    fromAccountId?: string;
+    toAccountId?: string;
+    remark: string;
+    amount: number;
+  }) => void;
   loading?: boolean;
 };
 
-export default function TransactionForm({ defaultValues, accounts, categories, onSubmit, loading }: Props) {
+export default function TransactionForm({
+  defaultValues,
+  accounts,
+  categories,
+  onSubmit,
+  loading,
+}: Props) {
+  const { form, setField, handleTypeChange, getPayload, reset } = useTransactionForm(defaultValues);
+  const { typeId, date, fromAccountId, toAccountId, categoryId, remark, amount, } = form;
+
+  const isEdit = !!defaultValues;
+  const isTransfer = typeId === "TP003";
+
   const typeRef = useRef<HTMLDivElement | null>(null);
   const accountRef = useRef<HTMLDivElement | null>(null);
   const categoryRef = useRef<HTMLDivElement | null>(null);
   const dateRef = useRef<HTMLInputElement | null>(null);
 
   const [openType, setOpenType] = useState(false);
-  const [type, setType] = useState("TP002");
-  const [date, setDate] = useState(() => { return new Date().toISOString().split("T")[0] });
   const [openAccount, setOpenAccount] = useState<string | null>(null);
-  const [accountsState, setAccountsState] = useState<Record<string, string>>({ fromAccountId: "", toAccountId: "", });
   const [openCategory, setOpenCategory] = useState(false);
-  const [category, setCategory] = useState<string>("");
-  const [amount, setAmount] = useState(0);
-  const [amountInput, setAmountInput] = useState("");
-  const [remark, setRemark] = useState("");
 
-  const accountFields = getAccountFields(type);
-
-  const isEdit = !!defaultValues;
-  const isTransfer = type === "TP003";
+  const accountFields = useMemo(() => getAccountFields(typeId), [typeId]);
+  const amountInput = amount ? formatNumber(amount) : "";
 
   const accountMap = useMemo(
     () => Object.fromEntries(accounts.map((row) => [row.id, row.name])),
@@ -55,28 +58,6 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
     () => Object.fromEntries(categories.map((row) => [row.id, row.name])),
     [categories]
   );
-
-  function handleAccountChange(key: string, value: string) {
-    setAccountsState((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  }
-
-  function setAmountState(value: number) {
-    setAmount(value);
-    setAmountInput(value ? formatNumber(value) : "");
-  }
-
-  useEffect(() => {
-    if (!defaultValues) return;
-    setType(defaultValues.type || "TP002");
-    setDate(defaultValues.date || new Date().toISOString().split("T")[0]);
-    setAccountsState({ fromAccountId: defaultValues.fromAccountId || "", toAccountId: defaultValues.toAccountId || "", });
-    setCategory(defaultValues.categoryId || "");
-    setRemark(defaultValues.remark || "");
-    setAmountState(defaultValues.amount || 0);
-  }, [defaultValues]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -98,48 +79,34 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, "");
     const numberValue = Number(raw || 0);
-    setAmountState(numberValue);
+    setField("amount", numberValue);
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
-    onSubmit({
-      id: defaultValues?.id,
-      date,
-      type,
-      categoryId: type === "TP003" ? undefined : category,
-      ...accountsState,
-      remark,
-      amount,
-    });
+    onSubmit(getPayload());
   }
 
   function handleReset() {
-    if (type === "TP003") {
-      setCategory("");
-    }
-    setType(defaultValues?.type || "TP002");
-    setDate(defaultValues?.date || new Date().toISOString().split("T")[0]);
-    setAccountsState({ fromAccountId: defaultValues?.fromAccountId || "", toAccountId: defaultValues?.toAccountId || "", });
-    setCategory(defaultValues?.categoryId || "");
-    setRemark(defaultValues?.remark || "");
-    setAmountState(defaultValues?.amount || 0);
+    reset();
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4">
         <div className="flex gap-4">
-          <div id="type" className="flex-1">
+          <div id="typeId" className="flex-1">
             <label className="block text-sm font-medium text-black mb-1">Type</label>
             <div className="relative" ref={typeRef}>
               <div
-                onClick={() => setOpenType((prev) => !prev)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenType((prev) => !prev);
+                }}
                 className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
                 <div className="flex items-center gap-4">
                   <CreditCardIcon className="text-slate-400" size={20} />
-                  <span className="capitalize">{TYPE_OPTIONS.find((opt) => opt.value === type)?.label}</span>
+                  <span className="capitalize">{TYPE_OPTIONS.find((opt) => opt.value === typeId)?.label}</span>
                 </div>
                 <ArrowDown01Icon className="text-slate-400" size={20} />
               </div>
@@ -148,11 +115,12 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                   {TYPE_OPTIONS.map((item) => (
                     <div
                       key={item.value}
-                      onClick={() => {
-                        setType(item.value);
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTypeChange(item.value);
                         setOpenType(false);
                       }}
-                      className={`px-4 py-3 cursor-pointer capitalize ${type === item.value ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50"}`} >
+                      className={`px-4 py-3 cursor-pointer capitalize ${typeId === item.value ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50"}`} >
                       {item.label}
                     </div>
                   ))}
@@ -171,7 +139,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                   ref={dateRef}
                   type="date"
                   value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                  onChange={(e) => setField("date", e.target.value)}
                   className="absolute opacity-0 pointer-events-none"
                 />
                 <span className="capitalize">{formatDateFull(date) || "Select date"}</span>
@@ -181,42 +149,53 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
           </div>
         </div>
         <div className="flex gap-4">
-          {accountFields.map((field) => (
-            <div key={field.key} className="flex-1">
-              <label className="block text-sm font-medium text-black mb-1">{field.label}</label>
-              <div className="relative" ref={accountRef}>
-                <div
-                  onClick={() => setOpenAccount(field.key)}
-                  className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
-                  <div className="flex items-center gap-4">
-                    <CreditCardIcon className="text-slate-400" size={20} />
-                    <span className={accountsState[field.key] ? "text-black" : "text-slate-400"}>
-                      {accountsState[field.key] ? accountMap[accountsState[field.key]] : `Select ${field.label}`}
-                    </span>
+          {accountFields.map((field) => {
+            const value = field.key === "fromAccountId" ? fromAccountId : toAccountId;
+            const setValue = (val: string) => { setField(field.key as "fromAccountId" | "toAccountId", val); };
+            const filteredAccounts = accounts.filter((acc) => {
+              if (field.key === "fromAccountId") return acc.id !== toAccountId;
+              if (field.key === "toAccountId") return acc.id !== fromAccountId;
+              return true;
+            });
+
+            return (
+              <div key={field.key} className="flex-1">
+                <label className="block text-sm font-medium text-black mb-1">{field.label}</label>
+                <div className="relative" ref={openAccount === field.key ? accountRef : null}>
+                  <div
+                    onClick={() => setOpenAccount(field.key)}
+                    className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
+                    <div className="flex items-center gap-4">
+                      <CreditCardIcon className="text-slate-400" size={20} />
+                      <span className={value ? "text-black" : "text-slate-400"}>
+                        {value ? accountMap[value] : `Select ${field.label}`}
+                      </span>
+                    </div>
+                    <ArrowDown01Icon className="text-slate-400" size={20} />
                   </div>
-                  <ArrowDown01Icon className="text-slate-400" size={20} />
+                  {openAccount === field.key && (
+                    <div className="absolute z-50 mt-2 w-full max-h-60 bg-white border rounded-xl overflow-y-auto shadow">
+                      {filteredAccounts.map((acc) => (
+                        <div
+                          key={acc.id}
+                          onClick={() => {
+                            setValue(acc.id);
+                            setOpenAccount(null);
+                          }}
+                          className={`px-4 py-3 cursor-pointer 
+                            ${value === acc.id
+                              ? "bg-slate-50 text-black font-medium"
+                              : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
+                            }`}>
+                          {acc.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {openAccount === field.key && (
-                  <div className="absolute z-50 mt-2 w-full max-h-60 bg-white border rounded-xl overflow-y-auto shadow">
-                    {accounts.map((acc) => (
-                      <div
-                        key={acc.id}
-                        onClick={() => {
-                          handleAccountChange(field.key, acc.id);
-                          setOpenAccount(null);
-                        }}
-                        className={`px-4 py-3 cursor-pointer ${accountsState[field.key] === acc.id
-                          ? "bg-slate-50 text-black font-medium"
-                          : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
-                          }`}>
-                        {acc.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
           {!isTransfer && (
             <div id="category" className="flex-1">
               <label className="block text-sm font-medium text-black mb-1">Category</label>
@@ -226,7 +205,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                   className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
                   <div className="flex items-center gap-4">
                     <Note05Icon className="text-slate-400" size={20} />
-                    <span className={`${category ? "text-black" : "text-slate-400"}`}>{category ? categoryMap[category] : "Select category"}</span>
+                    <span className={`${categoryId ? "text-black" : "text-slate-400"}`}>{categoryId ? categoryMap[categoryId] : "Select category"}</span>
                   </div>
                   <ArrowDown01Icon className="text-slate-400" size={20} />
                 </div>
@@ -236,10 +215,10 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                       <div
                         key={row.id}
                         onClick={() => {
-                          setCategory(row.id);
+                          setField("categoryId", row.id)
                           setOpenCategory(false);
                         }}
-                        className={`px-4 py-3 cursor-pointer ${category === row.id ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"}`}>
+                        className={`px-4 py-3 cursor-pointer ${categoryId === row.id ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"}`}>
                         {row.name}
                       </div>
                     ))}
@@ -273,7 +252,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
               </div>
               <input
                 value={remark}
-                onChange={(e) => setRemark(e.target.value)}
+                onChange={(e) => setField("remark", e.target.value)}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${remark ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
                 placeholder="Input transaction remark"
               />

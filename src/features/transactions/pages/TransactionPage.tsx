@@ -2,7 +2,7 @@ import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useCategories } from "../../categories/hooks/useCategories";
 import TransactionDesktop from "../components/TransactionDesktop";
 import TransactionLayout from "../components/TransactionLayout";
-import TransactionMobile from "../components/TransactionMobile";
+// import TransactionMobile from "../components/TransactionMobile";
 import { useTransactions } from "../hooks/useTransactions";
 
 export default function TransactionPage() {
@@ -12,12 +12,11 @@ export default function TransactionPage() {
     refetch,
     page,
     meta,
+    limit,
+    setLimit,
     setPage } = useTransactions();
   const { accounts } = useAccounts();
   const { categories } = useCategories();
-
-  console.log("transactions:", transactions);
-  console.log("meta:", meta);
 
   if (loading) {
     return (
@@ -33,8 +32,7 @@ export default function TransactionPage() {
         <TransactionLayout
           title="List of Transaction"
           breadcrumb={[{ label: "Dashboard", path: "/" }, { label: "Transactions" }]}
-          button={{ label: "Create Transaction", url: "/transaction/create" }}
-        >
+          button={{ label: "Create Transaction", url: "/transaction/create" }}>
           <TransactionDesktop
             transactions={transactions}
             accounts={accounts}
@@ -42,8 +40,9 @@ export default function TransactionPage() {
             refetch={refetch}
             page={page}
             meta={meta}
-            setPage={setPage}
-          />
+            limit={limit}
+            setLimit={setLimit}
+            setPage={setPage} />
         </TransactionLayout>
       </div>
 

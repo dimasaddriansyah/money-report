@@ -8,7 +8,7 @@ export function useTransactionActions(refetch?: () => void) {
   async function saveTransaction(data: {
     id?: string;
     date: string;
-    type: string;
+    typeId: string;
     categoryId?: string;
     fromAccountId?: string;
     toAccountId?: string;
@@ -23,8 +23,8 @@ export function useTransactionActions(refetch?: () => void) {
       id: data.id,
       day: formatDateDay(data.date),
       date: data.date,
-      type: data.type,
-      categoryId: data.type === "TP003" ? "" : data.categoryId,
+      typeId: data.typeId,
+      categoryId: data.typeId === "TP003" ? "CAT024" : data.categoryId,
       fromAccountId: data.fromAccountId,
       toAccountId: data.toAccountId,
       remark: data.remark,

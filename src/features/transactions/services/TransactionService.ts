@@ -1,8 +1,8 @@
 import type { Transaction } from "../types/transaction";
 
 export async function fetchTransactions(
-  page: number = 1,
-  limit: number = 10
+  page : number,
+  limit : number
 ): Promise<{
   data: Transaction[];
   meta: {

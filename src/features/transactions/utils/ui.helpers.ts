@@ -16,7 +16,7 @@ export function getAccountDisplay(
   row: Transaction,
   accountMap: Record<string, string>,
 ): string[] {
-  const config = TRANSACTION_ACCOUNT_CONFIG[row.type as keyof typeof TRANSACTION_ACCOUNT_CONFIG];
+  const config = TRANSACTION_ACCOUNT_CONFIG[row.typeId as keyof typeof TRANSACTION_ACCOUNT_CONFIG];
 
   if (!config) return ["-"];
 
@@ -48,8 +48,8 @@ export function getAccountStyle(name: string): string {
   return "bg-slate-100 border border-slate-300 text-slate-700";
 }
 
-export function getTypeDisplay(type: string) {
-  switch (type) {
+export function getTypeDisplay(typeId: string) {
+  switch (typeId) {
     case "TP001":
       return {
         label: "Income",
@@ -76,7 +76,7 @@ export function getTypeDisplay(type: string) {
 
     default:
       return {
-        label: type,
+        label: typeId,
         className:
           "px-2.5 py-1 bg-purple-100 border border-purple-200 text-purple-700 font-medium rounded-full",
         icon: ArrowDataTransferHorizontalIcon
@@ -87,7 +87,7 @@ export function getTypeDisplay(type: string) {
 export function getAmountDisplay(row: Transaction) {
   const formatted = formatCurrency(row.amount);
 
-  switch (row.type) {
+  switch (row.typeId) {
     case "TP001":
       return {
         label: `+ ${formatted}`,
@@ -114,10 +114,10 @@ export function getAmountDisplay(row: Transaction) {
   }
 }
 
-export function getAccountFields(type: string) {
+export function getAccountFields(typeId: string) {
   const config =
     TRANSACTION_ACCOUNT_CONFIG[
-      type as keyof typeof TRANSACTION_ACCOUNT_CONFIG
+      typeId as keyof typeof TRANSACTION_ACCOUNT_CONFIG
     ];
 
   if (!config) return [];

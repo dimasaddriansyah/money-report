@@ -19,13 +19,13 @@ export default function TransactionEditPage() {
 
   async function handleSubmit(data: {
     id?: string;
-    type: string;
     date: string;
+    typeId: string;
+    categoryId?: string;
     fromAccountId?: string;
     toAccountId?: string;
-    categoryId?: string;
-    amount: number;
     remark: string;
+    amount: number;
   }) {
     try {
       const result = await saveTransaction(data);
@@ -33,9 +33,11 @@ export default function TransactionEditPage() {
       toast.success("Success", {
         description: result.message
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Failed to save transaction";
+      if (error instanceof Error) { message = error.message }
       toast.error("Failed to save transaction", {
-        description: error.message,
+        description: message,
         duration: 2000,
       });
     }

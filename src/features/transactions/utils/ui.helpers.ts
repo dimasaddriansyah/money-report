@@ -1,6 +1,6 @@
 import { ArrowDataTransferHorizontalIcon, TradeDownIcon, TradeUpIcon } from "hugeicons-react";
 import { formatCurrency } from "../../../shared/utils/format.helper";
-import type { Transaction, TransactionType } from "../types/transaction";
+import type { Transaction } from "../types/transaction";
 import { TRANSACTION_ACCOUNT_CONFIG } from "./transaction.account.config";
 
 const ACCOUNT_STYLE_MAP: Record<string, string[]> = {
@@ -16,7 +16,7 @@ export function getAccountDisplay(
   row: Transaction,
   accountMap: Record<string, string>,
 ): string[] {
-  const config = TRANSACTION_ACCOUNT_CONFIG[row.type];
+  const config = TRANSACTION_ACCOUNT_CONFIG[row.type as keyof typeof TRANSACTION_ACCOUNT_CONFIG];
 
   if (!config) return ["-"];
 
@@ -48,9 +48,9 @@ export function getAccountStyle(name: string): string {
   return "bg-slate-100 border border-slate-300 text-slate-700";
 }
 
-export function getTypeDisplay(type: TransactionType) {
+export function getTypeDisplay(type: string) {
   switch (type) {
-    case "income":
+    case "TP001":
       return {
         label: "Income",
         className:
@@ -58,7 +58,7 @@ export function getTypeDisplay(type: TransactionType) {
         icon: TradeUpIcon
       };
 
-    case "expense":
+    case "TP002":
       return {
         label: "Expense",
         className:
@@ -66,7 +66,7 @@ export function getTypeDisplay(type: TransactionType) {
         icon: TradeDownIcon
       };
 
-    case "transfer":
+    case "TP003":
       return {
         label: "Transfer",
         className:
@@ -78,7 +78,7 @@ export function getTypeDisplay(type: TransactionType) {
       return {
         label: type,
         className:
-          "px-2.5 py-1 bg-gray-100 border border-gray-200 text-gray-700 font-medium rounded-full",
+          "px-2.5 py-1 bg-purple-100 border border-purple-200 text-purple-700 font-medium rounded-full",
         icon: ArrowDataTransferHorizontalIcon
       };
   }
@@ -88,19 +88,19 @@ export function getAmountDisplay(row: Transaction) {
   const formatted = formatCurrency(row.amount);
 
   switch (row.type) {
-    case "income":
+    case "TP001":
       return {
         label: `+ ${formatted}`,
         className: "text-green-500 font-semibold",
       };
 
-    case "expense":
+    case "TP002":
       return {
         label: `- ${formatted}`,
         className: "text-red-500 font-semibold",
       };
 
-    case "transfer":
+    case "TP003":
       return {
         label: formatted,
         className: "text-slate-500 font-semibold",
@@ -114,11 +114,22 @@ export function getAmountDisplay(row: Transaction) {
   }
 }
 
-export function getAccountFields(type: keyof typeof TRANSACTION_ACCOUNT_CONFIG) {
-  const config = TRANSACTION_ACCOUNT_CONFIG[type];
+export function getAccountFields(type: string) {
+  const config =
+    TRANSACTION_ACCOUNT_CONFIG[
+      type as keyof typeof TRANSACTION_ACCOUNT_CONFIG
+    ];
+
+  if (!config) return [];
 
   return config.fields.map((field, index) => ({
     key: field,
     label: config.label[index] || field,
   }));
 }
+
+export const TYPE_OPTIONS = [
+  { value: "TP001", label: "Income" },
+  { value: "TP002", label: "Expense" },
+  { value: "TP003", label: "Transfer" },
+];

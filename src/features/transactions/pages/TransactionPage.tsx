@@ -6,9 +6,18 @@ import TransactionMobile from "../components/TransactionMobile";
 import { useTransactions } from "../hooks/useTransactions";
 
 export default function TransactionPage() {
-  const { transactions, loading, refetch } = useTransactions();
+  const {
+    transactions,
+    loading,
+    refetch,
+    page,
+    meta,
+    setPage } = useTransactions();
   const { accounts } = useAccounts();
   const { categories } = useCategories();
+
+  console.log("transactions:", transactions);
+  console.log("meta:", meta);
 
   if (loading) {
     return (
@@ -30,16 +39,20 @@ export default function TransactionPage() {
             transactions={transactions}
             accounts={accounts}
             categories={categories}
-            refetch={refetch} />
+            refetch={refetch}
+            page={page}
+            meta={meta}
+            setPage={setPage}
+          />
         </TransactionLayout>
       </div>
 
       <div className="md:hidden">
-        <TransactionMobile
+        {/* <TransactionMobile
           transactions={transactions}
           accounts={accounts}
           categories={categories}
-          refetch={refetch} />
+          refetch={refetch} /> */}
       </div>
     </>
   );

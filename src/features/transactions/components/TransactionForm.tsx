@@ -1,16 +1,26 @@
 import { ArrowDown01Icon, CreditCardIcon, DateTimeIcon, DollarCircleIcon, Note05Icon, PencilEdit02Icon } from "hugeicons-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Transaction, TransactionType } from "../types/transaction";
+import type { Transaction } from "../types/transaction";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
-import { getAccountFields } from "../utils/ui.helpers";
+import { getAccountFields, TYPE_OPTIONS } from "../utils/ui.helpers";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
 
 type Props = {
   defaultValues?: Transaction;
   accounts: Account[];
   categories: Category[];
-  onSubmit: (data: { id?: string; type: string; date: string; fromAccountId?: string; toAccountId?: string; categoryId?: string; amount: number; remark: string }) => void;
+  onSubmit: (
+    data: {
+      id?: string;
+      date: string;
+      type: string;
+      categoryId?: string;
+      fromAccountId?: string;
+      toAccountId?: string;
+      remark: string
+      amount: number;
+    }) => void;
   loading?: boolean;
 };
 
@@ -21,7 +31,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
   const dateRef = useRef<HTMLInputElement | null>(null);
 
   const [openType, setOpenType] = useState(false);
-  const [type, setType] = useState<TransactionType>("expense");
+  const [type, setType] = useState("TP002");
   const [date, setDate] = useState(() => { return new Date().toISOString().split("T")[0] });
   const [openAccount, setOpenAccount] = useState<string | null>(null);
   const [accountsState, setAccountsState] = useState<Record<string, string>>({ fromAccountId: "", toAccountId: "", });
@@ -34,7 +44,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
   const accountFields = getAccountFields(type);
 
   const isEdit = !!defaultValues;
-  const isTransfer = type === "transfer";
+  const isTransfer = type === "TP003";
 
   const accountMap = useMemo(
     () => Object.fromEntries(accounts.map((row) => [row.id, row.name])),
@@ -60,7 +70,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
 
   useEffect(() => {
     if (!defaultValues) return;
-    setType(defaultValues.type || "expense");
+    setType(defaultValues.type || "TP002");
     setDate(defaultValues.date || new Date().toISOString().split("T")[0]);
     setAccountsState({ fromAccountId: defaultValues.fromAccountId || "", toAccountId: defaultValues.toAccountId || "", });
     setCategory(defaultValues.categoryId || "");
@@ -98,7 +108,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
       id: defaultValues?.id,
       date,
       type,
-      categoryId: type === "transfer" ? undefined : category,
+      categoryId: type === "TP003" ? undefined : category,
       ...accountsState,
       remark,
       amount,
@@ -106,10 +116,10 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
   }
 
   function handleReset() {
-    if (type === "transfer") {
+    if (type === "TP003") {
       setCategory("");
     }
-    setType(defaultValues?.type || "expense");
+    setType(defaultValues?.type || "TP002");
     setDate(defaultValues?.date || new Date().toISOString().split("T")[0]);
     setAccountsState({ fromAccountId: defaultValues?.fromAccountId || "", toAccountId: defaultValues?.toAccountId || "", });
     setCategory(defaultValues?.categoryId || "");
@@ -129,21 +139,21 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                 className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
                 <div className="flex items-center gap-4">
                   <CreditCardIcon className="text-slate-400" size={20} />
-                  <span className="capitalize">{type}</span>
+                  <span className="capitalize">{TYPE_OPTIONS.find((opt) => opt.value === type)?.label}</span>
                 </div>
                 <ArrowDown01Icon className="text-slate-400" size={20} />
               </div>
               {openType && (
                 <div className="absolute z-10 mt-2 w-full bg-white border border-slate-300 rounded-xl overflow-hidden shadow">
-                  {["income", "expense", "transfer"].map((item) => (
+                  {TYPE_OPTIONS.map((item) => (
                     <div
-                      key={item}
+                      key={item.value}
                       onClick={() => {
-                        setType(item as "income" | "expense" | "transfer");
+                        setType(item.value);
                         setOpenType(false);
                       }}
-                      className={`px-4 py-3 cursor-pointer capitalize ${type === item ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50"}`} >
-                      {item}
+                      className={`px-4 py-3 cursor-pointer capitalize ${type === item.value ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50"}`} >
+                      {item.label}
                     </div>
                   ))}
                 </div>
@@ -177,8 +187,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
               <div className="relative" ref={accountRef}>
                 <div
                   onClick={() => setOpenAccount(field.key)}
-                  className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer"
-                >
+                  className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
                   <div className="flex items-center gap-4">
                     <CreditCardIcon className="text-slate-400" size={20} />
                     <span className={accountsState[field.key] ? "text-black" : "text-slate-400"}>
@@ -199,8 +208,7 @@ export default function TransactionForm({ defaultValues, accounts, categories, o
                         className={`px-4 py-3 cursor-pointer ${accountsState[field.key] === acc.id
                           ? "bg-slate-50 text-black font-medium"
                           : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
-                          }`}
-                      >
+                          }`}>
                         {acc.name}
                       </div>
                     ))}

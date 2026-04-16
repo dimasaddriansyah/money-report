@@ -16,19 +16,60 @@ import Modal from "../../../shared/ui/Modal";
 import { formatBalance, formatDateDay, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import { useBalance } from "../../../shared/context/BalanceContext";
 
+type Props = {
+  transactions: Transaction[];
+  accounts: Account[];
+  categories: Category[];
+  refetch: () => void;
+  page: number;
+  meta: {
+    page: number;
+    totalPages: number;
+    total: number;
+  };
+  setPage: (page: number) => void;
+};
+
 export default function TransactionDesktop({
   transactions,
   accounts,
   categories,
-  refetch }: {
-    transactions: Transaction[];
-    accounts: Account[];
-    categories: Category[];
-    refetch: () => void;
-  }) {
+  refetch,
+  page,
+  meta,
+  setPage }: Props) {
   const navigate = useNavigate();
   const { hideBalance } = useBalance();
-  const isEmpty = transactions.length === 0;
+  const isEmpty = !transactions || transactions.length === 0;
+
+  const limit = 10; // samakan dengan backend
+  const currentPage = page;
+  const totalPages = meta?.totalPages ?? 1;
+  const totalItems = meta?.total ?? 0;
+  const startItem = totalItems === 0 ? 0 : (page - 1) * 10 + 1;
+  const endItem = Math.min(page * 10, totalItems);
+
+  const pages = (() => {
+    const delta = 2;
+    const range: (number | string)[] = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - delta && i <= currentPage + delta)
+      ) {
+        range.push(i);
+      } else if (
+        i === currentPage - delta - 1 ||
+        i === currentPage + delta + 1
+      ) {
+        range.push("...");
+      }
+    }
+
+    return range;
+  })();
 
   const accountMap = useMemo(
     () => Object.fromEntries(accounts.map(row => [row.id, row.name])),
@@ -43,19 +84,6 @@ export default function TransactionDesktop({
   const [open, setOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const { deleteTransaction, loading } = useTransactionActions(refetch);
-
-  const {
-    currentPage,
-    setCurrentPage,
-    pageSize,
-    setPageSize,
-    totalPages,
-    totalItems,
-    paginatedData,
-    startItem,
-    endItem,
-    pages,
-  } = usePagination<Transaction>({ data: transactions });
 
   async function handleDelete() {
     if (!selectedTransaction) return;
@@ -86,13 +114,13 @@ export default function TransactionDesktop({
       ) : (
         <>
           <div className="flex justify-between items-center">
-            <TablePageSize
+            {/* <TablePageSize
               pageSize={pageSize}
               onChange={(value) => {
                 setPageSize(value);
                 setCurrentPage(1);
               }}
-            />
+            /> */}
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
@@ -108,7 +136,7 @@ export default function TransactionDesktop({
                 </tr>
               </thead>
               <tbody>
-                {paginatedData.map((row, index) => {
+                {transactions.map((row, index) => {
                   const typeConfig = getTypeDisplay(row.type);
                   const Icon = typeConfig.icon;
                   const amountConfig = getAmountDisplay(row);
@@ -118,10 +146,10 @@ export default function TransactionDesktop({
                     <tr
                       key={`${row.id}-${index}`}
                       className="border-b border-slate-50 hover:bg-slate-50 transition">
-                      <td className="text-slate-500 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
+                      <td className="text-slate-500 font-medium">{(page - 1) * limit + index + 1}</td>
                       <td>
                         <div className="flex flex-col">
-                          <span className="text-black font-medium">{formatDateDay(row.date)}</span>
+                          <span className="text-black font-medium">{row.day}</span>
                           <span className="text-slate-400">{formatDateDayMonthYear(row.date) || "-"}</span>
                         </div>
                       </td>
@@ -135,7 +163,7 @@ export default function TransactionDesktop({
                         <div className="flex flex-col gap-1.5">
                           {getAccountDisplay(row, accountMap).map((name, index) => (
                             <div key={index} className="flex items-center gap-1.5">
-                              {index > 0 && ( <span className="text-slate-400">→</span> )}
+                              {index > 0 && (<span className="text-slate-400">→</span>)}
                               <img src={getAccountsImg(name)} alt={name} className="w-8 h-8" />
                               <span className="font-medium">{name}</span>
                             </div>
@@ -182,7 +210,7 @@ export default function TransactionDesktop({
             startItem={startItem}
             endItem={endItem}
             pages={pages}
-            onPageChange={(page) => setCurrentPage(page)}
+            onPageChange={setPage}
           />
         </>
       )}

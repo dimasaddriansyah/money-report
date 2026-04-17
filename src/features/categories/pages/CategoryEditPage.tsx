@@ -19,9 +19,11 @@ export default function CategoryEditPage() {
       toast.success("Success", {
         description: result.message,
       });
-    } catch (error: any) {
-      toast.error("Failed to update category", {
-        description: error.message,
+    } catch (error: unknown) {
+      let message = "Failed to save category";
+      if (error instanceof Error) { message = error.message }
+      toast.error("Failed to save category", {
+        description: message,
         duration: 2000,
       });
     }

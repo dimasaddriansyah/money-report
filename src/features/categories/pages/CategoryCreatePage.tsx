@@ -15,9 +15,11 @@ export default function CategoryCreatePage() {
       toast.success("Success", {
         description: result.message
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Failed to save category";
+      if (error instanceof Error) { message = error.message }
       toast.error("Failed to save category", {
-        description: error.message,
+        description: message,
         duration: 2000,
       });
     }

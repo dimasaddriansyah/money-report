@@ -16,7 +16,6 @@ type Props = {
   refetch: () => void;
 };
 
-
 export default function AccountDesktop({
   accounts,
   refetch,

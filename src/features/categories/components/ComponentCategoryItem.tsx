@@ -1,15 +1,25 @@
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import SwipeableItem from "../../../shared/ui/SwipeableItem";
+import type { Category } from "../types/category";
 import { getCategoriesImg } from "../../../helpers/UI";
 
-export default function ComponentCategoryItem({
+type Props = {
+  row: Category;
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+};
+
+export default function ComponentAccountItem({
   row,
   isOpen,
   onOpen,
   onClose,
   onEdit,
   onDelete,
-}: any) {
+}: Props) {
   return (
     <div className="relative overflow-hidden border-b border-slate-50 touch-pan-y">
       <div className="absolute inset-y-0 right-0 flex">

@@ -1,19 +1,22 @@
 import { useNavigate } from "react-router-dom";
+import type { Category } from "../types/category";
 import { useState } from "react";
 import { useCategoryActions } from "../hooks/useCategoryActions";
 import { toast } from "sonner";
 import EmptyState from "../../../shared/ui/EmptyState";
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import ComponentCategoryItem from "./ComponentCategoryItem";
-import type { Category } from "../types/category";
 
-export default function CategoryMobile({ categories, refetch }:
-  {
-    categories: Category[];
-    refetch: () => void;
-  }) {
+type Props = {
+  categories: Category[];
+  refetch: () => void;
+};
+
+
+export default function CategoryMobile({
+  categories, refetch
+}: Props) {
   const navigate = useNavigate();
-
   const isEmpty = categories.length === 0;
 
   const [open, setOpen] = useState(false);
@@ -30,9 +33,12 @@ export default function CategoryMobile({ categories, refetch }:
       });
       setOpen(false);
       setSelectedCategory(null);
-    } catch (error: any) {
-      toast.error("Failed to delete", {
-        description: error.message,
+    } catch (error: unknown) {
+      let message = "Failed to delete category";
+      if (error instanceof Error) { message = error.message }
+      toast.error("Failed to delete category", {
+        description: message,
+        duration: 2000,
       });
     }
   }
@@ -41,12 +47,11 @@ export default function CategoryMobile({ categories, refetch }:
     <>
       {isEmpty ? (
         <EmptyState
-          title="No transactions yet"
-          subtitle="Create your first transaction to start tracking"
-        />
+          title="No categories yet"
+          subtitle="Create your first category to start tracking"/>
       ) : (
         <div className="bg-white">
-          {categories.map((row: any) => (
+          {categories.map((row) => (
             <ComponentCategoryItem
               key={row.id}
               row={row}

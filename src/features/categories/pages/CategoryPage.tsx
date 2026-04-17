@@ -27,7 +27,7 @@ export default function CategoryPage() {
       </div>
 
       <div className="md:hidden">
-        <CategoryMobile categories={categories} />
+        <CategoryMobile categories={categories} refetch={refetch}/>
       </div>
     </>
   );

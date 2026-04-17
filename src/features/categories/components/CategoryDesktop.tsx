@@ -1,24 +1,32 @@
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import EmptyState from "../../../shared/ui/EmptyState";
-import { usePagination } from "../../../shared/hooks/usePagination";
 import TablePageSize from "../../../shared/ui/tables/TablePageSize";
 import TablePagination from "../../../shared/ui/tables/TablePagination";
 import type { Category } from "../types/category";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { toast } from "sonner";
 import { getCategoriesImg } from "../../../helpers/UI";
 import { useCategoryActions } from "../hooks/useCategoryActions";
 import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import Modal from "../../../shared/ui/Modal";
+import { usePagination } from "../../../shared/hooks/usePagination";
+import { useState } from "react";
 
-export default function CategoryDesktop({ categories, refetch }: { categories: Category[]; refetch: () => void; }) {
+type Props = {
+  categories: Category[];
+  refetch: () => void;
+};
+
+export default function CategoryDesktop({
+  categories,
+  refetch
+}: Props) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const { deleteCategory, loading } = useCategoryActions(refetch);
+  const isEmpty = !categories || categories.length === 0;
 
-  const isEmpty = categories.length === 0;
   const {
     currentPage,
     setCurrentPage,
@@ -30,23 +38,24 @@ export default function CategoryDesktop({ categories, refetch }: { categories: C
     startItem,
     endItem,
     pages,
-  } = usePagination<Category>({ data: categories });
+  } = usePagination({ data: categories });
 
   async function handleDelete() {
     if (!selectedCategory) return;
-
     try {
       const result = await deleteCategory(selectedCategory.id);
-
       toast.success("Deleted", {
         description: result.message,
       });
-
       setOpen(false);
       setSelectedCategory(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Something went wrong";
+      if (error instanceof Error) {
+        message = error.message;
+      }
       toast.error("Failed to delete", {
-        description: error.message,
+        description: message,
       });
     }
   }
@@ -63,11 +72,7 @@ export default function CategoryDesktop({ categories, refetch }: { categories: C
           <div className="flex justify-between items-center">
             <TablePageSize
               pageSize={pageSize}
-              onChange={(value) => {
-                setPageSize(value);
-                setCurrentPage(1);
-              }}
-            />
+              onChange={(value) => setPageSize(value)} />
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
@@ -128,8 +133,7 @@ export default function CategoryDesktop({ categories, refetch }: { categories: C
             startItem={startItem}
             endItem={endItem}
             pages={pages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+            onPageChange={setCurrentPage} />
         </>
       )}
       {open && (

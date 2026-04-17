@@ -1,22 +1,16 @@
-import { Note05Icon } from "hugeicons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Category } from "../types/category";
+import { Note05Icon } from "hugeicons-react";
 
 type Props = {
   defaultValues?: Category;
-  onSubmit: (data: { id?: string; name: string }) => void;
+  onSubmit: (data: { id?: string; name: string; createdAt?: string }) => void;
   loading?: boolean;
 };
 
 export default function CategoryForm({ defaultValues, onSubmit, loading }: Props) {
   const isEdit = !!defaultValues;
-  const [name, setName] = useState("");
-
-  useEffect(() => {
-    if (defaultValues) {
-      setName(defaultValues.name);
-    }
-  }, [defaultValues]);
+  const [name, setName] = useState(defaultValues?.name || "");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,6 +18,7 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
     onSubmit({
       id: defaultValues?.id,
       name,
+      createdAt: defaultValues?.createdAt,
     });
   }
 

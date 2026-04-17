@@ -1,7 +1,8 @@
+import { API_URL } from "../../../shared/config/api.config";
 import type { Account } from "../types/account";
 
 export async function fetchAccounts(): Promise<{ data: Account[] }> {
-  const response = await fetch(import.meta.env.VITE_API_URL, {
+  const response = await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
       module: "accounts",

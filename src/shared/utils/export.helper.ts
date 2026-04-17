@@ -1,7 +1,5 @@
-import { GOOGLE_SHEETS_CONFIG } from "../config/googleSheets.config";
-
 export function ExportSpreedsheet(format: "xlsx" | "csv" | "pdf" = "xlsx") {
-  const { spreadsheetId } = GOOGLE_SHEETS_CONFIG;
+  const spreadsheetId = "1hfMdgqNThzucxyiG3nmMSKrGcXCqpIxRAmbR45iBaDY";
 
   return `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=${format}`;
 }

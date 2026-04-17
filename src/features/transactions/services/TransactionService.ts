@@ -1,7 +1,8 @@
+import { API_URL } from "../../../shared/config/api.config";
 import type { Transaction } from "../types/transaction";
 
 export async function fetchTransactions(): Promise<{ data: Transaction[] }> {
-  const response = await fetch(import.meta.env.VITE_API_URL, {
+  const response = await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
       module: "transactions",

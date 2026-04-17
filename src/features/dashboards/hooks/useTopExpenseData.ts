@@ -6,7 +6,7 @@ export function useTopExpenseData(transactions: Transaction[]) {
     const map = new Map<string, number>();
 
     transactions
-      .filter(row => row.type === "expense")
+      .filter(row => row.typeId === "TP002")
       .forEach(row => {
         const key = row.remark ?? "-";
         map.set(key, (map.get(key) || 0) + row.amount);

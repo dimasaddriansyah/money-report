@@ -27,6 +27,12 @@ export default function DashboardSectionRecentTransactions({
   const { hideBalance } = useBalance();
   const isEmpty = transactions.length === 0;
 
+  const sortedTransactions = useMemo(() => {
+    return [...transactions].sort((a, b) =>
+      b.id.localeCompare(a.id)
+    );
+  }, [transactions]);
+
   const accountMap = useMemo(
     () => Object.fromEntries(accounts.map(row => [row.id, row.name])),
     [accounts]
@@ -53,9 +59,13 @@ export default function DashboardSectionRecentTransactions({
 
       setOpen(false);
       setSelectedTransaction(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Something went wrong";
+      if (error instanceof Error) {
+        message = error.message;
+      }
       toast.error("Failed to delete", {
-        description: error.message,
+        description: message,
       });
     }
   }
@@ -82,7 +92,7 @@ export default function DashboardSectionRecentTransactions({
               </tr>
             </thead>
             <tbody>
-              {transactions.slice(0, 10).map((row, index) => {
+              {sortedTransactions.slice(0, 10).map((row, index) => {
                 const typeConfig = getTypeDisplay(row.typeId);
                 const Icon = typeConfig.icon;
                 const amountConfig = getAmountDisplay(row);
@@ -160,8 +170,7 @@ export default function DashboardSectionRecentTransactions({
           onClose={() => {
             setOpen(false);
             setSelectedTransaction(null);
-          }}
-        >
+          }}>
           <p className="text-sm text-slate-500">
             {selectedTransaction
               ? `Delete "${selectedTransaction.remark}"? This cannot be undone.`

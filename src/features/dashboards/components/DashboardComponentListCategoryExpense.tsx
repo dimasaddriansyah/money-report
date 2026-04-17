@@ -25,7 +25,7 @@ export function DashboardComponentListCategoryExpense({ data }: Props) {
         {visible.map((item) => (
           <div
             key={item.categoryId}
-            className="flex justify-between items-center border border-slate-200/60 rounded-2xl px-4 py-3 hover:bg-slate-50 cursor-pointer">
+            className="flex justify-between items-center border border-slate-200 rounded-2xl px-4 py-3 hover:bg-slate-50 cursor-pointer">
             <div className="flex items-start gap-3">
               <span
                 className="w-5 h-2 mt-2 rounded-sm"

@@ -7,7 +7,7 @@ export function useDailyExpenseData(transactions: Transaction[]) {
     const map: Record<string, number> = {};
 
     transactions.forEach((t) => {
-      if (t.type !== "expense") return;
+      if (t.typeId !== "TP002") return;
 
       const date = new Date(t.date).toISOString().split("T")[0];
       map[date] = (map[date] || 0) + t.amount;

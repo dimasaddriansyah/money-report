@@ -16,7 +16,7 @@ export function useCategoryExpenseData(
     const grouped: Record<string, { total: number; count: number }> = {};
 
     transactions.forEach((trx) => {
-      if (trx.type !== "expense" || !trx.categoryId) return;
+      if (trx.typeId !== "TP002" || !trx.categoryId) return;
 
       if (!grouped[trx.categoryId]) {
         grouped[trx.categoryId] = { total: 0, count: 0 };

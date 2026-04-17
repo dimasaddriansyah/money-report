@@ -36,8 +36,8 @@ export default function TransactionDesktop({
   const [limit, setLimit] = useState(10);
 
   const sortedTransactions = useMemo(() => {
-    return [...transactions].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    return [...transactions].sort((a, b) =>
+      b.id.localeCompare(a.id)
     );
   }, [transactions]);
 
@@ -45,7 +45,7 @@ export default function TransactionDesktop({
   const totalPages = Math.ceil(totalItems / limit);
   const startItem = totalItems === 0 ? 0 : (page - 1) * limit + 1;
   const endItem = Math.min(page * limit, totalItems);
-  
+
   const pages = useMemo(() => {
     const delta = 2;
     const range: (number | string)[] = [];

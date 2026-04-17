@@ -10,15 +10,15 @@ export function useAccountBalances(
     const result: Record<string, number> = {};
 
     transactions.forEach((t) => {
-      if (t.type === "income" && t.toAccountId) {
+      if (t.typeId === "TP001" && t.toAccountId) {
         result[t.toAccountId] = (result[t.toAccountId] || 0) + t.amount;
       }
 
-      if (t.type === "expense" && t.fromAccountId) {
+      if (t.typeId === "TP002" && t.fromAccountId) {
         result[t.fromAccountId] = (result[t.fromAccountId] || 0) - t.amount;
       }
 
-      if (t.type === "transfer") {
+      if (t.typeId === "TP003") {
         if (t.fromAccountId) {
           result[t.fromAccountId] = (result[t.fromAccountId] || 0) - t.amount;
         }

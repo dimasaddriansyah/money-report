@@ -4,13 +4,7 @@ import AccountMobile from "../components/AccountMobile";
 import { useAccounts } from "../hooks/useAccounts";
 
 export default function AccountPage() {
-  const {
-    accounts,
-    loading,
-    refetch,
-    page,
-    meta,
-    setPage } = useAccounts();
+  const { accounts, loading, refetch } = useAccounts();
 
   if (loading) {
     return (
@@ -29,20 +23,14 @@ export default function AccountPage() {
           button={{ label: "Create Account", url: "/account/create" }}>
           <AccountDesktop
             accounts={accounts}
-            refetch={refetch}
-            page={page}
-            meta={meta}
-            setPage={setPage} />
+            refetch={refetch} />
         </AccountLayout>
       </div>
 
       <div className="md:hidden">
-        {/* <AccountMobile
+        <AccountMobile
           accounts={accounts}
-          refetch={refetch}
-          page={page}
-          meta={meta}
-          setPage={setPage} /> */}
+          refetch={refetch} />
       </div>
     </>
   );

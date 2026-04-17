@@ -1,22 +1,16 @@
 import { CreditCardIcon } from "hugeicons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Account } from "../types/account";
 
 type Props = {
   defaultValues?: Account;
-  onSubmit: (data: { id?: string; name: string }) => void;
+  onSubmit: (data: { id?: string; name: string; createdAt?: string }) => void;
   loading?: boolean;
 };
 
 export default function AccountForm({ defaultValues, onSubmit, loading }: Props) {
   const isEdit = !!defaultValues;
-  const [name, setName] = useState("");
-
-  useEffect(() => {
-    if (defaultValues) {
-      setName(defaultValues.name);
-    }
-  }, [defaultValues]);
+  const [name, setName] = useState(defaultValues?.name || "");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,6 +18,7 @@ export default function AccountForm({ defaultValues, onSubmit, loading }: Props)
     onSubmit({
       id: defaultValues?.id,
       name,
+      createdAt: defaultValues?.createdAt,
     });
   }
 

@@ -7,11 +7,15 @@ import EmptyState from "../../../shared/ui/EmptyState";
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import ComponentAccountItem from "./ComponentAccountItem";
 
-export default function AccountMobile({ accounts, refetch }:
-  {
-    accounts: Account[];
-    refetch: () => void;
-  }) {
+type Props = {
+  accounts: Account[];
+  refetch: () => void;
+};
+
+
+export default function AccountMobile({
+  accounts, refetch
+}: Props) {
   const navigate = useNavigate();
 
   const isEmpty = accounts.length === 0;
@@ -30,9 +34,12 @@ export default function AccountMobile({ accounts, refetch }:
       });
       setOpen(false);
       setSelectedAccount(null);
-    } catch (error: any) {
-      toast.error("Failed to delete", {
-        description: error.message,
+    } catch (error: unknown) {
+      let message = "Failed to delete account";
+      if (error instanceof Error) { message = error.message }
+      toast.error("Failed to delete account", {
+        description: message,
+        duration: 2000,
       });
     }
   }
@@ -41,12 +48,12 @@ export default function AccountMobile({ accounts, refetch }:
     <>
       {isEmpty ? (
         <EmptyState
-          title="No transactions yet"
-          subtitle="Create your first transaction to start tracking"
+          title="No accounts yet"
+          subtitle="Create your first account to start tracking"
         />
       ) : (
         <div className="bg-white">
-          {accounts.map((row: any) => (
+          {accounts.map((row) => (
             <ComponentAccountItem
               key={row.id}
               row={row}

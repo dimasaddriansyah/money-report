@@ -1,12 +1,11 @@
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import EmptyState from "../../../shared/ui/EmptyState";
 import { getAccountsImg } from "../../../helpers/UI";
-import { usePagination } from "../../../shared/hooks/usePagination";
 import TablePageSize from "../../../shared/ui/tables/TablePageSize";
 import TablePagination from "../../../shared/ui/tables/TablePagination";
 import type { Account } from "../types/account";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useAccountActions } from "../hooks/useAccountActions";
 import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
@@ -15,36 +14,28 @@ import Modal from "../../../shared/ui/Modal";
 type Props = {
   accounts: Account[];
   refetch: () => void;
-  page: number;
-  meta: {
-    page: number;
-    totalPages: number;
-    total: number;
-  };
-  setPage: (page: number) => void;
 };
 
 
 export default function AccountDesktop({
   accounts,
   refetch,
-  page,
-  meta,
-  setPage
 }: Props) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const { deleteAccount, loading } = useAccountActions(refetch);
-  const isEmpty = accounts.length === 0;
+  const isEmpty = !accounts || accounts.length === 0;
 
-  const limit = 10; // samakan dengan backend
-  const currentPage = page;
-  const totalPages = meta?.totalPages ?? 1;
-  const totalItems = meta?.total ?? 0;
-  const startItem = totalItems === 0 ? 0 : (page - 1) * 10 + 1;
-  const endItem = Math.min(page * 10, totalItems);
-  const pages = (() => {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  const totalItems = accounts.length;
+  const totalPages = Math.ceil(totalItems / limit);
+  const startItem = totalItems === 0 ? 0 : (page - 1) * limit + 1;
+  const endItem = Math.min(page * limit, totalItems);
+
+  const pages = useMemo(() => {
     const delta = 2;
     const range: (number | string)[] = [];
 
@@ -52,35 +43,42 @@ export default function AccountDesktop({
       if (
         i === 1 ||
         i === totalPages ||
-        (i >= currentPage - delta && i <= currentPage + delta)
+        (i >= page - delta && i <= page + delta)
       ) {
         range.push(i);
       } else if (
-        i === currentPage - delta - 1 ||
-        i === currentPage + delta + 1
+        i === page - delta - 1 ||
+        i === page + delta + 1
       ) {
         range.push("...");
       }
     }
 
     return range;
-  })();
+  }, [page, totalPages]);
+
+  const paginatedAccounts = useMemo(() => {
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    return accounts.slice(start, end);
+  }, [accounts, page, limit]);
 
   async function handleDelete() {
     if (!selectedAccount) return;
-
     try {
       const result = await deleteAccount(selectedAccount.id);
-
       toast.success("Deleted", {
         description: result.message,
       });
-
       setOpen(false);
       setSelectedAccount(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Something went wrong";
+      if (error instanceof Error) {
+        message = error.message;
+      }
       toast.error("Failed to delete", {
-        description: error.message,
+        description: message,
       });
     }
   }
@@ -95,13 +93,12 @@ export default function AccountDesktop({
       ) : (
         <>
           <div className="flex justify-between items-center">
-            {/* <TablePageSize
+            <TablePageSize
               pageSize={limit}
-              onChange={(limit) => {
-                setPageSize(limit);
-                setCurrentPage(1);
-              }}
-            /> */}
+              onChange={(value) => {
+                setLimit(value);
+                setPage(1);
+              }} />
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
@@ -115,7 +112,7 @@ export default function AccountDesktop({
                 </tr>
               </thead>
               <tbody>
-                {accounts.map((row, index) => (
+                {paginatedAccounts.map((row, index) => (
                   <tr
                     key={`${row.id}-${index}`}
                     className="border-b border-slate-50 hover:bg-slate-50 transition"
@@ -156,7 +153,7 @@ export default function AccountDesktop({
             </table>
           </div>
           <TablePagination
-            currentPage={currentPage}
+            currentPage={page}
             totalPages={totalPages}
             totalItems={totalItems}
             startItem={startItem}

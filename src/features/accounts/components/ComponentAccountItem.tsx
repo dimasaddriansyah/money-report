@@ -1,6 +1,16 @@
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import SwipeableItem from "../../../shared/ui/SwipeableItem";
 import { getAccountsImg } from "../../../helpers/UI";
+import type { Account } from "../types/account";
+
+type Props = {
+  row: Account;
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+};
 
 export default function ComponentAccountItem({
   row,
@@ -9,7 +19,7 @@ export default function ComponentAccountItem({
   onClose,
   onEdit,
   onDelete,
-}: any) {
+}: Props) {
   return (
     <div className="relative overflow-hidden border-b border-slate-50 touch-pan-y">
       <div className="absolute inset-y-0 right-0 flex">

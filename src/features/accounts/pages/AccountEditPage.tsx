@@ -12,16 +12,18 @@ export default function AccountEditPage() {
   const { saveAccount, loading } = useAccountActions();
   const account = accounts.find((acc) => acc.id === id);
 
-  async function handleSubmit(data: { id?: string; name: string }) {
+  async function handleSubmit(data: { id?: string; name: string; createdAt?: string }) {
     try {
       const result = await saveAccount(data);
       navigate("/accounts")
       toast.success("Success", {
         description: result.message,
       });
-    } catch (error: any) {
-      toast.error("Failed to update account", {
-        description: error.message,
+    } catch (error: unknown) {
+      let message = "Failed to save account";
+      if (error instanceof Error) { message = error.message }
+      toast.error("Failed to save account", {
+        description: message,
         duration: 2000,
       });
     }
@@ -57,14 +59,21 @@ export default function AccountEditPage() {
             { label: "Accounts", path: "/accounts" },
             { label: "Edit Account" },
           ]}
-          showBack
-        >
-          <AccountForm defaultValues={account} onSubmit={handleSubmit} loading={loading} />
+          showBack>
+          <AccountForm
+            key={account.id}
+            defaultValues={account}
+            onSubmit={handleSubmit}
+            loading={loading} />
         </AccountLayout>
       </div>
 
       <div className="md:hidden">
-        <AccountForm defaultValues={account} onSubmit={handleSubmit} loading={loading} />
+        <AccountForm
+          key={account.id}
+          defaultValues={account}
+          onSubmit={handleSubmit}
+          loading={loading} />
       </div>
     </>
   );

@@ -1,30 +1,21 @@
 import type { Account } from "../types/account";
 
-export async function fetchAccounts(
-  page: number = 1,
-  limit: number = 10
-): Promise<{
-  data: Account[];
-  meta: {
-    page: number;
-    totalPages: number;
-    total: number;
-  }
-}> {
+export async function fetchAccounts(): Promise<{ data: Account[] }> {
   const response = await fetch(import.meta.env.VITE_API_URL, {
     method: "POST",
     body: JSON.stringify({
       module: "accounts",
-      action: "list",
-      page,
-      limit,
+      action: "list"
     }),
   });
 
   const result = await response.json();
 
+  if (result.status !== "success") {
+    throw new Error(result.message || "Failed to fetch accounts");
+  }
+
   return {
     data: result.data,
-    meta: result.meta
   };
 }

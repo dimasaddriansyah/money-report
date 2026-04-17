@@ -14,16 +14,19 @@ import { useTransactionPeriod } from "../hooks/useTransactionPeriod";
 import TransactionComponentFilterDate from "./TransactionComponentFilterDate";
 import TransactionComponentFilterAccount from "./TransactionComponentFilterAccount";
 
+type Props = {
+  transactions: Transaction[];
+  accounts: Account[];
+  categories: Category[];
+  refetch: () => void;
+}
+
 export default function TransactionMobile({
   transactions,
   accounts,
   categories,
-  refetch }: {
-    transactions: Transaction[];
-    accounts: Account[];
-    categories: Category[];
-    refetch: () => void;
-  }) {
+  refetch
+}: Props) {
   const navigate = useNavigate();
   const { hideBalance } = useBalance();
   const { start, end, prev, next, isCurrentPeriod } = useTransactionPeriod();
@@ -32,9 +35,7 @@ export default function TransactionMobile({
   const filteredTransactions = useMemo(() => {
     return transactions.filter(t => {
       const txDate = new Date(t.date);
-
       const matchDate = txDate >= start && txDate <= end;
-
       const matchAccount = selectedAccountId
         ? (
           t.fromAccountId === selectedAccountId ||
@@ -46,7 +47,18 @@ export default function TransactionMobile({
     });
   }, [transactions, start, end, selectedAccountId]);
 
-  const grouped = useGroupTransactionsByDate(filteredTransactions);
+  const [visibleCount, setVisibleCount] = useState(5);
+  const sortedTransactions = useMemo(() => {
+    return [...filteredTransactions].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  }, [filteredTransactions]);
+
+  const visibleTransactions = useMemo(() => {
+    return sortedTransactions.slice(0, visibleCount);
+  }, [sortedTransactions, visibleCount]);
+
+  const grouped = useGroupTransactionsByDate(visibleTransactions);
   const isEmpty = grouped.length === 0;
 
   const accountMap = useMemo(
@@ -73,9 +85,13 @@ export default function TransactionMobile({
       });
       setOpen(false);
       setSelectedTransaction(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Something went wrong";
+      if (error instanceof Error) {
+        message = error.message;
+      }
       toast.error("Failed to delete", {
-        description: error.message,
+        description: message,
       });
     }
   }
@@ -110,6 +126,15 @@ export default function TransactionMobile({
               setOpen={setOpen}
             />
           ))
+        )}
+        {visibleCount < filteredTransactions.length && (
+          <div className="p-4">
+            <button
+              onClick={() => setVisibleCount(prev => prev + 5)}
+              className="w-full py-2 rounded-xl border border-slate-300 text-sm font-medium hover:bg-slate-50 cursor-pointer">
+              Load more transaction
+            </button>
+          </div>
         )}
       </div>
       <BottomSheet

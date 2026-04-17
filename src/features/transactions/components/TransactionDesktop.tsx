@@ -20,38 +20,33 @@ type Props = {
   accounts: Account[];
   categories: Category[];
   refetch: () => void;
-  page: number;
-  meta: {
-    page: number;
-    totalPages: number;
-    total: number;
-  };
-  setPage: (page: number) => void;
-  limit: number;
-  setLimit: (value: number) => void;
-};
+}
 
 export default function TransactionDesktop({
   transactions,
   accounts,
   categories,
-  refetch,
-  page,
-  meta,
-  limit,
-  setLimit,
-  setPage }: Props) {
+  refetch
+}: Props) {
   const navigate = useNavigate();
   const { hideBalance } = useBalance();
   const isEmpty = !transactions || transactions.length === 0;
 
-  const currentPage = page;
-  const totalPages = meta?.totalPages ?? 1;
-  const totalItems = meta?.total ?? 0;
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  const sortedTransactions = useMemo(() => {
+    return [...transactions].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  }, [transactions]);
+
+  const totalItems = sortedTransactions.length;
+  const totalPages = Math.ceil(totalItems / limit);
   const startItem = totalItems === 0 ? 0 : (page - 1) * limit + 1;
   const endItem = Math.min(page * limit, totalItems);
-
-  const pages = (() => {
+  
+  const pages = useMemo(() => {
     const delta = 2;
     const range: (number | string)[] = [];
 
@@ -59,19 +54,25 @@ export default function TransactionDesktop({
       if (
         i === 1 ||
         i === totalPages ||
-        (i >= currentPage - delta && i <= currentPage + delta)
+        (i >= page - delta && i <= page + delta)
       ) {
         range.push(i);
       } else if (
-        i === currentPage - delta - 1 ||
-        i === currentPage + delta + 1
+        i === page - delta - 1 ||
+        i === page + delta + 1
       ) {
         range.push("...");
       }
     }
 
     return range;
-  })();
+  }, [page, totalPages]);
+
+  const paginatedTransactions = useMemo(() => {
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    return sortedTransactions.slice(start, end);
+  }, [sortedTransactions, page, limit]);
 
   const accountMap = useMemo(
     () => Object.fromEntries(accounts.map(row => [row.id, row.name])),
@@ -89,23 +90,18 @@ export default function TransactionDesktop({
 
   async function handleDelete() {
     if (!selectedTransaction) return;
-
     try {
       const result = await deleteTransaction(selectedTransaction.id);
-
       toast.success("Deleted", {
         description: result.message,
       });
-
       setOpen(false);
       setSelectedTransaction(null);
     } catch (error: unknown) {
       let message = "Something went wrong";
-
       if (error instanceof Error) {
         message = error.message;
       }
-
       toast.error("Failed to delete", {
         description: message,
       });
@@ -143,7 +139,7 @@ export default function TransactionDesktop({
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((row, index) => {
+                {paginatedTransactions.map((row, index) => {
                   const typeConfig = getTypeDisplay(row.typeId);
                   const Icon = typeConfig.icon;
                   const amountConfig = getAmountDisplay(row);
@@ -211,7 +207,7 @@ export default function TransactionDesktop({
             </table>
           </div>
           <TablePagination
-            currentPage={currentPage}
+            currentPage={page}
             totalPages={totalPages}
             totalItems={totalItems}
             startItem={startItem}

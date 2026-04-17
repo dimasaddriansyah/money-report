@@ -26,15 +26,16 @@ export default function TransactionComponentFilterDate({ period }: Props) {
         <span className="text-xs text-slate-400">{year}</span>
         <span className="text-sm font-medium">{label}</span>
       </div>
-      {!isCurrentPeriod ? (
-        <button
-          onClick={next}
-          className="flex p-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full cursor-pointer">
-          <ArrowRight01Icon size={20} />
-        </button>
-      ) : (
-        <div className="w-10" />
-      )}
+      <button
+        onClick={next}
+        disabled={isCurrentPeriod}
+        className={`flex p-2 border rounded-full transition
+          ${isCurrentPeriod
+                  ? "bg-slate-50 text-slate-200 cursor-not-allowed"
+                  : "bg-white hover:bg-slate-50 border-slate-100 cursor-pointer"}
+        `}>
+        <ArrowRight01Icon size={20} />
+      </button>
     </section>
   );
 }

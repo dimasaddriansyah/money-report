@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { API_URL } from "../../../services/APIServices";
 import { formatDateDay } from "../../../shared/utils/format.helper";
+import { API_URL } from "../../../shared/config/api.config";
 
 export function useTransactionActions(refetch?: () => void) {
   const [loading, setLoading] = useState(false);

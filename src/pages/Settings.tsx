@@ -7,10 +7,10 @@ import {
   Xls01Icon,
 } from "hugeicons-react";
 import { getGreeting } from "../helpers/UI";
-import BottomSheet from "../components/utils/BottomSheet";
 import { useState } from "react";
-import { ExportSpreedsheet } from "../helpers/ExportSpreedsheet";
 import { useNavigate } from "react-router-dom";
+import BottomSheet from "../shared/ui/BottomSheet";
+import { ExportSpreedsheet } from "../shared/utils/export.helper";
 
 export default function Settings() {
   const navigate = useNavigate();

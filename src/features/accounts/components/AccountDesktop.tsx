@@ -8,29 +8,63 @@ import type { Account } from "../types/account";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import Modal from "../../../components/utils/Modal";
 import { useAccountActions } from "../hooks/useAccountActions";
-import { formatDateDayMonthYear, formatDateFull } from "../../../shared/utils/format.helper";
+import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import Modal from "../../../shared/ui/Modal";
 
-export default function AccountDesktop({ accounts, refetch }: { accounts: Account[]; refetch: () => void; }) {
+type Props = {
+  accounts: Account[];
+  refetch: () => void;
+  page: number;
+  meta: {
+    page: number;
+    totalPages: number;
+    total: number;
+  };
+  setPage: (page: number) => void;
+};
+
+
+export default function AccountDesktop({
+  accounts,
+  refetch,
+  page,
+  meta,
+  setPage
+}: Props) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const { deleteAccount, loading } = useAccountActions(refetch);
-
   const isEmpty = accounts.length === 0;
-  const {
-    currentPage,
-    setCurrentPage,
-    pageSize,
-    setPageSize,
-    totalPages,
-    totalItems,
-    paginatedData,
-    startItem,
-    endItem,
-    pages,
-  } = usePagination<Account>({ data: accounts });
+
+  const limit = 10; // samakan dengan backend
+  const currentPage = page;
+  const totalPages = meta?.totalPages ?? 1;
+  const totalItems = meta?.total ?? 0;
+  const startItem = totalItems === 0 ? 0 : (page - 1) * 10 + 1;
+  const endItem = Math.min(page * 10, totalItems);
+  const pages = (() => {
+    const delta = 2;
+    const range: (number | string)[] = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - delta && i <= currentPage + delta)
+      ) {
+        range.push(i);
+      } else if (
+        i === currentPage - delta - 1 ||
+        i === currentPage + delta + 1
+      ) {
+        range.push("...");
+      }
+    }
+
+    return range;
+  })();
 
   async function handleDelete() {
     if (!selectedAccount) return;
@@ -61,13 +95,13 @@ export default function AccountDesktop({ accounts, refetch }: { accounts: Accoun
       ) : (
         <>
           <div className="flex justify-between items-center">
-            <TablePageSize
-              pageSize={pageSize}
-              onChange={(value) => {
-                setPageSize(value);
+            {/* <TablePageSize
+              pageSize={limit}
+              onChange={(limit) => {
+                setPageSize(limit);
                 setCurrentPage(1);
               }}
-            />
+            /> */}
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
@@ -81,12 +115,12 @@ export default function AccountDesktop({ accounts, refetch }: { accounts: Accoun
                 </tr>
               </thead>
               <tbody>
-                {paginatedData.map((row, index) => (
+                {accounts.map((row, index) => (
                   <tr
                     key={`${row.id}-${index}`}
                     className="border-b border-slate-50 hover:bg-slate-50 transition"
                   >
-                    <td className="text-slate-500 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
+                    <td className="text-slate-500 font-medium">{(page - 1) * limit + index + 1}</td>
                     <td className="text-slate-500">
                       <div className="flex items-center gap-4">
                         <img
@@ -128,8 +162,7 @@ export default function AccountDesktop({ accounts, refetch }: { accounts: Accoun
             startItem={startItem}
             endItem={endItem}
             pages={pages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+            onPageChange={setPage} />
         </>
       )}
       {open && (

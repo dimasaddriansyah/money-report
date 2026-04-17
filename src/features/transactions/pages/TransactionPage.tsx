@@ -2,19 +2,11 @@ import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useCategories } from "../../categories/hooks/useCategories";
 import TransactionDesktop from "../components/TransactionDesktop";
 import TransactionLayout from "../components/TransactionLayout";
-// import TransactionMobile from "../components/TransactionMobile";
+import TransactionMobile from "../components/TransactionMobile";
 import { useTransactions } from "../hooks/useTransactions";
 
 export default function TransactionPage() {
-  const {
-    transactions,
-    loading,
-    refetch,
-    page,
-    meta,
-    limit,
-    setLimit,
-    setPage } = useTransactions();
+  const { transactions, loading, refetch, } = useTransactions();
   const { accounts } = useAccounts();
   const { categories } = useCategories();
 
@@ -37,21 +29,16 @@ export default function TransactionPage() {
             transactions={transactions}
             accounts={accounts}
             categories={categories}
-            refetch={refetch}
-            page={page}
-            meta={meta}
-            limit={limit}
-            setLimit={setLimit}
-            setPage={setPage} />
+            refetch={refetch} />
         </TransactionLayout>
       </div>
 
       <div className="md:hidden">
-        {/* <TransactionMobile
+        <TransactionMobile
           transactions={transactions}
           accounts={accounts}
           categories={categories}
-          refetch={refetch} /> */}
+          refetch={refetch}/>
       </div>
     </>
   );

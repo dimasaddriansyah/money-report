@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchBudgets } from "../services/BudgetService";
 import type { Budget } from "../types/budget";
+import { fetchBudgets } from "../services/BudgetService";
 
 export function useBudgets() {
   const [budgets, setBudgets] = useState<Budget[]>([]);

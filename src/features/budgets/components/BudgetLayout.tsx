@@ -1,6 +1,5 @@
-import { ArrowLeft01Icon, PlusSignIcon } from "hugeicons-react";
+import { PlusSignIcon } from "hugeicons-react";
 import Breadcrumb from "../../../shared/ui/Breadcrumb";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   title: string;
@@ -10,8 +9,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function BudgetLayout({ title, breadcrumb, button, showBack = false, children }: Props) {
-  const navigate = useNavigate();
+export default function BudgetLayout({ breadcrumb, children }: Props) {
 
   return (
     <section className="flex flex-col flex-1 px-6 py-8 gap-6 overflow-y-auto">
@@ -23,6 +21,9 @@ export default function BudgetLayout({ title, breadcrumb, button, showBack = fal
           <span>Create Budget</span>
         </button>
       </div>
+      <section>
+        {children}
+      </section>
     </section>
   );
 }

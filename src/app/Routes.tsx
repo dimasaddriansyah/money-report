@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import Settings from "../pages/Settings";
-import GenerateForm from "../pages/transactions/GenerateForm";
 import { lazy } from "react";
 import AccountCreatePage from "../features/accounts/pages/AccountCreatePage";
 import AccountEditPage from "../features/accounts/pages/AccountEditPage";
@@ -22,7 +21,6 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<DashboardPage />} />
       <Route path="/settings" element={<Settings />} />
-      <Route path="/generate-form" element={<GenerateForm />} />
       <Route path="/transactions" element={<TransactionPage />} />
       <Route path="/transaction/create" element={<TransactionCreatePage />} />
       <Route path="/transaction/edit/:id" element={<TransactionEditPage />} />

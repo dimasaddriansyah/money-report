@@ -6,6 +6,7 @@ import { useTransactionForm } from "../hooks/useTransactionForm";
 import type { Transaction } from "../types/transaction";
 import { getAccountFields, TYPE_OPTIONS } from "../utils/ui.helpers";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
+import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
 
 type Props = {
   defaultValues?: Transaction;
@@ -120,7 +121,7 @@ export default function TransactionForm({
                         handleTypeChange(item.value);
                         setOpenType(false);
                       }}
-                      className={`px-4 py-3 cursor-pointer capitalize ${typeId === item.value ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50"}`} >
+                      className={`px-4 py-3 cursor-pointer capitalize transition ${typeId === item.value ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50"}`} >
                       {item.label}
                     </div>
                   ))}
@@ -174,7 +175,7 @@ export default function TransactionForm({
                     <ArrowDown01Icon className="text-slate-400" size={20} />
                   </div>
                   {openAccount === field.key && (
-                    <div className="absolute z-50 mt-2 w-full max-h-60 bg-white border rounded-xl overflow-y-auto shadow">
+                    <div className="absolute z-50 mt-2 w-full max-h-60 bg-white border border-slate-300 rounded-xl overflow-y-auto shadow">
                       {filteredAccounts.map((acc) => (
                         <div
                           key={acc.id}
@@ -182,12 +183,13 @@ export default function TransactionForm({
                             setValue(acc.id);
                             setOpenAccount(null);
                           }}
-                          className={`px-4 py-3 cursor-pointer 
+                          className={`flex items-center px-4 py-3 gap-4 transition cursor-pointer 
                             ${value === acc.id
                               ? "bg-slate-50 text-black font-medium"
                               : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
                             }`}>
-                          {acc.name}
+                          <img src={getAccountsImg(acc.name)} alt={acc.name} className="w-8 h-8" />
+                          <span>{acc.name}</span>
                         </div>
                       ))}
                     </div>
@@ -218,8 +220,13 @@ export default function TransactionForm({
                           setField("categoryId", row.id)
                           setOpenCategory(false);
                         }}
-                        className={`px-4 py-3 cursor-pointer ${categoryId === row.id ? "bg-slate-50 text-black font-medium" : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"}`}>
-                        {row.name}
+                        className={`flex items-center px-4 py-3 gap-4 transition cursor-pointer 
+                            ${categoryId === row.id
+                              ? "bg-slate-50 text-black font-medium"
+                              : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
+                            }`}>
+                          <img src={getCategoriesImg(row.name)} alt={row.name} className="w-8 h-8" />
+                          <span>{row.name}</span>
                       </div>
                     ))}
                   </div>

@@ -4,7 +4,13 @@ import AccountMobile from "../components/AccountMobile";
 import { useAccounts } from "../hooks/useAccounts";
 
 export default function AccountPage() {
-  const { accounts, loading, refetch } = useAccounts();
+  const {
+    accounts,
+    loading,
+    refetch,
+    page,
+    meta,
+    setPage } = useAccounts();
 
   if (loading) {
     return (
@@ -21,12 +27,22 @@ export default function AccountPage() {
           title="List of Account"
           breadcrumb={[{ label: "Dashboard", path: "/" }, { label: "Accounts" }]}
           button={{ label: "Create Account", url: "/account/create" }}>
-          <AccountDesktop accounts={accounts} refetch={refetch}/>
+          <AccountDesktop
+            accounts={accounts}
+            refetch={refetch}
+            page={page}
+            meta={meta}
+            setPage={setPage} />
         </AccountLayout>
       </div>
 
       <div className="md:hidden">
-        <AccountMobile accounts={accounts} refetch={refetch}/>
+        {/* <AccountMobile
+          accounts={accounts}
+          refetch={refetch}
+          page={page}
+          meta={meta}
+          setPage={setPage} /> */}
       </div>
     </>
   );

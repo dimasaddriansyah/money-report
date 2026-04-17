@@ -24,7 +24,7 @@ export function useGroupTransactionsByDate(transactions: Transaction[]) {
         .getTime() - new Date(a.date)
         .getTime());
         const totalExpense = items
-          .filter((t) => t.typeId === "expense")
+          .filter((t) => t.typeId === "TP002")
           .reduce((sum, t) => sum + t.amount, 0);
 
         return {

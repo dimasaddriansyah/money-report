@@ -1,22 +1,30 @@
-import { buildSheetUrl } from "../../../shared/services/googleSheets.service";
 import type { Account } from "../types/account";
 
-export async function fetchAccounts(): Promise<Account[]> {
-  const url = buildSheetUrl("accounts", "A2:I");
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch accounts");
+export async function fetchAccounts(
+  page: number = 1,
+  limit: number = 10
+): Promise<{
+  data: Account[];
+  meta: {
+    page: number;
+    totalPages: number;
+    total: number;
   }
+}> {
+  const response = await fetch(import.meta.env.VITE_API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      module: "accounts",
+      action: "list",
+      page,
+      limit,
+    }),
+  });
 
   const result = await response.json();
-  const rows = result.values ?? [];
 
-  return rows.map((row: string[]) => ({
-    id: row[0],
-    name: row[1],
-    createdAt: row[2],
-    updatedAt: row[3]
-  }));
+  return {
+    data: result.data,
+    meta: result.meta
+  };
 }

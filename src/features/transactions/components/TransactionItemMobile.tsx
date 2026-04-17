@@ -1,13 +1,21 @@
 import { ArrowRight01Icon, Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
-import {
-  getAccountDisplay,
-  getAccountStyle,
-  getAmountDisplay,
-  getCategoryName,
-} from "../utils/ui.helpers";
+import { getAccountDisplay, getAccountStyle, getAmountDisplay, getCategoryName } from "../utils/ui.helpers";
 import { formatBalance } from "../../../shared/utils/format.helper";
 import SwipeableItem from "../../../shared/ui/SwipeableItem";
+import type { Transaction } from "../types/transaction";
+
+type Props = {
+  row: Transaction;
+  accountMap: Record<string, string>;
+  categoryMap: Record<string, string>;
+  hideBalance: boolean;
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+};
 
 export default function ComponentTransactionItem({
   row,
@@ -19,7 +27,7 @@ export default function ComponentTransactionItem({
   onClose,
   onEdit,
   onDelete,
-}: any) {
+}: Props) {
   const amountConfig = getAmountDisplay(row);
   const categoryName = getCategoryName(row.categoryId, categoryMap);
 
@@ -39,7 +47,7 @@ export default function ComponentTransactionItem({
             <img src={getCategoriesImg(categoryName)} className="w-10 h-10" />
             <div className="flex flex-col flex-1 gap-1">
               <div className="flex items-center">
-                {getAccountDisplay(row, accountMap).map((name: string, i: number, arr: any[]) => (
+                {getAccountDisplay(row, accountMap).map((name: string, i: number, arr: string[]) => (
                   <span key={i} className="flex items-center">
                     <span className={`flex items-center px-2 py-1 gap-1 rounded-full ${getAccountStyle(name)}`}>
                       <img src={getAccountsImg(name)} className="w-4 h-4" />

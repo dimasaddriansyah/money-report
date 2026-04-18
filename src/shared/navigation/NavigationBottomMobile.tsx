@@ -89,7 +89,7 @@ export default function NavigationBottomMobile() {
           <button
             onClick={() => {
               setOpenFab(false);
-              setTimeout(() => navigate("/generate-form"), 150);
+              setTimeout(() => navigate("/transaction/generate/form"), 150);
             }}
             className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-200 hover:bg-slate-50 cursor-pointer">
             <AiContentGenerator01Icon className="w-5 h-5 text-amber-500" />

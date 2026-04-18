@@ -47,7 +47,7 @@ export default function TransactionMobile({
     });
   }, [transactions, start, end, selectedAccountId]);
 
-  const [visibleCount, setVisibleCount] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(15);
   const sortedTransactions = useMemo(() => {
     return [...filteredTransactions].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -130,7 +130,7 @@ export default function TransactionMobile({
         {visibleCount < filteredTransactions.length && (
           <div className="p-4">
             <button
-              onClick={() => setVisibleCount(prev => prev + 5)}
+              onClick={() => setVisibleCount(prev => prev + 15)}
               className="w-full py-2 rounded-xl border border-slate-300 text-sm font-medium hover:bg-slate-50 cursor-pointer">
               Load more transaction
             </button>

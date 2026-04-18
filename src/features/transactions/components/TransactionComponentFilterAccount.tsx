@@ -1,4 +1,4 @@
-import { getAccountsImg } from "../../../helpers/UI";
+import { getAccountsImg } from "../../../shared/utils/style.helper";
 import type { Account } from "../../accounts/types/account";
 
 type Props = {
@@ -14,7 +14,7 @@ export default function TransactionComponentFilterAccount({ accounts, selectedAc
         onClick={() => onSelect(null)}
         className={`flex items-center pl-2 pr-4 py-2 border border-slate-200 rounded-full shrink-0 cursor-pointer gap-2
           ${selectedAccountId === null
-            ? "bg-slate-100 text-black font-medium"
+            ? "bg-slate-100 text-black font-semibold"
             : "hover:bg-slate-50 text-black"
           }`}>
         <img src={getAccountsImg("default")} className="w-5 h-5" />
@@ -30,7 +30,7 @@ export default function TransactionComponentFilterAccount({ accounts, selectedAc
             onClick={() => onSelect(row.id)}
             className={`flex items-center pl-2 pr-4 py-2 border border-slate-200 rounded-full shrink-0 cursor-pointer gap-2
               ${isActive
-                ? "bg-slate-100 text-black font-medium"
+                ? "bg-slate-100 text-black font-semibold"
                 : "hover:bg-slate-50 text-black"
               }`}
           >

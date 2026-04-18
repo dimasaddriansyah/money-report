@@ -5,13 +5,13 @@ import type { Transaction } from "../../transactions/types/transaction";
 import { useTransactionActions } from "../../transactions/hooks/useTransactionActions";
 import { toast } from "sonner";
 import { getAccountDisplay, getAmountDisplay, getCategoryName, getTypeDisplay } from "../../transactions/utils/ui.helpers";
-import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../../shared/ui/Modal";
 import { formatBalance, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import { useBalance } from "../../../shared/context/BalanceContext";
 import EmptyState from "../../../shared/ui/EmptyState";
+import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
 
 export default function DashboardSectionRecentTransactions({
   transactions,

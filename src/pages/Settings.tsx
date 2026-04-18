@@ -6,11 +6,11 @@ import {
   Male02Icon,
   Xls01Icon,
 } from "hugeicons-react";
-import { getGreeting } from "../helpers/UI";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomSheet from "../shared/ui/BottomSheet";
 import { ExportSpreedsheet } from "../shared/utils/export.helper";
+import { getGreeting } from "../shared/utils/style.helper";
 
 export default function Settings() {
   const navigate = useNavigate();

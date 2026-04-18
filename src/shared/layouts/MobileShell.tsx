@@ -46,6 +46,13 @@ export default function MobileShell({ children }: any) {
       };
     }
 
+    if (matchPath("/transaction/generate/form", pathname)) {
+      return {
+        title: "Generate Transactions",
+        showBack: true,
+      };
+    }
+
     if (matchPath("/transaction/*", pathname)) {
       return {
         title: "Transactions",

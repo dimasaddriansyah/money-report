@@ -5,12 +5,12 @@ import TablePagination from "../../../shared/ui/tables/TablePagination";
 import type { Category } from "../types/category";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { getCategoriesImg } from "../../../helpers/UI";
 import { useCategoryActions } from "../hooks/useCategoryActions";
 import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import Modal from "../../../shared/ui/Modal";
 import { usePagination } from "../../../shared/hooks/usePagination";
 import { useState } from "react";
+import { getCategoriesImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   categories: Category[];

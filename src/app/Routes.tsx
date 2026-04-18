@@ -13,6 +13,7 @@ import TransactionEditPage from "../features/transactions/pages/TransactionEditP
 import BudgetCreatePage from "../features/budgets/pages/BudgetCreatePage";
 import BudgetEditPage from "../features/budgets/pages/BudgetEditPage";
 import BudgetPage from "../features/budgets/pages/BudgetPage";
+import TransactionGenerateFormPage from "../features/transactions/pages/TransactionGenerateFormPage";
 
 const DashboardPage = lazy(() => import("../features/dashboards/pages/DashboardPage"));
 
@@ -22,6 +23,7 @@ export default function AppRoutes() {
       <Route path="/" element={<DashboardPage />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/transactions" element={<TransactionPage />} />
+      <Route path="/transaction/generate/form" element={<TransactionGenerateFormPage />} />
       <Route path="/transaction/create" element={<TransactionCreatePage />} />
       <Route path="/transaction/edit/:id" element={<TransactionEditPage />} />
       <Route path="/budgets" element={<BudgetPage />} />

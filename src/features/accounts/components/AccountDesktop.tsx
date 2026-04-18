@@ -1,6 +1,5 @@
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import EmptyState from "../../../shared/ui/EmptyState";
-import { getAccountsImg } from "../../../helpers/UI";
 import TablePageSize from "../../../shared/ui/tables/TablePageSize";
 import TablePagination from "../../../shared/ui/tables/TablePagination";
 import type { Account } from "../types/account";
@@ -11,6 +10,7 @@ import { useAccountActions } from "../hooks/useAccountActions";
 import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import Modal from "../../../shared/ui/Modal";
 import { usePagination } from "../../../shared/hooks/usePagination";
+import { getAccountsImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   accounts: Account[];

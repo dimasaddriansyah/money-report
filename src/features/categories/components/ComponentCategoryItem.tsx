@@ -1,7 +1,7 @@
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import SwipeableItem from "../../../shared/ui/SwipeableItem";
 import type { Category } from "../types/category";
-import { getCategoriesImg } from "../../../helpers/UI";
+import { getCategoriesImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   row: Category;

@@ -1,9 +1,9 @@
 import { ArrowRight01Icon, Delete02Icon, NoteEditIcon } from "hugeicons-react";
-import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
 import { getAccountDisplay, getAccountStyle, getAmountDisplay, getCategoryName } from "../utils/ui.helpers";
 import { formatBalance } from "../../../shared/utils/format.helper";
 import SwipeableItem from "../../../shared/ui/SwipeableItem";
 import type { Transaction } from "../types/transaction";
+import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   row: Transaction;

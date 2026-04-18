@@ -1,9 +1,9 @@
-import { getAccountsImg } from "../../../helpers/UI";
 import { useBalance } from "../../../shared/context/BalanceContext";
 import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
 import type { Account } from "../../accounts/types/account";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
+import { getAccountsImg } from "../../../shared/utils/style.helper";
 
 type AccountWithBalance = Account & {
   balance: number;

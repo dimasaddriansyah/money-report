@@ -40,12 +40,12 @@ export default function DashboardDesktop() {
       </DashboardSectionLayout>
 
       <div className="grid grid-cols-12 items-stretch gap-4">
-        <div className="col-span-7">
+        <div className="col-span-8">
           <DashboardSectionLayout title="Top Expense">
             <DashboardComponentChartTopExpense data={topExpenses} />
           </DashboardSectionLayout>
         </div>
-        <div className="col-span-5">
+        <div className="col-span-4">
           <DashboardSectionLayout title="Category Expense">
             <DashboardSectionLayoutCategoryExpense transactions={transactions} categories={categories}/>
           </DashboardSectionLayout>

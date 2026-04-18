@@ -9,11 +9,11 @@ import { useTransactionActions } from "../hooks/useTransactionActions";
 import { getAccountDisplay, getAmountDisplay, getCategoryName, getTypeDisplay } from "../utils/ui.helpers";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
-import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
 import Modal from "../../../shared/ui/Modal";
 import { formatBalance, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
 import { useBalance } from "../../../shared/context/BalanceContext";
 import TablePageSize from "../../../shared/ui/tables/TablePageSize";
+import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   transactions: Transaction[];

@@ -1,6 +1,5 @@
-import type { TransactionType } from "../types/Transactions";
-import { categoryAlias, accountAlias } from "./Alias";
-import { parseSmartNominal } from "./Number";
+import { accountAlias, categoryAlias } from "../../../shared/utils/alias.helper";
+import { parseSmartNominal } from "../../../shared/utils/format.helper";
 
 export function parseTransactionInput(input: string) {
   const words = input.toLowerCase().trim().split(/\s+/);
@@ -8,7 +7,7 @@ export function parseTransactionInput(input: string) {
   let nominal = 0;
   let account = "";
   let category = "";
-  let type: TransactionType = "expenses";
+  let typeId = "TP002";
   let date = new Date().toISOString().split("T")[0];
 
   const cleanWords: string[] = [];
@@ -16,12 +15,12 @@ export function parseTransactionInput(input: string) {
   for (const word of words) {
     // TYPE
     if (word === "income") {
-      type = "income";
+      typeId = "TP001";
       continue;
     }
 
     if (word === "transfer") {
-      type = "transfer";
+      typeId = "TP003";
       continue;
     }
 
@@ -61,7 +60,7 @@ export function parseTransactionInput(input: string) {
     remark: cleanWords.join(" "),
     nominal,
     date,
-    type,
+    typeId,
     account,
     category,
   };

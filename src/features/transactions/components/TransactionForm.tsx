@@ -6,7 +6,7 @@ import { useTransactionForm } from "../hooks/useTransactionForm";
 import type { Transaction } from "../types/transaction";
 import { getAccountFields, TYPE_OPTIONS } from "../utils/ui.helpers";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
-import { getAccountsImg, getCategoriesImg } from "../../../helpers/UI";
+import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   defaultValues?: Transaction;
@@ -94,8 +94,8 @@ export default function TransactionForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-4">
-        <div className="flex gap-4">
+      <div className="flex flex-col gap-3 md:gap-4 p-4 md:p-0">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           <div id="typeId" className="flex-1">
             <label className="block text-sm font-medium text-black mb-1">Type</label>
             <div className="relative" ref={typeRef}>
@@ -149,7 +149,7 @@ export default function TransactionForm({
             </div>
           </div>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           {accountFields.map((field) => {
             const value = field.key === "fromAccountId" ? fromAccountId : toAccountId;
             const setValue = (val: string) => { setField(field.key as "fromAccountId" | "toAccountId", val); };
@@ -235,7 +235,7 @@ export default function TransactionForm({
             </div>
           )}
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           <div id="amount" className="flex-1">
             <label className="block text-sm font-medium text-black mb-1">Amount</label>
             <div className="relative flex items-center justify-center">
@@ -267,15 +267,15 @@ export default function TransactionForm({
           </div>
         </div>
       </div>
-      <div className="flex justify-end mt-4 gap-2">
+      <div className="flex flex-col md:flex-row justify-end mt-4 gap-2 px-4 md:px-0">
         <button
           type="button"
           onClick={handleReset}
-          className="px-5 py-2.5 text-sm text-slate-400 rounded-lg cursor-pointer">Reset</button>
+          className="w-full md:w-fit order-2 md:order-1 px-5 py-3 text-sm text-slate-400 rounded-xl cursor-pointer">Reset</button>
         <button
           type="submit"
           disabled={loading}
-          className={`px-5 py-2.5 text-sm font-semibold text-white rounded-lg cursor-pointer
+          className={`w-full md:w-fit order-1 md:order-2 px-5 py-3 text-sm font-semibold text-white rounded-xl cursor-pointer
             ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-black hover:bg-slate-800"}
           `}>
           {loading ? "Saving..." : isEdit ? "Update Transaction" : "Create Transaction"}

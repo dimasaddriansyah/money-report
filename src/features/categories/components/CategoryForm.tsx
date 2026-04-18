@@ -27,7 +27,7 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="p-4 md:p-0">
       <div className="flex gap-4">
         <div id="category" className="flex-1">
           <label className="block text-sm font-medium text-gray-900 mb-1">Category Name</label>
@@ -44,15 +44,15 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
           </div>
         </div>
       </div>
-      <div className="flex justify-end mt-4 gap-2">
+      <div className="flex flex-col md:flex-row-reverse mt-4 gap-2">
         <button
           type="button"
           onClick={handleReset}
-          className="px-5 py-2.5 text-sm text-slate-400 rounded-lg cursor-pointer">Reset</button>
+          className="order-2 px-5 py-2.5 text-sm text-slate-400 rounded-lg cursor-pointer">Reset</button>
         <button
           type="submit"
           disabled={loading}
-          className={`px-5 py-2.5 text-sm font-semibold text-white rounded-lg cursor-pointer
+          className={`order-1 px-5 py-2.5 text-sm font-semibold text-white rounded-lg cursor-pointer
             ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-slate-900 hover:bg-slate-800"}
           `}>
           {loading ? "Saving..." : isEdit ? "Update Category" : "Create Category"}

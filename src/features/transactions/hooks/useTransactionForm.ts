@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Transaction } from "../types/transaction";
+import { normalizeDate } from "../../../shared/utils/format.helper";
 
 type FormState = {
   typeId: string;
@@ -14,7 +15,7 @@ type FormState = {
 export function useTransactionForm(defaultValues?: Transaction) {
   const [form, setForm] = useState<FormState>(() => ({
     typeId: defaultValues?.typeId || "TP002",
-    date: defaultValues?.date || new Date().toISOString().split("T")[0],
+    date: normalizeDate(defaultValues?.date),
     fromAccountId: defaultValues?.fromAccountId || "",
     toAccountId: defaultValues?.toAccountId || "",
     categoryId: defaultValues?.categoryId || "",
@@ -66,7 +67,7 @@ export function useTransactionForm(defaultValues?: Transaction) {
   function reset() {
     setForm({
       typeId: defaultValues?.typeId || "TP002",
-      date: defaultValues?.date || new Date().toISOString().split("T")[0],
+      date: normalizeDate(defaultValues?.date),
       fromAccountId: defaultValues?.fromAccountId || "",
       toAccountId: defaultValues?.toAccountId || "",
       categoryId: defaultValues?.categoryId || "",

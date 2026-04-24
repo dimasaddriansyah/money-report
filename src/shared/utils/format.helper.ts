@@ -19,7 +19,6 @@ export function formatDateDayMonthYear(date: string | Date) {
   });
 }
 
-
 export function formatDateDayMonth(value: string) {
   return new Date(value).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -46,9 +45,41 @@ export function formatDateDay(date: string) {
 }
 
 export function formatDateInput(date: string | Date = new Date()) {
+  // kalau string ISO (ada T)
+  if (typeof date === "string" && date.includes("T")) {
+    return date.slice(0, 10);
+  }
+
+  // kalau sudah YYYY-MM-DD
+  if (typeof date === "string") {
+    return date;
+  }
+
+  // kalau Date object (create baru)
   return new Date(date).toLocaleDateString("en-CA", {
     timeZone: "Asia/Jakarta",
   });
+}
+
+export function normalizeDate(date?: string) {
+  if (!date) {
+    return new Date().toLocaleDateString("en-CA", {
+      timeZone: "Asia/Jakarta",
+    });
+  }
+
+  // kalau ISO (ada T)
+  if (date.includes("T")) {
+    const d = new Date(date);
+
+    return new Date(
+      d.getFullYear(),
+      d.getMonth(),
+      d.getDate()
+    ).toLocaleDateString("en-CA");
+  }
+
+  return date;
 }
 
 export function parseRupiah(value: string): number {

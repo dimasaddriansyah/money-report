@@ -6,7 +6,7 @@ import TransactionMobile from "../components/TransactionMobile";
 import { useTransactions } from "../hooks/useTransactions";
 
 export default function TransactionPage() {
-  const { transactions, loading, refetch, } = useTransactions();
+  const { transactions, loading, refetch } = useTransactions();
   const { accounts } = useAccounts();
   const { categories } = useCategories();
 

@@ -27,7 +27,7 @@ export default function HeaderDesktop({
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="cursor-pointer">
-        <Menu01Icon size={20} className="text-slate-900" />
+        <Menu01Icon className="text-slate-900" size={20} />
       </button>
 
       <div className="flex items-center gap-6">
@@ -36,15 +36,15 @@ export default function HeaderDesktop({
             hideBalance ? (
               <ViewIcon
                 onClick={() => setHideBalance(false)}
-                className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer" />
+                className="text-slate-900 hover:text-slate-500 cursor-pointer" size={20} />
             ) : (
               <ViewOffSlashIcon
                 onClick={() => setHideBalance(true)}
-                className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer" />
+                className="text-slate-900 hover:text-slate-500 cursor-pointer" size={20} />
             )
           )}
-          <Search01Icon className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer" />
-          <Notification01Icon className="w-5 h-5 text-slate-900 hover:text-slate-500 cursor-pointer" />
+          <Search01Icon className="text-slate-900 hover:text-slate-500 cursor-pointer" size={20} />
+          <Notification01Icon className="text-slate-900 hover:text-slate-500 cursor-pointer" size={20} />
         </div>
 
         <div className="w-px h-8 bg-neutral-100"></div>
@@ -61,7 +61,7 @@ export default function HeaderDesktop({
             </span>
             <span className="text-xs text-slate-400">Owner</span>
           </div>
-          <ArrowDown01Icon className="h-5 w-5 text-neutral-400" />
+          <ArrowDown01Icon className="text-neutral-400" size={20} />
         </div>
       </div>
     </div>

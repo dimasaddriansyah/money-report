@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { API_URL } from "../../../shared/config/api.config";
+import { formatDateInput } from "../../../shared/utils/format.helper";
 
 export function useCategoryActions(refetch?: () => void) {
   const [loading, setLoading] = useState(false);
@@ -10,15 +11,14 @@ export function useCategoryActions(refetch?: () => void) {
     createdAt?: string;
   }) {
     const isEdit = !!data.id;
-    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
 
     const payload = {
       module: "categories",
       action: isEdit ? "edit" : "create",
       id: data.id,
       name: data.name,
-      createdAt: isEdit ? data.createdAt : today,
-      updatedAt: isEdit ? today : undefined,
+      createdAt: isEdit ? formatDateInput(data.createdAt) : formatDateInput(),
+      updatedAt: isEdit ? formatDateInput() : undefined,
     };
 
     try {

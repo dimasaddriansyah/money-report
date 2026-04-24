@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Budget } from "../types/budget";
 import { fetchBudgets } from "../services/BudgetService";
 
@@ -7,21 +7,25 @@ export function useBudgets() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadBudgets() {
+  const loadBudgets = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await fetchBudgets();
-      setBudgets(data);
+      const result = await fetchBudgets();
+      setBudgets(result.data);
     } catch (err) {
-      setError("Failed to load budgets");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to load budgets");
+      }
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     loadBudgets();
-  }, []);
+  }, [loadBudgets]);
 
   return {
     budgets,

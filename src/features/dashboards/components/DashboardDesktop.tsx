@@ -7,33 +7,35 @@ import DashboardSectionLayoutCategoryExpense from "./DashboardSectionLayoutCateg
 import DashboardComponentChartDailyExpense from "./DashboardComponentChartDailyExpense";
 import DashboardComponentChartTopExpense from "./DashboardComponentChartTopExpense";
 import { useDashboardData } from "../hooks/useDashboardData";
+import type { Transaction } from "../../transactions/types/transaction";
+import type { Account } from "../../accounts/types/account";
+import type { Category } from "../../categories/types/category";
 
-export default function DashboardDesktop() {
+type Props = {
+  transactions: Transaction[];
+  accounts: Account[];
+  categories: Category[];
+  refetch: () => void;
+}
+
+export default function DashboardDesktop({ transactions, accounts, categories, refetch }: Props) {
   const {
-    loading,
-    refetch,
-    transactions,
-    accounts,
-    categories,
     summary,
     accountsWithBalance,
     dailyExpense,
     topExpenses,
-  } = useDashboardData();
-
-  if (loading) {
-    return (
-      <div className="p-6 text-sm text-slate-400">
-        Loading dashboard...
-      </div>
-    );
-  }
+  } = useDashboardData({
+    transactions,
+    accounts,
+    categories,
+    refetch,
+  });
 
   return (
     <DashboardLayout>
       <DashboardSectionSummary summary={summary} />
 
-      <DashboardSectionAccountBalanceSummary accounts={accountsWithBalance} />
+      <DashboardSectionAccountBalanceSummary accounts={accountsWithBalance} autoScroll={true} />
 
       <DashboardSectionLayout title="Daily Expense">
         <DashboardComponentChartDailyExpense data={dailyExpense} />
@@ -47,7 +49,7 @@ export default function DashboardDesktop() {
         </div>
         <div className="col-span-4">
           <DashboardSectionLayout title="Category Expense">
-            <DashboardSectionLayoutCategoryExpense transactions={transactions} categories={categories}/>
+            <DashboardSectionLayoutCategoryExpense transactions={transactions} categories={categories} />
           </DashboardSectionLayout>
         </div>
       </div>

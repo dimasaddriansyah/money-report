@@ -27,9 +27,27 @@ export function formatDateDayMonth(value: string) {
   });
 }
 
+export function formatDateYear(value: string) {
+  return new Date(value).toLocaleDateString("en-GB", {
+    year: "numeric",
+  });
+}
+
+export function formatDateMonth(value: string) {
+  return new Date(value).toLocaleDateString("en-GB", {
+    month: "long",
+  });
+}
+
 export function formatDateDay(date: string) {
   return new Date(date).toLocaleDateString("en-US", {
     weekday: "long",
+  });
+}
+
+export function formatDateInput(date: string | Date = new Date()) {
+  return new Date(date).toLocaleDateString("en-CA", {
+    timeZone: "Asia/Jakarta",
   });
 }
 

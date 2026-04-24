@@ -1,6 +1,6 @@
 export interface Budget {
   id: string;
-  date: Date;
+  date: string;
   accountId: string;
   remark: string;
   amount: number;

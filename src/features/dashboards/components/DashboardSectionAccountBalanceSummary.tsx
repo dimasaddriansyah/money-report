@@ -11,23 +11,29 @@ type AccountWithBalance = Account & {
 
 type Props = {
   accounts: AccountWithBalance[];
+  autoScroll: boolean;
 };
 
-export default function DashboardSectionAccountBalanceSummary({ accounts }: Props) {
+export default function DashboardSectionAccountBalanceSummary({ accounts, autoScroll }: Props) {
   const { hideBalance } = useBalance();
 
   return (
     <div className="min-w-0">
       <Swiper
-        modules={[Autoplay]}
+        modules={autoScroll ? [Autoplay] : []}
         spaceBetween={12}
         slidesPerView="auto"
-        loop={true}
+        loop={autoScroll}
         speed={4000}
-        autoplay={{
-          delay: 0,
-          disableOnInteraction: false,
-        }}
+        autoplay={
+          autoScroll
+            ? {
+              delay: 0,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true, // bonus UX
+            }
+            : false
+        }
         allowTouchMove={true}>
         {accounts.map((row) => (
           <SwiperSlide key={row.id} className="w-auto!">

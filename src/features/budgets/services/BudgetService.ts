@@ -1,24 +1,24 @@
-import { buildSheetUrl } from "../../../shared/services/googleSheets.service";
-import { parseRupiah } from "../../../shared/utils/format.helper";
+import { API_URL } from "../../../shared/config/api.config";
 import type { Budget } from "../types/budget";
 
-export async function fetchBudgets(): Promise<Budget[]> {
-  const url = buildSheetUrl("budgets", "A2:E");
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch budgets");
-  }
+export async function fetchBudgets(): Promise<{ data: Budget[] }> {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      module: "budgets",
+      action: "list"
+    }),
+  });
 
   const result = await response.json();
-  const rows = result.values ?? [];
+  console.log(result);
+  
 
-  return rows.map((row: string[]) => ({
-    id: row[0],
-    date: row[1],
-    accountId: row[2] || undefined,
-    remark: row[3] || "",
-    amount: parseRupiah(row[4]),
-  }));
+  if (result.status !== "success") {
+    throw new Error(result.message || "Failed to fetch budgets");
+  }
+
+  return {
+    data: result.data,
+  };
 }

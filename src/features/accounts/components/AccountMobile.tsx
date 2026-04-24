@@ -12,7 +12,6 @@ type Props = {
   refetch: () => void;
 };
 
-
 export default function AccountMobile({
   accounts, refetch
 }: Props) {

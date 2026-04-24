@@ -31,9 +31,8 @@ export default function TransactionComponentFilterDate({ period }: Props) {
         disabled={isCurrentPeriod}
         className={`flex p-2 border rounded-full transition
           ${isCurrentPeriod
-                  ? "bg-slate-50 text-slate-200 cursor-not-allowed"
-                  : "bg-white hover:bg-slate-50 border-slate-100 cursor-pointer"}
-        `}>
+            ? "bg-slate-50 text-slate-200 cursor-not-allowed"
+            : "bg-white hover:bg-slate-50 border-slate-100 cursor-pointer"}`}>
         <ArrowRight01Icon size={20} />
       </button>
     </section>

@@ -49,9 +49,7 @@ export default function TransactionMobile({
 
   const [visibleCount, setVisibleCount] = useState(15);
   const sortedTransactions = useMemo(() => {
-    return [...filteredTransactions].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    return [...filteredTransactions].sort((a, b) => b.id.localeCompare(a.id))
   }, [filteredTransactions]);
 
   const visibleTransactions = useMemo(() => {

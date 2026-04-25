@@ -59,7 +59,7 @@ export default function ComponentTransactionItem({
               </div>
 
               <div className="flex justify-between">
-                <div className="max-w-56">
+                <div className="max-w-50">
                   <div className="font-medium">{row.remark || "-"}</div>
                   <div className="text-sm text-slate-400">{categoryName}</div>
                 </div>

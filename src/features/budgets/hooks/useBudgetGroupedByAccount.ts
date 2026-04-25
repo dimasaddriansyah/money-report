@@ -8,7 +8,8 @@ type Account = {
 
 type Props = {
   budgets: Budget[];
-  month: string; // "YYYY-MM"
+  start: Date;
+  end: Date;
   accounts: Account[];
 };
 
@@ -19,15 +20,28 @@ type BudgetGroup = {
   total: number;
 };
 
+// helper aman (hindari timezone bug)
+function toDateOnly(date: string) {
+  const d = new Date(date);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
 export function useBudgetGroupedByAccount({
   budgets,
-  month,
+  start,
+  end,
   accounts,
 }: Props): BudgetGroup[] {
   return useMemo(() => {
+    const startTime = start.getTime();
+    const endTime = end.getTime();
+
     const filtered = budgets.filter((b) => {
-      if (!b.accountId) return false;
-      return b.date === month;
+      if (!b.accountId || !b.date) return false;
+
+      const d = toDateOnly(b.date).getTime();
+
+      return d >= startTime && d <= endTime;
     });
 
     const map = new Map<string, Budget[]>();
@@ -56,5 +70,5 @@ export function useBudgetGroupedByAccount({
         total,
       };
     });
-  }, [budgets, month, accounts]);
+  }, [budgets, start, end, accounts]);
 }

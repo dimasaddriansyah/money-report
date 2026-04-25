@@ -1,8 +1,8 @@
 import type { Account } from "../../accounts/types/account";
+import TransactionComponentFilterDate from "../../transactions/components/TransactionComponentFilterDate";
+import { useTransactionPeriod } from "../../transactions/hooks/useTransactionPeriod";
 import { useBudgetGroupedByAccount } from "../hooks/useBudgetGroupedByAccount";
-import { useBudgetPeriod } from "../hooks/useBudgetPeriod";
 import type { Budget } from "../types/budget";
-import BudgetFilterMonth from "./BudgetFilterMonth";
 
 type Props = {
   budgets: Budget[];
@@ -11,15 +11,21 @@ type Props = {
 };
 
 export default function BudgetMobile({ budgets, accounts }: Props) {
-  const { month, prev, next, isMaxMonth } = useBudgetPeriod();
-  const grouped = useBudgetGroupedByAccount({ budgets, month, accounts });
+  const { start, end, prev, next, isCurrentPeriod } = useTransactionPeriod();
+  const grouped = useBudgetGroupedByAccount({ budgets, start, end, accounts });
 
   console.log(grouped);
-  
+  console.log("START:", start);
+  console.log("END:", end);
+
+  budgets.forEach(b => {
+    console.log("BUDGET DATE:", b.date);
+  });
+
 
   return (
     <div className="">
-      <BudgetFilterMonth month={month} prev={prev} next={next} isMaxMonth={isMaxMonth} />
+      <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod }} />
 
       <div className="space-y-4">
         {grouped.map((group) => (

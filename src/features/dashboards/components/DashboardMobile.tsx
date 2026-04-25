@@ -23,17 +23,16 @@ type Props = {
 }
 
 export default function DashboardMobile({ transactions, accounts, categories, refetch }: Props) {
+  console.log(transactions);
+  
   const navigate = useNavigate();
   const { hideBalance, setHideBalance } = useBalance();
 
   // ✅ Ambil 10 transaksi terakhir
   const latestTransactions = useMemo(() => {
     return [...transactions]
-      .sort(
-        (a, b) =>
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-      )
-      .slice(0, 10);
+      .sort((a, b) => b.id.localeCompare(a.id))
+      .slice(0, 15);
   }, [transactions]);
 
   const grouped = useGroupTransactionsByDate(latestTransactions);

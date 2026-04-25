@@ -1,7 +1,7 @@
 export function formatDateFull(value: string) {
   if (!value) return "";
 
-  return new Date(value).toLocaleDateString("id-ID", {
+  return new Date(value).toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",

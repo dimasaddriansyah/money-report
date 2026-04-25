@@ -11,8 +11,6 @@ export async function fetchBudgets(): Promise<{ data: Budget[] }> {
   });
 
   const result = await response.json();
-  console.log(result);
-  
 
   if (result.status !== "success") {
     throw new Error(result.message || "Failed to fetch budgets");

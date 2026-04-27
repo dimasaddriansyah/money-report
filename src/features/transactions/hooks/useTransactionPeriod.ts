@@ -1,10 +1,5 @@
 import { useState, useMemo } from "react";
 
-// helper: format ke YYYY-MM-DD (tanpa timezone issue)
-function toDateString(date: Date) {
-  return date.toLocaleDateString("en-CA"); // 2026-04-25
-}
-
 function getPeriod(date: Date) {
   const year = date.getFullYear();
   const month = date.getMonth();

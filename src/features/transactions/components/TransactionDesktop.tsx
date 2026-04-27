@@ -144,11 +144,12 @@ export default function TransactionDesktop({
                   const Icon = typeConfig.icon;
                   const amountConfig = getAmountDisplay(row);
                   const categoryName = getCategoryName(row.categoryId, categoryMap);
+                  const isSpecialRemark = /\[.*?\]/.test(row.remark || "");
 
                   return (
                     <tr
                       key={`${row.id}-${index}`}
-                      className="border-b border-slate-50 hover:bg-slate-50 transition">
+                      className={`${isSpecialRemark ? "bg-red-50" : "bg-white"} border-b border-slate-50 hover:bg-slate-50 transition`}>
                       <td className="text-slate-500 font-medium">{(page - 1) * limit + index + 1}</td>
                       <td>
                         <div className="flex flex-col">

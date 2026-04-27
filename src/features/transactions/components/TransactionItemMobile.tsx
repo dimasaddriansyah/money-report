@@ -30,6 +30,7 @@ export default function ComponentTransactionItem({
 }: Props) {
   const amountConfig = getAmountDisplay(row);
   const categoryName = getCategoryName(row.categoryId, categoryMap);
+  const isSpecialRemark = /\[.*?\]/.test(row.remark || "");
 
   return (
     <div className="relative overflow-hidden border-b border-slate-50 touch-pan-y">
@@ -42,7 +43,7 @@ export default function ComponentTransactionItem({
         </div>
       </div>
       <SwipeableItem isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
-        <div className="p-4 bg-white">
+        <div className={`p-4 ${isSpecialRemark ? "bg-red-50" : "bg-white"}`}>
           <div className="flex items-center gap-3">
             <img src={getCategoriesImg(categoryName)} className="w-10 h-10" />
             <div className="flex flex-col flex-1 gap-1">

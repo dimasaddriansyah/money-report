@@ -29,7 +29,7 @@ export default function TransactionMobile({
 }: Props) {
   const navigate = useNavigate();
   const { hideBalance } = useBalance();
-  const { start, end, prev, next, isCurrentPeriod } = useTransactionPeriod();
+  const { start, end, prev, next, isCurrentPeriod, isMaxPeriod } = useTransactionPeriod();
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
 
   const filteredTransactions = useMemo(() => {
@@ -97,7 +97,7 @@ export default function TransactionMobile({
   return (
     <>
       <div className="bg-white">
-        <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod }} />
+        <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod, isMaxPeriod }} />
 
         <TransactionComponentFilterAccount
           accounts={accounts}

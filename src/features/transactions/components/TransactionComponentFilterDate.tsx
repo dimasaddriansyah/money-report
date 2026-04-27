@@ -8,12 +8,17 @@ type Props = {
     prev: () => void;
     next: () => void;
     isCurrentPeriod: boolean;
+    isMaxPeriod: boolean;
   };
+  allowFuture?: boolean;
 };
 
-export default function TransactionComponentFilterDate({ period }: Props) {
+export default function TransactionComponentFilterDate({ period, allowFuture = false }: Props) {
   const { start, end, prev, next, isCurrentPeriod } = period;
   const { label, year } = formatPeriod(start, end);
+  const isDisabled = !allowFuture
+    ? isCurrentPeriod
+    : period.isMaxPeriod;
 
   return (
     <section className="flex items-center justify-between px-4 py-3">
@@ -28,9 +33,9 @@ export default function TransactionComponentFilterDate({ period }: Props) {
       </div>
       <button
         onClick={next}
-        disabled={isCurrentPeriod}
+        disabled={isDisabled}
         className={`flex p-2 border rounded-full transition
-          ${isCurrentPeriod
+          ${isDisabled
             ? "bg-slate-50 text-slate-200 cursor-not-allowed"
             : "bg-white hover:bg-slate-50 border-slate-100 cursor-pointer"}`}>
         <ArrowRight01Icon size={20} />

@@ -1,8 +1,11 @@
+import { useBalance } from "../../../shared/context/BalanceContext";
+
 type Props = {
   value: number;
 };
 
 export default function ComponentCircularProgress({ value }: Props) {
+  const { hideBalance } = useBalance();
   const safeValue = Math.min(Math.max(value, 0), 100);
   const color =
     safeValue >= 100
@@ -18,7 +21,7 @@ export default function ComponentCircularProgress({ value }: Props) {
         style={{ background: `conic-gradient(${color} ${safeValue}%, #f1f5f9 ${safeValue}%)` }} />
       <div className="absolute inset-1 bg-white rounded-full flex items-center justify-center">
         <span className="text-[10px] font-medium text-slate-500">
-          {safeValue}%
+          {hideBalance ? "••" : safeValue}%
         </span>
       </div>
     </div>

@@ -8,7 +8,7 @@ import { useAccounts } from "../../accounts/hooks/useAccounts";
 export default function BudgetCreatePage() {
   const navigate = useNavigate();
   const { saveBudget, loading } = useBudgetActions();
-  const { accounts} = useAccounts()
+  const { accounts} = useAccounts();
 
   async function handleSubmit(data: {
     id?: string;

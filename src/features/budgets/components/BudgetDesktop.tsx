@@ -48,7 +48,7 @@ export default function BudgetDesktop({
   const { hideBalance } = useBalance();
   const [modal, setModal] = useState<ModalState>(null);
 
-  const { start, end, prev, next, isCurrentPeriod, isMaxPeriod } = useTransactionPeriod(true);
+  const { start, end } = useTransactionPeriod(true);
   const grouped = useBudgetGroupedByAccount({ budgets, start, end, accounts });
   const isEmpty = grouped.length === 0;
 

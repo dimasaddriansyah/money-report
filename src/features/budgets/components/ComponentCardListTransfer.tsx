@@ -97,7 +97,7 @@ export default function ComponentCardListTrasnfer({
               ) : (
                 <>
                   <div className="flex justify-between px-4 py-3 text-sm">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-4">
                       <img src={getAccountsImg(current.accountName)} alt={current.accountName} className="w-8 h-8" />
                       <span className="text-slate-500">{current.accountName}</span>
                     </div>

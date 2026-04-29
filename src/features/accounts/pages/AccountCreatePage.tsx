@@ -35,8 +35,7 @@ export default function AccountCreatePage() {
             { label: "Accounts", path: "/accounts" },
             { label: "Create Account" },
           ]}
-          showBack
-        >
+          showBack>
           <AccountForm onSubmit={handleSubmit} loading={loading} />
         </AccountLayout>
       </div>

@@ -222,11 +222,11 @@ export default function TransactionForm({
                         }}
                         className={`flex items-center px-4 py-3 gap-4 transition cursor-pointer 
                             ${categoryId === row.id
-                              ? "bg-slate-50 text-black font-medium"
-                              : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
-                            }`}>
-                          <img src={getCategoriesImg(row.name)} alt={row.name} className="w-8 h-8" />
-                          <span>{row.name}</span>
+                            ? "bg-slate-50 text-black font-medium"
+                            : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
+                          }`}>
+                        <img src={getCategoriesImg(row.name)} alt={row.name} className="w-8 h-8" />
+                        <span>{row.name}</span>
                       </div>
                     ))}
                   </div>
@@ -243,6 +243,7 @@ export default function TransactionForm({
                 <DollarCircleIcon className="text-slate-400" size={20} />
               </div>
               <input
+                type="number"
                 value={amountInput}
                 onChange={handleAmountChange}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${amount ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
@@ -261,8 +262,7 @@ export default function TransactionForm({
                 value={remark}
                 onChange={(e) => setField("remark", e.target.value)}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${remark ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
-                placeholder="Input transaction remark"
-              />
+                placeholder="Input transaction remark" />
             </div>
           </div>
         </div>

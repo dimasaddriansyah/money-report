@@ -33,7 +33,7 @@ export default function BudgetMobile({
   const totalUsage = grouped.reduce((sum, g) => sum + g.total, 0);
   const percentUsage =
     budgetPrimary?.amount
-      ? Math.min(Math.round((totalUsage / budgetPrimary.amount) * 100), 100)
+      ? Math.min(Math.round((totalUsage / budgetPrimary.amount) * 100))
       : 0
 
   return (

@@ -21,12 +21,9 @@ export default function BudgetPage() {
   return (
     <>
       <div className="hidden md:block">
-        <BudgetLayout
-          title="List of Budget"
-          breadcrumb={[{ label: "Dashboard", path: "/" }, { label: "Budgets" }]}
-          button={{ label: "Create Budget", url: "/budget/create" }}>
+        <section className="flex flex-col flex-1 px-6 py-8 gap-6 overflow-y-auto">
           <BudgetDesktop budgets={budgets} accounts={accounts} transactions={transactions} refetch={refetch} />
-        </BudgetLayout>
+        </section>
       </div>
 
       <div className="md:hidden">

@@ -6,6 +6,7 @@ type Props = {
   size?: ModalSize;
   title?: string;
   textButton?: string;
+  showFooter?: boolean;
   onClose: () => void;
   onSubmit?: () => void;
   loading?: boolean;
@@ -16,6 +17,7 @@ export default function Modal({
   size,
   title,
   textButton,
+  showFooter,
   onClose,
   onSubmit,
   loading,
@@ -30,8 +32,10 @@ export default function Modal({
   };
 
   useEffect(() => {
-    setShow(true);
+    const id = requestAnimationFrame(() => setShow(true));
+    return () => cancelAnimationFrame(id);
   }, []);
+
   const handleClose = () => {
     setShow(false);
     setTimeout(onClose, 300);
@@ -43,44 +47,46 @@ export default function Modal({
       <div
         onClick={(e) => e.stopPropagation()}
         className={`relative bg-white rounded-2xl w-full ${sizeClass[size ?? "default"]} shadow-lg transform transition-all duration-300 overflow-hidden
-      ${show
-        ? "translate-y-0 opacity-100"
-        : "translate-y-full opacity-0"
-      }`}>
-      {/* MODAL HEADER */}
-      <div className="flex justify-between items-center px-4 py-3 border-b border-slate-100/60">
-        <h1 className="text-lg font-semibold">{title}</h1>
-        <Cancel01Icon
-          onClick={handleClose}
-          className="text-slate-400 cursor-pointer"
-          size={20} />
-      </div>
+          ${show
+            ? "translate-y-0 opacity-100"
+            : "translate-y-full opacity-0"
+          }`}>
+        <div className="flex justify-between items-center p-4 border-b border-slate-100">
+          <h1 className="text-base font-semibold">{title}</h1>
+          <Cancel01Icon
+            onClick={handleClose}
+            className="text-slate-400 cursor-pointer"
+            size={20} />
+        </div>
 
-      {/* MODAL BODY */}
-      <div className="p-4">
-        {children}
-      </div>
+        <div>
+          {children}
+        </div>
 
-      {/* MODAL FOOTER */}
-      <div className="flex justify-end bg-slate-50 gap-2 px-4 py-2 border-t border-slate-100/60">
-        <button
-          onClick={handleClose}
-          disabled={loading}
-          className="px-4 py-2 text-sm text-slate-500 cursor-pointer">
-          Cancel
-        </button>
-        <button
-          onClick={onSubmit}
-          disabled={loading}
-          className="px-4 py-2 text-sm rounded-lg bg-slate-900 text-white font-semibold hover:bg-slate-800 cursor-pointer">
-          {loading ? (
-            <span>Processing...</span>
-          ) : (
-            <span>{textButton}</span>
-          )}
-        </button>
+        {(showFooter ?? onSubmit) && (
+          <div className="flex justify-end bg-slate-50 gap-2 px-4 py-2 border-t border-slate-100/60">
+            <button
+              onClick={handleClose}
+              disabled={loading}
+              className="px-4 py-2 text-sm text-slate-500 cursor-pointer">
+              Cancel
+            </button>
+            {onSubmit && (
+              <button
+                onClick={onSubmit}
+                disabled={loading}
+                className={`px-4 py-2 text-sm rounded-lg text-white font-semibold cursor-pointer
+                  ${textButton === "Delete" ? "bg-red-500 hover:bg-red-600" : "bg-black hover:bg-slate-800"}`}>
+                {loading ? (
+                  <span>Processing...</span>
+                ) : (
+                  <span>{textButton}</span>
+                )}
+              </button>
+            )}
+          </div>
+        )}
       </div>
-    </div>
     </div >
   );
 }

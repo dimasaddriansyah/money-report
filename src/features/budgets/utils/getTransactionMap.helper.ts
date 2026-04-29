@@ -8,6 +8,7 @@ export type TransactionMap = {
   byRemark: Record<string, number>;
   byAccount: Record<string, number>;
   byCategory: Record<string, number>;
+  byCategoryAccount: Record<string, number>;
 };
 
 export function getTransactionMap(
@@ -15,10 +16,24 @@ export function getTransactionMap(
   start: Date
 ): TransactionMap {
   const filtered = filterTransactionByPeriod(transactions, start);
+  const byCategoryAccount: Record<string, number> = {};
+
+  for (const trx of filtered) {
+    const cat = trx.categoryId;
+    const acc = trx.fromAccountId;
+    const amount = trx.amount;
+
+    if (cat && acc) {
+      const key = `${cat}__${acc}`;
+      byCategoryAccount[key] =
+        (byCategoryAccount[key] ?? 0) + amount;
+    }
+  }
 
   return {
     byRemark: mapTransactionByRemark(filtered),
     byAccount: mapTransactionByAccount(filtered),
-    byCategory: mapTransactionByCategory(filtered)
+    byCategory: mapTransactionByCategory(filtered),
+    byCategoryAccount,
   };
 }

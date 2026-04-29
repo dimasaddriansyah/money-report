@@ -16,7 +16,7 @@ export default function HeaderDesktop({
   setHideBalance,
 }: Props) {
   const location = useLocation();
-  const SHOW_BALANCE_ROUTES = ["/", "/transactions"];
+  const SHOW_BALANCE_ROUTES = ["/", "/transactions", "/budgets"];
   const isShowBalancePage = SHOW_BALANCE_ROUTES.some((path) =>
     location.pathname === path ||
     location.pathname.startsWith(path + "/")

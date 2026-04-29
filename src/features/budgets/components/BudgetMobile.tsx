@@ -18,7 +18,11 @@ type Props = {
   refetch: () => void;
 };
 
-export default function BudgetMobile({ budgets, accounts, transactions }: Props) {
+export default function BudgetMobile({ 
+  budgets, 
+  accounts, 
+  transactions 
+}: Props) {
   const { start, end, prev, next, isCurrentPeriod, isMaxPeriod } = useTransactionPeriod(true);
   const grouped = useBudgetGroupedByAccount({ budgets, start, end, accounts });
   const isEmpty = grouped.length === 0;

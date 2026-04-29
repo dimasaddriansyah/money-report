@@ -9,10 +9,14 @@ const BUDGET_CATEGORY_MAPPING: Record<string, string[]> = {
 
 export function getSpentByBudget(
   remark: string,
+  accountId: string | undefined,
   transactionMap: {
+    byCategoryAccount: Record<string, number>;
     byCategory: Record<string, number>;
   }
 ) {
+  if (!transactionMap) return 0;
+
   const key = remark.trim().toLowerCase();
 
   const mapping = Object.entries(BUDGET_CATEGORY_MAPPING).find(
@@ -21,7 +25,22 @@ export function getSpentByBudget(
 
   const categories = mapping?.[1] ?? [];
 
-  return categories.reduce((sum, catId) => {
-    return sum + (transactionMap.byCategory[catId] ?? 0);
-  }, 0);
+  if (accountId && categories.length) {
+    let total = 0;
+
+    for (const cat of categories) {
+      const key = `${cat}__${accountId}`;
+      total += transactionMap.byCategoryAccount[key] ?? 0;
+    }
+
+    return total;
+  }
+
+  if (categories.length) {
+    return categories.reduce((sum, catId) => {
+      return sum + (transactionMap.byCategory[catId] ?? 0);
+    }, 0);
+  }
+
+  return 0;
 }

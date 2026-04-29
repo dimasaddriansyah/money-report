@@ -172,8 +172,7 @@ export default function BudgetForm({
                 value={amountInput}
                 onChange={handleAmountChange}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${amount ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
-                placeholder="Input transaction amount"
-              />
+                placeholder="Input transaction amount"/>
             </div>
           </div>
           <div id="remark" className="flex-1">
@@ -183,6 +182,7 @@ export default function BudgetForm({
                 <CreditCardIcon className="text-slate-400" size={20} />
               </div>
               <input
+                inputMode="numeric"
                 value={remark}
                 onChange={(e) => setField("remark", e.target.value)}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${remark ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}

@@ -1,6 +1,6 @@
-import { Add01Icon, Delete02Icon, NoteEditIcon } from "hugeicons-react";
+import { Add01Icon, Delete02Icon, DollarCircleIcon, NoteEditIcon } from "hugeicons-react";
 import EmptyState from "../../../shared/ui/EmptyState";
-import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
+import { formatBalance, formatCurrency, formatNumber } from "../../../shared/utils/format.helper";
 import type { Account } from "../../accounts/types/account";
 import { useTransactionPeriod } from "../../transactions/hooks/useTransactionPeriod";
 import type { Transaction } from "../../transactions/types/transaction";
@@ -36,6 +36,7 @@ type BudgetGroup = {
 type ModalState =
   | { type: "delete"; data: Budget }
   | { type: "listTransfer"; data: BudgetGroup }
+  | { type: "editBudget"; data: Budget }
   | null;
 
 export default function BudgetDesktop({
@@ -57,22 +58,24 @@ export default function BudgetDesktop({
   const budgetPrimary = useBudgetGetBudget({ budgets, start })
   const transactionMap = getTransactionMap(transactions, start);
 
+  const [amount, setAmount] = useState(0);
+  const [amountInput, setAmountInput] = useState("");
+
   const totalUsage = grouped.reduce((sum, g) => sum + g.total, 0);
   const percentUsage =
     budgetPrimary?.amount
       ? Math.min(Math.round((totalUsage / budgetPrimary.amount) * 100))
       : 0
-  
+
   const statusUsageStyleMap =
     percentUsage > 100 ? "bg-red-100 border border-red-200 text-red-600"
       : percentUsage >= 100 ? "bg-blue-100 border border-blue-200 text-blue-600"
         : percentUsage >= 70 ? "bg-yellow-100 border border-yellow-200 text-yellow-600"
           : "bg-green-100 border border-green-200 text-green-600";
 
-  const { deleteBudget, loading } = useBudgetActions(refetch);
+  const { deleteBudget, saveBudget, loading } = useBudgetActions(refetch);
   async function handleDelete() {
     if (modal?.type !== "delete") return;
-
     try {
       const result = await deleteBudget(modal.data.id);
       toast.success("Deleted", {
@@ -88,6 +91,31 @@ export default function BudgetDesktop({
         description: message,
       });
     }
+  }
+
+  function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value.replace(/\D/g, "");
+    const numeric = Number(raw);
+
+    setAmount(numeric);
+    setAmountInput(formatNumber(numeric));
+  }
+
+  function formatDateMonthRange(value: string) {
+    const date = new Date(value);
+
+    const currentMonth = date.toLocaleDateString("en-GB", {
+      month: "long",
+    });
+
+    const nextDate = new Date(date);
+    nextDate.setMonth(date.getMonth() + 1);
+
+    const nextMonth = nextDate.toLocaleDateString("en-GB", {
+      month: "long",
+    });
+
+    return `${currentMonth} - ${nextMonth}`;
   }
 
   return (
@@ -191,14 +219,24 @@ export default function BudgetDesktop({
               <div className="bg-white border border-slate-200 rounded-lg">
                 <div className="flex items-center justify-between p-4 border-b border-slate-200">
                   <span className="text-base text-black font-medium">Budget This Month</span>
-                  <button className="flex items-center px-3 py-2 bg-amber-500 hover:bg-amber-600 border text-white text-sm rounded-lg gap-2 cursor-pointer">
+                  <button
+                    onClick={() => {
+                      if (!budgetPrimary) {
+                        toast.error("Budget not found");
+                        return;
+                      }
+                      setAmount(budgetPrimary.amount);
+                      setAmountInput(formatNumber(budgetPrimary.amount));
+                      setModal({ type: "editBudget", data: budgetPrimary });
+                    }}
+                    className="flex items-center px-3 py-2 bg-amber-500 hover:bg-amber-600 border text-white text-sm rounded-lg gap-2 cursor-pointer">
                     <NoteEditIcon size={20} />
                     <span className="font-semibold">Edit</span>
                   </button>
                 </div>
                 <div className="flex justify-between px-4 py-3">
                   <span className="text-sm text-slate-400">Total Budget</span>
-                  <span className="text-base font-semibold">{formatBalance(formatCurrency(budgetPrimary.amount), hideBalance)}</span>
+                  <span className="text-base font-semibold">{formatBalance(formatCurrency(budgetPrimary?.amount ?? 0), hideBalance)}</span>
                 </div>
               </div>
               <div className="bg-white border border-slate-200 rounded-lg">
@@ -300,6 +338,58 @@ export default function BudgetDesktop({
           </div>
         </Modal>
       )}
+      {modal?.type === "editBudget" && (
+        <Modal
+          title={`Edit Budget ${budgetPrimary ? formatDateMonthRange(budgetPrimary.date) : ""}`}
+          textButton="Update"
+          loading={loading}
+          onSubmit={async () => {
+            if (!budgetPrimary) return;
+            if (!amount || amount <= 0) {
+              toast.error("Amount must be greater than 0");
+              return;
+            }
+            try {
+              const result = await saveBudget({
+                id: budgetPrimary.id,
+                date: budgetPrimary.date,
+                remark: budgetPrimary.remark,
+                amount,
+              });
+              toast.success("Updated", { description: result.message });
+              setModal(null);
+            } catch (error: unknown) {
+              let message = "Something went wrong";
+              if (error instanceof Error) {
+                message = error.message;
+              }
+              toast.error("Failed to update", {
+                description: message,
+              });
+            }
+          }}
+          onClose={() => {
+            setModal(null);
+            setAmount(0);
+            setAmountInput("");
+          }}>
+          <div id="amount" className="flex-1 p-4">
+            <label className="block text-sm font-medium text-black mb-1">Amount</label>
+            <div className="relative flex items-center justify-center">
+              <div className="absolute left-4 pointer-events-none">
+                <DollarCircleIcon className="text-slate-400" size={20} />
+              </div>
+              <input
+                inputMode="numeric"
+                value={amountInput}
+                onChange={handleAmountChange}
+                className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${amount ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
+                placeholder="Input transaction amount" />
+            </div>
+          </div>
+        </Modal >
+      )
+      }
     </>
   )
 }

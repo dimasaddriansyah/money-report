@@ -36,6 +36,9 @@ export function useBudgetActions(refetch?: () => void) {
       if (result.status !== "success") {
         throw new Error(result.message);
       }
+      
+      refetch?.();
+
       return result;
     } catch (error) {
       console.error("Submit error:", error);

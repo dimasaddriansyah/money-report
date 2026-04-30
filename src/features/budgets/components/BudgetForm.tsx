@@ -168,7 +168,7 @@ export default function BudgetForm({
                 <DollarCircleIcon className="text-slate-400" size={20} />
               </div>
               <input
-                type="number"
+                inputMode="numeric"
                 value={amountInput}
                 onChange={handleAmountChange}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${amount ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}

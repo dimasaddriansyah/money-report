@@ -79,11 +79,11 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
 
       {/* BUTTON EXPORT */}
       <div
-        className={`border-t border-slate-100 py-4
+        className={`bg-slate-50 border-t border-slate-100 py-4
           ${collapsed ? "flex justify-center px-3.5" : "px-4.5"}`}>
         <button
           onClick={() => onOpenModal()}
-          className={`flex items-center w-full rounded-xl text-sm font-medium transition border border-dashed border-slate-400 text-slate-900 hover:bg-slate-900 hover:text-white cursor-pointer
+          className={`flex items-center w-full rounded-xl text-sm font-medium transition border border-dashed border-slate-300 text-slate-900 hover:bg-slate-900 hover:text-white cursor-pointer
             ${collapsed ? "justify-center h-12" : "gap-3 p-3"}`}>
           {/* ICON */}
           <div className="w-6 h-6 flex items-center justify-center">

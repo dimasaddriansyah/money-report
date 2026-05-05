@@ -8,6 +8,7 @@ import {
   AiContentGenerator01Icon,
   MoneySavingJarIcon,
   Invoice01Icon,
+  ArrowRight01Icon,
 } from "hugeicons-react";
 import BottomSheet from "../ui/BottomSheet";
 
@@ -28,14 +29,15 @@ export default function NavigationBottomMobile() {
       {/* OVERLAY */}
       <div
         onClick={() => setOpenFab(false)}
-        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${openFab ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`} />
+        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 
+          ${openFab ? "opacity-100" : "opacity-0 pointer-events-none"}`} />
 
       {/* BOTTOM NAV */}
       <nav
-        className={`fixed inset-x-0 bottom-0 z-30 shadow-blue-950 transition-opacity duration-200 ${openFab ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}>
+        className={`fixed inset-x-0 bottom-0 z-30 shadow-blue-950 transition-opacity duration-200 
+          ${openFab ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
         <div className="relative flex items-center justify-between px-6 py-3 bg-white pb-[calc(env(safe-area-inset-bottom)+12px)]">
+
           {/* LEFT */}
           <div className="flex justify-between flex-1 pr-13">
             {menus.slice(0, 2).map((menu) => (
@@ -72,18 +74,21 @@ export default function NavigationBottomMobile() {
         open={openFab}
         onClose={() => setOpenFab(false)}
         title="Add Transaction">
-        <div className="space-y-2">
+        <div>
           <button
             onClick={() => {
               setOpenFab(false);
               setTimeout(() => navigate("/transaction/create"), 150);
             }}
-            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-200 hover:bg-slate-100 cursor-pointer">
-            <TaskEdit01Icon className="w-5 h-5 text-blue-900" />
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">Manual Input</span>
-              <span className="text-xs text-slate-500">Input transaksi secara manual</span>
+            className="flex items-center justify-between w-full gap-4 p-4 text-left border-b border-slate-50 hover:bg-slate-100 cursor-pointer">
+            <div className="flex items-center gap-4">
+              <TaskEdit01Icon className="text-blue-900" size={20} />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">Manual Input</span>
+                <span className="text-xs text-slate-500">Input transaksi secara manual</span>
+              </div>
             </div>
+            <ArrowRight01Icon className="text-slate-400" size={20} />
           </button>
 
           <button
@@ -91,12 +96,15 @@ export default function NavigationBottomMobile() {
               setOpenFab(false);
               setTimeout(() => navigate("/transaction/generate/form"), 150);
             }}
-            className="flex items-center w-full gap-3 p-3 text-left border rounded-lg border-slate-200 hover:bg-slate-50 cursor-pointer">
-            <AiContentGenerator01Icon className="w-5 h-5 text-amber-500" />
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">Generate Input</span>
-              <span className="text-xs text-slate-500">Generate otomatis dari template</span>
+            className="flex items-center justify-between w-full gap-4 p-4 text-left border-b border-slate-50 hover:bg-slate-100 cursor-pointer">
+            <div className="flex items-center gap-4">
+              <AiContentGenerator01Icon className="text-amber-500" size={20} />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">Generate Input</span>
+                <span className="text-xs text-slate-500">Generate otomatis dari template</span>
+              </div>
             </div>
+            <ArrowRight01Icon className="text-slate-400" size={20} />
           </button>
         </div>
       </BottomSheet>
@@ -119,7 +127,7 @@ function NavItem({
     <Link
       to={path}
       className={`flex flex-col items-center gap-1 text-xs transition ${active ? "font-semibold text-black" : "text-gray-400"}`}>
-      <Icon className="w-5 h-5" />
+      <Icon size={20} />
       <span>{label}</span>
     </Link>
   );

@@ -141,8 +141,7 @@ export default function TransactionForm({
                   type="date"
                   value={date}
                   onChange={(e) => setField("date", e.target.value)}
-                  className="absolute opacity-0 pointer-events-none"
-                />
+                  className="absolute opacity-0"/>
                 <span className="capitalize">{formatDateFull(date) || "Select date"}</span>
               </div>
               <ArrowDown01Icon className="text-slate-400" size={20} />

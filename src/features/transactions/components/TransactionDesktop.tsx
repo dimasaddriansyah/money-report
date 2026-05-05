@@ -131,7 +131,6 @@ export default function TransactionDesktop({
                 <tr className="text-left text-slate-500 border-b border-slate-100">
                   <th className="w-12">#</th>
                   <th className="">Date</th>
-                  <th className="">Type</th>
                   <th className="">Account</th>
                   <th className="">Category</th>
                   <th className="w-40 text-right">Nominal</th>
@@ -141,7 +140,6 @@ export default function TransactionDesktop({
               <tbody>
                 {paginatedTransactions.map((row, index) => {
                   const typeConfig = getTypeDisplay(row.typeId);
-                  const Icon = typeConfig.icon;
                   const amountConfig = getAmountDisplay(row);
                   const categoryName = getCategoryName(row.categoryId, categoryMap);
                   const isSpecialRemark = /\[.*?\]/.test(row.remark || "");
@@ -155,12 +153,6 @@ export default function TransactionDesktop({
                         <div className="flex flex-col">
                           <span className="text-black font-medium">{row.day}</span>
                           <span className="text-slate-400">{formatDateDayMonthYear(row.date) || "-"}</span>
-                        </div>
-                      </td>
-                      <td className="">
-                        <div className={`flex w-fit text-xs capitalize gap-1 ${typeConfig.className}`}>
-                          <span><Icon size={16} /></span>
-                          <span>{typeConfig.label}</span>
                         </div>
                       </td>
                       <td className="">
@@ -183,6 +175,9 @@ export default function TransactionDesktop({
                       </td>
                       <td className={`text-right ${amountConfig.className}`}>
                         <span className="">{formatBalance(amountConfig.label, hideBalance)}</span>
+                        <div className={`text-xs capitalize gap-1 ${typeConfig.className}`}>
+                          <span>{typeConfig.label}</span>
+                        </div>
                       </td>
                       <td>
                         <div className="flex gap-2">

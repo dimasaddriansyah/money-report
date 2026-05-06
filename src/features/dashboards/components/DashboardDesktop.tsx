@@ -21,12 +21,14 @@ type Props = {
   refetch: () => void;
 }
 
-type Period = "year" | "month" | "week" | "yesterday";
+type Period = "year" | "month" | "week" | "yesterday" | "today";
 
 
 export default function DashboardDesktop({ transactions, accounts, categories, refetch }: Props) {
+
   const navigate = useNavigate();
   const [period, setPeriod] = useState<Period>("month");
+  const [selectedMonth] = useState(new Date());
   const filteredTransactions = filterTransactionsByPeriod(transactions, period);
   const {
     summary,
@@ -50,11 +52,21 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
         case "year":
           return trxDate.getFullYear() === now.getFullYear();
 
-        case "month":
-          return (
-            trxDate.getFullYear() === now.getFullYear() &&
-            trxDate.getMonth() === now.getMonth()
-          );
+        case "month": {
+          const dayStart = 25; // bisa kamu ubah (misal dari setting)
+          const dayEnd = 24;
+
+          const year = selectedMonth.getFullYear();
+          const month = selectedMonth.getMonth();
+
+          // end = 24 di bulan selected
+          const endDate = new Date(year, month, dayEnd, 23, 59, 59);
+
+          // start = 25 di bulan sebelumnya
+          const startDate = new Date(year, month - 1, dayStart, 0, 0, 0);
+
+          return trxDate >= startDate && trxDate <= endDate;
+        }
 
         case "week": {
           const day = now.getDay();
@@ -76,6 +88,16 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
           );
         }
 
+        case "today": {
+          const startOfDay = new Date(now);
+          startOfDay.setHours(0, 0, 0, 0);
+
+          const endOfDay = new Date(now);
+          endOfDay.setHours(23, 59, 59, 999);
+
+          return trxDate >= startOfDay && trxDate <= endOfDay;
+        }
+
         default:
           return true;
       }
@@ -91,6 +113,7 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
             { label: "Month", value: "month" },
             { label: "Week", value: "week" },
             { label: "Yesterday", value: "yesterday" },
+            { label: "Today", value: "today" }
           ].map((item) => (
             <button
               key={item.value}
@@ -127,14 +150,14 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
         </div>
         <div className="col-span-4">
           <DashboardSectionLayout title="Category Expense">
-            <DashboardSectionLayoutCategoryExpense transactions={transactions} categories={categories} />
+            <DashboardSectionLayoutCategoryExpense transactions={filteredTransactions} categories={categories} />
           </DashboardSectionLayout>
         </div>
       </div>
 
       <DashboardSectionLayout title="Recently Transactions" button={{ label: "View more", url: "/transactions" }}>
         <DashboardSectionRecentTransactions
-          transactions={transactions}
+          transactions={filteredTransactions}
           accounts={accounts}
           categories={categories}
           refetch={refetch} />

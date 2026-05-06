@@ -1,4 +1,4 @@
-import { ArrowDown01Icon, Calendar01Icon, CreditCardIcon, Delete02Icon, NoteEditIcon, Search01Icon } from "hugeicons-react";
+import { ArrowDown01Icon, Calendar03Icon, CreditCardIcon, Delete02Icon, Note05Icon, NoteEditIcon, Search01Icon } from "hugeicons-react";
 import EmptyState from "../../../shared/ui/EmptyState";
 import TablePagination from "../../../shared/ui/tables/TablePagination";
 import type { Transaction } from "../types/transaction";
@@ -227,12 +227,14 @@ export default function TransactionDesktop({
       ) : (
         <>
           <div className="flex flex-wrap gap-3">
+            {/* Show Data Entries  */}
             <TablePageSize
               pageSize={limit}
               onChange={(value) => {
                 setLimit(value);
                 setPage(1);
               }} />
+            {/* Filter Dates  */}
             <div className="flex flex-col gap-1 flex-1 min-w-40">
               <span className="text-slate-500 text-xs">Dates</span>
               <div ref={dateRef} className="relative">
@@ -244,7 +246,7 @@ export default function TransactionDesktop({
                   }}
                   className="flex items-center justify-between w-full px-3 py-2 hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
                   <div className="flex items-center gap-3">
-                    <Calendar01Icon className="text-slate-400" size={16} />
+                    <Calendar03Icon className="text-slate-400" size={16} />
                     <span className={`text-sm ${!selectedDate ? "text-slate-500" : "text-black"}`}>
                       {dateOptions.find(d => d.value === selectedDate)?.label || "All Dates"}
                     </span>
@@ -273,6 +275,7 @@ export default function TransactionDesktop({
                 )}
               </div>
             </div>
+            {/* Filter Accounts  */}
             <div className="flex flex-col gap-1 flex-1 min-w-40">
               <span className="text-slate-500 text-xs">Accounts</span>
               <div ref={accountRef} className="relative">
@@ -322,6 +325,7 @@ export default function TransactionDesktop({
                 )}
               </div>
             </div>
+            {/* Filter Categories  */}
             <div className="flex flex-col gap-1 flex-1 min-w-40">
               <span className="text-slate-500 text-xs">Categories</span>
               <div ref={categoryRef} className="relative">
@@ -333,7 +337,7 @@ export default function TransactionDesktop({
                   }}
                   className="flex items-center justify-between w-full px-3 py-2 hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
                   <div className="flex items-center gap-3">
-                    <CreditCardIcon className="text-slate-400" size={16} />
+                    <Note05Icon className="text-slate-400" size={16} />
                     <span className={`text-sm ${!selectedCategory ? "text-slate-400" : "text-black"}`}>
                       {selectedCategory || "All Categories"}
                     </span>
@@ -371,6 +375,7 @@ export default function TransactionDesktop({
                 )}
               </div>
             </div>
+            {/* Filter Search  */}
             <div className="flex flex-col gap-1 flex-1 min-w-40">
               <span className="text-slate-500 text-xs">Search</span>
               <div className="flex items-center gap-3 w-full px-3 py-2 rounded-lg border border-slate-200 focus-within:border-slate-400 transition">
@@ -385,6 +390,7 @@ export default function TransactionDesktop({
               </div>
             </div>
           </div>
+          {/* Content  */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
               <thead className="bg-slate-50">
@@ -462,6 +468,7 @@ export default function TransactionDesktop({
               </tbody>
             </table>
           </div>
+          {/* Pagination */}
           <TablePagination
             currentPage={page}
             totalPages={totalPages}
@@ -472,6 +479,7 @@ export default function TransactionDesktop({
             onPageChange={setPage} />
         </>
       )}
+      {/* Modal */}
       {open && (
         <Modal
           title="Delete Transaction"

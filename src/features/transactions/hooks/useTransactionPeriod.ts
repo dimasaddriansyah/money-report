@@ -41,10 +41,9 @@ export function useTransactionPeriod(allowFuture = false) {
     start.getTime() === nextPeriod.start.getTime() &&
     end.getTime() === nextPeriod.end.getTime();
 
-  // ⏭ next period
+  // ⏭ next
   const next = () => {
     if (!allowFuture && isCurrentPeriod) return;
-
     if (allowFuture && isMaxPeriod) return;
 
     setCurrentDate(prev => {
@@ -53,12 +52,17 @@ export function useTransactionPeriod(allowFuture = false) {
     });
   };
 
-  // ⏮ prev period
+  // ⏮ prev
   const prev = () => {
     setCurrentDate(prev => {
       const d = new Date(prev);
-      return new Date(d.getFullYear(), d.getMonth() - 1, 25)
+      return new Date(d.getFullYear(), d.getMonth() - 1, 25);
     });
+  };
+
+  // 🔥 NEW: set period langsung (UNTUK DROPDOWN)
+  const setPeriod = (start: Date) => {
+    setCurrentDate(start);
   };
 
   return {
@@ -66,6 +70,7 @@ export function useTransactionPeriod(allowFuture = false) {
     end,
     next,
     prev,
+    setPeriod,
     isCurrentPeriod,
     isMaxPeriod
   };

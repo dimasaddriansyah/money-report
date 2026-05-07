@@ -49,7 +49,7 @@ export default function BudgetCreatePage() {
       </div>
 
       <div className="md:hidden">
-        {/* <BudgetForm onSubmit={handleSubmit} loading={loading} /> */}
+        <BudgetForm onSubmit={handleSubmit} accounts={accounts} loading={loading} />
       </div>
     </>
   );

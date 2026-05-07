@@ -191,7 +191,7 @@ export default function BudgetForm({
           </div>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row-reverse mt-4 gap-2">
+      <div className="flex flex-col md:flex-row justify-end mt-4 gap-2 px-4 md:px-0">
         <button
           type="button"
           onClick={handleReset}

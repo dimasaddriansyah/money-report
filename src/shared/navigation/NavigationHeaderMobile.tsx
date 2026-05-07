@@ -5,12 +5,14 @@ type Props = {
   title: string;
   showBack?: boolean;
   rightIcon?: React.ReactNode;
+  onRightIconClick?: () => void;
 };
 
 export default function NavigationHeaderMobile({
   title,
   showBack = false,
   rightIcon,
+  onRightIconClick
 }: Props) {
   const navigate = useNavigate();
 
@@ -32,7 +34,9 @@ export default function NavigationHeaderMobile({
 
       <div>
         {rightIcon ? (
-          <div className="flex p-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full cursor-pointer">
+          <div
+            onClick={onRightIconClick}
+            className="flex p-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full cursor-pointer">
             {rightIcon}
           </div>
         ) : (

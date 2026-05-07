@@ -1,9 +1,10 @@
-import { useLocation, matchPath } from "react-router-dom";
-import { Settings01Icon } from "hugeicons-react";
+import { useLocation, matchPath, useNavigate } from "react-router-dom";
+import { PlusSignIcon, Settings01Icon } from "hugeicons-react";
 import NavigationBottomMobile from "../navigation/NavigationBottomMobile";
 import NavigationHeaderMobile from "../navigation/NavigationHeaderMobile";
 
 export default function MobileShell({ children }: any) {
+  const navigate = useNavigate();
   const location = useLocation();
 
   const pathname = location.pathname;
@@ -11,8 +12,10 @@ export default function MobileShell({ children }: any) {
   const hiddenRoutes = ["/generate-form"];
 
   const hideBottomNav =
-    matchPath("/transaction/*", pathname) ||
+    matchPath("/account/*", pathname) ||
+    matchPath("/category/*", pathname) ||
     matchPath("/budget/*", pathname) ||
+    matchPath("/transaction/*", pathname) ||
     hiddenRoutes.includes(pathname);
 
   const headerConfig = (() => {
@@ -26,7 +29,8 @@ export default function MobileShell({ children }: any) {
     if (matchPath("/accounts", pathname)) {
       return {
         title: "Accounts",
-        rightIcon: <Settings01Icon size={20} />,
+        rightIcon: <PlusSignIcon size={20} />,
+        onRightIconClick: () => navigate("/account/create"),
         showBack: true,
       };
     }
@@ -41,7 +45,8 @@ export default function MobileShell({ children }: any) {
     if (matchPath("/categories", pathname)) {
       return {
         title: "Categories",
-        rightIcon: <Settings01Icon size={20} />,
+        rightIcon: <PlusSignIcon size={20} />,
+        onRightIconClick: () => navigate("/category/create"),
         showBack: true,
       };
     }

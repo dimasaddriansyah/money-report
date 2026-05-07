@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import EmptyState from "../../../shared/ui/EmptyState";
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import ComponentAccountItem from "./ComponentAccountItem";
+import { Delete02Icon } from "hugeicons-react";
 
 type Props = {
   accounts: Account[];
@@ -69,24 +70,21 @@ export default function AccountMobile({
         onClose={() => {
           setOpen(false);
           setSelectedAccount(null);
-        }}
-        title="Delete Account">
-        <div className="flex flex-col gap-4">
-          <p className="text-sm text-slate-500">
+        }}>
+        <div className="flex flex-col p-4 gap-4">
+          <div className="text-slate-500">
             {selectedAccount
-              ? `Delete "${selectedAccount.name}"? This cannot be undone.`
+              ?
+              <div className="flex flex-col items-center pt-2 gap-4">
+                <Delete02Icon className="text-red-500" size={40} />
+                <div className="flex flex-col items-center">
+                  <span className="font-semibold text-black text-base">Delete "{selectedAccount.name}"?</span>
+                  <span className="text-sm text-center w-70">Are you sure? Once deleted, this category and its data cannot be recovered.</span>
+                </div>
+              </div>
               : ""}
-          </p>
+          </div>
           <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setOpen(false);
-                setSelectedAccount(null);
-              }}
-              className="flex-1 py-2 rounded-xl hover:bg-slate-50 border border-slate-200 text-sm text-slate-400 cursor-pointer">
-              Cancel
-            </button>
-
             <button
               onClick={handleDelete}
               disabled={loading}

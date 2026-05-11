@@ -1,4 +1,4 @@
-import { ArrowDown01Icon, CreditCardIcon, DateTimeIcon, DollarCircleIcon } from "hugeicons-react";
+import { ArrowDown01Icon, CreditCardIcon, Calendar03Icon, DollarCircleIcon, NoteEditIcon } from "hugeicons-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Budget } from "../types/budget";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
@@ -105,7 +105,7 @@ export default function BudgetForm({
               onClick={() => dateRef.current?.showPicker()}
               className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
               <div className="flex items-center gap-4">
-                <DateTimeIcon className="text-slate-400" size={20} />
+                <Calendar03Icon className="text-slate-400" size={20} />
                 <input
                   ref={dateRef}
                   type="date"
@@ -127,7 +127,7 @@ export default function BudgetForm({
                 <div className="flex items-center gap-4">
                   <CreditCardIcon className="text-slate-400" size={20} />
                   <span className={accountId ? "text-black" : "text-slate-400"}>
-                    {accountId ? accountMap[accountId] : "Select Account"}
+                    {accountId ? accountMap[accountId] : "Select account"}
                   </span>
                 </div>
                 <ArrowDown01Icon className="text-slate-400" size={20} />
@@ -172,14 +172,14 @@ export default function BudgetForm({
                 value={amountInput}
                 onChange={handleAmountChange}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${amount ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
-                placeholder="Input transaction amount"/>
+                placeholder="Input amount"/>
             </div>
           </div>
           <div id="remark" className="flex-1">
             <label className="block text-sm font-medium text-gray-900 mb-1">Remark</label>
             <div className="relative flex items-center justify-center">
               <div className="absolute left-4 pointer-events-none">
-                <CreditCardIcon className="text-slate-400" size={20} />
+                <NoteEditIcon className="text-slate-400" size={20} />
               </div>
               <input
                 inputMode="numeric"

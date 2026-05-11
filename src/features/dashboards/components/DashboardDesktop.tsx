@@ -30,13 +30,15 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
   const [period, setPeriod] = useState<Period>("month");
   const [selectedMonth] = useState(new Date());
   const filteredTransactions = filterTransactionsByPeriod(transactions, period);
-  const {
-    summary,
-    accountsWithBalance,
-    dailyExpense,
-    topExpenses,
-  } = useDashboardData({
+  const dashboardFiltered = useDashboardData({
     transactions: filteredTransactions,
+    accounts,
+    categories,
+    refetch,
+  });
+
+  const dashboardAll = useDashboardData({
+    transactions,
     accounts,
     categories,
     refetch,
@@ -106,6 +108,10 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
 
   return (
     <DashboardLayout>
+      <DashboardSectionSummary summary={dashboardAll.summary} />
+
+      <DashboardSectionAccountBalanceSummary accounts={dashboardAll.accountsWithBalance} autoScroll={true} />
+
       <section className="flex items-center justify-between">
         <section className="flex w-fit p-1 bg-slate-100 border border-slate-200 rounded-lg">
           {[
@@ -133,19 +139,14 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
         </button>
       </section>
 
-
-      <DashboardSectionSummary summary={summary} />
-
-      <DashboardSectionAccountBalanceSummary accounts={accountsWithBalance} autoScroll={true} />
-
       <DashboardSectionLayout title="Daily Expense">
-        <DashboardComponentChartDailyExpense data={dailyExpense} />
+        <DashboardComponentChartDailyExpense data={dashboardFiltered.dailyExpense} />
       </DashboardSectionLayout>
 
       <div className="grid grid-cols-12 items-stretch gap-4">
         <div className="col-span-8">
           <DashboardSectionLayout title="Top Expense">
-            <DashboardComponentChartTopExpense data={topExpenses} />
+            <DashboardComponentChartTopExpense data={dashboardFiltered.topExpenses} />
           </DashboardSectionLayout>
         </div>
         <div className="col-span-4">
@@ -162,7 +163,6 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
           categories={categories}
           refetch={refetch} />
       </DashboardSectionLayout>
-
     </DashboardLayout >
   );
 }

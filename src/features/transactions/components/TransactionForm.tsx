@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDown01Icon, CreditCardIcon, Calendar03Icon, DollarCircleIcon, Note05Icon, LicenseDraftIcon, LicenseIcon } from "hugeicons-react";
+import { ArrowDown01Icon, CreditCardIcon, Calendar03Icon, DollarCircleIcon, Note05Icon, NoteEditIcon, LicenseIcon } from "hugeicons-react";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import { useTransactionForm } from "../hooks/useTransactionForm";
@@ -258,7 +258,7 @@ export default function TransactionForm({
             <div
               className="relative flex items-center justify-center">
               <div className="absolute left-4 pointer-events-none">
-                <LicenseDraftIcon className="text-slate-400" size={20} />
+                <NoteEditIcon className="text-slate-400" size={20} />
               </div>
               <input
                 value={remark}

@@ -10,9 +10,10 @@ type Props = {
     name: string;
     value: number;
   }[];
+  full?: boolean;
 };
 
-export default function DashboardComponenChartCategoryExpense({ data }: Props) {
+export default function DashboardComponenChartCategoryExpense({ data, full = false }: Props) {
   const { hideBalance } = useBalance()
   const [ready, setReady] = useState(false);
 
@@ -36,6 +37,13 @@ export default function DashboardComponenChartCategoryExpense({ data }: Props) {
   const option: EChartsOption = {
     tooltip: {
       trigger: "item",
+
+      position: function (point) {
+        return full
+          ? [point[0] + 20, point[1] - 20]
+          : [point[0] - 270, point[1] - 20];
+      },
+
       formatter: (params: any) => {
         const name = params.name;
         const value = params.value;
@@ -45,9 +53,17 @@ export default function DashboardComponenChartCategoryExpense({ data }: Props) {
           <div style="padding:4px 4px">
             <div>${name}</div>
             <div style="margin-top:4px">
-              <span style=" display:inline-block; width:8px; height:8px; border-radius:50%; background:#90A1B9; "></span>
+              <span style="
+                display:inline-block;
+                width:8px;
+                height:8px;
+                border-radius:50%;
+                background:#90A1B9;"></span>
               <span>Expenses</span>
-              <span style="float:right;font-weight:600;margin-left:20px">
+              <span style="
+                float:right;
+                font-weight:600;
+                margin-left:20px">
                 ${formatBalance(formatCurrency(value), hideBalance)}
                 <span>(${percent}%)</span>
               </span>
@@ -61,7 +77,7 @@ export default function DashboardComponenChartCategoryExpense({ data }: Props) {
       {
         type: "text",
         left: "center",
-        top: "30%",
+        top: full ? "41%" : "30%",
         style: {
           text: "Total",
           fill: "#64748B",
@@ -71,7 +87,7 @@ export default function DashboardComponenChartCategoryExpense({ data }: Props) {
       {
         type: "text",
         left: "center",
-        top: "40%",
+        top: full ? "50%" : "40%",
         style: {
           text: formatBalance(formatCurrency(totalExpenses), hideBalance),
           fill: "#1E1E1E",
@@ -84,11 +100,18 @@ export default function DashboardComponenChartCategoryExpense({ data }: Props) {
     series: [
       {
         type: "pie",
-        radius: ["65%", "100%"],
-        center: ["50%", "50%"],
-        startAngle: 180,
-        endAngle: 360,
-
+        radius: full ? ["65%", "100%"] : ["65%", "100%"],
+        center: full ? ["50%", "50%"] : ["50%", "50%"],
+        ...(full
+          ? {}
+          : {
+            startAngle: 180,
+            endAngle: 360,
+          }),
+        padAngle: full ? 2 : 0,
+        itemStyle: {
+          borderRadius: full ? 8 : 0
+        },
         data: data,
 
         label: {

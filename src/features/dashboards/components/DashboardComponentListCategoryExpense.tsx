@@ -21,7 +21,7 @@ export function DashboardComponentListCategoryExpense({ data }: Props) {
 
   return (
     <>
-      <div className="space-y-3 -mt-25">
+      <div className="space-y-3 -mt-25 z-1">
         {visible.map((item) => (
           <div
             key={item.categoryId}

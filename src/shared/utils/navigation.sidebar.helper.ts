@@ -6,18 +6,20 @@ import {
   Note05Icon,
 } from "hugeicons-react";
 
+type IconType = typeof FireIcon;
+
 type NavItem =
   | {
-      type: "menu";
-      labelDesktop: string;
-      path: string;
-      matchPaths?: string[];
-      icon?: any;
-    }
+    type: "menu";
+    labelDesktop: string;
+    path: string;
+    matchPaths?: string[];
+    icon?: IconType;
+  }
   | {
-      type: "label";
-      label: string;
-    };
+    type: "label";
+    label: string;
+  };
 
 export const NAV_MENUS_DESKTOP: NavItem[] = [
   {

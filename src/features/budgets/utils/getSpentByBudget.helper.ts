@@ -3,7 +3,6 @@ const BUDGET_CATEGORY_MAPPING: Record<string, string[]> = {
   "Token Listrik": ["CAT004"],
   "Kuota": ["CAT005"],
   "Bensin": ["CAT006"],
-  "Service MX King": ["CAT014"],
   "Uang Bersama": ["CAT001"],
 };
 

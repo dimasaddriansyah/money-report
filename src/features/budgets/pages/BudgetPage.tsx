@@ -1,12 +1,14 @@
 // import BudgetDesktop from "../components/BudgetDesktop";
 // import BudgetLayout from "../components/BudgetLayout";
 import { useAccounts } from "../../accounts/hooks/useAccounts";
+import { useTransactions } from "../../transactions/hooks/useTransactions";
 import BudgetMobile from "../components/BudgetMobile";
 import { useBudgets } from "../hooks/useBudgets";
 
 export default function BudgetPage() {
   const { budgets, loading, refetch } = useBudgets();
   const { accounts } = useAccounts();
+  const {transactions} = useTransactions();
 
   if (loading) {
     return (
@@ -29,7 +31,7 @@ export default function BudgetPage() {
       </div>
 
       <div className="md:hidden">
-        <BudgetMobile budgets={budgets} accounts={accounts} refetch={refetch} />
+        <BudgetMobile budgets={budgets} accounts={accounts} transactions={transactions} refetch={refetch} />
       </div>
     </>
   );

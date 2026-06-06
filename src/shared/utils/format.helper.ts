@@ -45,17 +45,14 @@ export function formatDateDay(date: string) {
 }
 
 export function formatDateInput(date: string | Date = new Date()) {
-  // kalau string ISO (ada T)
   if (typeof date === "string" && date.includes("T")) {
     return date.slice(0, 10);
   }
 
-  // kalau sudah YYYY-MM-DD
   if (typeof date === "string") {
     return date;
   }
 
-  // kalau Date object (create baru)
   return new Date(date).toLocaleDateString("en-CA", {
     timeZone: "Asia/Jakarta",
   });
@@ -68,7 +65,6 @@ export function normalizeDate(date?: string) {
     });
   }
 
-  // kalau ISO (ada T)
   if (date.includes("T")) {
     const d = new Date(date);
 

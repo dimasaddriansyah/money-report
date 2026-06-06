@@ -79,7 +79,7 @@ export default function BottomSheet({
         </div>
 
         {/* CONTENT */}
-        <div className="px-4 py-4 pb-8 max-h-[60vh] overflow-y-auto no-scrollbar">
+        <div className="pb-8 max-h-[60vh] overflow-y-auto no-scrollbar">
           {children}
         </div>
       </div>

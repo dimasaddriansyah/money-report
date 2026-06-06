@@ -18,7 +18,7 @@ function getPeriod(date: Date) {
   return { start, end };
 }
 
-export function useTransactionPeriod() {
+export function useTransactionPeriod(allowFuture = false) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const { start, end } = useMemo(
@@ -33,14 +33,23 @@ export function useTransactionPeriod() {
     start.getTime() === currentPeriod.start.getTime() &&
     end.getTime() === currentPeriod.end.getTime();
 
+  const nextPeriodDate = new Date(today);
+  nextPeriodDate.setMonth(nextPeriodDate.getMonth() + 1);
+  const nextPeriod = getPeriod(nextPeriodDate);
+
+  const isMaxPeriod =
+    start.getTime() === nextPeriod.start.getTime() &&
+    end.getTime() === nextPeriod.end.getTime();
+
   // ⏭ next period
   const next = () => {
-    if (isCurrentPeriod) return;
+    if (!allowFuture && isCurrentPeriod) return;
+
+    if (allowFuture && isMaxPeriod) return;
 
     setCurrentDate(prev => {
       const d = new Date(prev);
-      d.setMonth(d.getMonth() + 1);
-      return d;
+      return new Date(d.getFullYear(), d.getMonth() + 1, 25);
     });
   };
 
@@ -48,8 +57,7 @@ export function useTransactionPeriod() {
   const prev = () => {
     setCurrentDate(prev => {
       const d = new Date(prev);
-      d.setMonth(d.getMonth() - 1);
-      return d;
+      return new Date(d.getFullYear(), d.getMonth() - 1, 25)
     });
   };
 
@@ -59,5 +67,6 @@ export function useTransactionPeriod() {
     next,
     prev,
     isCurrentPeriod,
+    isMaxPeriod
   };
 }

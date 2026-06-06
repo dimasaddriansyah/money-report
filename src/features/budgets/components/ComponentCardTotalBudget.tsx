@@ -4,9 +4,10 @@ import { useBalance } from "../../../shared/context/BalanceContext";
 
 type Props = {
   amount: number;
+  onEdit?: () => void;
 }
 
-export default function ComponentCardTotalBudget({ amount }: Props) {
+export default function ComponentCardTotalBudget({ amount, onEdit }: Props) {
   const { hideBalance, setHideBalance } = useBalance();
 
   return (
@@ -31,7 +32,9 @@ export default function ComponentCardTotalBudget({ amount }: Props) {
             </div>
           </div>
         </div>
-        <button className="flex items-center px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 border text-white text-sm rounded-lg gap-1 cursor-pointer">
+        <button
+          onClick={onEdit}
+          className="flex items-center px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 border text-white text-sm rounded-lg gap-1 cursor-pointer">
           <NoteEditIcon size={20} />
           <span className="font-semibold">Edit</span>
         </button>

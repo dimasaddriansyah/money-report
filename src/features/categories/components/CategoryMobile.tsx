@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import EmptyState from "../../../shared/ui/EmptyState";
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import ComponentCategoryItem from "./ComponentCategoryItem";
+import { Delete02Icon } from "hugeicons-react";
 
 type Props = {
   categories: Category[];
@@ -48,7 +49,7 @@ export default function CategoryMobile({
       {isEmpty ? (
         <EmptyState
           title="No categories yet"
-          subtitle="Create your first category to start tracking"/>
+          subtitle="Create your first category to start tracking" />
       ) : (
         <div className="bg-white">
           {categories.map((row) => (
@@ -68,24 +69,21 @@ export default function CategoryMobile({
         onClose={() => {
           setOpen(false);
           setSelectedCategory(null);
-        }}
-        title="Delete Category">
-        <div className="flex flex-col gap-4">
-          <p className="text-sm text-slate-500">
+        }}>
+        <div className="flex flex-col p-4 gap-4">
+          <div className="text-slate-500">
             {selectedCategory
-              ? `Delete "${selectedCategory.name}"? This cannot be undone.`
+              ?
+              <div className="flex flex-col items-center pt-2 gap-4">
+                <Delete02Icon className="text-red-500" size={40} />
+                <div className="flex flex-col items-center">
+                  <span className="font-semibold text-black text-base">Delete "{selectedCategory.name}"?</span>
+                  <span className="text-sm text-center w-70">Are you sure? Once deleted, this category and its data cannot be recovered.</span>
+                </div>
+              </div>
               : ""}
-          </p>
+          </div>
           <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setOpen(false);
-                setSelectedCategory(null);
-              }}
-              className="flex-1 py-2 rounded-xl hover:bg-slate-50 border border-slate-200 text-sm text-slate-400 cursor-pointer">
-              Cancel
-            </button>
-
             <button
               onClick={handleDelete}
               disabled={loading}

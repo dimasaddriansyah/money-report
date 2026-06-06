@@ -1,4 +1,3 @@
-import { ArrowDataTransferHorizontalIcon, TradeDownIcon, TradeUpIcon } from "hugeicons-react";
 import { formatCurrency } from "../../../shared/utils/format.helper";
 import type { Transaction } from "../types/transaction";
 import { TRANSACTION_ACCOUNT_CONFIG } from "./transaction.account.config";
@@ -53,33 +52,25 @@ export function getTypeDisplay(typeId: string) {
     case "TP001":
       return {
         label: "Income",
-        className:
-          "px-2.5 py-1 bg-green-50 border border-green-200 text-green-500 font-medium rounded-full",
-        icon: TradeUpIcon
+        className: "text-green-500"
       };
 
     case "TP002":
       return {
         label: "Expense",
-        className:
-          "px-2.5 py-1 bg-red-50 border border-red-200 text-red-500 font-medium rounded-full",
-        icon: TradeDownIcon
+        className: "text-red-500"
       };
 
     case "TP003":
       return {
         label: "Transfer",
-        className:
-          "px-2.5 py-1 bg-slate-50 border border-slate-200 text-slate-500 font-medium rounded-full",
-        icon: ArrowDataTransferHorizontalIcon
+        className: "text-slate-500"
       };
 
     default:
       return {
         label: typeId,
-        className:
-          "px-2.5 py-1 bg-purple-100 border border-purple-200 text-purple-700 font-medium rounded-full",
-        icon: ArrowDataTransferHorizontalIcon
+        className: "text-purple-700"
       };
   }
 }
@@ -117,7 +108,7 @@ export function getAmountDisplay(row: Transaction) {
 export function getAccountFields(typeId: string) {
   const config =
     TRANSACTION_ACCOUNT_CONFIG[
-      typeId as keyof typeof TRANSACTION_ACCOUNT_CONFIG
+    typeId as keyof typeof TRANSACTION_ACCOUNT_CONFIG
     ];
 
   if (!config) return [];

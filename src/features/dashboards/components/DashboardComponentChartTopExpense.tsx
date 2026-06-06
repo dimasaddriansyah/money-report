@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EChartsOption } from "echarts";
 import ReactECharts from "echarts-for-react";
 import { useEffect, useState } from "react";
@@ -100,8 +101,10 @@ export default function DashboardComponentChartTopExpense({ data }: Props) {
         data: data.amounts,
         barWidth: 40,
         itemStyle: {
-          color: "#EF4444",
+          color: "rgba(255,70,131,0.05)",
           borderRadius: [0, 8, 8, 0],
+          borderColor: "#EF4444",
+          borderWidth: 2
         },
       },
       {
@@ -114,7 +117,7 @@ export default function DashboardComponentChartTopExpense({ data }: Props) {
           position: "insideRight",
           distance: 12,
           formatter: (p: any) => formatBalance(formatCurrency(p.value), hideBalance),
-          color: "#FFFFFF",
+          color: "#1E1E1E",
           fontWeight: 600,
         },
         itemStyle: { color: "transparent" },

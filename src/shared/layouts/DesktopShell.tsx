@@ -56,11 +56,10 @@ export default function DesktopShell({ children }: any) {
           textButton="Export Data"
           loading={LoadingExport}
           onSubmit={handleExport}
-          onClose={() => setOpenModal(false)}
-        >
-          <div className="flex flex-col gap-2">
+          onClose={() => setOpenModal(false)}>
+          <div className="flex flex-col gap-2 p-4">
             <span className="text-slate-600">Apakah anda ingin export semua data transaksi?</span>
-            <div className="flex items-center p-3 bg-green-50 border border-green-200 gap-2 rounded-lg">
+            <div className="flex items-center p-4 bg-green-50 border border-green-200 gap-2 rounded-lg">
               <Xls02Icon className="text-green-600" size={20} />
               <span className="text-sm text-green-600 font-medium">Cashflow_{year}.xlsx</span>
             </div>

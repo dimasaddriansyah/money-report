@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDown01Icon, CreditCardIcon, DateTimeIcon, DollarCircleIcon, Note05Icon, PencilEdit02Icon } from "hugeicons-react";
+import { ArrowDown01Icon, CreditCardIcon, Calendar03Icon, DollarCircleIcon, Note05Icon, NoteEditIcon, LicenseIcon } from "hugeicons-react";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import { useTransactionForm } from "../hooks/useTransactionForm";
@@ -95,6 +95,7 @@ export default function TransactionForm({
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-3 md:gap-4 p-4 md:p-0">
+        {/* Form Type and Date */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           <div id="typeId" className="flex-1">
             <label className="block text-sm font-medium text-black mb-1">Type</label>
@@ -106,7 +107,7 @@ export default function TransactionForm({
                 }}
                 className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
                 <div className="flex items-center gap-4">
-                  <CreditCardIcon className="text-slate-400" size={20} />
+                  <LicenseIcon className="text-slate-400" size={20} />
                   <span className="capitalize">{TYPE_OPTIONS.find((opt) => opt.value === typeId)?.label}</span>
                 </div>
                 <ArrowDown01Icon className="text-slate-400" size={20} />
@@ -135,20 +136,20 @@ export default function TransactionForm({
               onClick={() => dateRef.current?.showPicker()}
               className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
               <div className="flex items-center gap-4">
-                <DateTimeIcon className="text-slate-400" size={20} />
+                <Calendar03Icon className="text-slate-400" size={20} />
                 <input
                   ref={dateRef}
                   type="date"
                   value={date}
                   onChange={(e) => setField("date", e.target.value)}
-                  className="absolute opacity-0 pointer-events-none"
-                />
+                  className="absolute opacity-0" />
                 <span className="capitalize">{formatDateFull(date) || "Select date"}</span>
               </div>
               <ArrowDown01Icon className="text-slate-400" size={20} />
             </div>
           </div>
         </div>
+        {/* Form Account and Category */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           {accountFields.map((field) => {
             const value = field.key === "fromAccountId" ? fromAccountId : toAccountId;
@@ -222,11 +223,11 @@ export default function TransactionForm({
                         }}
                         className={`flex items-center px-4 py-3 gap-4 transition cursor-pointer 
                             ${categoryId === row.id
-                              ? "bg-slate-50 text-black font-medium"
-                              : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
-                            }`}>
-                          <img src={getCategoriesImg(row.name)} alt={row.name} className="w-8 h-8" />
-                          <span>{row.name}</span>
+                            ? "bg-slate-50 text-black font-medium"
+                            : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
+                          }`}>
+                        <img src={getCategoriesImg(row.name)} alt={row.name} className="w-8 h-8" />
+                        <span>{row.name}</span>
                       </div>
                     ))}
                   </div>
@@ -235,6 +236,7 @@ export default function TransactionForm({
             </div>
           )}
         </div>
+        {/* Form Amount and Remark */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           <div id="amount" className="flex-1">
             <label className="block text-sm font-medium text-black mb-1">Amount</label>
@@ -243,6 +245,7 @@ export default function TransactionForm({
                 <DollarCircleIcon className="text-slate-400" size={20} />
               </div>
               <input
+                inputMode="numeric"
                 value={amountInput}
                 onChange={handleAmountChange}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${amount ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
@@ -255,18 +258,18 @@ export default function TransactionForm({
             <div
               className="relative flex items-center justify-center">
               <div className="absolute left-4 pointer-events-none">
-                <PencilEdit02Icon className="text-slate-400" size={20} />
+                <NoteEditIcon className="text-slate-400" size={20} />
               </div>
               <input
                 value={remark}
                 onChange={(e) => setField("remark", e.target.value)}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${remark ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
-                placeholder="Input transaction remark"
-              />
+                placeholder="Input transaction remark" />
             </div>
           </div>
         </div>
       </div>
+      {/* Button */}
       <div className="flex flex-col md:flex-row justify-end mt-4 gap-2 px-4 md:px-0">
         <button
           type="button"

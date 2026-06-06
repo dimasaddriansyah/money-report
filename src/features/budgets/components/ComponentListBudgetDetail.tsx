@@ -20,6 +20,7 @@ type Props = {
     byRemark: Record<string, number>;
     byAccount: Record<string, number>;
     byCategory: Record<string, number>;
+    byCategoryAccount: Record<string, number>;
   };
 };
 
@@ -42,11 +43,9 @@ export default function ComponentListBudgetDetail({ grouped, transactionMap }: P
           {group.budgets.map((b) => {
             const ACCOUNT_USE_CATEGORY = ["ACC005", "ACC006"];
             const isCategoryBased = ACCOUNT_USE_CATEGORY.includes(group.accountId);
-
             const spent = isCategoryBased
-              ? getSpentByBudget(b.remark, transactionMap)
+              ? getSpentByBudget(b.remark, group.accountId, transactionMap)
               : transactionMap.byRemark[b.remark?.toLowerCase() ?? ""] ?? 0;
-
             const percent =
               b.amount > 0
                 ? Math.min(Math.round((spent / b.amount) * 100), 100)

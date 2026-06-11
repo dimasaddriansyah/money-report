@@ -69,6 +69,12 @@ export default function BudgetDesktop({
       ? Math.min(Math.round((totalUsage / budgetPrimary.amount) * 100))
       : 0
 
+  const statusUsageStyleMap =
+    percentUsage > 100 ? "text-red-600"
+      : percentUsage >= 100 ? "text-blue-600"
+        : percentUsage >= 70 ? "text-yellow-600"
+          : "text-green-600";
+
   const { deleteBudget, saveBudget, loading } = useBudgetActions(refetch);
   async function handleDelete() {
     if (modal?.type !== "delete") return;
@@ -166,156 +172,101 @@ export default function BudgetDesktop({
                     </span>
                   </div>
                 ))}
-                <div className="flex items-center justify-between px-4 py-3 bg-slate-100">
-                  <div className="flex flex-col">
+                 <div className="flex justify-between px-4 py-3 bg-slate-100">
                   <span className="text-sm text-slate-500 font-medium">Total Allocation</span>
-                  {totalUsage > (budgetPrimary?.amount ?? 0) && (
-                    <span className="text-sm font-semibold text-red-500">Over Budget!</span>
-                  )}
-                  </div>
-                  <span className={`text-sm font-semibold ${percentUsage > 100 ? "text-red-500" : "text-black"}`}>{formatBalance(formatCurrency(totalUsage), hideBalance)}</span>
+                  <span className={`text-sm font-semibold ${statusUsageStyleMap}`}>{formatBalance(formatCurrency(totalUsage), hideBalance)}</span>
                 </div>
               </div>
             </div >
           </div>
         </div>
-        {isEmpty ? (
-          <div className="w-full py-12 bg-white border border-slate-200 rounded-lg">
-            <EmptyState
-              title="No budgets yet"
-              subtitle="Create your first budget to start tracking"
-              icon={<MoneySavingJarIcon />} />
-          </div>
-        ) : (
-          <div className="w-[70%]">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {grouped.flatMap((group) =>
-                group.budgets.map((b) => {
-                  const ACCOUNT_USE_CATEGORY = ["ACC005", "ACC006"];
-                  const isCategoryBased =
-                    ACCOUNT_USE_CATEGORY.includes(group.accountId);
-                  const spent = isCategoryBased
-                    ? getSpentByBudget(
-                      b.remark,
-                      b.accountId,
-                      transactionMap
-                    )
-                    : transactionMap.byRemark[
-                    b.remark?.toLowerCase() ?? ""
-                    ] ?? 0;
-                  const saving = b.amount - spent;
-                  const percent =
-                    b.amount > 0
-                      ? Math.min(
-                        Math.round((spent / b.amount) * 100),
-                        100
-                      )
-                      : 0;
-                  const status =
-                    percent > 100
-                      ? "Over"
-                      : percent >= 100
-                        ? "Pass"
-                        : percent >= 70
-                          ? "Warning"
-                          : "Safe";
-                  const statusStyleMap: Record<string, string> = {
-                    Over:
-                      "bg-red-100 border border-red-200 text-red-600",
-                    Pass:
-                      "bg-blue-100 border border-blue-200 text-blue-600",
-                    Warning:
-                      "bg-yellow-100 border border-yellow-200 text-yellow-600",
-                    Safe:
-                      "bg-green-100 border border-green-200 text-green-600",
-                  };
-
-                  return (
-                    <div
-                      key={b.id}
-                      onClick={() =>
-                        navigate(`/budget/edit/${b.id}`)
-                      }
-                      className="bg-white border border-slate-200 rounded-xl p-4 hover:bg-slate-50 cursor-pointer">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={getAccountsImg(group.accountName)}
-                            alt={group.accountName}
-                            className="w-6 h-6" />
-                          <div className="text-sm font-semibold text-slate-500">{group.accountName}</div>
-                        </div>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyleMap[status]}`}>
-                          {status}
-                        </span>
+        <div className="w-[70%]">
+          <div className="bg-white border border-slate-200 rounded-lg">
+            {isEmpty ? (
+              <EmptyState
+                title="No budgets yet"
+                subtitle="Create your first budget to start tracking"
+                icon={<MoneySavingJarIcon />} />
+            ) : (
+              <div className="flex flex-col">
+                {grouped.map((group) => (
+                  <div key={group.accountId}>
+                    <div className="flex justify-between px-4 py-3 bg-slate-100">
+                      <div className="flex items-center gap-3">
+                        <img src={getAccountsImg(group.accountName)} alt={group.accountName} className="w-6 h-6" />
+                        <span className="text-sm font-semibold text-slate-500">{group.accountName}</span>
                       </div>
-                      <div className="my-3 h-px bg-slate-100" />
-                      <div className="space-y-4">
-                        <div className="text-base font-semibold text-black truncate">{b.remark}</div>
-                        {/* ALLOCATION */}
-                        <div className="space-y-2.5">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-slate-500">Budgeting</span>
-                            <span className="text-slate-500">{formatBalance(formatCurrency(b.amount), hideBalance)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-slate-500">Spending</span>
-                            <span className="text-slate-500">{formatBalance(formatCurrency(spent), hideBalance)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-slate-500">Saving</span>
-                            <span className="text-slate-500">{formatBalance(formatCurrency(saving), hideBalance)}</span>
-                          </div>
-                        </div>
-                        {/* USAGE PERCENTAGE */}
-                        <div className="relative">
-                          <div className="h-4.5 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-black"
-                              style={{ width: `${Math.min(percent, 100)}%`, }} />
-                          </div>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className={`text-[10px] font-bold ${percent > 50 ? "text-white" : "text-black"}`}>
-                              {percent}%
-                            </span>
-                          </div>
-                        </div>
-                        {/* <div className="flex gap-2 mt-4">
-                      <button
-                        onClick={() =>
-                          navigate(`/budget/edit/${b.id}`)
-                        }
-                        className="flex-1 p-2 bg-amber-50 hover:bg-amber-100 rounded-lg cursor-pointer"
-                      >
-                        <NoteEditIcon
-                          size={18}
-                          className="mx-auto text-amber-500"
-                        />
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          setModal({
-                            type: "delete",
-                            data: b,
-                          })
-                        }
-                        className="flex-1 p-2 bg-red-50 hover:bg-red-100 rounded-lg cursor-pointer"
-                      >
-                        <Delete02Icon
-                          size={18}
-                          className="mx-auto text-red-500"
-                        />
-                      </button>
-                    </div> */}
-                      </div>
+                      <span className="text-sm font-semibold text-slate-500">{formatBalance(formatCurrency(group.total), hideBalance)}</span>
                     </div>
-                  )
-                })
-              )}
-            </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
+                        <thead className="bg-slate-200 text-sm text-left text-slate-500">
+                          <tr>
+                            <th className="w-10">#</th>
+                            <th className="w-50">Remark</th>
+                            <th>Budget</th>
+                            <th>Spent</th>
+                            <th>Saving</th>
+                            <th>Status</th>
+                            <th className="w-30 text-center">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {group.budgets.map((b, index) => {
+                            const ACCOUNT_USE_CATEGORY = ["ACC005", "ACC006"];
+                            const isCategoryBased = ACCOUNT_USE_CATEGORY.includes(group.accountId);
+                            const spent = isCategoryBased
+                              ? getSpentByBudget(b.remark, b.accountId, transactionMap)
+                              : transactionMap.byRemark[b.remark?.toLowerCase() ?? ""] ?? 0;
+                            const saving = b.amount - spent;
+                            const percent =
+                              b.amount > 0
+                                ? Math.min(Math.round((spent / b.amount) * 100), 100)
+                                : 0;
+                            const status =
+                              percent > 100 ? "Over"
+                                : percent >= 100 ? "Pass"
+                                  : percent >= 70 ? "Warning"
+                                    : "Safe";
+                            const statusStyleMap: Record<string, string> = {
+                              Over: "bg-red-100 border border-red-200 text-red-600",
+                              Pass: "bg-blue-100 border border-blue-200 text-blue-600",
+                              Warning: "bg-yellow-100 border border-yellow-200 text-yellow-600",
+                              Safe: "bg-green-100 border border-green-200 text-green-600",
+                            };
+
+                            return (
+                              <tr key={b.id} className="hover:bg-slate-50">
+                                <td className="text-sm text-slate-400">{index + 1}.</td>
+                                <td className="text-sm">{b.remark}</td>
+                                <td className="text-sm font-semibold">{formatBalance(formatCurrency(b.amount), hideBalance)}</td>
+                                <td className="text-sm text-slate-500">{formatBalance(formatCurrency(spent), hideBalance)}</td>
+                                <td className="text-sm text-slate-500">{formatBalance(formatCurrency(saving), hideBalance)}</td>
+                                <td className="text-xs font-medium"><span className={`px-2 py-1 rounded-full ${statusStyleMap[status]}`}>{status}</span></td>
+                                <td className="flex gap-2 text-xs font-medium">
+                                  <button
+                                    onClick={() => navigate(`/budget/edit/${b.id}`)}
+                                    className="p-2 bg-amber-50 hover:bg-amber-200 rounded-xl cursor-pointer">
+                                    <NoteEditIcon size={20} className="text-amber-500" />
+                                  </button>
+                                  <button
+                                    onClick={() => setModal({ type: "delete", data: b })}
+                                    className="p-2 bg-red-50 hover:bg-red-200 rounded-xl cursor-pointer">
+                                    <Delete02Icon size={20} className="text-red-500" />
+                                  </button>
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
       {modal?.type === "delete" && (
         <Modal

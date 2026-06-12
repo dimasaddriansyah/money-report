@@ -84,7 +84,7 @@ export default function Settings() {
             >
               <div className="flex items-center gap-4">
                 <FileExportIcon className="h-5 w-5 text-slate-400" />
-                <span className="">Export Data</span>
+                <span className="">Backup Data</span>
               </div>
               <ArrowRight01Icon className="h-5 w-5 text-slate-400" />
             </div>
@@ -95,10 +95,10 @@ export default function Settings() {
       <BottomSheet
         open={openExport}
         onClose={() => setOpenExport(false)}
-        title="Export Data"
+        title="Backup Data"
       >
         <div className="flex flex-col gap-5">
-          <span>Apakah anda ingin export semua data transaksi?</span>
+          <span>Apakah anda ingin backup semua data transaksi?</span>
 
           <button
             onClick={handleExport}
@@ -111,7 +111,7 @@ export default function Settings() {
               ) : (
                 <>
                   <Xls01Icon />
-                  <span>Export Data Spreadsheet</span>
+                  <span>Backup Data Spreadsheet</span>
                 </>
               )}
             </div>

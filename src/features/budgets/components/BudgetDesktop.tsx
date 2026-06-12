@@ -1,4 +1,4 @@
-import { Add01Icon, Delete02Icon, DollarCircleIcon, MoneySavingJarIcon, NoteEditIcon } from "hugeicons-react";
+import { Add01Icon, DollarCircleIcon, MoneySavingJarIcon, NoteEditIcon } from "hugeicons-react";
 import EmptyState from "../../../shared/ui/EmptyState";
 import { formatBalance, formatCurrency, formatNumber } from "../../../shared/utils/format.helper";
 import type { Account } from "../../accounts/types/account";
@@ -35,8 +35,7 @@ type BudgetGroup = {
 };
 
 type ModalState =
-  | { type: "delete"; data: Budget }
-  | { type: "listTransfer"; data: BudgetGroup }
+  { type: "listTransfer"; data: BudgetGroup }
   | { type: "editBudget"; data: Budget }
   | null;
 
@@ -69,25 +68,7 @@ export default function BudgetDesktop({
       ? Math.min(Math.round((totalUsage / budgetPrimary.amount) * 100))
       : 0
 
-  const { deleteBudget, saveBudget, loading } = useBudgetActions(refetch);
-  async function handleDelete() {
-    if (modal?.type !== "delete") return;
-    try {
-      const result = await deleteBudget(modal.data.id);
-      toast.success("Deleted", {
-        description: result.message,
-      });
-      setModal(null);
-    } catch (error: unknown) {
-      let message = "Something went wrong";
-      if (error instanceof Error) {
-        message = error.message;
-      }
-      toast.error("Failed to delete", {
-        description: message,
-      });
-    }
-  }
+  const { saveBudget, loading } = useBudgetActions(refetch);
 
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, "");
@@ -117,7 +98,7 @@ export default function BudgetDesktop({
   return (
     <>
       <div className="flex gap-4 items-start">
-        <div className="w-[30%] space-y-4">
+        <div className="w-[30%] min-w-78 space-y-4">
           {/* FILTER DATE PERIOD */}
           <div className="bg-white border border-slate-200 rounded-lg">
             <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod, isMaxPeriod }} allowFuture />
@@ -168,10 +149,10 @@ export default function BudgetDesktop({
                 ))}
                 <div className="flex items-center justify-between px-4 py-3 bg-slate-100">
                   <div className="flex flex-col">
-                  <span className="text-sm text-slate-500 font-medium">Total Allocation</span>
-                  {totalUsage > (budgetPrimary?.amount ?? 0) && (
-                    <span className="text-sm font-semibold text-red-500">Over Budget!</span>
-                  )}
+                    <span className="text-sm text-slate-500 font-medium">Total Allocation</span>
+                    {totalUsage > (budgetPrimary?.amount ?? 0) && (
+                      <span className="text-sm font-semibold text-red-500">Over Budget!</span>
+                    )}
                   </div>
                   <span className={`text-sm font-semibold ${percentUsage > 100 ? "text-red-500" : "text-black"}`}>{formatBalance(formatCurrency(totalUsage), hideBalance)}</span>
                 </div>
@@ -280,34 +261,6 @@ export default function BudgetDesktop({
                             </span>
                           </div>
                         </div>
-                        {/* <div className="flex gap-2 mt-4">
-                      <button
-                        onClick={() =>
-                          navigate(`/budget/edit/${b.id}`)
-                        }
-                        className="flex-1 p-2 bg-amber-50 hover:bg-amber-100 rounded-lg cursor-pointer"
-                      >
-                        <NoteEditIcon
-                          size={18}
-                          className="mx-auto text-amber-500"
-                        />
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          setModal({
-                            type: "delete",
-                            data: b,
-                          })
-                        }
-                        className="flex-1 p-2 bg-red-50 hover:bg-red-100 rounded-lg cursor-pointer"
-                      >
-                        <Delete02Icon
-                          size={18}
-                          className="mx-auto text-red-500"
-                        />
-                      </button>
-                    </div> */}
                       </div>
                     </div>
                   )
@@ -317,18 +270,6 @@ export default function BudgetDesktop({
           </div>
         )}
       </div>
-      {modal?.type === "delete" && (
-        <Modal
-          title="Delete Budget"
-          textButton="Delete"
-          loading={loading}
-          onSubmit={handleDelete}
-          onClose={() => setModal(null)}>
-          <p className="p-4 text-sm text-slate-500">
-            Delete <span className="text-black font-semibold">"{modal.data.remark}"</span> ? This cannot be undone.
-          </p>
-        </Modal>
-      )}
       {modal?.type === "listTransfer" && (
         <Modal
           title={`List Transfer ${modal.data.accountName}`}

@@ -5,14 +5,19 @@ import { toast } from "sonner";
 import BudgetLayout from "../components/BudgetLayout";
 import BudgetForm from "../components/BudgetForm";
 import { useAccounts } from "../../accounts/hooks/useAccounts";
+import { useState } from "react";
+import Modal from "../../../shared/ui/Modal";
+import { Delete02Icon } from "hugeicons-react";
 
 export default function BudgetEditPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { budgets, loading: isFetchingBudgets } = useBudgets();
-  const { accounts} = useAccounts();
-  const { saveBudget, loading } = useBudgetActions();
+  const { accounts } = useAccounts();
+  const { saveBudget, deleteBudget, loading } = useBudgetActions();
   const budget = budgets.find((acc) => acc.id === id);
+
+  const [openDelete, setOpenDelete] = useState(false);
 
   async function handleSubmit(data: {
     id?: string;
@@ -33,6 +38,30 @@ export default function BudgetEditPage() {
       toast.error("Failed to save account", {
         description: message,
         duration: 2000,
+      });
+    }
+  }
+
+  async function handleDelete() {
+    if (!budget) return;
+
+    try {
+      const result = await deleteBudget(budget.id);
+
+      toast.success("Deleted", {
+        description: result.message,
+      });
+
+      navigate("/budgets");
+    } catch (error: unknown) {
+      let message = "Failed to delete budget";
+
+      if (error instanceof Error) {
+        message = error.message;
+      }
+
+      toast.error("Failed to delete", {
+        description: message,
       });
     }
   }
@@ -60,16 +89,41 @@ export default function BudgetEditPage() {
   return (
     <>
       <div className="hidden md:block">
-        <BudgetLayout 
+        <BudgetLayout
           title="Form Edit Budget"
           breadcrumb={[
             { label: "Dashboard", path: "/" },
             { label: "Budgets", path: "/budgets" },
             { label: "Edit Budget" },
           ]}
-          showBack>
+          showBack
+          action={
+            <button
+              onClick={() => setOpenDelete(true)}
+              className="flex items-center px-4 py-2.5 gap-2 border border-red-500 hover:bg-red-500 text-red-500 hover:text-white text-sm font-medium rounded-lg transition cursor-pointer">
+              <Delete02Icon size={16} />
+              <span>Delete Budget</span>
+            </button>
+          }>
           <BudgetForm defaultValues={budget} accounts={accounts} onSubmit={handleSubmit} loading={loading} />
         </BudgetLayout>
+        {openDelete && (
+          <Modal
+            title="Delete Budget"
+            textButton="Delete"
+            loading={loading}
+            onSubmit={handleDelete}
+            onClose={() => setOpenDelete(false)}
+          >
+            <p className="p-4 text-sm text-slate-500">
+              Delete{" "}
+              <span className="text-black font-semibold">
+                "{budget.remark}"
+              </span>
+              ? This cannot be undone.
+            </p>
+          </Modal>
+        )}
       </div>
 
       <div className="md:hidden">

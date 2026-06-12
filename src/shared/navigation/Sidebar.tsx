@@ -90,7 +90,7 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
             <FileExportIcon size={20} />
           </div>
           {/* TEXT */}
-          {!collapsed && <span>Export Data</span>}
+          {!collapsed && <span>Backup Data</span>}
         </button>
       </div>
     </aside>

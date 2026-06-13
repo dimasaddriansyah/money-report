@@ -3,6 +3,7 @@ import Breadcrumb from "../../../shared/ui/Breadcrumb";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
+  action?: React.ReactNode;
   title: string;  
   showBack?: boolean;
   button?: { label: string; url: string; };
@@ -10,7 +11,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function AccountLayout({ title, breadcrumb, button, showBack = false, children }: Props) {
+export default function BudgetLayout({ action, title, breadcrumb, button, showBack = false, children }: Props) {
   const navigate = useNavigate();
 
   return (
@@ -22,8 +23,7 @@ export default function AccountLayout({ title, breadcrumb, button, showBack = fa
             {showBack && (
               <button
                 onClick={() => navigate(-1)}
-                className="p-1.5 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer"
-              >
+                className="p-1.5 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer">
                 <ArrowLeft01Icon size={20} />
               </button>
             )}
@@ -37,6 +37,7 @@ export default function AccountLayout({ title, breadcrumb, button, showBack = fa
               <span>{button.label}</span>
             </button>
           )}
+          {action}
         </div>
         <div className="h-px bg-slate-100/60" />
         {children}

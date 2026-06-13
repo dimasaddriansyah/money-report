@@ -78,6 +78,23 @@ export function normalizeDate(date?: string) {
   return date;
 }
 
+export function formatDateMonthRange(value: string) {
+    const date = new Date(value);
+
+    const currentMonth = date.toLocaleDateString("en-GB", {
+      month: "long",
+    });
+
+    const nextDate = new Date(date);
+    nextDate.setMonth(date.getMonth() + 1);
+
+    const nextMonth = nextDate.toLocaleDateString("en-GB", {
+      month: "long",
+    });
+
+    return `${currentMonth} - ${nextMonth}`;
+  }
+
 export function parseRupiah(value: string): number {
   return Number(value?.replace("Rp", "").replace(/\./g, "").trim() || 0);
 }

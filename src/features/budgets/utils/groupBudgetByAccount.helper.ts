@@ -1,52 +1,51 @@
-type BudgetGroup = {
+import type { Account } from "../../accounts/types/account";
+import type { Budget } from "../types/budget";
+
+const ACCOUNT_GROUPS: Record<string, string> = {
+  ACC009: "ACC006",
+  ACC010: "ACC006",
+};
+
+function getParentAccountId(accountId: string) {
+  return ACCOUNT_GROUPS[accountId] ?? accountId;
+}
+
+export type GroupedBudget = {
   accountId: string;
   accountName: string;
   total: number;
-  color?: string;
-  items?: BudgetGroup[];
+  items: Budget[];
 };
 
-const JAGO_ACCOUNTS = ["gopay", "jago", "investment", "bibit"];
-
-const ACCOUNT_COLORS: Record<string, string> = {
-  "blu by bca": "bg-cyan-500",
-  bca: "bg-blue-500",
-  seabank: "bg-amber-500",
-};
-
-export function groupBudgetByAccount(grouped: BudgetGroup[]) {
-  const result = grouped.reduce(
-    (acc, item) => {
-      const name = item.accountName.toLowerCase();
-
-      if (JAGO_ACCOUNTS.includes(name)) {
-        acc.jago.total += item.total;
-        acc.jago.items.push(item);
-      } else {
-        acc.others.push({
-          ...item,
-          color: ACCOUNT_COLORS[name] || "bg-slate-400",
-        });
-      }
-
-      return acc;
-    },
-    {
-      jago: {
-        accountId: "jago-group",
-        accountName: "Jago",
-        total: 0,
-        color: "bg-yellow-500",
-        items: [] as BudgetGroup[],
-      },
-      others: [] as BudgetGroup[],
-    }
+export function groupBudgetByAccount(
+  budgets: Budget[],
+  accounts: Account[]
+): GroupedBudget[] {
+  const accountMap = new Map(
+    accounts.map(account => [account.id, account])
   );
 
-  const merged = [
-    ...(result.jago.total > 0 ? [result.jago] : []),
-    ...result.others,
-  ];
+  return Object.values(
+    budgets.reduce<Record<string, GroupedBudget>>((acc, budget) => {
+      const accountId = getParentAccountId(
+        budget.accountId ?? ""
+      );
 
-  return merged.sort((a, b) => b.total - a.total);
+      if (!acc[accountId]) {
+        acc[accountId] = {
+          accountId,
+          accountName:
+            accountMap.get(accountId)?.name ??
+            "Unknown Account",
+          total: 0,
+          items: [],
+        };
+      }
+
+      acc[accountId].total += budget.amount;
+      acc[accountId].items.push(budget);
+
+      return acc;
+    }, {})
+  ).sort((a, b) => b.total - a.total);
 }

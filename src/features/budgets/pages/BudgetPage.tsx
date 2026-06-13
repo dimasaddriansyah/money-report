@@ -1,7 +1,7 @@
 import BudgetDesktop from "../components/BudgetDesktop";
 import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useTransactions } from "../../transactions/hooks/useTransactions";
-import BudgetMobile from "../components/BudgetMobile";
+// import BudgetMobile from "../components/BudgetMobile";
 import { useBudgets } from "../hooks/useBudgets";
 import Breadcrumb from "../../../shared/ui/Breadcrumb";
 
@@ -28,7 +28,7 @@ export default function BudgetPage() {
       </div>
 
       <div className="md:hidden">
-        <BudgetMobile budgets={budgets} accounts={accounts} transactions={transactions} refetch={refetch} />
+        {/* <BudgetMobile budgets={budgets} accounts={accounts} transactions={transactions} refetch={refetch} /> */}
       </div>
     </>
   );

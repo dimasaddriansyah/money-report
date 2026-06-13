@@ -1,4 +1,4 @@
-import { Add01Icon, DollarCircleIcon, NoteEditIcon } from "hugeicons-react";
+import { Add01Icon, DollarCircleIcon, MoneySavingJarIcon, NoteEditIcon } from "hugeicons-react";
 import { formatBalance, formatCurrency, formatDateMonthRange, formatNumber } from "../../../shared/utils/format.helper";
 import type { Account } from "../../accounts/types/account";
 import { useTransactionPeriod } from "../../transactions/hooks/useTransactionPeriod";
@@ -15,6 +15,8 @@ import { useBudgetActions } from "../hooks/useBudgetActions";
 import { type GroupedBudget, groupBudgetByAccount } from "../utils/groupBudgetByAccount.helper";
 import { getAccountsImg } from "../../../shared/utils/style.helper";
 import { groupBudgetByOriginalAccount } from "../utils/groupBudgetByOriginalAccount.helper";
+import { getBudgetSpendingMap } from "../utils/getBudgetSpendingMap.helper";
+import EmptyState from "../../../shared/ui/EmptyState";
 
 type Props = {
   budgets: Budget[];
@@ -35,14 +37,22 @@ export default function BudgetDesktop({
   refetch
 }: Props) {
   const navigate = useNavigate();
+  const { hideBalance } = useBalance();
   const [amount, setAmount] = useState<number>(0);
   const [amountInput, setAmountInput] = useState<string>("");
   const [modal, setModal] = useState<ModalState>(null);
 
   const { saveBudget, loading } = useBudgetActions(refetch);
 
-  const { hideBalance } = useBalance();
   const { start, end, prev, next, isCurrentPeriod, isMaxPeriod } = useTransactionPeriod(true);
+  const transactionsInPeriod = transactions.filter((trx) => {
+    const trxDate = new Date(trx.date);
+    return (
+      trxDate >= start &&
+      trxDate <= end
+    );
+  });
+
   const {
     primary: budgetPrimary,
     details: budgetDetails,
@@ -61,6 +71,10 @@ export default function BudgetDesktop({
     accounts.map(a => [a.id, a.name])
   );
 
+  const spendingMap = getBudgetSpendingMap(budgetDetails, transactionsInPeriod);
+
+  const isEmpty = groupedBudgets.length === 0;
+
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, "");
     const numeric = Number(raw);
@@ -76,16 +90,9 @@ export default function BudgetDesktop({
           <div className="bg-white border border-slate-200 rounded-lg">
             <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod, isMaxPeriod }} allowFuture />
           </div>
-          {/* BUTTON ADD BUDGET */}
-          <button
-            onClick={() => navigate(`/budget/create`)}
-            className="flex w-full justify-center py-3 bg-black hover:bg-slate-900 text-white text-sm rounded-lg gap-2 cursor-pointer">
-            <Add01Icon size={20} />
-            <span className="font-semibold">Add Budget</span>
-          </button>
           <div className="bg-white border border-slate-200 rounded-lg">
             <div className="flex flex-col">
-              <div className="flex items-center justify-between p-4 border-b border-slate-200">
+              <div className="flex items-center justify-between p-4">
                 <div className="flex flex-col">
                   <span className="text-sm text-slate-400">Budget This Month</span>
                   <span className="text-base font-semibold text-black">{formatBalance(
@@ -108,6 +115,12 @@ export default function BudgetDesktop({
                   <span className="font-semibold">Edit</span>
                 </button>
               </div>
+              <button
+                onClick={() => navigate(`/budget/create`)}
+                className="flex w-full justify-center py-3 bg-black hover:bg-slate-900 text-white text-sm gap-2 transition cursor-pointer">
+                <Add01Icon size={20} />
+                <span className="font-semibold">Add Budget</span>
+              </button>
               <div className="flex flex-col">
                 {groupedBudgets.map((budget) => (
                   <div
@@ -136,58 +149,91 @@ export default function BudgetDesktop({
             </div >
           </div>
         </div>
-        <div className="w-[70%]">
-          <div className="grid grid-cols-3 gap-4">
-            {budgetDetails.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={getAccountsImg(accountMap.get(item.accountId) ?? "Unknown Account")}
-                      alt={accountMap.get(item.accountId) ?? "Unknown Account"}
-                      className="w-8 h-8" />
-                    <span className="text-sm font-medium text-slate-500">{accountMap.get(item.accountId) ?? "Unknown Account"}</span>
-                  </div>
-                  <span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-500 border border-blue-200 rounded-full">
-                    Safe
-                  </span>
-                </div>
-                <div className="my-3 h-px bg-slate-100" />
-                <div className="flex flex-col gap-4">
-                  <div className="text-sm font-semibold text-black truncate">{item.remark}</div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-xs text-slate-500">Budgeting</span>
-                      <span className="text-xs text-slate-500">{formatBalance(formatCurrency(item.amount), hideBalance)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-xs text-slate-500">Spending</span>
-                      <span className="text-xs text-slate-500">{formatBalance(formatCurrency(item.amount), hideBalance)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-xs text-slate-500">Saving</span>
-                      <span className="text-xs text-slate-500">{formatBalance(formatCurrency(item.amount), hideBalance)}</span>
-                    </div>
-                  </div>
-                  <div className="relative">
-                    <div className="h-4 bg-slate-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-black"
-                        style={{ width: `${Math.min(20, 100)}%`, }} />
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className={`text-[10px] font-bold text-black}`}>
-                        {20}%
+        {isEmpty ? (
+          <div className="w-full py-12 bg-white border border-slate-200 rounded-lg">
+            <EmptyState
+              title="No budgets yet"
+              subtitle="Create your first budget to start tracking"
+              icon={<MoneySavingJarIcon />} />
+          </div>
+        ) : (
+          <div className="w-[70%]">
+            <div className="grid grid-cols-3 gap-4">
+              {budgetDetails.map((item) => {
+                const spending = spendingMap.get(item.id) ?? 0;
+                const saving = item.amount - spending;
+                const percent =
+                  item.amount > 0
+                    ? Math.round((spending / item.amount) * 100)
+                    : 0;
+                const isOverBudget = spending > item.amount;
+                const accountName = accountMap.get(item.accountId) ?? "Unknown Account";
+
+                return (
+                  <div
+                    key={item.id}
+                    onClick={() => navigate(`/budget/edit/${item.id}`)}
+                    className="bg-white border border-slate-200 hover:bg-slate-100 rounded-lg p-4 flex flex-col transition cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={getAccountsImg(accountName)}
+                          alt={accountName}
+                          className="w-8 h-8" />
+                        <span className="text-sm font-medium text-slate-500">{accountName}</span>
+                      </div>
+
+                      <span className={`px-3 py-1 text-xs font-semibold rounded-full border 
+                      ${isOverBudget
+                          ? "bg-red-50 text-red-500 border-red-200"
+                          : "bg-green-50 text-green-500 border-green-200"
+                        }`}>
+                        {isOverBudget ? "Over Budget" : "Safe"}
                       </span>
                     </div>
+                    <div className="my-3 h-px bg-slate-100" />
+                    <div className="flex flex-col gap-4">
+                      <div className="text-sm font-semibold text-black truncate">{item.remark}</div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-xs text-slate-500">Budgeting</span>
+                          <span className="text-xs text-slate-500">{formatBalance(formatCurrency(item.amount), hideBalance)}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span className="text-xs text-slate-500">Spending</span>
+                          <span className={`text-xs ${isOverBudget ? "text-red-500 font-semibold" : "text-slate-500"}`}>
+                            {formatBalance(formatCurrency(spending), hideBalance)}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span className="text-xs text-slate-500">Saving</span>
+                          <span className={`text-xs ${saving < 0 ? "text-red-500 font-semibold" : "text-slate-500"}`}>
+                            {formatBalance(formatCurrency(saving), hideBalance)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="relative">
+                        <div className="h-4 bg-slate-200 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full ${isOverBudget ? "bg-red-500" : "bg-black"}`}
+                            style={{ width: `${Math.min(percent, 100)}%` }} />
+                        </div>
+
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-white">{percent}%</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                )
+              })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {modal?.type === "listTransfer" && (
         <Modal

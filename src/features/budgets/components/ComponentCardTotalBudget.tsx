@@ -34,9 +34,9 @@ export default function ComponentCardTotalBudget({ amount, onEdit }: Props) {
         </div>
         <button
           onClick={onEdit}
-          className="flex items-center px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 border text-white text-sm rounded-lg gap-1 cursor-pointer">
-          <NoteEditIcon size={20} />
-          <span className="font-semibold">Edit</span>
+          className="flex items-center px-2.5 py-1.5 border border-amber-500 hover:bg-amber-500 text-amber-500 hover:text-white rounded-lg gap-2 transition cursor-pointer">
+          <NoteEditIcon size={16} />
+          <span className="text-sm font-semibold">Edit</span>
         </button>
       </div>
     </div>

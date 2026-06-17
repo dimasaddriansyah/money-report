@@ -127,7 +127,7 @@ export default function BudgetEditPage() {
       </div>
 
       <div className="md:hidden">
-        {/* <BudgetForm defaultValues={budget} onSubmit={handleSubmit} loading={loading} /> */}
+        <BudgetForm defaultValues={budget} accounts={accounts} onSubmit={handleSubmit} loading={loading} />
       </div>
     </>
   );

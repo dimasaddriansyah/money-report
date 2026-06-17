@@ -172,7 +172,7 @@ export default function BudgetForm({
                 value={amountInput}
                 onChange={handleAmountChange}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${amount ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
-                placeholder="Input amount"/>
+                placeholder="Input amount" />
             </div>
           </div>
           <div id="remark" className="flex-1">

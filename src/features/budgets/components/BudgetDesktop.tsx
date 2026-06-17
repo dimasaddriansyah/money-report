@@ -119,7 +119,7 @@ export default function BudgetDesktop({
                 onClick={() => navigate(`/budget/create`)}
                 className="flex w-full justify-center py-3 bg-black hover:bg-slate-900 text-white text-sm gap-2 transition cursor-pointer">
                 <Add01Icon size={20} />
-                <span className="font-semibold">Add Budget</span>
+                <span className="font-semibold">Create Budget</span>
               </button>
               <div className="flex flex-col">
                 {groupedBudgets.map((budget) => (
@@ -129,21 +129,19 @@ export default function BudgetDesktop({
                     className="flex items-center justify-between p-4 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
                     <div className="flex items-center gap-2">
                       <img src={getAccountsImg(budget.accountName)} alt={budget.accountName} className="w-8 h-8" />
-                      <span className="text-sm text-slate-500">{budget.accountName}</span>
+                      <span className="text-sm text-slate-600">{budget.accountName}</span>
                     </div>
-                    <span className="text-sm font-semibold">
+                    <span className="text-sm text-slate-600">
                       {formatBalance(formatCurrency(budget.total), hideBalance)}
                     </span>
                   </div>
                 ))}
                 <div className="flex items-center justify-between px-4 py-3 bg-slate-100">
                   <div className="flex flex-col">
-                    <span className="text-sm text-slate-500 font-medium">Total Allocation</span>
-                    {isOverBudget && (
-                      <span className="text-sm font-semibold text-red-500">Over Budget!</span>
-                    )}
+                    <span className="text-sm font-semibold">Budget Allocation</span>
+                    <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{isOverBudget ? "Over Budget!" : "Safe Budget"}</span>
                   </div>
-                  <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-black"}`}>{formatBalance(formatCurrency(totalAllocation), hideBalance)}</span>
+                  <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{formatBalance(formatCurrency(totalAllocation), hideBalance)}</span>
                 </div>
               </div>
             </div >
@@ -161,11 +159,14 @@ export default function BudgetDesktop({
             <div className="grid grid-cols-3 gap-4">
               {budgetDetails.map((item) => {
                 const spending = spendingMap.get(item.id) ?? 0;
-                const saving = item.amount - spending;
+                const isCappedBudget = item.accountId === "ACC005" && item.remark === "Uang Bersama";
+                const displaySpending = isCappedBudget ? Math.min(spending, item.amount) : spending;
+                const saving = item.amount - displaySpending;
                 const percent =
                   item.amount > 0
-                    ? Math.round((spending / item.amount) * 100)
+                    ? Math.round((displaySpending / item.amount) * 100)
                     : 0;
+
                 const isOverBudget = spending > item.amount;
                 const accountName = accountMap.get(item.accountId) ?? "Unknown Account";
 
@@ -204,7 +205,7 @@ export default function BudgetDesktop({
                         <div className="flex justify-between">
                           <span className="text-xs text-slate-500">Spending</span>
                           <span className={`text-xs ${isOverBudget ? "text-red-500 font-semibold" : "text-slate-500"}`}>
-                            {formatBalance(formatCurrency(spending), hideBalance)}
+                            {formatBalance(formatCurrency(displaySpending), hideBalance)}
                           </span>
                         </div>
 
@@ -217,14 +218,13 @@ export default function BudgetDesktop({
                       </div>
 
                       <div className="relative">
-                        <div className="h-4 bg-slate-200 rounded-full overflow-hidden">
+                        <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
                           <div
-                            className={`h-full ${isOverBudget ? "bg-red-500" : "bg-black"}`}
+                            className={`h-full ${isOverBudget ? "bg-red-500" : "bg-green-600"}`}
                             style={{ width: `${Math.min(percent, 100)}%` }} />
                         </div>
-
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-white">{percent}%</span>
+                          <span className={`text-[10px] font-bold ${percent > 55 ? "text-white" : "text-black"}`}>{percent}%</span>
                         </div>
                       </div>
                     </div>

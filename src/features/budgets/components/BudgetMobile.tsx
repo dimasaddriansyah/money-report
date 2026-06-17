@@ -1,22 +1,23 @@
-import EmptyState from "../../../shared/ui/EmptyState";
+import { useNavigate } from "react-router-dom";
 import type { Account } from "../../accounts/types/account";
-import TransactionComponentFilterDate from "../../transactions/components/TransactionComponentFilterDate";
-import { useTransactionPeriod } from "../../transactions/hooks/useTransactionPeriod";
-import { useBudgetGroupedByAccount } from "../hooks/useBudgetGroupedByAccount";
+import type { Transaction } from "../../transactions/types/transaction";
 import type { Budget } from "../types/budget";
-import { useBudgetGetBudget } from "../hooks/useBudgetGetBudget";
+import { useBalance } from "../../../shared/context/BalanceContext";
+import { useState } from "react";
+import { useBudgetActions } from "../hooks/useBudgetActions";
+import { useTransactionPeriod } from "../../transactions/hooks/useTransactionPeriod";
+import { getBudgetByPeriod } from "../utils/getBudgetByPeriod.helper";
+import { groupBudgetByAccount } from "../utils/groupBudgetByAccount.helper";
+import { formatDateMonthRange, formatNumber } from "../../../shared/utils/format.helper";
+import TransactionComponentFilterDate from "../../transactions/components/TransactionComponentFilterDate";
+import EmptyState from "../../../shared/ui/EmptyState";
 import ComponentCardTotalBudget from "./ComponentCardTotalBudget";
+import BottomSheet from "../../../shared/ui/BottomSheet";
+import { DollarCircleIcon, MoneySavingJarIcon, PlusSignIcon } from "hugeicons-react";
+import { toast } from "sonner";
 import ComponentCardListTransfer from "./ComponentCardListTransfer";
 import ComponentListBudgetDetail from "./ComponentListBudgetDetail";
-import type { Transaction } from "../../transactions/types/transaction";
-import { getTransactionMap } from "../utils/getTransactionMap.helper";
-import { DollarCircleIcon, PlusSignIcon } from "hugeicons-react";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import BottomSheet from "../../../shared/ui/BottomSheet";
-import { formatNumber } from "../../../shared/utils/format.helper";
-import { useBudgetActions } from "../hooks/useBudgetActions";
-import { toast } from "sonner";
+import { getBudgetSpendingMap } from "../utils/getBudgetSpendingMap.helper";
 
 type Props = {
   budgets: Budget[];
@@ -32,46 +33,48 @@ export default function BudgetMobile({
   refetch
 }: Props) {
   const navigate = useNavigate();
-  const { start, end, prev, next, isCurrentPeriod, isMaxPeriod } = useTransactionPeriod(true);
-  const grouped = useBudgetGroupedByAccount({ budgets, start, end, accounts });
-  const isEmpty = grouped.length === 0;
-
-  const budgetPrimary = useBudgetGetBudget({ budgets, start })
-  const transactionMap = getTransactionMap(transactions, start);
-
-  const totalUsage = grouped.reduce((sum, g) => sum + g.total, 0);
-  const percentUsage =
-    budgetPrimary?.amount
-      ? Math.min(Math.round((totalUsage / budgetPrimary.amount) * 100))
-      : 0
-
+  const { hideBalance } = useBalance();
+  const [amountInput, setAmountInput] = useState<string>("");
   const [openEditBudget, setOpenEditBudget] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
   const [editAmount, setEditAmount] = useState(0);
-  const amountInput = editAmount ? formatNumber(editAmount) : "";
-
-  function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const raw = e.target.value.replace(/\D/g, "");
-    const numberValue = Number(raw || 0);
-    setEditAmount(numberValue);
-  }
-
-  const startLabel = start.toLocaleDateString("id-ID", {
-    month: "long",
-  });
-
-  const endLabel = end.toLocaleDateString("id-ID", {
-    month: "long",
-    year: start.getFullYear() !== end.getFullYear()
-      ? "numeric"
-      : undefined,
-  });
 
   const { saveBudget, loading } = useBudgetActions(refetch);
 
-  const handleEditBudget = (budget: Budget) => {
+  const { start, end, prev, next, isCurrentPeriod, isMaxPeriod } = useTransactionPeriod(true);
+  const transactionsInPeriod = transactions.filter((trx) => {
+    const trxDate = new Date(trx.date);
+    return (
+      trxDate >= start &&
+      trxDate <= end
+    );
+  });
+
+  const {
+    primary: budgetPrimary,
+    details: budgetDetails,
+  } = getBudgetByPeriod(budgets, start);
+
+  const groupedBudgets = groupBudgetByAccount(budgetDetails, accounts);
+  const spendingMap = getBudgetSpendingMap(budgetDetails, transactionsInPeriod);
+
+  const accountMap = new Map(
+    accounts.map(a => [a.id, a.name])
+  );
+
+  const isEmpty = groupedBudgets.length === 0;
+
+  function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value.replace(/\D/g, "");
+    const numeric = Number(raw);
+    setEditAmount(numeric);
+    setAmountInput(formatNumber(numeric));
+  }
+  const handleEditBudget = (budget?: Budget) => {
+    if (!budget) return;
     setSelectedBudget(budget);
     setEditAmount(budget.amount);
+    setAmountInput(formatNumber(budget.amount));
     setOpenEditBudget(true);
   };
 
@@ -116,29 +119,30 @@ export default function BudgetMobile({
       {isEmpty ? (
         <EmptyState
           title="No budgets yet"
-          subtitle="Create your first budget to start tracking" />
+          subtitle="Create your first budget to start tracking"
+          icon={<MoneySavingJarIcon />} />
       ) : (
         <>
-          <ComponentCardTotalBudget amount={budgetPrimary.amount} onEdit={() => handleEditBudget(budgetPrimary)} />
+          <ComponentCardTotalBudget amount={budgetPrimary?.amount ?? 0} onEdit={() => handleEditBudget(budgetPrimary)} />
 
-          <ComponentCardListTransfer totalUsage={totalUsage} percentUsage={percentUsage} grouped={grouped} />
+          <ComponentCardListTransfer grouped={groupedBudgets} budgetAmount={budgetPrimary?.amount ?? 0} accounts={accounts} hideBalance={hideBalance} />
 
-          <div className="pb-4 px-4 flex">
+          <div className="px-4 flex">
             <button
               onClick={() => navigate('/budget/create')}
               className="flex w-full justify-center items-center gap-2 py-3 text-sm font-semibold bg-black text-white rounded-xl hover:bg-black/90 transition cursor-pointer">
-              <PlusSignIcon size={20} />
+              <PlusSignIcon size={16} />
               Create Budget
             </button>
           </div>
 
-          <ComponentListBudgetDetail grouped={grouped} transactionMap={transactionMap} />
+          <ComponentListBudgetDetail budgets={budgetDetails} spendingMap={spendingMap} accountMap={accountMap} hideBalance={hideBalance} />
         </>
       )}
       <BottomSheet
         open={openEditBudget}
         onClose={() => setOpenEditBudget(false)}
-        title={`Edit Budget ${startLabel} - ${endLabel}`}>
+        title={`Edit Budget ${budgetPrimary ? formatDateMonthRange(budgetPrimary.date) : ""}`}>
         {selectedBudget && (
           <div className="p-4 flex flex-col gap-4">
             <div id="amount" className="flex-1">

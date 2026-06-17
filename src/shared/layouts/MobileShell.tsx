@@ -95,7 +95,7 @@ export default function MobileShell({ children }: any) {
     <div className="min-h-screen">
       <NavigationHeaderMobile {...headerConfig} />
 
-      <main className="pb-28">{children}</main>
+      <main className="pb-22">{children}</main>
 
       {!hideBottomNav && <NavigationBottomMobile />}
     </div>

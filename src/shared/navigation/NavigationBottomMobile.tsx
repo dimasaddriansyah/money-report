@@ -2,21 +2,21 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   TaskEdit01Icon,
-  FireIcon,
   Settings02Icon,
   PlusSignIcon,
   AiContentGenerator01Icon,
   MoneySavingJarIcon,
   Invoice01Icon,
   ArrowRight01Icon,
+  Home03Icon,
 } from "hugeicons-react";
 import BottomSheet from "../ui/BottomSheet";
 
 const menus = [
-  { label: "Home", path: "/", Icon: FireIcon },
-  { label: "Transactions", path: "/transactions", Icon: Invoice01Icon },
-  { label: "Budgets", path: "/budgets", Icon: MoneySavingJarIcon },
-  { label: "Settings", path: "/settings", Icon: Settings02Icon },
+  { path: "/", Icon: Home03Icon },
+  { path: "/transactions", Icon: Invoice01Icon },
+  { path: "/budgets", Icon: MoneySavingJarIcon },
+  { path: "/settings", Icon: Settings02Icon },
 ];
 
 export default function NavigationBottomMobile() {
@@ -29,44 +29,40 @@ export default function NavigationBottomMobile() {
       {/* OVERLAY */}
       <div
         onClick={() => setOpenFab(false)}
-        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 
+        className={`fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-all duration-300
           ${openFab ? "opacity-100" : "opacity-0 pointer-events-none"}`} />
 
       {/* BOTTOM NAV */}
       <nav
-        className={`fixed inset-x-0 bottom-0 z-30 shadow-blue-950 transition-opacity duration-200 
+        className={`fixed inset-x-0 bottom-0 z-30 flex justify-center pb-3 transition-all duration-300
           ${openFab ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-        <div className="relative flex items-center justify-between px-6 py-3 bg-white pb-[calc(env(safe-area-inset-bottom)+12px)]">
+        <div className="inline-flex items-center p-2.5 gap-2 rounded-full bg-white/40 backdrop-blur-3xl saturate-150 border border-white/50 shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-white/20">
+          {/* HOME */}
+          <NavItem
+            {...menus[0]}
+            active={location.pathname === menus[0].path} />
 
-          {/* LEFT */}
-          <div className="flex justify-between flex-1 pr-13">
-            {menus.slice(0, 2).map((menu) => (
-              <NavItem
-                key={menu.path}
-                {...menu}
-                active={location.pathname === menu.path}
-              />
-            ))}
-          </div>
+          {/* TRANSACTIONS */}
+          <NavItem
+            {...menus[1]}
+            active={location.pathname === menus[1].path} />
 
-          {/* CENTER FAB */}
-          <div className="absolute z-50 -translate-x-1/2 left-1/2 -top-7">
-            <button
-              onClick={() => setOpenFab(true)}
-              className="flex items-center justify-center text-white rounded-full shadow-lg cursor-pointer h-14 w-14 bg-black active:scale-95">
-              <PlusSignIcon strokeWidth={2} className="w-6 h-6" />
-            </button>
-          </div>
+          {/* ADD */}
+          <button
+            onClick={() => setOpenFab(true)}
+            className="flex items-center justify-center px-5 py-3 rounded-full bg-black text-white shadow-md transition-transform active:scale-95 cursor-pointer">
+            <PlusSignIcon strokeWidth={2} className="w-5 h-5" />
+          </button>
 
-          {/* RIGHT */}
-          <div className="flex justify-between flex-1 pl-13">
-            {menus.slice(2).map((menu) => (
-              <NavItem
-                key={menu.path}
-                {...menu}
-                active={location.pathname === menu.path} />
-            ))}
-          </div>
+          {/* BUDGETS */}
+          <NavItem
+            {...menus[2]}
+            active={location.pathname === menus[2].path} />
+
+          {/* SETTINGS */}
+          <NavItem
+            {...menus[3]}
+            active={location.pathname === menus[3].path} />
         </div>
       </nav>
 
@@ -113,12 +109,10 @@ export default function NavigationBottomMobile() {
 }
 
 function NavItem({
-  label,
   path,
   Icon,
   active,
 }: {
-  label: string;
   path: string;
   Icon: React.ElementType;
   active: boolean;
@@ -126,9 +120,8 @@ function NavItem({
   return (
     <Link
       to={path}
-      className={`flex flex-col items-center gap-1 text-xs transition ${active ? "font-semibold text-black" : "text-gray-400"}`}>
-      <Icon size={20} />
-      <span>{label}</span>
+      className={`px-5 py-3 rounded-full text-xs transition ${active ? "bg-slate-100 font-semibold text-black" : "text-slate-700"}`}>
+      <Icon size={24} />
     </Link>
   );
 }

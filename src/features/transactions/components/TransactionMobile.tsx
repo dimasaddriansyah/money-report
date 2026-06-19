@@ -12,7 +12,8 @@ import TransactionGroupMobile from "./TransactionGroupMobile";
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import { useTransactionPeriod } from "../hooks/useTransactionPeriod";
 import TransactionComponentFilterDate from "./TransactionComponentFilterDate";
-import TransactionComponentFilterAccount from "./TransactionComponentFilterAccount";
+import { Invoice01Icon } from "hugeicons-react";
+import TransactionComponentFilter from "./TransactionComponentFilter";
 
 type Props = {
   transactions: Transaction[];
@@ -30,22 +31,38 @@ export default function TransactionMobile({
   const navigate = useNavigate();
   const { hideBalance } = useBalance();
   const { start, end, prev, next, isCurrentPeriod, isMaxPeriod } = useTransactionPeriod();
-  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
+
+  const [selectedType, setSelectedType] = useState<string>("ALL");
+  const [selectedAccount, setSelectedAccount] = useState<string>("ALL");
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
 
   const filteredTransactions = useMemo(() => {
-    return transactions.filter(t => {
+    return transactions.filter((t) => {
       const txDate = new Date(t.date);
       const matchDate = txDate >= start && txDate <= end;
-      const matchAccount = selectedAccountId
-        ? (
-          t.fromAccountId === selectedAccountId ||
-          t.toAccountId === selectedAccountId
-        )
-        : true;
 
-      return matchDate && matchAccount;
+      const matchType =
+        selectedType === "ALL"
+          ? true
+          : t.typeId === selectedType;
+
+      const matchAccount =
+        selectedAccount === "ALL"
+          ? true
+          : (
+            t.fromAccountId === selectedAccount ||
+            t.toAccountId === selectedAccount
+          );
+
+      const matchCategory =
+        selectedCategory === "ALL"
+          ? true
+          : t.categoryId === selectedCategory
+
+
+      return matchDate && matchType && matchAccount && matchCategory;
     });
-  }, [transactions, start, end, selectedAccountId]);
+  }, [transactions, start, end, selectedAccount, selectedType, selectedCategory]);
 
   const [visibleCount, setVisibleCount] = useState(15);
   const sortedTransactions = useMemo(() => {
@@ -99,16 +116,27 @@ export default function TransactionMobile({
       <div className="bg-white">
         <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod, isMaxPeriod }} />
 
-        <TransactionComponentFilterAccount
+        <TransactionComponentFilter
           accounts={accounts}
-          selectedAccountId={selectedAccountId}
-          onSelect={setSelectedAccountId} />
+          categories={categories}
+          selectedType={selectedType}
+          selectedAccount={selectedAccount}
+          selectedCategory={selectedCategory}
+          onChangeType={setSelectedType}
+          onChangeAccount={setSelectedAccount}
+          onChangeCategory={setSelectedCategory}
+        />
+
+        {/* <TransactionComponentFilterAccount
+          accounts={accounts}
+          selectedAccount={selectedAccount}
+          onSelect={setSelectedAccount} /> */}
 
         {isEmpty ? (
           <EmptyState
             title="No transactions"
             subtitle="No data in this period"
-          />
+            icon={<Invoice01Icon />} />
         ) : (
           grouped.map((group) => (
             <TransactionGroupMobile

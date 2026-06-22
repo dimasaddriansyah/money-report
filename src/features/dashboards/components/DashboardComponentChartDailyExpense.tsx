@@ -77,7 +77,7 @@ export default function DashboardComponentChartDailyExpense({ data }: Props) {
 
     areaStyle: {
       color: new graphic.LinearGradient(0, 0, 0, 1, [
-        { offset: 0, color: "rgba(255,70,131,0.05)" },
+        { offset: 0, color: "rgba(0, 0, 0, 0.05)" },
       ]),
     },
 
@@ -100,7 +100,7 @@ export default function DashboardComponentChartDailyExpense({ data }: Props) {
         type: "line",
         smooth: true,
         data: data.amounts,
-        color: "#EF4444",
+        color: "#000000",
         areaStyle: {},
         lineStyle: {
           width: 2,
@@ -116,15 +116,13 @@ export default function DashboardComponentChartDailyExpense({ data }: Props) {
       {isEmpty ? (
         <EmptyState
           title="No transactions yet"
-          subtitle="Create your first transaction to start tracking"
-        />
+          subtitle="Create your first transaction to start tracking" />
       ) : (
         <div className="w-full">
           <ReactECharts
             option={option}
             style={{ height: 400, width: "100%" }}
-            autoResize
-          />
+            autoResize />
         </div>
       )}
     </>

@@ -14,7 +14,7 @@ import { useTransactionActions } from "../../transactions/hooks/useTransactionAc
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
-// import DashboardComponentChartDailyExpense from "./DashboardComponentChartDailyExpense";
+import DashboardSectionLayoutCategoryExpense from "./DashboardSectionLayoutCategoryExpense";
 
 type Props = {
   transactions: Transaction[];
@@ -111,10 +111,10 @@ export default function DashboardMobile({ transactions, accounts, categories, re
 
           <section className="flex flex-col m-4 p-4 bg-white border border-slate-100 rounded-lg gap-4">
             <div className="flex justify-between items-center">
-              <h4 className="font-semibold text-">Expenses Chart</h4>
+              <h4 className="font-semibold text-">Category Expense</h4>
             </div>
             <div className="h-px bg-slate-100/60" />
-            {/* <DashboardComponentChartDailyExpense data={filteredTransactions} /> */}
+             <DashboardSectionLayoutCategoryExpense transactions={transactions} categories={categories}/>
           </section>
 
           {grouped.map((group) => (

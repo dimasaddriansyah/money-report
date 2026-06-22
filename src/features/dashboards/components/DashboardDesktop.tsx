@@ -24,7 +24,6 @@ type Props = {
 
 type Period = "year" | "month" | "week" | "yesterday" | "today";
 
-
 export default function DashboardDesktop({ transactions, accounts, categories, refetch }: Props) {
   const navigate = useNavigate();
   const [period, setPeriod] = useState<Period>("month");

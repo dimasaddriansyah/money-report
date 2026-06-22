@@ -4,6 +4,10 @@ export const getCategoriesImg = (category: string) => {
     import: "default",
   }) as Record<string, string>;
 
+  if (category === "All Categories") {
+    return categoryImages["../../assets/categories/Default.webp"];
+  }
+
   const categoryMap: Record<string, string> = {
     Interest: "Saving",
     Cashback: "Saving",
@@ -15,7 +19,7 @@ export const getCategoriesImg = (category: string) => {
   const path = `../../assets/categories/${filterCategory}.png`;
 
   return (
-    categoryImages[path] ?? categoryImages["../../assets/categories/default.png"]
+    categoryImages[path] ?? categoryImages["../../assets/categories/Default.webp"]
   );
 };
 

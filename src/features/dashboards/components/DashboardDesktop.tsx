@@ -145,7 +145,7 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
       !selectedCategory ||
       trx.categoryId === selectedCategory;
 
-    return matchPeriod && matchAccount&& matchCategory;
+    return matchPeriod && matchAccount && matchCategory;
   });
 
   const dashboardFiltered = useDashboardData({
@@ -188,158 +188,156 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
 
       <DashboardSectionAccountBalanceSummary accounts={dashboardAll.accountsWithBalance} autoScroll={true} />
 
-      <section className="flex items-end justify-between">
-        <section className="flex gap-4">
-          {/* Filter Period */}
-          <div className="flex flex-col gap-1 flex-1 min-w-60">
-            <span className="text-slate-500 text-xs">Period</span>
-            <div ref={periodRef} className="relative">
-              <button
-                onClick={() => { setOpenFilterPeriod(prev => !prev) }}
-                className="flex items-center justify-between w-full px-3 py-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer gap-4">
-                <div className="flex items-center gap-3">
-                  <Calendar03Icon className="text-slate-400" size={16} />
-                  <span className={`text-sm ${periods ? "text-black" : "text-slate-400"}`}>
-                    {periods.find((p) => p.value === period)?.label}
-                  </span>
-                </div>
-                <ArrowDown01Icon className="text-slate-400" size={16} />
-              </button>
-              {openFilterPeriod && (
-                <div className="absolute z-10 mt-2 w-60 bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
-                  {periods.map((item) => {
-                    const isSelected = period === item.value;
-                    return (
-                      <div
-                        key={item.value}
-                        onClick={() => {
-                          setPeriod(item.value as Period);
-                          setOpenFilterPeriod(false);
-                        }}
-                        className={`px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Filter Period */}
+        <div className="flex flex-col gap-1 flex-1 min-w-60">
+          <span className="text-slate-500 text-xs">Period</span>
+          <div ref={periodRef} className="relative">
+            <button
+              onClick={() => { setOpenFilterPeriod(prev => !prev) }}
+              className="flex items-center justify-between w-full px-3 py-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer gap-4">
+              <div className="flex items-center gap-3">
+                <Calendar03Icon className="text-slate-400" size={16} />
+                <span className={`text-sm ${periods ? "text-black" : "text-slate-400"}`}>
+                  {periods.find((p) => p.value === period)?.label}
+                </span>
+              </div>
+              <ArrowDown01Icon className="text-slate-400" size={16} />
+            </button>
+            {openFilterPeriod && (
+              <div className="absolute z-10 mt-2 w-60 bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                {periods.map((item) => {
+                  const isSelected = period === item.value;
+                  return (
+                    <div
+                      key={item.value}
+                      onClick={() => {
+                        setPeriod(item.value as Period);
+                        setOpenFilterPeriod(false);
+                      }}
+                      className={`px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
                         ${isSelected
-                            ? "bg-slate-100 font-medium"
-                            : "text-slate-400 hover:bg-slate-50"}`}>
-                        {item.label}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                          ? "bg-slate-100 font-medium"
+                          : "text-slate-400 hover:bg-slate-50"}`}>
+                      {item.label}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-          {/* Filter Accounts */}
-          <div className="flex flex-col gap-1 flex-1 min-w-60">
-            <span className="text-slate-500 text-xs">Accounts</span>
-            <div ref={accountRef} className="relative">
-              <button
-                onClick={() => { setOpenFilterAccount(prev => !prev) }}
-                className="flex items-center justify-between w-full px-3 py-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer gap-4">
-                <div className="flex items-center gap-3">
-                  <CreditCardIcon className="text-slate-400" size={16} />
-                  <span className={`text-sm ${selectedAccountData ? "text-black" : "text-slate-400"}`}>
-                    {selectedAccountData?.name || "All Accounts"}
-                  </span>
-                </div>
-                <ArrowDown01Icon className="text-slate-400" size={16} />
-              </button>
-              {openFilterAccount && (
-                <div className="absolute z-10 mt-2 w-60 h-60 bg-white border border-slate-200 rounded-lg shadow-sm overflow-y-auto">
-                  <div
-                    onClick={() => {
-                      setSelectedAccount(null)
-                      setOpenFilterAccount(false)
-                    }}
-                    className={`px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
+        </div>
+        {/* Filter Accounts */}
+        <div className="flex flex-col gap-1 flex-1 min-w-60">
+          <span className="text-slate-500 text-xs">Accounts</span>
+          <div ref={accountRef} className="relative">
+            <button
+              onClick={() => { setOpenFilterAccount(prev => !prev) }}
+              className="flex items-center justify-between w-full px-3 py-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer gap-4">
+              <div className="flex items-center gap-3">
+                <CreditCardIcon className="text-slate-400" size={16} />
+                <span className={`text-sm ${selectedAccountData ? "text-black" : "text-slate-400"}`}>
+                  {selectedAccountData?.name || "All Accounts"}
+                </span>
+              </div>
+              <ArrowDown01Icon className="text-slate-400" size={16} />
+            </button>
+            {openFilterAccount && (
+              <div className="absolute z-10 mt-2 w-60 h-60 bg-white border border-slate-200 rounded-lg shadow-sm overflow-y-auto">
+                <div
+                  onClick={() => {
+                    setSelectedAccount(null)
+                    setOpenFilterAccount(false)
+                  }}
+                  className={`px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
                     ${!selectedAccount ? "bg-slate-100 font-medium" : "text-slate-400 hover:bg-slate-50"}`}>
-                    <span>All Accounts</span>
-                  </div>
-                  {accounts.map((acc) => {
-                    const isSelected = selectedAccount === acc.id;
-                    return (
-                      <div
-                        key={acc.id}
-                        onClick={() => {
-                          setSelectedAccount(acc.id)
-                          setOpenFilterAccount(false)
-                        }}
-                        className={`flex items-center gap-4 px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
+                  <span>All Accounts</span>
+                </div>
+                {accounts.map((acc) => {
+                  const isSelected = selectedAccount === acc.id;
+                  return (
+                    <div
+                      key={acc.id}
+                      onClick={() => {
+                        setSelectedAccount(acc.id)
+                        setOpenFilterAccount(false)
+                      }}
+                      className={`flex items-center gap-4 px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
                           ${isSelected ? "bg-slate-100 font-medium" : "text-slate-400 hover:bg-slate-50"}`}>
-                        <img src={getAccountsImg(acc.name)} className="w-6 h-6" />
-                        <span>{acc.name}</span>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
+                      <img src={getAccountsImg(acc.name)} className="w-6 h-6" />
+                      <span>{acc.name}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
-          {/* Filter Categories */}
-          <div className="flex flex-col gap-1 flex-1 min-w-60">
-            <span className="text-slate-500 text-xs">Categories</span>
-            <div ref={categoryRef} className="relative">
-              <button
-                onClick={() => { setOpenFilterCategory(prev => !prev) }}
-                className="flex items-center justify-between w-full px-3 py-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer gap-4">
-                <div className="flex items-center gap-3">
-                  <Note05Icon className="text-slate-400" size={16} />
-                  <span className={`text-sm ${selectedCategoryData ? "text-black" : "text-slate-400"}`}>
-                    {selectedCategoryData?.name || "All Categories"}
-                  </span>
-                </div>
-                <ArrowDown01Icon className="text-slate-400" size={16} />
-              </button>
-              {openFilterCategory && (
-                <div className="absolute z-10 mt-2 w-60 h-60 bg-white border border-slate-200 rounded-lg shadow-sm overflow-y-auto">
-                  <div
-                    onClick={() => {
-                      setSelectedCategory(null)
-                      setOpenFilterCategory(false)
-                    }}
-                    className={`px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
+        </div>
+        {/* Filter Categories */}
+        <div className="flex flex-col gap-1 flex-1 min-w-60">
+          <span className="text-slate-500 text-xs">Categories</span>
+          <div ref={categoryRef} className="relative">
+            <button
+              onClick={() => { setOpenFilterCategory(prev => !prev) }}
+              className="flex items-center justify-between w-full px-3 py-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer gap-4">
+              <div className="flex items-center gap-3">
+                <Note05Icon className="text-slate-400" size={16} />
+                <span className={`text-sm ${selectedCategoryData ? "text-black" : "text-slate-400"}`}>
+                  {selectedCategoryData?.name || "All Categories"}
+                </span>
+              </div>
+              <ArrowDown01Icon className="text-slate-400" size={16} />
+            </button>
+            {openFilterCategory && (
+              <div className="absolute z-10 mt-2 w-60 h-60 bg-white border border-slate-200 rounded-lg shadow-sm overflow-y-auto">
+                <div
+                  onClick={() => {
+                    setSelectedCategory(null)
+                    setOpenFilterCategory(false)
+                  }}
+                  className={`px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
                     ${!selectedCategory ? "bg-slate-100 font-medium" : "text-slate-400 hover:bg-slate-50"}`}>
-                    <span>All Categories</span>
-                  </div>
-                  {categories.map((cat) => {
-                    const isSelected = selectedCategory === cat.id;
-                    return (
-                      <div
-                        key={cat.id}
-                        onClick={() => {
-                          setSelectedCategory(cat.id)
-                          setOpenFilterCategory(false)
-                        }}
-                        className={`flex items-center gap-4 px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
-                          ${isSelected ? "bg-slate-100 font-medium" : "text-slate-400 hover:bg-slate-50"}`}>
-                        <img src={getCategoriesImg(cat.name)} className="w-6 h-6" />
-                        <span>{cat.name}</span>
-                      </div>
-                    )
-                  })}
+                  <span>All Categories</span>
                 </div>
-              )}
-            </div>
+                {categories.map((cat) => {
+                  const isSelected = selectedCategory === cat.id;
+                  return (
+                    <div
+                      key={cat.id}
+                      onClick={() => {
+                        setSelectedCategory(cat.id)
+                        setOpenFilterCategory(false)
+                      }}
+                      className={`flex items-center gap-4 px-4 py-3 text-sm border-b border-slate-50 cursor-pointer
+                          ${isSelected ? "bg-slate-100 font-medium" : "text-slate-400 hover:bg-slate-50"}`}>
+                      <img src={getCategoriesImg(cat.name)} className="w-6 h-6" />
+                      <span>{cat.name}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
-        </section>
+        </div>
         <button
           onClick={() => navigate('/transaction/create')}
-          className="flex items-center px-5 py-2.5 gap-2 bg-black hover:bg-slate-900 text-white text-sm font-medium rounded-lg cursor-pointer">
+          className="self-end flex items-center px-5 py-2.5 gap-2 bg-black hover:bg-slate-900 text-white text-sm font-medium rounded-lg cursor-pointer">
           <PlusSignIcon size={16} />
           <span>Create Transaction</span>
         </button>
-      </section>
+      </div>
 
       <DashboardSectionLayout title="Daily Expense">
         <DashboardComponentChartDailyExpense data={dashboardFiltered.dailyExpense} />
       </DashboardSectionLayout>
 
       <div className="grid grid-cols-12 items-stretch gap-4">
-        <div className="col-span-8">
+        <div className="col-span-12 lg:col-span-8">
           <DashboardSectionLayout title="Top Expense">
             <DashboardComponentChartTopExpense data={dashboardFiltered.topExpenses} />
           </DashboardSectionLayout>
         </div>
-        <div className="col-span-4">
+        <div className="col-span-12 lg:col-span-4">
           <DashboardSectionLayout title="Category Expense">
             <DashboardSectionLayoutCategoryExpense transactions={filteredTransactions} categories={categories} />
           </DashboardSectionLayout>

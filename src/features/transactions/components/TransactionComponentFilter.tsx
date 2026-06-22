@@ -1,4 +1,4 @@
-import { ArrowDown01Icon } from "hugeicons-react";
+import { ArrowDown01Icon, CreditCardIcon, LicenseIcon, Note05Icon } from "hugeicons-react";
 import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import { useMemo, useState } from "react";
@@ -63,7 +63,7 @@ export default function TransactionComponentFilter({
           onClick={() => setOpenType(true)}
           className={`flex items-center pl-2 pr-4 py-2 rounded-full shrink-0 cursor-pointer gap-2
             ${selectedType === "ALL" ? "bg-white border border-slate-200" : "bg-blue-50 border border-blue-200"}`}>
-          <img src={getAccountsImg("default")} className="w-5 h-5" />
+          <LicenseIcon size={16} className={`text-sm ${selectedType === "ALL" ? "text-slate-400" : "text-blue-500"}`} />
           <span className={`text-sm ${selectedType === "ALL" ? "text-slate-400" : "text-blue-500 font-medium"}`}>
             {TYPES.find(t => t.id === selectedType)?.label}
           </span>
@@ -74,7 +74,7 @@ export default function TransactionComponentFilter({
           onClick={() => setOpenAccount(true)}
           className={`flex items-center pl-2 pr-4 py-2 rounded-full shrink-0 cursor-pointer gap-2
             ${selectedAccount === "ALL" ? "bg-white border border-slate-200" : "bg-blue-50 border border-blue-200"}`}>
-          <img src={getAccountsImg("default")} className="w-5 h-5" />
+          <CreditCardIcon size={16} className={`text-sm ${selectedAccount === "ALL" ? "text-slate-400" : "text-blue-500"}`} />
           <span className={`text-sm ${selectedAccount === "ALL" ? "text-slate-400" : "text-blue-500 font-medium"}`}>
             {selectedAccount === "ALL"
               ? "All Accounts"
@@ -87,7 +87,7 @@ export default function TransactionComponentFilter({
           onClick={() => setOpenCategory(true)}
           className={`flex items-center pl-2 pr-4 py-2 rounded-full shrink-0 cursor-pointer gap-2
             ${selectedCategory === "ALL" ? "bg-white border border-slate-200" : "bg-blue-50 border border-blue-200"}`}>
-          <img src={getAccountsImg("default")} className="w-5 h-5" />
+          <Note05Icon size={16} className={`text-sm ${selectedCategory === "ALL" ? "text-slate-400" : "text-blue-500"}`} />
           <span className={`text-sm ${selectedCategory === "ALL" ? "text-slate-400" : "text-blue-500 font-medium"}`}>
             {selectedCategory === "ALL"
               ? "All Categories"
@@ -116,7 +116,10 @@ export default function TransactionComponentFilter({
                     ? "bg-slate-100 text-black font-semibold"
                     : "bg-white text-slate-700 hover:bg-slate-50"
                   }`}>
-                <span className="text-sm">{type.label}</span>
+                <div className="flex items-center gap-4">
+                  <LicenseIcon size={16} className={`text-sm ${active ? "text-blue-500" : "text-slate-400"}`} />
+                  <span className="text-sm">{type.label}</span>
+                </div>
                 {active && (
                   <span className="text-xs text-slate-400">Selected</span>
                 )}

@@ -36,7 +36,7 @@ export default function NavigationBottomMobile() {
       <nav
         className={`fixed inset-x-0 bottom-0 z-30 flex justify-center pb-3 transition-all duration-300
           ${openFab ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-        <div className="inline-flex items-center p-2.5 gap-2 rounded-full bg-white/40 backdrop-blur-3xl saturate-150 border border-white/50 shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-white/20">
+        <div className="inline-flex items-center p-2.5 gap-2 rounded-full bg-white/70 backdrop-blur-lg saturate-150 border border-slate-100/40 ring-1 ring-white/20">
           {/* HOME */}
           <NavItem
             {...menus[0]}
@@ -50,7 +50,7 @@ export default function NavigationBottomMobile() {
           {/* ADD */}
           <button
             onClick={() => setOpenFab(true)}
-            className="flex items-center justify-center px-5 py-3 rounded-full bg-black text-white shadow-md transition-transform active:scale-95 cursor-pointer">
+            className="flex items-center justify-center px-5 py-3 rounded-full bg-black text-white transition-transform active:scale-95 cursor-pointer">
             <PlusSignIcon strokeWidth={2} className="w-5 h-5" />
           </button>
 

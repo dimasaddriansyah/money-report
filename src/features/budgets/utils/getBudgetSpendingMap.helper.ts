@@ -9,20 +9,20 @@ type BudgetRule = {
 
 const BUDGET_RULES = new Map<string, BudgetRule>([
   ["ACC006|Makan Pribadi", { accountField: "from", categoryIds: ["CAT001"] }],
-  ["ACC006|Kuota", { accountField: "from", categoryIds: ["CAT005"] }],
-  ["ACC006|Bensin", { accountField: "from", categoryIds: ["CAT006"] }],
+  ["ACC006|Kuota", { accountField: "from", categoryIds: ["CAT014"], remarkMatch: "Kuota" }],
+  ["ACC006|Bensin", { accountField: "from", categoryIds: ["CAT004"] }],
   ["ACC005|Uang Bersama", { accountField: "from", categoryIds: ["CAT001"] }],
   [
     "ACC010|Married Saving",
     {
       accountField: "to",
-      categoryIds: ["CAT024"],
+      categoryIds: ["CAT022"],
       remarkMatch: "Married Saving",
     },
   ],
   [
     "ACC009|RDPU Bahana Liquid Syariah Kelas G",
-    { accountField: "to", categoryIds: ["CAT024"] },
+    { accountField: "to", categoryIds: ["CAT022"] },
   ],
 ]);
 
@@ -64,7 +64,7 @@ export function getBudgetSpendingMap(
             .filter(
               (trx) =>
                 trx.categoryId === categoryId &&
-                trx.remark === rule.remarkMatch &&
+                trx.remark?.includes(rule.remarkMatch!) &&
                 (rule.accountField === "to"
                   ? trx.toAccountId
                   : trx.fromAccountId) === budget.accountId,

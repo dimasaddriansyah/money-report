@@ -6,7 +6,7 @@ import { useBalance } from "../../../shared/context/BalanceContext";
 import type { Transaction } from "../../transactions/types/transaction";
 import { useNavigate } from "react-router-dom";
 import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
-import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
+import { Delete02Icon, ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import DashboardSectionAccountBalanceSummary from "./DashboardSectionAccountBalanceSummary";
 import { useDashboardData } from "../hooks/useDashboardData";
 import { toast } from "sonner";
@@ -114,7 +114,7 @@ export default function DashboardMobile({ transactions, accounts, categories, re
               <h4 className="font-semibold text-">Category Expense</h4>
             </div>
             <div className="h-px bg-slate-100/60" />
-             <DashboardSectionLayoutCategoryExpense transactions={transactions} categories={categories}/>
+            <DashboardSectionLayoutCategoryExpense transactions={transactions} categories={categories} />
           </section>
 
           {grouped.map((group) => (
@@ -148,27 +148,17 @@ export default function DashboardMobile({ transactions, accounts, categories, re
               setSelectedTransaction(null);
             }}
             title="Delete Transaction">
-            <div className="flex flex-col gap-4">
-              <p className="text-sm text-slate-500">
-                {selectedTransaction
-                  ? `Delete "${selectedTransaction.remark}"? This cannot be undone.`
-                  : ""}
-              </p>
+            <div className="flex flex-col p-4 gap-4">
+              <p className="text-sm text-slate-500">Delete "<span className="text-black font-semibold">{selectedTransaction?.remark}</span>"? This cannot be undone.</p>
               <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    setSelectedTransaction(null);
-                  }}
-                  className="flex-1 py-2 rounded-xl hover:bg-slate-50 border border-slate-200 text-sm text-slate-400 cursor-pointer">
-                  Cancel
-                </button>
-
                 <button
                   onClick={handleDelete}
                   disabled={loading}
-                  className="flex-1 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-sm text-white font-medium disabled:opacity-50 cursor-pointer">
-                  {loading ? "Deleting..." : "Delete"}
+                  className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-sm text-white font-semibold disabled:opacity-50 cursor-pointer">
+                  <div className="flex items-center justify-center gap-2">
+                    <Delete02Icon size={16} />
+                    {loading ? "Deleting..." : "Delete Budget"}
+                  </div>
                 </button>
               </div>
             </div>

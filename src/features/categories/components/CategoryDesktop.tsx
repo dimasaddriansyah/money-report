@@ -145,12 +145,9 @@ export default function CategoryDesktop({
           onClose={() => {
             setOpen(false);
             setSelectedCategory(null);
-          }}
-        >
+          }}>
           <p className="text-sm text-slate-500">
-            {selectedCategory
-              ? `Delete "${selectedCategory.name}"? This cannot be undone.`
-              : ""}
+            Delete "<span className="text-black font-semibold">{selectedCategory?.name}</span>"? This cannot be undone.
           </p>
         </Modal>
       )}

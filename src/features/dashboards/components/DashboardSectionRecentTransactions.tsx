@@ -168,9 +168,7 @@ export default function DashboardSectionRecentTransactions({
             setSelectedTransaction(null);
           }}>
           <p className="text-sm text-slate-500">
-            {selectedTransaction
-              ? `Delete "${selectedTransaction.remark}"? This cannot be undone.`
-              : ""}
+            Delete "<span className="text-black font-semibold">{selectedTransaction?.remark}</span>"? This cannot be undone.
           </p>
         </Modal>
       )}

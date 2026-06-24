@@ -491,11 +491,9 @@ export default function TransactionDesktop({
             setSelectedTransaction(null);
           }}>
           <p className="p-4 text-sm text-slate-500">
-            {selectedTransaction ? `Delete "${selectedTransaction.remark}"? This cannot be undone.` : ""}
+            Delete "<span className="text-black font-semibold">{selectedTransaction?.remark}</span>"? This cannot be undone.
           </p>
         </Modal>
       )}
     </>
-  )
 }
-

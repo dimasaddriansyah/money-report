@@ -145,12 +145,9 @@ export default function AccountDesktop({
           onClose={() => {
             setOpen(false);
             setSelectedAccount(null);
-          }}
-        >
+          }}>
           <p className="text-sm text-slate-500">
-            {selectedAccount
-              ? `Delete "${selectedAccount.name}"? This cannot be undone.`
-              : ""}
+            Delete "<span className="text-black font-semibold">{selectedAccount?.name}</span>"? This cannot be undone.
           </p>
         </Modal>
       )}

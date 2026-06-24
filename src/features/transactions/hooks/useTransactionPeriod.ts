@@ -7,13 +7,13 @@ function getPeriod(date: Date) {
 
   const start =
     day >= 25
-      ? new Date(year, month, 25)
-      : new Date(year, month - 1, 25);
+      ? new Date(year, month, 25, 0, 0, 0, 0)
+      : new Date(year, month - 1, 25, 0, 0, 0, 0);
 
   const end =
     day >= 25
-      ? new Date(year, month + 1, 24)
-      : new Date(year, month, 24);
+      ? new Date(year, month + 1, 24, 23, 59, 59, 999)
+      : new Date(year, month, 24, 23, 59, 59, 999);
 
   return { start, end };
 }

@@ -24,7 +24,7 @@ export function useTransactionActions(refetch?: () => void) {
       day: formatDateDay(data.date),
       date: data.date,
       typeId: data.typeId,
-      categoryId: data.typeId === "TP003" ? "CAT024" : data.categoryId,
+      categoryId: data.typeId === "TP003" ? "CAT022" : data.categoryId,
       fromAccountId: data.fromAccountId,
       toAccountId: data.toAccountId,
       remark: data.remark,

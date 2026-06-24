@@ -7,6 +7,7 @@ import type { Transaction } from "../types/transaction";
 import { getAccountFields, TYPE_OPTIONS } from "../utils/ui.helpers";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
 import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
+import { useLocation } from "react-router-dom";
 
 type Props = {
   defaultValues?: Transaction;
@@ -23,6 +24,15 @@ type Props = {
     amount: number;
   }) => void;
   loading?: boolean;
+  prefill?: {
+    typeId?: string;
+    categoryId?: string;
+    fromAccountId?: string;
+    toAccountId?: string;
+    amount?: number;
+    date?: string;
+    remark?: string;
+  };
 };
 
 export default function TransactionFormMobile({
@@ -32,6 +42,11 @@ export default function TransactionFormMobile({
   onSubmit,
   loading,
 }: Props) {
+  const location = useLocation();
+  const prefill = location.state?.prefill;
+
+  const hasPrefilled = useRef(false);
+
   const { form, setField, handleTypeChange, getPayload } = useTransactionForm(defaultValues);
   const { typeId, date, fromAccountId, toAccountId, categoryId, remark, amount, } = form;
 
@@ -57,6 +72,8 @@ export default function TransactionFormMobile({
     isCategoryValid &&
     isRemarkValid;
 
+  const isReady = !!fromAccountId || !!toAccountId || !!categoryId;
+
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, "");
     const numberValue = Number(raw || 0);
@@ -64,6 +81,8 @@ export default function TransactionFormMobile({
   }
 
   useEffect(() => {
+    if (!isReady) return;
+
     const scrollToCenter = (
       container: HTMLDivElement | null,
       selectedId: string | null
@@ -77,20 +96,18 @@ export default function TransactionFormMobile({
       const elementLeft = el.offsetLeft;
       const elementWidth = el.offsetWidth;
 
-      const scrollLeft =
-        elementLeft - containerWidth / 2 + elementWidth / 2;
-
       container.scrollTo({
-        left: scrollLeft,
+        left: elementLeft - containerWidth / 2 + elementWidth / 2,
         behavior: "smooth",
       });
     };
 
     scrollToCenter(accountContainerRefs.current["from"], fromAccountId);
     scrollToCenter(accountContainerRefs.current["to"], toAccountId);
-  }, [fromAccountId, toAccountId]);
+  }, [fromAccountId, toAccountId, isReady]);
 
   useEffect(() => {
+    if (!isReady) return;
     if (!categoryContainerRef.current || !categoryId) return;
 
     const el = categoryItemRefs.current[categoryId];
@@ -105,7 +122,23 @@ export default function TransactionFormMobile({
       left: scrollLeft,
       behavior: "smooth",
     });
-  }, [categoryId]);
+  }, [categoryId, isReady]);
+
+  useEffect(() => {
+    if (!prefill) return;
+    if (accounts.length === 0 || categories.length === 0) return;
+    if (hasPrefilled.current) return;
+
+    setField("typeId", prefill.typeId ?? "");
+    setField("categoryId", prefill.categoryId ?? "");
+    setField("fromAccountId", prefill.fromAccountId ?? "");
+    setField("toAccountId", prefill.toAccountId ?? "");
+    setField("amount", prefill.amount ?? 0);
+    setField("date", prefill.date ?? "");
+    setField("remark", prefill.remark ?? "");
+
+    hasPrefilled.current = true;
+  }, [prefill, accounts, categories, setField]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

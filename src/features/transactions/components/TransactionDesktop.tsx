@@ -496,4 +496,5 @@ export default function TransactionDesktop({
         </Modal>
       )}
     </>
+  )
 }

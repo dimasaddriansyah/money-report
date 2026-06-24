@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { ArrowDown01Icon, Calendar03Icon, NoteEditIcon } from "hugeicons-react";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
@@ -39,6 +39,8 @@ export default function TransactionFormMobile({
   const isTransfer = typeId === "TP003";
 
   const dateRef = useRef<HTMLInputElement | null>(null);
+  const accountContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const accountItemRefs = useRef<Record<string, HTMLButtonElement | null>>({})
 
   const accountFields = useMemo(() => getAccountFields(typeId), [typeId]);
   const amountInput = amount ? formatNumber(amount) : "";
@@ -48,6 +50,33 @@ export default function TransactionFormMobile({
     const numberValue = Number(raw || 0);
     setField("amount", numberValue);
   }
+
+  useEffect(() => {
+    const scrollToCenter = (
+      container: HTMLDivElement | null,
+      selectedId: string | null
+    ) => {
+      if (!container || !selectedId) return;
+
+      const el = accountItemRefs.current[selectedId];
+      if (!el) return;
+
+      const containerWidth = container.offsetWidth;
+      const elementLeft = el.offsetLeft;
+      const elementWidth = el.offsetWidth;
+
+      const scrollLeft =
+        elementLeft - containerWidth / 2 + elementWidth / 2;
+
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: "smooth",
+      });
+    };
+
+    scrollToCenter(accountContainerRefs.current["from"], fromAccountId);
+    scrollToCenter(accountContainerRefs.current["to"], toAccountId);
+  }, [fromAccountId, toAccountId]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -126,17 +155,21 @@ export default function TransactionFormMobile({
             if (field.key === "toAccountId") return acc.id !== fromAccountId;
             return true;
           });
+          const containerKey = field.key === "fromAccountId" ? "from" : "to";
 
           return (
             <div key={field.key}>
               <label className="block text-sm font-medium mb-2">{field.label}</label>
-              <div className="flex gap-3 overflow-x-auto no-scrollbar">
+              <div
+                ref={(el) => { accountContainerRefs.current[containerKey] = el }}
+                className="flex gap-3 overflow-x-auto no-scrollbar">
                 {filteredAccounts.map((acc) => {
                   const active = value === acc.id;
 
                   return (
                     <button
                       key={acc.id}
+                      ref={(el) => { accountItemRefs.current[acc.id] = el }}
                       type="button"
                       onClick={() => setValue(acc.id)}
                       className={`shrink-0 w-22 flex flex-col items-center gap-2 p-3 rounded-2xl transition cursor-pointer

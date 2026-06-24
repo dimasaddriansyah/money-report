@@ -6,6 +6,7 @@ import { useTransactionActions } from "../hooks/useTransactionActions";
 import { toast } from "sonner";
 import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useCategories } from "../../categories/hooks/useCategories";
+import TransactionFormMobile from "../components/TransactionFormMobile";
 
 export default function TransactionEditPage() {
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ export default function TransactionEditPage() {
       </div>
 
       <div className="md:hidden">
-        <TransactionForm defaultValues={transaction} accounts={accounts} categories={categories} onSubmit={handleSubmit} loading={loading} />
+        <TransactionFormMobile defaultValues={transaction} accounts={accounts} categories={categories} onSubmit={handleSubmit} loading={loading} />
       </div>
     </>
   );

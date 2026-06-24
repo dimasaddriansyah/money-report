@@ -124,13 +124,7 @@ export default function TransactionMobile({
           selectedCategory={selectedCategory}
           onChangeType={setSelectedType}
           onChangeAccount={setSelectedAccount}
-          onChangeCategory={setSelectedCategory}
-        />
-
-        {/* <TransactionComponentFilterAccount
-          accounts={accounts}
-          selectedAccount={selectedAccount}
-          onSelect={setSelectedAccount} /> */}
+          onChangeCategory={setSelectedCategory} />
 
         {isEmpty ? (
           <EmptyState
@@ -149,8 +143,7 @@ export default function TransactionMobile({
               setActiveSwipeId={setActiveSwipeId}
               navigate={navigate}
               setSelectedTransaction={setSelectedTransaction}
-              setOpen={setOpen}
-            />
+              setOpen={setOpen} />
           ))
         )}
         {visibleCount < filteredTransactions.length && (

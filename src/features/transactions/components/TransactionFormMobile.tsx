@@ -74,12 +74,6 @@ export default function TransactionFormMobile({
 
   const isReady = !!fromAccountId || !!toAccountId || !!categoryId;
 
-  function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const raw = e.target.value.replace(/\D/g, "");
-    const numberValue = Number(raw || 0);
-    setField("amount", numberValue);
-  }
-
   useEffect(() => {
     if (!isReady) return;
 
@@ -140,14 +134,15 @@ export default function TransactionFormMobile({
     hasPrefilled.current = true;
   }, [prefill, accounts, categories, setField]);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    onSubmit(getPayload());
+  function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value.replace(/\D/g, "");
+    const numberValue = Number(raw || 0);
+    setField("amount", numberValue);
   }
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="flex flex-col gap-3 p-4">
           {/* TYPE */}
           <div className="flex">
@@ -284,6 +279,7 @@ export default function TransactionFormMobile({
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-100 px-4 py-3">
         <button
           type="submit"
+          onClick={() => { onSubmit(getPayload()) }}
           disabled={loading || !isFormValid}
           className={`w-full px-5 py-3 text-sm font-semibold text-white rounded-xl
             ${loading || !isFormValid ? "bg-slate-400 cursor-not-allowed" : "bg-black hover:bg-slate-800 cursor-pointer"}`}>

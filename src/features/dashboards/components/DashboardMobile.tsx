@@ -82,7 +82,7 @@ export default function DashboardMobile({ transactions, accounts, categories, re
         />
       ) : (
         <>
-          <div className="p-4">
+          <div className="px-4 py-6 bg-slate-50">
             <div className="flex flex-col">
               <span className="text-sm text-slate-400">Total Balance</span>
               <div className="flex items-center gap-4">

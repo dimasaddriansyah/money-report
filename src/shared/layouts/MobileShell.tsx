@@ -87,7 +87,7 @@ export default function MobileShell({ children }: any) {
     }
 
     return {
-      title: "App",
+      title: "CASHFLOW",
     };
   })();
 

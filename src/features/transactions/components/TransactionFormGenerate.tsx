@@ -56,6 +56,7 @@ export function TransactionFormGenerate() {
 
     navigate("/transaction/create", {
       state: {
+        source: "generate",
         prefill: payload,
       },
     });

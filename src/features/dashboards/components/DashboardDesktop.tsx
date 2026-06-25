@@ -69,14 +69,19 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
         break;
 
       case "month": {
-        const dayStart = 25;
-        const dayEnd = 24;
-
         const year = selectedMonth.getFullYear();
         const month = selectedMonth.getMonth();
+        const day = selectedMonth.getDate();
 
-        const endDate = new Date(year, month, dayEnd, 23, 59, 59);
-        const startDate = new Date(year, month - 1, dayStart, 0, 0, 0);
+        const startDate =
+          day >= 25
+            ? new Date(year, month, 25, 0, 0, 0, 0)
+            : new Date(year, month - 1, 25, 0, 0, 0, 0);
+
+        const endDate =
+          day >= 25
+            ? new Date(year, month + 1, 24, 23, 59, 59, 999)
+            : new Date(year, month, 24, 23, 59, 59, 999);
 
         matchPeriod =
           trxDate >= startDate &&

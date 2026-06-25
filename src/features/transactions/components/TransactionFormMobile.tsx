@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
-import { ArrowDown01Icon, Calendar03Icon, NoteEditIcon } from "hugeicons-react";
+import { AiMagicIcon, ArrowDown01Icon, Calendar03Icon, NoteEditIcon } from "hugeicons-react";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import { useTransactionForm } from "../hooks/useTransactionForm";
@@ -43,6 +43,7 @@ export default function TransactionFormMobile({
   loading,
 }: Props) {
   const location = useLocation();
+  const source = location.state?.source ?? "manual";
   const prefill = location.state?.prefill;
 
   const hasPrefilled = useRef(false);
@@ -138,6 +139,23 @@ export default function TransactionFormMobile({
     const raw = e.target.value.replace(/\D/g, "");
     const numberValue = Number(raw || 0);
     setField("amount", numberValue);
+  }
+
+  if (accounts.length === 0 || categories.length === 0) {
+    return source === "generate" ? (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-3">
+        <div className="relative">
+          <AiMagicIcon size={36} className="text-amber-500 animate-pulse" />
+          <div className="absolute inset-0 rounded-full bg-amber-400/20 animate-ping" />
+        </div>
+        <span className="text-sm text-slate-500">Generating transaction...</span>
+      </div>
+    ) : (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] gap-2">
+        <div className="w-6 h-6 rounded-full border-[2.5px] border-slate-200 border-t-slate-900 animate-spin" />
+        <span className="text-sm text-slate-400">Loading form...</span>
+      </div>
+    );
   }
 
   return (

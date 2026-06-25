@@ -68,8 +68,9 @@ export default function BudgetEditPage() {
 
   if (isFetchingBudgets) {
     return (
-      <div className="p-6 text-sm text-slate-400">
-        Loading budgets...
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] gap-2">
+        <div className="w-6 h-6 rounded-full border-[2.5px] border-slate-200 border-t-slate-900 animate-spin" />
+        <span className="text-sm text-slate-400">Loading budgets...</span>
       </div>
     );
   }

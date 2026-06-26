@@ -28,6 +28,7 @@ export default function ComponentCardListTransfer({
 
   const totalAllocation = grouped.reduce((sum, item) => sum + item.total, 0);
   const isOverBudget = totalAllocation > budgetAmount;
+  const savingAllocation = budgetAmount - totalAllocation;
 
   return (
     <>
@@ -35,10 +36,10 @@ export default function ComponentCardListTransfer({
         <div className="flex flex-col">
           <div className={`flex items-center justify-between p-4 border-b border-slate-200 ${isOverBudget ? "bg-red-50" : "bg-green-50"}`}>
             <div className="flex flex-col">
-              <span className="text-sm font-semibold">Budget Allocation</span>
-              <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{isOverBudget ? "Over Budget!" : "Safe Budget"}</span>
+              <span className="text-sm font-semibold">Save Allocation</span>
+              <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{isOverBudget ? "Over Budget!" : "Save Budget"}</span>
             </div>
-            <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{formatBalance(formatCurrency(totalAllocation), hideBalance)}</span>
+            <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{formatBalance(formatCurrency(savingAllocation), hideBalance)}</span>
           </div>
 
           {grouped.map((budget) => (
@@ -56,6 +57,11 @@ export default function ComponentCardListTransfer({
               <span className="text-sm text-slate-600">{formatBalance(formatCurrency(budget.total), hideBalance)}</span>
             </div>
           ))}
+
+          <div className="flex items-center justify-between p-4 bg-slate-50">
+            <span className="text-sm font-semibold">Total Allocation</span>
+            <span className="text-sm font-semibold text-black">{formatBalance(formatCurrency(totalAllocation), hideBalance)}</span>
+          </div>
         </div>
       </div>
 

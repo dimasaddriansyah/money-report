@@ -14,7 +14,7 @@ export default function ComponentListBudgetDetail({ budgets, spendingMap, accoun
   const navigate = useNavigate();
 
   return (
-    <div className="p-4 grid grid-cols-2 gap-4">
+    <div className="p-4 grid grid-cols-1 gap-4">
       {budgets.map((item) => {
         const spending = spendingMap.get(item.id) ?? 0;
         const isCappedBudget = item.accountId === "ACC005" && item.remark === "Uang Bersama";
@@ -34,20 +34,23 @@ export default function ComponentListBudgetDetail({ budgets, spendingMap, accoun
             onClick={() => navigate(`/budget/edit/${item.id}`)}
             className="bg-white border border-slate-200 hover:bg-slate-100 rounded-lg p-4 flex flex-col transition cursor-pointer">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 <img src={getAccountsImg(accountName)} alt={accountName} className="w-8 h-8" />
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-medium text-slate-600">{accountName}</span>
-                  <span className={`text-xs font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>
-                    {isOverBudget ? "Over Budget" : "Safe"}
-                  </span>
+                <div className="flex flex-col">
+                  <span className="text-xs text-slate-400">{accountName}</span>
+                  <div className="text-sm font-semibold text-black truncate">{item.remark}</div>
                 </div>
               </div>
-
+              <span className={`px-3 py-1 text-xs font-semibold rounded-full border 
+                      ${isOverBudget
+                  ? "bg-red-50 text-red-500 border-red-200"
+                  : "bg-green-50 text-green-500 border-green-200"
+                }`}>
+                {isOverBudget ? "Over Budget" : "Safe"}
+              </span>
             </div>
             <div className="my-3 h-px bg-slate-100" />
             <div className="flex flex-col gap-4">
-              <div className="text-sm font-semibold text-black truncate">{item.remark}</div>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-xs text-slate-500">Budgeting</span>
@@ -69,7 +72,6 @@ export default function ComponentListBudgetDetail({ budgets, spendingMap, accoun
                   </span>
                 </div>
               </div>
-
               <div className="relative">
                 <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
                   <div

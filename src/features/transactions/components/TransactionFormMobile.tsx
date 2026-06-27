@@ -64,7 +64,7 @@ export default function TransactionFormMobile({
   const amountInput = amount ? formatNumber(amount) : "";
 
   const isAmountValid = amount > 0;
-  const isAccountValid = typeId === "TP003" ? !!fromAccountId && !!toAccountId : !!fromAccountId;
+  const isAccountValid = typeId === "TP003" ? !!fromAccountId && !!toAccountId : !!fromAccountId || !!toAccountId;
   const isCategoryValid = isTransfer ? true : !!categoryId;
   const isRemarkValid = remark.trim().length > 0;
   const isFormValid =

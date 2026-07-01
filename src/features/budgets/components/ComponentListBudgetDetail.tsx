@@ -36,13 +36,13 @@ export default function ComponentListBudgetDetail({ budgets, spendingMap, accoun
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <img src={getAccountsImg(accountName)} alt={accountName} className="w-8 h-8" />
-                <div className="flex flex-col">
+                <div className="flex flex-col min-w-0">
                   <span className="text-xs text-slate-400">{accountName}</span>
                   <div className="text-sm font-semibold text-black truncate">{item.remark}</div>
                 </div>
               </div>
               <span className={`px-3 py-1 text-xs font-semibold rounded-full border 
-                      ${isOverBudget
+                ${isOverBudget
                   ? "bg-red-50 text-red-500 border-red-200"
                   : "bg-green-50 text-green-500 border-green-200"
                 }`}>

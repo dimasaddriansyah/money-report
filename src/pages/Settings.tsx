@@ -36,7 +36,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="bg-slate-900 flex flex-col">
+    <div className="bg-red-900 flex flex-col">
       <section className="flex flex-col items-center gap-4 pt-20 pb-6">
         <div className="p-4 bg-white rounded-full flex items-center justify-center">
           <Male02Icon className="w-8 h-8" />

@@ -26,10 +26,12 @@ const ACCOUNT_RULES: Record<string, string[]> = {
   "TapCash BNI": ["tapcash"],
   Bibit: ["bibit"],
   Investment: ["investment"],
+  "CIMB Niaga": ["cimb"],
+  Transportation: ["transportation"],
 };
 
 const CATEGORY_RULES: Record<string, string[]> = {
-  "Foods and Beverages": ["fnb", "kopi", "warung", "makan", "foodcourt"],
+  "Foods and Beverages": ["fnb", "kopi", "warung", "makan", "foodcourt", "cafe", "ayam"],
   Grocery: ["grocery", "indomaret", "alfamidi", "alfamart"],
   "Top Up": ["top up"],
   Gasoline: ["gas", "gasoline"],
@@ -52,7 +54,7 @@ const CATEGORY_RULES: Record<string, string[]> = {
   "Internal Transfer": ["itf"],
 };
 
-const REMARK_CATEGORY_EXCEPTIONS = ["kopi", "warung", "foodcourt", "indomaret"];
+const REMARK_CATEGORY_EXCEPTIONS = ["kopi", "warung", "foodcourt", "indomaret", "ayam", "cafe", "payroll", "parkir", "top up"];
 
 // ==========================================================================================
 // TYPE

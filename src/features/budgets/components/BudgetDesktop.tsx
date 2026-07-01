@@ -155,7 +155,7 @@ export default function BudgetDesktop({
               icon={<MoneySavingJarIcon />} />
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             {budgetDetails.map((item) => {
               const spending = spendingMap.get(item.id) ?? 0;
               const isCappedBudget = item.accountId === "ACC005" && item.remark === "Uang Bersama";

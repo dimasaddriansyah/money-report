@@ -35,8 +35,7 @@ export const getAccountsImg = (account: string) => {
 
   const accountMap: Record<string, string> = {
     Investment: "Jago",
-    Transportation: "Jago",
-    "CIMB Niaga": "CIMB",
+    Transportation: "Jago"
   };
 
   const filterAccount = accountMap[account] ?? account;

@@ -50,7 +50,7 @@ export default function ComponentTransactionItem({
               <div className="flex items-center">
                 {getAccountDisplay(row, accountMap).map((name: string, i: number, arr: string[]) => (
                   <span key={i} className="flex items-center">
-                    <span className={`flex items-center px-2 py-1 gap-1 rounded-full ${getAccountStyle(name)}`}>
+                    <span className={`flex items-center px-2 py-1 gap-2 rounded-full ${getAccountStyle(name)}`}>
                       <img src={getAccountsImg(name)} className="w-4 h-4" />
                       <span className="text-xs">{name}</span>
                     </span>
@@ -64,9 +64,9 @@ export default function ComponentTransactionItem({
                   <div className="font-medium">{row.remark || "-"}</div>
                   <div className="text-sm text-slate-400">{categoryName}</div>
                 </div>
-                <div className={amountConfig.className}>
+                <span className={amountConfig.className}>
                   {formatBalance(amountConfig.label, hideBalance)}
-                </div>
+                </span>
               </div>
             </div>
           </div>

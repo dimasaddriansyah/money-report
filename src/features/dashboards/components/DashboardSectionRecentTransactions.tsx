@@ -97,6 +97,7 @@ export default function DashboardSectionRecentTransactions({
                 const categoryName = getCategoryName(row.categoryId, categoryMap);
                 const isSpecialRemark = /\[.*?\]/.test(row.remark || "");
 
+
                 return (
                   <tr
                     key={`${row.id}-${index}`}

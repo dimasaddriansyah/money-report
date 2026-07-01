@@ -16,7 +16,7 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
   return (
     <aside
       className={`hidden md:flex flex-col h-screen sticky top-0 bg-white border-r border-slate-100 transition-[width] duration-300 ease-in-out
-        ${collapsed ? "w-19" : "w-66"}`}>
+        ${collapsed ? "w-19" : "w-56"}`}>
       {/* HEADER */}
       <div className="px-4.5 h-18 flex items-center border-b border-slate-100 space-x-3">
         <img src={CashflowLogo} alt="Logo" className="w-8 h-8" />
@@ -27,8 +27,8 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
 
       {/* NAVIGATION */}
       <nav
-        className={`flex-1 flex flex-col py-6 gap-1 transition-all duration-300 
-          ${collapsed ? "px-3.5 items-center" : "px-4.5"}`}>
+        className={`flex-1 flex flex-col py-2 gap-1 transition-all duration-300
+          ${collapsed ? "px-3.5 items-center" : "px-2"}`}>
         {NAV_MENUS_DESKTOP.map((item, index) => {
           // LABEL SECTION
           if (item.type === "label") {
@@ -36,7 +36,7 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
               !collapsed && (
                 <p
                   key={index}
-                  className="text-xs text-gray-400 px-3 mt-6 mb-2 tracking-wider">
+                  className="text-xs text-gray-400 px-3 mt-2 mb-2 tracking-wider">
                   {item.label}
                 </p>
               )
@@ -56,8 +56,8 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
               className={`flex items-center transition cursor-pointer rounded-xl font-medium relative
                 ${collapsed ? "w-full h-12 justify-center" : "gap-4 p-3"}
                 ${active
-                  ? "bg-slate-900 text-white font-semibold hover:bg-slate-800"
-                  : "text-slate-900 hover:bg-slate-50"
+                  ? "bg-black text-white font-semibold hover:bg-slate-900"
+                  : "text-black hover:bg-slate-50"
                 }`}>
               {/* ICON (optional) */}
               <div className="w-6 h-6 flex items-center justify-center">
@@ -83,7 +83,7 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
           ${collapsed ? "flex justify-center px-3.5" : "px-4.5"}`}>
         <button
           onClick={() => onOpenModal()}
-          className={`flex items-center w-full rounded-xl text-sm font-medium transition border border-dashed border-slate-300 text-slate-900 hover:bg-slate-900 hover:text-white cursor-pointer
+          className={`flex items-center w-full rounded-xl text-sm font-medium transition border border-dashed border-slate-300 text-black hover:bg-black hover:text-white cursor-pointer
             ${collapsed ? "justify-center h-12" : "gap-3 p-3"}`}>
           {/* ICON */}
           <div className="w-6 h-6 flex items-center justify-center">

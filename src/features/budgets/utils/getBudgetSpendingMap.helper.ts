@@ -8,7 +8,7 @@ type BudgetRule = {
 };
 
 const BUDGET_RULES = new Map<string, BudgetRule>([
-  ["ACC012|Uang Pribadi", { accountField: "from", categoryIds: ["CAT001","CAT002"] }],
+  ["ACC014|Uang Pribadi", { accountField: "from", categoryIds: ["CAT001","CAT002"] }],
   ["ACC013|Member Parkir", { accountField: "from", categoryIds: ["CAT014"]}],
   ["ACC006|Kuota", { accountField: "from", categoryIds: ["CAT014"], remarkMatch: "Kuota" }],
   ["ACC006|Bensin", { accountField: "from", categoryIds: ["CAT004"] }],

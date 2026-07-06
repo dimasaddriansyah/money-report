@@ -28,13 +28,14 @@ const ACCOUNT_RULES: Record<string, string[]> = {
   Investment: ["investment"],
   "CIMB Niaga": ["cimb"],
   Transportation: ["transportation"],
+  Jenius: ["jenius"]
 };
 
 const CATEGORY_RULES: Record<string, string[]> = {
-  "Foods and Beverages": ["fnb", "kopi", "warung", "makan", "foodcourt", "cafe", "ayam"],
+  "Foods and Beverages": ["fnb", "kopi", "warung", "makan", "foodcourt", "cafe", "ayam", "warmindo"],
   Grocery: ["grocery", "indomaret", "alfamidi", "alfamart"],
   "Top Up": ["top up"],
-  Gasoline: ["gas", "gasoline"],
+  Gasoline: ["gas", "gasoline", "bensin"],
   Transportation: ["transport", "transportation"],
   Parking: ["parking", "parkir"],
   Gallon: ["gallon"],
@@ -54,7 +55,7 @@ const CATEGORY_RULES: Record<string, string[]> = {
   "Internal Transfer": ["itf"],
 };
 
-const REMARK_CATEGORY_EXCEPTIONS = ["kopi", "warung", "foodcourt", "indomaret", "ayam", "cafe", "payroll", "parkir", "top up"];
+const REMARK_CATEGORY_EXCEPTIONS = ["kopi", "warung", "foodcourt", "indomaret", "ayam", "cafe", "payroll", "parkir", "top up", "warmindo"];
 
 // ==========================================================================================
 // TYPE

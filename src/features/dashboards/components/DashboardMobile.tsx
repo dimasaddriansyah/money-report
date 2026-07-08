@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import EmptyState from "../../../shared/ui/EmptyState";
 import { useGroupTransactionsByDate } from "../../transactions/hooks/useGroupTransactionsByDate";
 import TransactionGroupMobile from "../../transactions/components/TransactionGroupMobile";
@@ -6,7 +6,7 @@ import { useBalance } from "../../../shared/context/BalanceContext";
 import type { Transaction } from "../../transactions/types/transaction";
 import { useNavigate } from "react-router-dom";
 import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
-import { Delete02Icon, ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
+import { ArrowDown01Icon, Delete02Icon, ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import DashboardSectionAccountBalanceSummary from "./DashboardSectionAccountBalanceSummary";
 import { useDashboardData } from "../hooks/useDashboardData";
 import { toast } from "sonner";
@@ -52,6 +52,100 @@ export default function DashboardMobile({ transactions, accounts, categories, re
 
   const { summary, accountsWithBalance } = useDashboardData({ transactions, accounts, categories, refetch });
 
+  const periods = [
+    { label: "Year", value: "year" },
+    { label: "Month", value: "month" },
+    { label: "Week", value: "week" },
+    { label: "Yesterday", value: "yesterday" },
+    { label: "Today", value: "today" },
+  ];
+  const [period, setPeriod] = useState("month");
+  const [openFilter, setOpenFilter] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const filteredTransactions = useMemo(() => {
+    const now = new Date();
+
+    return transactions.filter((trx) => {
+      const trxDate = new Date(trx.date);
+
+      switch (period) {
+        case "year":
+          return trxDate.getFullYear() === now.getFullYear();
+
+        case "month": {
+          const year = now.getFullYear();
+          const month = now.getMonth();
+          const day = now.getDate();
+
+          const startDate =
+            day >= 25
+              ? new Date(year, month, 25, 0, 0, 0, 0)
+              : new Date(year, month - 1, 25, 0, 0, 0, 0);
+
+          const endDate =
+            day >= 25
+              ? new Date(year, month + 1, 24, 23, 59, 59, 999)
+              : new Date(year, month, 24, 23, 59, 59, 999);
+
+          return trxDate >= startDate && trxDate <= endDate;
+        }
+
+        case "week": {
+          const startOfWeek = new Date(now);
+          const day = now.getDay();
+          const diff = day === 0 ? -6 : 1 - day;
+
+          startOfWeek.setDate(now.getDate() + diff);
+          startOfWeek.setHours(0, 0, 0, 0);
+
+          const endOfWeek = new Date(now);
+          endOfWeek.setHours(23, 59, 59, 999);
+
+          return trxDate >= startOfWeek && trxDate <= endOfWeek;
+        }
+
+        case "yesterday": {
+          const yesterday = new Date(now);
+          yesterday.setDate(now.getDate() - 1);
+
+          return (
+            trxDate.getFullYear() === yesterday.getFullYear() &&
+            trxDate.getMonth() === yesterday.getMonth() &&
+            trxDate.getDate() === yesterday.getDate()
+          );
+        }
+
+        case "today": {
+          const start = new Date(now);
+          start.setHours(0, 0, 0, 0);
+
+          const end = new Date(now);
+          end.setHours(23, 59, 59, 999);
+
+          return trxDate >= start && trxDate <= end;
+        }
+
+        default:
+          return true;
+      }
+    });
+  }, [transactions, period]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenFilter(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => { document.removeEventListener("mousedown", handleClickOutside) }
+  }, []);
+
   const { deleteTransaction, loading } = useTransactionActions(refetch);
   async function handleDelete() {
     if (!selectedTransaction) return;
@@ -82,9 +176,9 @@ export default function DashboardMobile({ transactions, accounts, categories, re
         />
       ) : (
         <>
-          <div className="px-4 py-6 bg-slate-50">
+          <div className="px-4 py-10 bg-slate-50">
             <div className="flex flex-col">
-              <span className="text-sm text-slate-400">Total Balance</span>
+              <span className="text-sm text-slate-500">Total Balance</span>
               <div className="flex items-center gap-4">
                 <span className="text-2xl text-black font-semibold">{formatBalance(formatCurrency(summary.balance), hideBalance)}</span>
                 {hideBalance !== undefined && setHideBalance && (
@@ -111,10 +205,34 @@ export default function DashboardMobile({ transactions, accounts, categories, re
 
           <section className="flex flex-col m-4 p-4 bg-white border border-slate-100 rounded-lg gap-4">
             <div className="flex justify-between items-center">
-              <h4 className="font-semibold text-">Category Expense</h4>
+              <h4 className="font-semibold">Category Expense</h4>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setOpenFilter(!openFilter)}
+                  className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white py-2 pl-4 pr-2 text-sm hover:bg-slate-50 cursor-pointer">
+                  <span className="text-sm text-black">{periods.find((p) => p.value === period)?.label}</span>
+                  <ArrowDown01Icon size={16} className={`transition-transform ${openFilter ? "rotate-180" : ""}`} />
+                </button>
+                {openFilter && (
+                  <div className="absolute right-0 z-50 mt-2 w-45 rounded-xl border border-slate-200 bg-white p-1 shadow-lg">
+                    {periods.map((item) => (
+                      <button
+                        key={item.value}
+                        onClick={() => {
+                          setPeriod(item.value)
+                          setOpenFilter(false)
+                        }}
+                        className={`flex w-full items-center justify-between rounded-lg p-3 text-sm hover:bg-slate-100 cursor-pointer
+                          ${period === item.value ? "bg-slate-100 font-semibold" : ""}`}>
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="h-px bg-slate-100/60" />
-            <DashboardSectionLayoutCategoryExpense transactions={transactions} categories={categories} />
+            <DashboardSectionLayoutCategoryExpense transactions={filteredTransactions} categories={categories} />
           </section>
 
           {grouped.map((group) => (

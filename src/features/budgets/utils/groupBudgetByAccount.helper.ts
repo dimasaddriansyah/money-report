@@ -4,6 +4,7 @@ import type { Budget } from "../types/budget";
 const ACCOUNT_GROUPS: Record<string, string> = {
   ACC009: "ACC006",
   ACC010: "ACC006",
+  ACC013: "ACC006"
 };
 
 function getParentAccountId(accountId: string) {

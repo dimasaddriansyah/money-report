@@ -1,3 +1,34 @@
+import { Timestamp } from "firebase/firestore";
+
+export function formatDateTime(value?: Timestamp | Date | string | null) {
+  if (!value) return "-";
+
+  let date: Date;
+
+  if (value instanceof Timestamp) {
+    date = value.toDate();
+  } else if (value instanceof Date) {
+    date = value;
+  } else {
+    date = new Date(value);
+  }
+
+  const datePart = date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+  const timePart = date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  return `${datePart} ${timePart}`;
+}
+
 export function formatDateFull(value: string) {
   if (!value) return "";
 
@@ -79,21 +110,21 @@ export function normalizeDate(date?: string) {
 }
 
 export function formatDateMonthRange(value: string) {
-    const date = new Date(value);
+  const date = new Date(value);
 
-    const currentMonth = date.toLocaleDateString("en-GB", {
-      month: "long",
-    });
+  const currentMonth = date.toLocaleDateString("en-GB", {
+    month: "long",
+  });
 
-    const nextDate = new Date(date);
-    nextDate.setMonth(date.getMonth() + 1);
+  const nextDate = new Date(date);
+  nextDate.setMonth(date.getMonth() + 1);
 
-    const nextMonth = nextDate.toLocaleDateString("en-GB", {
-      month: "long",
-    });
+  const nextMonth = nextDate.toLocaleDateString("en-GB", {
+    month: "long",
+  });
 
-    return `${currentMonth} - ${nextMonth}`;
-  }
+  return `${currentMonth} - ${nextMonth}`;
+}
 
 export function parseRupiah(value: string): number {
   return Number(value?.replace("Rp", "").replace(/\./g, "").trim() || 0);

@@ -1,22 +1,41 @@
-import { API_URL } from "../../../shared/config/api.config";
+import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import type { Account } from "../types/account";
+import { db } from "../../../firebase";
 
-export async function fetchAccounts(): Promise<{ data: Account[] }> {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      module: "accounts",
-      action: "list"
-    }),
+const COLLECTION_NAME = "accounts";
+
+// GET ACCOUNTS
+export async function getAccounts(): Promise<Account[]> {
+  const snapshot = await getDocs(collection(db, COLLECTION_NAME));
+
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Account[];
+}
+
+// CREATE ACCOUNT
+export async function createAccount(
+  account: Pick<Account, "id" | "name">
+): Promise<void> {
+  await setDoc(doc(db, COLLECTION_NAME, account.id), {
+    name: account.name,
+    createdAt: serverTimestamp(),
+    updatedAt: null,
   });
+}
 
-  const result = await response.json();
+// UPDATE ACCOUNT
+export async function updateAccount(
+  account: Pick<Account, "id" | "name">
+): Promise<void> {
+  await updateDoc(doc(db, COLLECTION_NAME, account.id), {
+    name: account.name,
+    updatedAt: serverTimestamp(),
+  });
+}
 
-  if (result.status !== "success") {
-    throw new Error(result.message || "Failed to fetch accounts");
-  }
-
-  return {
-    data: result.data,
-  };
+// DELETE ACCOUNT
+export async function deleteAccount(id: string): Promise<void> {
+  await deleteDoc(doc(db, COLLECTION_NAME, id));
 }

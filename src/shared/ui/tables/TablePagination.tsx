@@ -28,7 +28,7 @@ export default function TablePagination({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 border border-slate-100 rounded-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+          className="px-3 py-2 border border-slate-100 rounded-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
           Prev
         </button>
         {pages.map((p, index) => (
@@ -36,7 +36,7 @@ export default function TablePagination({
             key={index}
             disabled={p === "..."}
             onClick={() => typeof p === "number" && onPageChange(p)}
-            className={`px-3 py-1 border border-slate-100 rounded-lg transition cursor-pointer
+            className={`px-3 py-2 border border-slate-100 rounded-lg transition cursor-pointer
               ${p === currentPage
                 ? "bg-slate-900 text-white font-semibold"
                 : "hover:bg-slate-100"}
@@ -47,7 +47,7 @@ export default function TablePagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="px-3 py-1 border border-slate-100 rounded-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+          className="px-3 py-2 border border-slate-100 rounded-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
           Next
         </button>
       </div>

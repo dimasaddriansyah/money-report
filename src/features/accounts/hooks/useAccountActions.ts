@@ -1,42 +1,59 @@
 import { useState } from "react";
-import { API_URL } from "../../../shared/config/api.config";
-import { formatDateInput } from "../../../shared/utils/format.helper";
+import {
+  createAccount as createAccountService,
+  updateAccount as updateAccountService,
+  deleteAccount as deleteAccountService,
+} from "../services/AccountService";
+import { generateNextId } from "../../../shared/utils/generateNextId.helper";
+import type { FormData } from "../helper/account.form.helper";
 
-export function useAccountActions(refetch?: () => void) {
+export function useAccountActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
 
-  async function saveAccount(data: {
-    id?: string;
-    name: string;
-    createdAt?: string;
-  }) {
-    const isEdit = !!data.id;
-
-    const payload = {
-      module: "accounts",
-      action: isEdit ? "edit" : "create",
-      id: data.id,
-      name: data.name,
-      createdAt: isEdit ? formatDateInput(data.createdAt) : formatDateInput(),
-      updatedAt: isEdit ? formatDateInput() : undefined,
-    };
-
+  async function createAccount(data: FormData) {
     try {
       setLoading(true);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
+      const id = await generateNextId("accounts", "ACC");
+
+      await createAccountService({
+        id,
+        name: data.name,
       });
 
-      const result = await response.json();
+      await refetch?.();
 
-      if (result.status !== "success") {
-        throw new Error(result.message);
-      }
-      return result;
+      return {
+        message: "Account created successfully",
+      };
     } catch (error) {
-      console.error("Submit error:", error);
+      console.error("Create account failed:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateAccount(data: FormData) {
+    try {
+      setLoading(true);
+
+      if (!data.id) {
+        throw new Error("Account ID is required");
+      }
+
+      await updateAccountService({
+        id: data.id,
+        name: data.name,
+      });
+
+      await refetch?.();
+
+      return {
+        message: "Account updated successfully",
+      };
+    } catch (error) {
+      console.error("Update account failed:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -47,28 +64,15 @@ export function useAccountActions(refetch?: () => void) {
     try {
       setLoading(true);
 
-      const payload = {
-        module: "accounts",
-        action: "delete",
-        id,
-      };
+      await deleteAccountService(id);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+      await refetch?.();
 
-      const result = await response.json();
-
-      if (result.status !== "success") {
-        throw new Error(result.message);
+      return {
+        message: "Account deleted successfully",
       }
-
-      refetch?.();
-
-      return result;
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error("Delete account failed:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -76,7 +80,8 @@ export function useAccountActions(refetch?: () => void) {
   }
 
   return {
-    saveAccount,
+    createAccount,
+    updateAccount,
     deleteAccount,
     loading,
   };

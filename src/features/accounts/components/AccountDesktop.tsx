@@ -7,14 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAccountActions } from "../hooks/useAccountActions";
-import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { formatDateTime } from "../../../shared/utils/format.helper";
 import Modal from "../../../shared/ui/Modal";
 import { usePagination } from "../../../shared/hooks/usePagination";
 import { getAccountsImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   accounts: Account[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 };
 
 export default function AccountDesktop({
@@ -65,8 +65,7 @@ export default function AccountDesktop({
       {isEmpty ? (
         <EmptyState
           title="No accounts yet"
-          subtitle="Create your first account to start tracking"
-        />
+          subtitle="Create your first account to start tracking" />
       ) : (
         <>
           <div className="flex justify-between items-center">
@@ -89,21 +88,19 @@ export default function AccountDesktop({
                 {paginatedData.map((row, index) => (
                   <tr
                     key={`${row.id}-${index}`}
-                    className="border-b border-slate-50 hover:bg-slate-50 transition"
-                  >
-                    <td className="text-slate-500 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
-                    <td className="text-slate-500">
+                    className="border-b border-slate-50 hover:bg-slate-50 transition">
+                    <td className="text-slate-600 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
+                    <td>
                       <div className="flex items-center gap-4">
                         <img
                           src={getAccountsImg(row.name)}
                           alt={row.name}
-                          className="w-8 h-8"
-                        />
-                        <span className="text-slate-900">{row.name || "-"}</span>
+                          className="w-8 h-8" />
+                        <span className="text-black font-medium">{row.name || "-"}</span>
                       </div>
                     </td>
-                    <td className="text-slate-500">{formatDateDayMonthYear(row.createdAt) || "-"}</td>
-                    <td className="text-slate-500">{formatDateDayMonthYear(row.updatedAt) || "-"}</td>
+                    <td className="text-slate-600">{formatDateTime(row.createdAt || "-")}</td>
+                    <td className="text-slate-600">{formatDateTime(row.updatedAt) || "-"}</td>
                     <td>
                       <div className="flex gap-2">
                         <div
@@ -146,7 +143,7 @@ export default function AccountDesktop({
             setOpen(false);
             setSelectedAccount(null);
           }}>
-          <p className="text-sm text-slate-500">
+          <p className="p-4 text-sm text-slate-600">
             Delete "<span className="text-black font-semibold">{selectedAccount?.name}</span>"? This cannot be undone.
           </p>
         </Modal>

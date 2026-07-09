@@ -9,12 +9,12 @@ export default function AccountEditPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { accounts, loading: isFetchingAccounts } = useAccounts();
-  const { saveAccount, loading } = useAccountActions();
+  const { updateAccount, loading } = useAccountActions();
   const account = accounts.find((acc) => acc.id === id);
 
   async function handleSubmit(data: { id?: string; name: string; createdAt?: string }) {
     try {
-      const result = await saveAccount(data);
+      const result = await updateAccount(data);
       navigate("/accounts")
       toast.success("Success", {
         description: result.message,

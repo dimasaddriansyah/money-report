@@ -10,7 +10,7 @@ import { Delete02Icon } from "hugeicons-react";
 
 type Props = {
   accounts: Account[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 };
 
 export default function AccountMobile({

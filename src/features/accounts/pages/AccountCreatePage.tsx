@@ -3,14 +3,15 @@ import AccountForm from "../components/AccountForm";
 import AccountLayout from "../components/AccountLayout";
 import { useAccountActions } from "../hooks/useAccountActions";
 import { toast } from "sonner";
+import type { FormData } from "../helper/account.form.helper";
 
 export default function AccountCreatePage() {
   const navigate = useNavigate();
-  const { saveAccount, loading } = useAccountActions();
+  const { createAccount, loading } = useAccountActions();
 
-  async function handleSubmit(data: { id?: string; name: string }) {
+  async function handleSubmit(data: FormData) {
     try {
-      const result = await saveAccount(data);
+      const result = await createAccount(data);
       navigate("/accounts")
       toast.success("Success", {
         description: result.message

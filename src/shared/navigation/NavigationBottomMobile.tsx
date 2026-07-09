@@ -5,7 +5,7 @@ import {
   Settings02Icon,
   PlusSignIcon,
   AiContentGenerator01Icon,
-  // MoneySavingJarIcon,
+  MoneySavingJarIcon,
   Invoice01Icon,
   ArrowRight01Icon,
   Home03Icon,
@@ -15,7 +15,7 @@ import BottomSheet from "../ui/BottomSheet";
 const menus = [
   { path: "/", Icon: Home03Icon },
   { path: "/transactions", Icon: Invoice01Icon },
-  // { path: "/budgets", Icon: MoneySavingJarIcon },
+  { path: "/budgets", Icon: MoneySavingJarIcon },
   { path: "/settings", Icon: Settings02Icon },
 ];
 

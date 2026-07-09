@@ -2,6 +2,7 @@ import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import SwipeableItem from "../../../shared/ui/SwipeableItem";
 import type { Account } from "../types/account";
 import { getAccountsImg } from "../../../shared/utils/style.helper";
+import { formatDateTime } from "../../../shared/utils/format.helper";
 
 type Props = {
   row: Account;
@@ -31,10 +32,17 @@ export default function ComponentAccountItem({
         </div>
       </div>
       <SwipeableItem isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
-        <div className="p-4 bg-white hover:bg-slate-50 transition cursor-pointer">
-          <div className="flex items-center gap-4">
+        <div className="p-4 flex justify-between items-center bg-white hover:bg-slate-50 transition cursor-pointer">
+          <div className="flex items-center gap-8">
             <img src={getAccountsImg(row.name)} className="w-8 h-8" />
-            <span>{row.name}</span>
+            <div className="flex flex-col">
+              <span className="text-xs text-slate-600">Account Name</span>
+              <span className="text-black">{row.name}</span>
+            </div>
+          </div>
+          <div className="flex flex-col text-right">
+            <span className="text-xs text-slate-600">Updated At</span>
+            <span className="text-sm text-black"> {formatDateTime(row.updatedAt ?? row.createdAt)}</span>
           </div>
         </div>
       </SwipeableItem>

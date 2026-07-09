@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Account } from "../types/account";
-import { fetchAccounts } from "../services/AccountService";
+import { getAccounts } from "../services/AccountService";
 
 export function useAccounts() {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -10,8 +10,9 @@ export function useAccounts() {
   const loadAccounts = useCallback(async () => {
     try {
       setLoading(true);
-      const result = await fetchAccounts();
-      setAccounts(result.data);
+      setError(null);
+      const data = await getAccounts();
+      setAccounts(data);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

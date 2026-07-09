@@ -9,7 +9,10 @@ interface SidebarProps {
   onOpenModal: () => void;
 }
 
-export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
+export default function Sidebar({ 
+  collapsed, 
+  // onOpenModal
+ }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -82,7 +85,7 @@ export default function Sidebar({ collapsed, onOpenModal }: SidebarProps) {
         className={`bg-slate-50 border-t border-slate-100 py-4
           ${collapsed ? "flex justify-center px-3.5" : "px-4.5"}`}>
         <button
-          onClick={() => onOpenModal()}
+          // onClick={() => onOpenModal()}
           className={`flex items-center w-full rounded-xl text-sm font-medium transition border border-dashed border-slate-300 text-black hover:bg-black hover:text-white cursor-pointer
             ${collapsed ? "justify-center h-12" : "gap-3 p-3"}`}>
           {/* ICON */}

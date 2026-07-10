@@ -4,17 +4,18 @@ import CategoryLayout from "../components/CategoryLayout";
 import { useCategories } from "../hooks/useCategories";
 import { useCategoryActions } from "../hooks/useCategoryActions";
 import { toast } from "sonner";
+import type { FormData } from "../helper/category.form.helper";
 
 export default function CategoryEditPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { categories, loading: isFetchingCategories } = useCategories();
-  const { saveCategory, loading } = useCategoryActions();
+  const { updateCategory, loading } = useCategoryActions();
   const category = categories.find((acc) => acc.id === id);
 
-  async function handleSubmit(data: { id?: string; name: string }) {
+  async function handleSubmit(data: FormData) {
     try {
-      const result = await saveCategory(data);
+      const result = await updateCategory(data);
       navigate("/categories")
       toast.success("Success", {
         description: result.message,

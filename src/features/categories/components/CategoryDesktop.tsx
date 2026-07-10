@@ -6,7 +6,7 @@ import type { Category } from "../types/category";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCategoryActions } from "../hooks/useCategoryActions";
-import { formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { formatDateTime } from "../../../shared/utils/format.helper";
 import Modal from "../../../shared/ui/Modal";
 import { usePagination } from "../../../shared/hooks/usePagination";
 import { useState } from "react";
@@ -14,7 +14,7 @@ import { getCategoriesImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   categories: Category[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 };
 
 export default function CategoryDesktop({
@@ -65,8 +65,7 @@ export default function CategoryDesktop({
       {isEmpty ? (
         <EmptyState
           title="No categories yet"
-          subtitle="Create your first category to start tracking"
-        />
+          subtitle="Create your first category to start tracking" />
       ) : (
         <>
           <div className="flex justify-between items-center">
@@ -77,7 +76,7 @@ export default function CategoryDesktop({
           <div className="overflow-x-auto">
             <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
               <thead className="bg-slate-50">
-                <tr className="text-left text-slate-500 border-b border-slate-100">
+                <tr className="text-left text-slate-600 border-b border-slate-100">
                   <th className="w-12">#</th>
                   <th>Category Name</th>
                   <th>Created Date</th>
@@ -89,21 +88,19 @@ export default function CategoryDesktop({
                 {paginatedData.map((row, index) => (
                   <tr
                     key={`${row.id}-${index}`}
-                    className="border-b border-slate-50 hover:bg-slate-50 transition"
-                  >
-                    <td className="text-slate-500 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
-                    <td className="text-slate-500">
+                    className="border-b border-slate-50 hover:bg-slate-50 transition">
+                    <td className="text-slate-600 font-medium">{(currentPage - 1) * pageSize + index + 1}</td>
+                    <td>
                       <div className="flex items-center gap-4">
                         <img
                           src={getCategoriesImg(row.name)}
                           alt={row.name}
-                          className="w-8 h-8"
-                        />
+                          className="w-8 h-8" />
                         <span className="text-slate-900">{row.name || "-"}</span>
                       </div>
                     </td>
-                    <td className="text-slate-500">{formatDateDayMonthYear(row.createdAt) || "-"}</td>
-                    <td className="text-slate-500">{formatDateDayMonthYear(row.updatedAt) || "-"}</td>
+                    <td className="text-slate-600">{formatDateTime(row.createdAt) || "-"}</td>
+                    <td className="text-slate-600">{formatDateTime(row.updatedAt) || "-"}</td>
                     <td>
                       <div className="flex gap-2">
                         <div
@@ -146,7 +143,7 @@ export default function CategoryDesktop({
             setOpen(false);
             setSelectedCategory(null);
           }}>
-          <p className="text-sm text-slate-500">
+          <p className="p-4 text-sm text-slate-600">
             Delete "<span className="text-black font-semibold">{selectedCategory?.name}</span>"? This cannot be undone.
           </p>
         </Modal>

@@ -21,8 +21,7 @@ export default function CategoryPage() {
         <CategoryLayout
           title="List of Category"
           breadcrumb={[{ label: "Dashboard", path: "/" }, { label: "Categories" }]}
-          button={{ label: "Create Category", url: "/category/create" }}
-        >
+          button={{ label: "Create Category", url: "/category/create" }}>
           <CategoryDesktop categories={categories} refetch={refetch} />
         </CategoryLayout>
       </div>

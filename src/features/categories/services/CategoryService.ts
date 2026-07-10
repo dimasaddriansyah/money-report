@@ -1,22 +1,41 @@
-import { API_URL } from "../../../shared/config/api.config";
+import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
 import type { Category } from "../types/category";
 
-export async function fetchCategories(): Promise<{ data: Category[] }> {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      module: "categories",
-      action: "list"
-    }),
+const COLLECTION_NAME = "categories";
+
+// GET CATEGORY
+export async function getCategories(): Promise<Category[]> {
+  const snapshot = await getDocs(collection(db, COLLECTION_NAME));
+
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Category[];
+}
+
+// CREATE CATEGORY
+export async function createCategory(
+  category: Pick<Category, "id" | "name">
+): Promise<void> {
+  await setDoc(doc(db, COLLECTION_NAME, category.id), {
+    name: category.name,
+    createdAt: serverTimestamp(),
+    updatedAt: null,
   });
+}
 
-  const result = await response.json();
+// UPDATE CATEGORY
+export async function updateCategory(
+  category: Pick<Category, "id" | "name">
+): Promise<void> {
+  await updateDoc(doc(db, COLLECTION_NAME, category.id), {
+    name: category.name,
+    updatedAt: serverTimestamp(),
+  });
+}
 
-  if (result.status !== "success") {
-    throw new Error(result.message || "Failed to fetch categories");
-  }
-
-  return {
-    data: result.data,
-  };
+// DELETE CATEGORY
+export async function deleteCategory(id: string): Promise<void> {
+  await deleteDoc(doc(db, COLLECTION_NAME, id));
 }

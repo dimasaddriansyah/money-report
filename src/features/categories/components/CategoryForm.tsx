@@ -1,10 +1,11 @@
 import { useState } from "react";
-import type { Category } from "../types/category";
 import { Note05Icon } from "hugeicons-react";
+import type { Category } from "../types/category";
+import type { FormData } from "../helper/category.form.helper";
 
 type Props = {
   defaultValues?: Category;
-  onSubmit: (data: { id?: string; name: string; createdAt?: string }) => void;
+  onSubmit: (data: FormData) => void;
   loading?: boolean;
 };
 
@@ -18,7 +19,6 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
     onSubmit({
       id: defaultValues?.id,
       name,
-      createdAt: defaultValues?.createdAt,
     });
   }
 
@@ -38,9 +38,9 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${name ? "text-slate-900" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900 placeholder:text-slate-400 transition appearance-none`}
-              placeholder="Input account name"
-            />
+              className={`block w-full ps-13 pe-3 py-3 text-base rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none
+                ${name ? "text-black" : "text-slate-400"}`}
+              placeholder="Input account name"/>
           </div>
         </div>
       </div>
@@ -53,7 +53,7 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
           type="submit"
           disabled={loading}
           className={`order-1 px-5 py-2.5 text-sm font-semibold text-white rounded-lg cursor-pointer
-            ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-slate-900 hover:bg-slate-800"}
+            ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-black hover:bg-black/80"}
           `}>
           {loading ? "Saving..." : isEdit ? "Update Category" : "Create Category"}
         </button>

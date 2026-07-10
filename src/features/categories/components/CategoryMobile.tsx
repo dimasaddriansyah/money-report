@@ -10,7 +10,7 @@ import { Delete02Icon } from "hugeicons-react";
 
 type Props = {
   categories: Category[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 };
 
 

@@ -1,42 +1,59 @@
 import { useState } from "react";
-import { API_URL } from "../../../shared/config/api.config";
-import { formatDateInput } from "../../../shared/utils/format.helper";
+import {
+  createCategory as createCategoryService,
+  updateCategory as updateCategoryService,
+  deleteCategory as deleteCategoryService,
+} from "../services/CategoryService";
+import { generateNextId } from "../../../shared/utils/generateNextId.helper";
+import type { FormData } from "../helper/category.form.helper";
 
-export function useCategoryActions(refetch?: () => void) {
+export function useCategoryActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
 
-  async function saveCategory(data: {
-    id?: string;
-    name: string;
-    createdAt?: string;
-  }) {
-    const isEdit = !!data.id;
-
-    const payload = {
-      module: "categories",
-      action: isEdit ? "edit" : "create",
-      id: data.id,
-      name: data.name,
-      createdAt: isEdit ? formatDateInput(data.createdAt) : formatDateInput(),
-      updatedAt: isEdit ? formatDateInput() : undefined,
-    };
-
+  async function createCategory(data: FormData) {
     try {
       setLoading(true);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
+      const id = await generateNextId("categories", "CAT");
+
+      await createCategoryService({
+        id,
+        name: data.name,
       });
 
-      const result = await response.json();
+      await refetch?.();
 
-      if (result.status !== "success") {
-        throw new Error(result.message);
-      }
-      return result;
+      return {
+        message: "Category created successfully",
+      };
     } catch (error) {
-      console.error("Submit error:", error);
+      console.error("Create category failed:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateCategory(data: FormData) {
+    try {
+      setLoading(true);
+
+      if (!data.id) {
+        throw new Error("Category ID is required");
+      }
+
+      await updateCategoryService({
+        id: data.id,
+        name: data.name,
+      });
+
+      await refetch?.();
+
+      return {
+        message: "Category updated successfully",
+      };
+    } catch (error) {
+      console.error("Update category failed:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -47,28 +64,15 @@ export function useCategoryActions(refetch?: () => void) {
     try {
       setLoading(true);
 
-      const payload = {
-        module: "categories",
-        action: "delete",
-        id,
-      };
+      await deleteCategoryService(id);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+      await refetch?.();
 
-      const result = await response.json();
-
-      if (result.status !== "success") {
-        throw new Error(result.message);
+      return {
+        message: "Category deleted successfully",
       }
-
-      refetch?.();
-
-      return result;
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error("Delete category failed:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -76,7 +80,8 @@ export function useCategoryActions(refetch?: () => void) {
   }
 
   return {
-    saveCategory,
+    createCategory,
+    updateCategory,
     deleteCategory,
     loading,
   };

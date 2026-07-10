@@ -4,6 +4,7 @@ import AccountLayout from "../components/AccountLayout";
 import { useAccounts } from "../hooks/useAccounts";
 import { useAccountActions } from "../hooks/useAccountActions";
 import { toast } from "sonner";
+import type { FormData } from "../helper/account.form.helper";
 
 export default function AccountEditPage() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function AccountEditPage() {
   const { updateAccount, loading } = useAccountActions();
   const account = accounts.find((acc) => acc.id === id);
 
-  async function handleSubmit(data: { id?: string; name: string; createdAt?: string }) {
+  async function handleSubmit(data: FormData) {
     try {
       const result = await updateAccount(data);
       navigate("/accounts")

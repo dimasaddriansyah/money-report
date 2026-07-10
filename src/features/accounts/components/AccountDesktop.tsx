@@ -76,7 +76,7 @@ export default function AccountDesktop({
           <div className="overflow-x-auto">
             <table className="w-full text-sm [&_th]:px-4 [&_th]:py-2 [&_td]:px-4 [&_td]:py-3">
               <thead className="bg-slate-50">
-                <tr className="text-left text-slate-500 border-b border-slate-100">
+                <tr className="text-left text-slate-600 border-b border-slate-100">
                   <th className="w-12">#</th>
                   <th>Account Name</th>
                   <th>Created Date</th>

@@ -3,14 +3,15 @@ import CategoryForm from "../components/CategoryForm";
 import CategoryLayout from "../components/CategoryLayout";
 import { useCategoryActions } from "../hooks/useCategoryActions";
 import { toast } from "sonner";
+import type { FormData } from "../helper/category.form.helper";
 
 export default function CategoryCreatePage() {
   const navigate = useNavigate();
-  const { saveCategory, loading } = useCategoryActions();
+  const { createCategory, loading } = useCategoryActions();
 
-  async function handleSubmit(data: { id?: string; name: string }) {
+  async function handleSubmit(data: FormData) {
     try {
-      const result = await saveCategory(data);
+      const result = await createCategory(data);
       navigate("/categories")
       toast.success("Success", {
         description: result.message

@@ -1,47 +1,84 @@
+import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
-import { API_URL } from "../../../shared/config/api.config";
+import {
+  createBudget as createBudgetService,
+  updateBudget as updateBudgetService,
+  deleteBudget as deleteBudgetService,
+} from "../services/BudgetService";
+import { generateId } from "../../../shared/utils/generateId.helper";
+import type { BudgetCreateData, BudgetUpdateData } from "../utils/budget.form.helper";
 
-export function useBudgetActions(refetch?: () => void) {
+function buildBudgetTimestamp(
+  date: string | Timestamp,
+): Timestamp {
+  if (date instanceof Timestamp) {
+    return date;
+  }
+
+  const now = new Date();
+  const budgetDate = new Date(
+    `${date}T${now.toTimeString().slice(0, 8)}`,
+  );
+
+  return Timestamp.fromDate(budgetDate);
+}
+
+export function useBudgetActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
 
-  async function saveBudget(data: {
-    id?: string;
-    date: string;
-    accountId?: string;
-    remark: string;
-    amount: number;
-  }) {
-    const isEdit = !!data.id;
-
-    const payload = {
-      module: "budgets",
-      action: isEdit ? "edit" : "create",
-      id: data.id,
-      date: data.date,
-      accountId: data.accountId,
-      remark: data.remark,
-      amount: data.amount,
-    };
-
+  async function createBudget(data: BudgetCreateData) {
     try {
       setLoading(true);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
+      const id = await generateId({
+        collection: "budgets",
+        prefix: "BUD",
       });
 
-      const result = await response.json();
+      await createBudgetService({
+        id,
+        date: buildBudgetTimestamp(data.date),
+        accountId: data.accountId ?? null,
+        remark: data.remark,
+        amount: data.amount,
+      });
 
-      if (result.status !== "success") {
-        throw new Error(result.message);
-      }
-      
-      refetch?.();
+      await refetch?.();
 
-      return result;
+      return {
+        message: "Budget created successfully",
+      };
     } catch (error) {
-      console.error("Submit error:", error);
+      console.error("Create budget failed:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateBudget(data: BudgetUpdateData) {
+    try {
+      setLoading(true);
+
+      if (!data.id) {
+        throw new Error("Budget ID is required");
+      }
+
+      await updateBudgetService({
+        id: data.id,
+        date: buildBudgetTimestamp(data.date),
+        accountId: data.accountId ?? null,
+        remark: data.remark,
+        amount: data.amount,
+      });
+
+      await refetch?.();
+
+      return {
+        message: "Budget updated successfully",
+      };
+    } catch (error) {
+      console.error("Update budget failed:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -52,28 +89,15 @@ export function useBudgetActions(refetch?: () => void) {
     try {
       setLoading(true);
 
-      const payload = {
-        module: "budgets",
-        action: "delete",
-        id,
+      await deleteBudgetService(id);
+
+      await refetch?.();
+
+      return {
+        message: "Budget deleted successfully",
       };
-
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (result.status !== "success") {
-        throw new Error(result.message);
-      }
-
-      refetch?.();
-
-      return result;
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error("Delete budget failed:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -81,7 +105,8 @@ export function useBudgetActions(refetch?: () => void) {
   }
 
   return {
-    saveBudget,
+    createBudget,
+    updateBudget,
     deleteBudget,
     loading,
   };

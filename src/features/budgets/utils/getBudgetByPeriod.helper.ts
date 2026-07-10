@@ -1,33 +1,31 @@
+import { toDate } from "../../../shared/utils/format.helper";
 import type { Budget } from "../types/budget";
 
-export function getBudgetByPeriod(budgets: Budget[], date: Date) {
-  const month = date.getMonth();
-  const year = date.getFullYear();
+export function getBudgetByPeriod(
+  budgets: Budget[],
+  period: Date
+) {
+  const month = period.getMonth();
+  const year = period.getFullYear();
 
-  const primary = budgets.find((b) => {
-    if (!b.date) return false;
+  const isSamePeriod = (date: Date | null) =>
+    !!date &&
+    date.getMonth() === month &&
+    date.getFullYear() === year;
 
-    const d = new Date(b.date);
+  const primary = budgets.find((budget) =>
+    !budget.accountId &&
+    budget.remark === "Budget" &&
+    isSamePeriod(toDate(budget.date))
+  );
 
-    return (
-      !b.accountId &&
-      b.remark === "Budget" &&
-      d.getMonth() === month &&
-      d.getFullYear() === year
-    );
-  });
+  const details = budgets.filter((budget) =>
+    budget.accountId &&
+    isSamePeriod(toDate(budget.date))
+  );
 
-  const details = budgets.filter((b) => {
-    if (!b.date) return false;
-
-    const d = new Date(b.date);
-
-    return (
-      b.accountId &&
-      d.getMonth() === month &&
-      d.getFullYear() === year
-    );
-  });
-
-  return { primary, details };
+  return {
+    primary,
+    details,
+  };
 }

@@ -1,22 +1,32 @@
-import { API_URL } from "../../../shared/config/api.config";
+import { collection, deleteDoc, doc, getDocs, setDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
 import type { Budget } from "../types/budget";
 
-export async function fetchBudgets(): Promise<{ data: Budget[] }> {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      module: "budgets",
-      action: "list"
-    }),
-  });
+const COLLECTION_NAME = "budgets";
 
-  const result = await response.json();
+export async function getBudgets(): Promise<Budget[]> {
+  const snapshot = await getDocs(collection(db, COLLECTION_NAME));
 
-  if (result.status !== "success") {
-    throw new Error(result.message || "Failed to fetch budgets");
-  }
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Budget[];
+}
 
-  return {
-    data: result.data,
-  };
+async function saveBudget(budget: Budget): Promise<void> {
+  const { id, ...data } = budget;
+
+  await setDoc(doc(db, COLLECTION_NAME, id), data);
+}
+
+export async function createBudget(budget: Budget): Promise<void> {
+  await saveBudget(budget);
+}
+
+export async function updateBudget(budget: Budget): Promise<void> {
+  await saveBudget(budget);
+}
+
+export async function deleteBudget(id: string): Promise<void> {
+  await deleteDoc(doc(db, COLLECTION_NAME, id));
 }

@@ -1,24 +1,31 @@
+import { createLookup } from "../../../shared/utils/lookup.helper";
 import type { Account } from "../../accounts/types/account";
 import type { Budget } from "../types/budget";
 
+type OriginalBudgetGroup = {
+  accountId: string;
+  accountName: string;
+  total: number;
+};
+
+function getAccountId(accountId?: string | null): string {
+  return accountId ?? "";
+}
+
 export function groupBudgetByOriginalAccount(
   budgets: Budget[],
-  accounts: Account[]
-) {
-  const accountMap = new Map(
-    accounts.map(account => [account.id, account])
-  );
+  accounts: Account[],
+): OriginalBudgetGroup[] {
+  const accountLookup = createLookup(accounts);
 
-  return Object.values(
-    budgets.reduce((acc, budget) => {
-      const accountId = budget.accountId ?? "";
+  const grouped = budgets.reduce<Record<string, OriginalBudgetGroup>>(
+    (acc, budget) => {
+      const accountId = getAccountId(budget.accountId);
 
       if (!acc[accountId]) {
         acc[accountId] = {
           accountId,
-          accountName:
-            accountMap.get(accountId)?.name ??
-            "Unknown Account",
+          accountName: accountLookup[accountId] ?? "Unknown Account",
           total: 0,
         };
       }
@@ -26,13 +33,11 @@ export function groupBudgetByOriginalAccount(
       acc[accountId].total += budget.amount;
 
       return acc;
-    }, {} as Record<
-      string,
-      {
-        accountId: string;
-        accountName: string;
-        total: number;
-      }
-    >)
-  ).sort((a, b) => b.total - a.total);
+    },
+    {},
+  );
+
+  return Object.values(grouped).sort(
+    (a, b) => b.total - a.total,
+  );
 }

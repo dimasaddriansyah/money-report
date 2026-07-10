@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Budget } from "../types/budget";
-import { fetchBudgets } from "../services/BudgetService";
+import { getBudgets } from "../services/BudgetService";
 
 export function useBudgets() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
@@ -10,8 +10,9 @@ export function useBudgets() {
   const loadBudgets = useCallback(async () => {
     try {
       setLoading(true);
-      const result = await fetchBudgets();
-      setBudgets(result.data);
+      setError(null);
+      const data = await getBudgets();
+      setBudgets(data);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

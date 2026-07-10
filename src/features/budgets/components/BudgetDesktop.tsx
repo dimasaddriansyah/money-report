@@ -1,28 +1,29 @@
-import { Add01Icon, DollarCircleIcon, MoneySavingJarIcon, NoteEditIcon } from "hugeicons-react";
-import { formatBalance, formatCurrency, formatDateMonthRange, formatNumber } from "../../../shared/utils/format.helper";
 import type { Account } from "../../accounts/types/account";
 import { useTransactionPeriod } from "../../transactions/hooks/useTransactionPeriod";
 import type { Transaction } from "../../transactions/types/transaction";
-import type { Budget } from "../types/budget";
 import { useBalance } from "../../../shared/context/BalanceContext";
 import { useNavigate } from "react-router-dom";
 import TransactionComponentFilterDate from "../../transactions/components/TransactionComponentFilterDate";
 import { getBudgetByPeriod } from "../utils/getBudgetByPeriod.helper";
 import { toast } from "sonner";
-import { useState } from "react";
-import Modal from "../../../shared/ui/Modal";
+import { useMemo, useState } from "react";
 import { useBudgetActions } from "../hooks/useBudgetActions";
 import { type GroupedBudget, groupBudgetByAccount } from "../utils/groupBudgetByAccount.helper";
 import { getAccountsImg } from "../../../shared/utils/style.helper";
-import { groupBudgetByOriginalAccount } from "../utils/groupBudgetByOriginalAccount.helper";
 import { getBudgetSpendingMap } from "../utils/getBudgetSpendingMap.helper";
 import EmptyState from "../../../shared/ui/EmptyState";
+import { createLookup } from "../../../shared/utils/lookup.helper";
+import { formatBalance, formatCurrency, formatNumber, toDate } from "../../../shared/utils/format.helper";
+import ComponentBudgetTransferModal from "./ComponentBudgetTransferModal";
+import ComponentBudgetEditModal from "./ComponentBudgetEditModal";
+import { Add01Icon, MoneySavingJarIcon, NoteEditIcon } from "hugeicons-react";
+import type { Budget } from "../types/budget";
 
 type Props = {
   budgets: Budget[];
   accounts: Account[];
   transactions: Transaction[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 };
 
 type ModalState =
@@ -42,44 +43,133 @@ export default function BudgetDesktop({
   const [amountInput, setAmountInput] = useState<string>("");
   const [modal, setModal] = useState<ModalState>(null);
 
-  const { saveBudget, loading } = useBudgetActions(refetch);
+  const { updateBudget, loading } = useBudgetActions(refetch);
 
   const { start, end, prev, next, isCurrentPeriod, isMaxPeriod } = useTransactionPeriod(true);
-  const transactionsInPeriod = transactions.filter((trx) => {
-    const trxDate = new Date(trx.date);
-    return (
-      trxDate >= start &&
-      trxDate <= end
-    );
-  });
+  const transactionsInPeriod = useMemo(
+    () =>
+      transactions.filter((trx) => {
+        const trxDate = toDate(trx.date);
+
+        return (
+          trxDate !== null &&
+          trxDate >= start &&
+          trxDate <= end
+        );
+      }),
+    [transactions, start, end],
+  );
 
   const {
     primary: budgetPrimary,
     details: budgetDetails,
-  } = getBudgetByPeriod(budgets, start);
+  } = useMemo(
+    () => getBudgetByPeriod(budgets, start),
+    [budgets, start],
+  );
 
-  const groupedBudgets = groupBudgetByAccount(budgetDetails, accounts);
-  const breakdownAccounts = modal?.type === "listTransfer"
-    ? groupBudgetByOriginalAccount(modal.data.items, accounts)
-    : [];
+  const groupedBudgets = useMemo(
+    () => groupBudgetByAccount(budgetDetails, accounts),
+    [budgetDetails, accounts],
+  );
 
-  const totalAllocation = groupedBudgets.reduce((sum, budget) => sum + budget.total, 0);
+  const totalAllocation = useMemo(
+    () =>
+      groupedBudgets.reduce(
+        (sum, budget) => sum + budget.total,
+        0,
+      ),
+    [groupedBudgets],
+  );
   const budgetAmount = budgetPrimary?.amount ?? 0;
   const isOverBudget = totalAllocation > budgetAmount;
 
-  const accountMap = new Map(
-    accounts.map(a => [a.id, a.name])
+  const accountLookup = useMemo(
+    () => createLookup(accounts),
+    [accounts],
   );
 
-  const spendingMap = getBudgetSpendingMap(budgetDetails, transactionsInPeriod);
+  const spendingMap = useMemo(
+    () =>
+      getBudgetSpendingMap(
+        budgetDetails,
+        transactionsInPeriod,
+      ),
+    [budgetDetails, transactionsInPeriod],
+  );
 
   const isEmpty = groupedBudgets.length === 0;
 
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, "");
     const numeric = Number(raw);
+
     setAmount(numeric);
     setAmountInput(formatNumber(numeric));
+  }
+
+  function handleOpenEditModal() {
+    if (!budgetPrimary?.amount) {
+      toast.error("Budget not found");
+      return;
+    }
+
+    setAmount(budgetPrimary.amount);
+    setAmountInput(formatNumber(budgetPrimary.amount));
+
+    setModal({
+      type: "editBudget",
+      data: budgetPrimary,
+    });
+  }
+
+  function handleOpenTransferModal(
+    budget: GroupedBudget,
+  ) {
+    setModal({
+      type: "listTransfer",
+      data: budget,
+    });
+  }
+
+  function handleCloseEditModal() {
+    setModal(null);
+    setAmount(0);
+    setAmountInput("");
+  }
+
+  async function handleUpdateBudget() {
+    if (!budgetPrimary) {
+      return;
+    }
+
+    if (!amount || amount <= 0) {
+      toast.error("Amount must be greater than 0");
+      return;
+    }
+
+    try {
+      const result = await updateBudget({
+        id: budgetPrimary.id,
+        date: budgetPrimary.date,
+        accountId: budgetPrimary.accountId,
+        remark: budgetPrimary.remark,
+        amount,
+      });
+
+      toast.success("Updated", {
+        description: result.message,
+      });
+
+      handleCloseEditModal();
+    } catch (error) {
+      toast.error("Failed to update", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong",
+      });
+    }
   }
 
   return (
@@ -101,15 +191,7 @@ export default function BudgetDesktop({
                   </span>
                 </div>
                 <button
-                  onClick={() => {
-                    if (!budgetPrimary?.amount) {
-                      toast.error("Budget not found");
-                      return;
-                    }
-                    setAmount(budgetPrimary.amount);
-                    setAmountInput(formatNumber(budgetPrimary.amount));
-                    setModal({ type: "editBudget", data: budgetPrimary });
-                  }}
+                  onClick={handleOpenEditModal}
                   className="flex items-center px-3 py-2 text-amber-500 text-sm border border-amber-500 hover:bg-amber-500 hover:text-white rounded-lg gap-2 transition cursor-pointer">
                   <NoteEditIcon size={20} />
                   <span className="font-semibold">Edit</span>
@@ -125,7 +207,7 @@ export default function BudgetDesktop({
                 {groupedBudgets.map((budget) => (
                   <div
                     key={budget.accountId}
-                    onClick={() => setModal({ type: "listTransfer", data: budget })}
+                    onClick={() => handleOpenTransferModal(budget)}
                     className="flex items-center justify-between p-4 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
                     <div className="flex items-center gap-4">
                       <img src={getAccountsImg(budget.accountName)} alt={budget.accountName} className="w-8 h-8" />
@@ -167,7 +249,7 @@ export default function BudgetDesktop({
                   : 0;
 
               const isOverBudget = spending > item.amount;
-              const accountName = accountMap.get(item.accountId) ?? "Unknown Account";
+              const accountName = accountLookup[item.accountId ?? ""] ?? "Unknown Account";
 
               return (
                 <div
@@ -233,85 +315,21 @@ export default function BudgetDesktop({
           </div>
         )}
       </div>
-      {modal?.type === "listTransfer" && (
-        <Modal
-          title={`List Transfer ${modal.data.accountName}`}
-          onClose={() => setModal(null)}>
-          <div className="flex flex-col">
-            {breakdownAccounts.map((item) => (
-              <div
-                key={item.accountId}
-                className="flex items-center justify-between px-4 py-3 text-sm border-b border-slate-50 hover:bg-slate-50">
-                <div className="flex items-center gap-4">
-                  <img
-                    src={getAccountsImg(item.accountName)}
-                    alt={item.accountName}
-                    className="w-8 h-8" />
-                  <span className="text-slate-500">{item.accountName}</span>
-                </div>
-                <span className="font-medium text-slate-500">
-                  {formatBalance(formatCurrency(item.total), hideBalance)}
-                </span>
-              </div>
-            ))}
-            <div className="flex justify-between bg-slate-50 p-4 text-sm font-semibold">
-              <span>Total</span>
-              <span>{formatBalance(formatCurrency(modal.data.total), hideBalance)}</span>
-            </div>
-          </div>
-        </Modal>
-      )}
-      {modal?.type === "editBudget" && (
-        <Modal
-          title={`Edit Budget ${budgetPrimary ? formatDateMonthRange(budgetPrimary.date) : ""}`}
-          textButton="Update"
-          loading={loading}
-          onSubmit={async () => {
-            if (!budgetPrimary) return;
-            if (!amount || amount <= 0) {
-              toast.error("Amount must be greater than 0");
-              return;
-            }
-            try {
-              const result = await saveBudget({
-                id: budgetPrimary.id,
-                date: budgetPrimary.date,
-                remark: budgetPrimary.remark,
-                amount,
-              });
-              toast.success("Updated", { description: result.message });
-              setModal(null);
-            } catch (error: unknown) {
-              let message = "Something went wrong";
-              if (error instanceof Error) {
-                message = error.message;
-              }
-              toast.error("Failed to update", {
-                description: message,
-              });
-            }
-          }}
-          onClose={() => {
-            setModal(null);
-            setAmount(0);
-            setAmountInput("");
-          }}>
-          <div id="amount" className="flex-1 p-4">
-            <label className="block text-sm font-medium text-black mb-1">Amount</label>
-            <div className="relative flex items-center justify-center">
-              <div className="absolute left-4 pointer-events-none">
-                <DollarCircleIcon className="text-slate-400" size={20} />
-              </div>
-              <input
-                inputMode="numeric"
-                value={amountInput}
-                onChange={handleAmountChange}
-                className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${amount ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
-                placeholder="Input transaction amount" />
-            </div>
-          </div>
-        </Modal >
-      )}
+      <ComponentBudgetTransferModal
+        open={modal?.type === "listTransfer"}
+        budget={modal?.type === "listTransfer" ? modal.data : null}
+        accounts={accounts}
+        hideBalance={hideBalance}
+        onClose={() => setModal(null)} />
+      <ComponentBudgetEditModal
+        open={modal?.type === "editBudget"}
+        budget={budgetPrimary}
+        amount={amount}
+        amountInput={amountInput}
+        loading={loading}
+        onAmountChange={handleAmountChange}
+        onSubmit={handleUpdateBudget}
+        onClose={handleCloseEditModal} />
     </>
   )
 }

@@ -10,16 +10,18 @@ import { getAccountDisplay, getAmountDisplay, getCategoryName, getTypeDisplay } 
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import Modal from "../../../shared/ui/Modal";
-import { formatBalance, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { formatBalance, formatDateDay, formatDateTime } from "../../../shared/utils/format.helper";
 import { useBalance } from "../../../shared/context/BalanceContext";
 import TablePageSize from "../../../shared/ui/tables/TablePageSize";
 import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
+import { useTransactionFilter } from "../hooks/useTransactionFilter";
+import type { DateFilter } from "../../../shared/utils/dateFilter.helper";
 
 type Props = {
   transactions: Transaction[];
   accounts: Account[];
   categories: Category[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 }
 
 export default function TransactionDesktop({
@@ -35,101 +37,43 @@ export default function TransactionDesktop({
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
+  const [openFilterDate, setOpenFilterDate] = useState(false);
+  const [openFilterAccount, setOpenFilterAccount] = useState(false);
+  const [openFilterCategory, setOpenFilterCategory] = useState(false);
+
   const dateRef = useRef<HTMLDivElement>(null);
   const accountRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
 
-  const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
-  const [openFilterAccount, setOpenFilterAccount] = useState(false);
+  const dateOptions: {
+    label: string;
+    value: DateFilter;
+  }[] = [
+      { label: "All Date", value: null },
+      { label: "Today", value: "today" },
+      { label: "Yesterday", value: "yesterday" },
+      { label: "Last Week", value: "last_week" },
+      { label: "Last Month", value: "last_month" },
+      { label: "Last Year", value: "last_year" },
+    ];
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [openFilterCategory, setOpenFilterCategory] = useState(false);
-
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [openFilterDate, setOpenFilterDate] = useState(false);
-
-  const [search, setSearch] = useState("");
-
-  const dateOptions = [
-    { label: "All Date", value: null },
-    { label: "Today", value: "today" },
-    { label: "Yesterday", value: "yesterday" },
-    { label: "Last Week", value: "last_week" },
-    { label: "Last Month", value: "last_month" },
-    { label: "Last Year", value: "last_year" },
-  ];
-
-  const accountMap = useMemo(
-    () => Object.fromEntries(accounts.map(row => [row.id, row.name])),
-    [accounts]
-  );
-
-  const categoryMap = useMemo(
-    () => Object.fromEntries(categories.map(row => [row.id, row.name])),
-    [categories]
-  );
-
-  const filteredTransactions = useMemo(() => {
-    return transactions.filter((trx) => {
-      const accountNames = getAccountDisplay(trx, accountMap);
-      const matchAccount =
-        !selectedAccount || accountNames.includes(selectedAccount);
-
-      const categoryName = getCategoryName(trx.categoryId, categoryMap);
-      const matchCategory =
-        !selectedCategory || categoryName === selectedCategory;
-
-      const matchSearch =
-        !search ||
-        (trx.remark || "").toLowerCase().includes(search.toLowerCase());
-
-      const matchDate = (() => {
-        if (!selectedDate) return true;
-
-        const trxDate = new Date(trx.date);
-        const now = new Date();
-        const startOfToday = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate()
-        );
-
-        switch (selectedDate) {
-          case "today":
-            return trxDate >= startOfToday;
-
-          case "yesterday": {
-            const start = new Date(startOfToday);
-            start.setDate(start.getDate() - 1);
-            return trxDate >= start && trxDate < startOfToday;
-          }
-
-          case "last_week": {
-            const start = new Date(startOfToday);
-            start.setDate(start.getDate() - 7);
-            return trxDate >= start;
-          }
-
-          case "last_month": {
-            const start = new Date(startOfToday);
-            start.setMonth(start.getMonth() - 1);
-            return trxDate >= start;
-          }
-
-          case "last_year": {
-            const start = new Date(startOfToday);
-            start.setFullYear(start.getFullYear() - 1);
-            return trxDate >= start;
-          }
-
-          default:
-            return true;
-        }
-      })();
-
-      return matchAccount && matchCategory && matchDate && matchSearch;
-    });
-  }, [transactions, selectedAccount, selectedCategory, selectedDate, search, accountMap, categoryMap]);
+  const {
+    filteredTransactions,
+    accountLookup,
+    categoryLookup,
+    search,
+    setSearch,
+    selectedAccount,
+    setSelectedAccount,
+    selectedCategory,
+    setSelectedCategory,
+    selectedDate,
+    setSelectedDate,
+  } = useTransactionFilter({
+    transactions,
+    accounts,
+    categories,
+  });
 
   const sortedTransactions = useMemo(() => {
     return [...filteredTransactions].sort((a, b) =>
@@ -244,7 +188,7 @@ export default function TransactionDesktop({
                     setOpenFilterAccount(false)
                     setOpenFilterCategory(false)
                   }}
-                  className="flex items-center justify-between w-full px-3 py-2 hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
+                  className="flex items-center justify-between w-full p-3 hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
                   <div className="flex items-center gap-3">
                     <Calendar03Icon className="text-slate-400" size={16} />
                     <span className={`text-sm ${!selectedDate ? "text-slate-500" : "text-black"}`}>
@@ -285,7 +229,7 @@ export default function TransactionDesktop({
                     setOpenFilterDate(false)
                     setOpenFilterCategory(false)
                   }}
-                  className="flex items-center justify-between w-full px-3 py-2 hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
+                  className="flex items-center justify-between w-full p-3 hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
                   <div className="flex items-center gap-3">
                     <CreditCardIcon className="text-slate-400" size={16} />
                     <span className={`text-sm ${!selectedAccount ? "text-slate-400" : "text-black"}`}>
@@ -335,7 +279,7 @@ export default function TransactionDesktop({
                     setOpenFilterDate(false)
                     setOpenFilterAccount(false)
                   }}
-                  className="flex items-center justify-between w-full px-3 py-2 hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
+                  className="flex items-center justify-between w-full p-3 hover:bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
                   <div className="flex items-center gap-3">
                     <Note05Icon className="text-slate-400" size={16} />
                     <span className={`text-sm ${!selectedCategory ? "text-slate-400" : "text-black"}`}>
@@ -378,7 +322,7 @@ export default function TransactionDesktop({
             {/* Filter Search  */}
             <div className="flex flex-col gap-1 flex-1 min-w-40">
               <span className="text-slate-500 text-xs">Search</span>
-              <div className="flex items-center gap-3 w-full px-3 py-2 rounded-lg border border-slate-200 focus-within:border-slate-400 transition">
+              <div className="flex items-center gap-3 w-full p-3 rounded-lg border border-slate-200 focus-within:border-slate-400 transition">
                 <Search01Icon className="text-slate-400" size={16} />
                 <input
                   type="text"
@@ -407,7 +351,7 @@ export default function TransactionDesktop({
                 {paginatedTransactions.map((row, index) => {
                   const typeConfig = getTypeDisplay(row.typeId);
                   const amountConfig = getAmountDisplay(row);
-                  const categoryName = getCategoryName(row.categoryId, categoryMap);
+                  const categoryName = getCategoryName(row.categoryId, categoryLookup);
                   const isSpecialRemark = /\[.*?\]/.test(row.remark || "");
 
                   return (
@@ -417,13 +361,13 @@ export default function TransactionDesktop({
                       <td className="text-slate-500 font-medium">{(page - 1) * limit + index + 1}</td>
                       <td>
                         <div className="flex flex-col">
-                          <span className="text-black font-medium">{row.day}</span>
-                          <span className="text-slate-400">{formatDateDayMonthYear(row.date) || "-"}</span>
+                          <span className="text-black font-medium">{formatDateDay(row.date)}</span>
+                          <span className="text-slate-400">{formatDateTime(row.date) || "-"}</span>
                         </div>
                       </td>
                       <td className="">
                         <div className="flex flex-col gap-1.5">
-                          {getAccountDisplay(row, accountMap).map((name, index) => (
+                          {getAccountDisplay(row, accountLookup).map((name, index) => (
                             <div key={index} className="flex items-center gap-1.5">
                               {index > 0 && (<span className="text-slate-400">→</span>)}
                               <img src={getAccountsImg(name)} alt={name} className="w-8 h-8" />

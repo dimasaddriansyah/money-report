@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import BottomSheet from "../shared/ui/BottomSheet";
 import { ExportSpreedsheet } from "../shared/utils/export.helper";
 import { getGreeting } from "../shared/utils/style.helper";
+import { formatDateDay, formatDateDayMonth, formatDateDayMonthYear, formatDateFull, formatDateMonth, formatDateMonthRange, formatDateTime, formatDateYear } from "../shared/utils/format.helper";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -90,6 +91,17 @@ export default function Settings() {
             </div>
           </div>
         </section>
+
+        <div className="flex flex-col gap-4">
+          <span className="">{formatDateDay(new Date)}</span>
+          <span className="">{formatDateMonth(new Date)}</span>
+          <span className="">{formatDateYear(new Date)}</span>
+          <span className="">{formatDateDayMonth(new Date)}</span>
+          <span className="">{formatDateDayMonthYear(new Date)}</span>
+          <span className="">{formatDateFull(new Date)}</span>
+          <span className="">{formatDateMonthRange(new Date)}</span>
+          <span className="">{formatDateTime(new Date)}</span>
+        </div>
       </section>
 
       <BottomSheet

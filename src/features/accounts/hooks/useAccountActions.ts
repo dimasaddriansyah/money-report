@@ -4,7 +4,7 @@ import {
   updateAccount as updateAccountService,
   deleteAccount as deleteAccountService,
 } from "../services/AccountService";
-import { generateNextId } from "../../../shared/utils/generateNextId.helper";
+import { generateId } from "../../../shared/utils/generateId.helper";
 import type { FormData } from "../helper/account.form.helper";
 
 export function useAccountActions(refetch?: () => Promise<void>) {
@@ -14,7 +14,10 @@ export function useAccountActions(refetch?: () => Promise<void>) {
     try {
       setLoading(true);
 
-      const id = await generateNextId("accounts", "ACC");
+      const id = await generateId({
+        collection: "accounts",
+        prefix: "ACC"
+      });
 
       await createAccountService({
         id,

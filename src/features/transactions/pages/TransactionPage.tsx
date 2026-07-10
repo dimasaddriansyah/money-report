@@ -2,7 +2,7 @@ import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useCategories } from "../../categories/hooks/useCategories";
 import TransactionDesktop from "../components/TransactionDesktop";
 import TransactionLayout from "../components/TransactionLayout";
-import TransactionMobile from "../components/TransactionMobile";
+// import TransactionMobile from "../components/TransactionMobile";
 import { useTransactions } from "../hooks/useTransactions";
 
 export default function TransactionPage() {
@@ -35,11 +35,11 @@ export default function TransactionPage() {
       </div>
 
       <div className="md:hidden">
-        <TransactionMobile
+        {/* <TransactionMobile
           transactions={transactions}
           accounts={accounts}
           categories={categories}
-          refetch={refetch} />
+          refetch={refetch} /> */}
       </div>
     </>
   );

@@ -2,7 +2,7 @@ import {
   CreditCardIcon,
   FireIcon,
   Invoice01Icon,
-  // MoneySavingJarIcon,
+  MoneySavingJarIcon,
   Note05Icon,
   PieChart02Icon,
 } from "hugeicons-react";
@@ -60,13 +60,13 @@ export const NAV_MENUS_DESKTOP: NavItem[] = [
     matchPaths: ["/transactions", "/transaction"],
     icon: Invoice01Icon,
   },
-  // {
-  //   type: "menu",
-  //   labelDesktop: "Budgets",
-  //   path: "/budgets",
-  //   matchPaths: ["/budgets", "/budget"],
-  //   icon: MoneySavingJarIcon,
-  // },
+  {
+    type: "menu",
+    labelDesktop: "Budgets",
+    path: "/budgets",
+    matchPaths: ["/budgets", "/budget"],
+    icon: MoneySavingJarIcon,
+  },
   {
     type: "label",
     label: "INVESTMENT",

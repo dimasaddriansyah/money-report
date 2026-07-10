@@ -1,22 +1,36 @@
-import { API_URL } from "../../../shared/config/api.config";
+import { collection, deleteDoc, doc, getDocs, setDoc} from "firebase/firestore";
+import { db } from "../../../firebase";
 import type { Transaction } from "../types/transaction";
 
-export async function fetchTransactions(): Promise<{ data: Transaction[] }> {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      module: "transactions",
-      action: "list"
-    }),
-  });
+const COLLECTION_NAME = "transactions";
 
-  const result = await response.json();
+// GET TRANSACTIONS
+export async function getTransactions(): Promise<Transaction[]> {
+  const snapshot = await getDocs(collection(db, COLLECTION_NAME));
 
-  if (result.status !== "success") {
-    throw new Error(result.message || "Failed to fetch transactions");
-  }
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Transaction[];
+}
 
-  return {
-    data: result.data,
-  };
+// CREATE TRANSACTION
+export async function createTransaction(
+  transaction: Transaction
+): Promise<void> {
+  const { id, ...data } = transaction;
+  await setDoc(doc(db, COLLECTION_NAME, id), data);
+}
+
+// UPDATE TRANSACTION
+export async function updateTransaction(
+  transaction: Transaction
+): Promise<void> {
+  const { id, ...data } = transaction;
+  await setDoc(doc(db, COLLECTION_NAME, id), data);
+}
+
+// DELETE TRANSACTION
+export async function deleteTransaction(id: string): Promise<void> {
+  await deleteDoc(doc(db, COLLECTION_NAME, id));
 }

@@ -4,7 +4,7 @@ import {
   updateCategory as updateCategoryService,
   deleteCategory as deleteCategoryService,
 } from "../services/CategoryService";
-import { generateNextId } from "../../../shared/utils/generateNextId.helper";
+import { generateId } from "../../../shared/utils/generateId.helper";
 import type { FormData } from "../helper/category.form.helper";
 
 export function useCategoryActions(refetch?: () => Promise<void>) {
@@ -14,7 +14,10 @@ export function useCategoryActions(refetch?: () => Promise<void>) {
     try {
       setLoading(true);
 
-      const id = await generateNextId("categories", "CAT");
+      const id = await generateId({
+        collection: "categories",
+        prefix: "CAT"
+      });
 
       await createCategoryService({
         id,

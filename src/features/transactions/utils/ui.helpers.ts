@@ -27,7 +27,7 @@ export function getAccountDisplay(
 }
 
 export function getCategoryName(
-  categoryId: string | undefined,
+  categoryId: string | null,
   categoryMap: Record<string, string>
 ) {
   const id = categoryId?.trim();

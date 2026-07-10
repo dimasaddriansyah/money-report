@@ -1,52 +1,88 @@
+import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
-import { formatDateDay } from "../../../shared/utils/format.helper";
-import { API_URL } from "../../../shared/config/api.config";
+import {
+  createTransaction as createTransactionService,
+  updateTransaction as updateTransactionService,
+  deleteTransaction as deleteTransactionService,
+} from "../services/TransactionService";
+import { generateId } from "../../../shared/utils/generateId.helper";
+import type { FormData } from "../utils/transaction.form.helper";
 
-export function useTransactionActions(refetch?: () => void) {
+export function useTransactionActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
 
-  async function saveTransaction(data: {
-    id?: string;
-    date: string;
-    typeId: string;
-    categoryId?: string;
-    fromAccountId?: string;
-    toAccountId?: string;
-    amount: number;
-    remark: string;
-  }) {
-    const isEdit = !!data.id;
-
-    const payload = {
-      module: "transactions",
-      action: isEdit ? "edit" : "create",
-      id: data.id,
-      day: formatDateDay(data.date),
-      date: data.date,
-      typeId: data.typeId,
-      categoryId: data.typeId === "TP003" ? "CAT022" : data.categoryId,
-      fromAccountId: data.fromAccountId,
-      toAccountId: data.toAccountId,
-      remark: data.remark,
-      amount: data.amount,
-    };
-
+  async function createTransaction(data: FormData) {
     try {
       setLoading(true);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
+      const id = await generateId({
+        collection: "transactions",
+        prefix: "TRX",
+        date: data.date,
       });
 
-      const result = await response.json();
+      const now = new Date();
+      const transactionDate = new Date(`${data.date}T${now.toTimeString().slice(0, 8)}`);
 
-      if (result.status !== "success") {
-        throw new Error(result.message);
-      }
-      return result;
+      await createTransactionService({
+        id,
+        date: Timestamp.fromDate(transactionDate),
+        typeId: data.typeId,
+        categoryId:
+          data.typeId === "TP003"
+            ? "CAT022"
+            : (data.categoryId ?? null),
+        fromAccountId: data.fromAccountId ?? null,
+        toAccountId: data.toAccountId ?? null,
+        remark: data.remark,
+        amount: data.amount,
+      });
+
+      await refetch?.();
+
+      return {
+        message: "Transaction created successfully",
+      };
     } catch (error) {
-      console.error("Submit error:", error);
+      console.error("Create transaction failed:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateTransaction(data: FormData) {
+    try {
+      setLoading(true);
+
+      if (!data.id) {
+        throw new Error("Transaction ID is required");
+      }
+
+      const now = new Date();
+      const transactionDate = new Date(`${data.date}T${now.toTimeString().slice(0, 8)}`);
+
+      await updateTransactionService({
+        id: data.id,
+        date: Timestamp.fromDate(transactionDate),
+        typeId: data.typeId,
+        categoryId:
+          data.typeId === "TP003"
+            ? "CAT022"
+            : (data.categoryId ?? null),
+        fromAccountId: data.fromAccountId ?? null,
+        toAccountId: data.toAccountId ?? null,
+        remark: data.remark,
+        amount: data.amount,
+      });
+
+      await refetch?.();
+
+      return {
+        message: "Transaction updated successfully",
+      };
+    } catch (error) {
+      console.error("Update transaction failed:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -57,28 +93,15 @@ export function useTransactionActions(refetch?: () => void) {
     try {
       setLoading(true);
 
-      const payload = {
-        module: "transactions",
-        action: "delete",
-        id,
+      await deleteTransactionService(id);
+
+      await refetch?.();
+
+      return {
+        message: "Transaction deleted successfully",
       };
-
-      const response = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (result.status !== "success") {
-        throw new Error(result.message);
-      }
-
-      refetch?.();
-
-      return result;
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error("Delete transaction failed:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -86,7 +109,8 @@ export function useTransactionActions(refetch?: () => void) {
   }
 
   return {
-    saveTransaction,
+    createTransaction,
+    updateTransaction,
     deleteTransaction,
     loading,
   };

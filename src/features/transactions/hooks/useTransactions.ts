@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Transaction } from "../types/transaction";
-import { fetchTransactions } from "../services/TransactionService";
+import { getTransactions } from "../services/TransactionService";
 
 export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -10,8 +10,9 @@ export function useTransactions() {
   const loadTransactions = useCallback(async () => {
     try {
       setLoading(true);
-      const result = await fetchTransactions();
-      setTransactions(result.data);
+      setError(null);
+      const data = await getTransactions();
+      setTransactions(data);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

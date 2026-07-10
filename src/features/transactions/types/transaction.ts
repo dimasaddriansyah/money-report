@@ -1,11 +1,12 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface Transaction {
   id: string;
-  day: string;
-  date: string;
+  date: Timestamp;
   typeId: string;
-  categoryId?: string;
-  fromAccountId?: string;
-  toAccountId?: string;
+  categoryId: string | null; 
+  fromAccountId: string | null;
+  toAccountId: string | null;
   remark: string;
   amount: number;
 }

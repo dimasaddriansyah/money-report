@@ -1,17 +1,34 @@
 import { Timestamp } from "firebase/firestore";
 
-export function formatDateTime(value?: Timestamp | Date | string | null) {
-  if (!value) return "-";
+// ----------------------------------------------------------------------------
+// DATE
+// ----------------------------------------------------------------------------
+export type DateValue =
+  | Timestamp
+  | Date
+  | string
+  | null
+  | undefined;
 
-  let date: Date;
+export function toDate(value: DateValue): Date | null {
+  if (!value) return null;
 
   if (value instanceof Timestamp) {
-    date = value.toDate();
-  } else if (value instanceof Date) {
-    date = value;
-  } else {
-    date = new Date(value);
+    return value.toDate();
   }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  return new Date(value);
+}
+
+// 10 Jul 2026 07:00:00
+export function formatDateTime(value: DateValue) {
+  const date = toDate(value);
+
+  if (!date) return "-";
 
   const datePart = date.toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -29,10 +46,13 @@ export function formatDateTime(value?: Timestamp | Date | string | null) {
   return `${datePart} ${timePart}`;
 }
 
-export function formatDateFull(value: string) {
-  if (!value) return "";
+// Friday, 10 July 2026
+export function formatDateFull(value: DateValue) {
+  const date = toDate(value);
 
-  return new Date(value).toLocaleDateString("en-GB", {
+  if (!date) return "-";
+
+  return date.toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -40,91 +60,118 @@ export function formatDateFull(value: string) {
   });
 }
 
-export function formatDateDayMonthYear(date: string | Date) {
-  const d = typeof date === "string" ? new Date(date) : date;
+export function formatDateDayMonthYear(value: DateValue) {
+  const date = toDate(value);
 
-  return d.toLocaleDateString("en-GB", {
+  if (!date) return "-";
+
+  return date.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 }
 
-export function formatDateDayMonth(value: string) {
-  return new Date(value).toLocaleDateString("en-GB", {
+export function formatDateDayMonth(value: DateValue) {
+  const date = toDate(value);
+
+  if (!date) return "-";
+
+  return date.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "long",
   });
 }
 
-export function formatDateYear(value: string) {
-  return new Date(value).toLocaleDateString("en-GB", {
+export function formatDateYear(value: DateValue) {
+  const date = toDate(value);
+
+  if (!date) return "-";
+
+  return date.toLocaleDateString("en-GB", {
     year: "numeric",
   });
 }
 
-export function formatDateMonth(value: string) {
-  return new Date(value).toLocaleDateString("en-GB", {
+export function formatDateMonth(value: DateValue) {
+  const date = toDate(value);
+
+  if (!date) return "-";
+
+  return date.toLocaleDateString("en-GB", {
     month: "long",
   });
 }
 
-export function formatDateDay(date: string) {
-  return new Date(date).toLocaleDateString("en-US", {
+export function formatDateDay(value: DateValue) {
+  const date = toDate(value);
+
+  if (!date) return "-";
+
+  return date.toLocaleDateString("en-US", {
     weekday: "long",
   });
 }
 
-export function formatDateInput(date: string | Date = new Date()) {
-  if (typeof date === "string" && date.includes("T")) {
-    return date.slice(0, 10);
-  }
+export function formatDateInput(date: DateValue = new Date()) {
+  const d = toDate(date);
 
-  if (typeof date === "string") {
-    return date;
-  }
+  if (!d) return "";
 
-  return new Date(date).toLocaleDateString("en-CA", {
+  return d.toLocaleDateString("en-CA", {
     timeZone: "Asia/Jakarta",
   });
 }
 
-export function normalizeDate(date?: string) {
-  if (!date) {
-    return new Date().toLocaleDateString("en-CA", {
-      timeZone: "Asia/Jakarta",
-    });
+export function normalizeDate(value: DateValue): string {
+
+  if (!value) return "";
+
+  let date: Date;
+
+
+  if (typeof value === "string") {
+    date = new Date(value);
+  }
+  else if (value instanceof Date) {
+    date = value;
+  }
+  else {
+    date = value.toDate();
   }
 
-  if (date.includes("T")) {
-    const d = new Date(date);
 
-    return new Date(
-      d.getFullYear(),
-      d.getMonth(),
-      d.getDate()
-    ).toLocaleDateString("en-CA");
-  }
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
-  return date;
+
+  return `${year}-${month}-${day}`;
 }
 
-export function formatDateMonthRange(value: string) {
-  const date = new Date(value);
+export function formatDateMonthRange(value: DateValue) {
+  const date = toDate(value);
+
+  if (!date) return "-";
 
   const currentMonth = date.toLocaleDateString("en-GB", {
     month: "long",
   });
 
-  const nextDate = new Date(date);
-  nextDate.setMonth(date.getMonth() + 1);
+  const next = new Date(date);
 
-  const nextMonth = nextDate.toLocaleDateString("en-GB", {
+  next.setMonth(next.getMonth() + 1);
+
+  const nextMonth = next.toLocaleDateString("en-GB", {
     month: "long",
   });
 
   return `${currentMonth} - ${nextMonth}`;
 }
+
+// ----------------------------------------------------------------------------
+// NOMINAL
+// ----------------------------------------------------------------------------
 
 export function parseRupiah(value: string): number {
   return Number(value?.replace("Rp", "").replace(/\./g, "").trim() || 0);

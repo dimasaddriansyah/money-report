@@ -6,26 +6,18 @@ import { toast } from "sonner";
 import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useCategories } from "../../categories/hooks/useCategories";
 import TransactionFormMobile from "../components/TransactionFormMobile";
+import type { FormData } from "../utils/transaction.form.helper";
 
 export default function TransactionCreatePage() {
   const navigate = useNavigate();
 
-  const { saveTransaction, loading } = useTransactionActions();
+  const { createTransaction, loading } = useTransactionActions();
   const { accounts } = useAccounts();
   const { categories } = useCategories();
 
-  async function handleSubmit(data: {
-    id?: string;
-    date: string;
-    typeId: string;
-    categoryId?: string;
-    fromAccountId?: string;
-    toAccountId?: string;
-    remark: string;
-    amount: number;
-  }) {
+  async function handleSubmit(data: FormData) {
     try {
-      const result = await saveTransaction(data);
+      const result = await createTransaction(data);
       navigate("/transactions");
       toast.success("Success", {
         description: result.message,

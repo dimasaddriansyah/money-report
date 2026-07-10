@@ -16,7 +16,7 @@ export async function getAccounts(): Promise<Account[]> {
 
 // CREATE ACCOUNT
 export async function createAccount(
-  account: Pick<Account, "id" | "name">
+  account: Account
 ): Promise<void> {
   await setDoc(doc(db, COLLECTION_NAME, account.id), {
     name: account.name,
@@ -27,7 +27,7 @@ export async function createAccount(
 
 // UPDATE ACCOUNT
 export async function updateAccount(
-  account: Pick<Account, "id" | "name">
+  account: Account
 ): Promise<void> {
   await updateDoc(doc(db, COLLECTION_NAME, account.id), {
     name: account.name,

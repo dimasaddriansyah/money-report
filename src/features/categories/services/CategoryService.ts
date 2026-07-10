@@ -16,7 +16,7 @@ export async function getCategories(): Promise<Category[]> {
 
 // CREATE CATEGORY
 export async function createCategory(
-  category: Pick<Category, "id" | "name">
+  category: Category
 ): Promise<void> {
   await setDoc(doc(db, COLLECTION_NAME, category.id), {
     name: category.name,
@@ -27,7 +27,7 @@ export async function createCategory(
 
 // UPDATE CATEGORY
 export async function updateCategory(
-  category: Pick<Category, "id" | "name">
+  category: Category
 ): Promise<void> {
   await updateDoc(doc(db, COLLECTION_NAME, category.id), {
     name: category.name,

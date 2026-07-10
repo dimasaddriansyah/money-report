@@ -3,7 +3,7 @@ import AccountForm from "../components/AccountForm";
 import AccountLayout from "../components/AccountLayout";
 import { useAccountActions } from "../hooks/useAccountActions";
 import { toast } from "sonner";
-import type { FormData } from "../helper/account.form.helper";
+import type { FormData } from "../utils/account.form.helper";
 
 export default function AccountCreatePage() {
   const navigate = useNavigate();

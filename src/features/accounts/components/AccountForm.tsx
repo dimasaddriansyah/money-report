@@ -1,7 +1,7 @@
 import { CreditCardIcon } from "hugeicons-react";
 import { useState } from "react";
 import type { Account } from "../types/account";
-import type { FormData } from "../helper/account.form.helper";
+import type { FormData } from "../utils/account.form.helper";
 
 type Props = {
   defaultValues?: Account;

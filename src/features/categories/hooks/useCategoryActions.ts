@@ -5,7 +5,7 @@ import {
   deleteCategory as deleteCategoryService,
 } from "../services/CategoryService";
 import { generateId } from "../../../shared/utils/generateId.helper";
-import type { FormData } from "../helper/category.form.helper";
+import type { FormData } from "../utils/category.form.helper";
 
 export function useCategoryActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);

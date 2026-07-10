@@ -4,7 +4,7 @@ import CategoryLayout from "../components/CategoryLayout";
 import { useCategories } from "../hooks/useCategories";
 import { useCategoryActions } from "../hooks/useCategoryActions";
 import { toast } from "sonner";
-import type { FormData } from "../helper/category.form.helper";
+import type { FormData } from "../utils/category.form.helper";
 
 export default function CategoryEditPage() {
   const navigate = useNavigate();

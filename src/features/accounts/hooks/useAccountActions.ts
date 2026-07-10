@@ -5,7 +5,7 @@ import {
   deleteAccount as deleteAccountService,
 } from "../services/AccountService";
 import { generateId } from "../../../shared/utils/generateId.helper";
-import type { FormData } from "../helper/account.form.helper";
+import type { FormData } from "../utils/account.form.helper";
 
 export function useAccountActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);

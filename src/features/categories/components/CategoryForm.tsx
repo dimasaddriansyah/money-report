@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Note05Icon } from "hugeicons-react";
 import type { Category } from "../types/category";
-import type { FormData } from "../helper/category.form.helper";
+import type { FormData } from "../utils/category.form.helper";
 
 type Props = {
   defaultValues?: Category;
@@ -40,7 +40,7 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
               onChange={(e) => setName(e.target.value)}
               className={`block w-full ps-13 pe-3 py-3 text-base rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none
                 ${name ? "text-black" : "text-slate-400"}`}
-              placeholder="Input account name"/>
+              placeholder="Input account name" />
           </div>
         </div>
       </div>

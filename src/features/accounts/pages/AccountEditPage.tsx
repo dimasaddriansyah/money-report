@@ -4,7 +4,7 @@ import AccountLayout from "../components/AccountLayout";
 import { useAccounts } from "../hooks/useAccounts";
 import { useAccountActions } from "../hooks/useAccountActions";
 import { toast } from "sonner";
-import type { FormData } from "../helper/account.form.helper";
+import type { FormData } from "../utils/account.form.helper";
 
 export default function AccountEditPage() {
   const navigate = useNavigate();

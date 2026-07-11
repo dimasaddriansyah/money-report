@@ -1,15 +1,6 @@
-import type { Timestamp } from "firebase/firestore";
-
-export type BudgetCreateData = {
+export type FormData = {
+  id?: string;
   date: string;
-  accountId: string | null;
-  remark: string;
-  amount: number;
-};
-
-export type BudgetUpdateData = {
-  id: string;
-  date: Timestamp;
   accountId: string | null;
   remark: string;
   amount: number;

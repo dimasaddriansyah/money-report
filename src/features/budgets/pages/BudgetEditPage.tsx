@@ -8,27 +8,22 @@ import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useState } from "react";
 import Modal from "../../../shared/ui/Modal";
 import { Delete02Icon } from "hugeicons-react";
-import BudgetFormMobile from "../components/BudgetFormMobile";
+// import BudgetFormMobile from "../components/BudgetFormMobile";
+import type { FormData } from "../utils/budget.form.helper";
 
 export default function BudgetEditPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { budgets, loading: isFetchingBudgets } = useBudgets();
   const { accounts } = useAccounts();
-  const { saveBudget, deleteBudget, loading } = useBudgetActions();
+  const { updateBudget, deleteBudget, loading } = useBudgetActions();
   const budget = budgets.find((acc) => acc.id === id);
 
   const [openDelete, setOpenDelete] = useState(false);
 
-  async function handleSubmit(data: {
-    id?: string;
-    date: string;
-    accountId?: string;
-    remark: string;
-    amount: number;
-  }) {
+  async function handleSubmit(data: FormData) {
     try {
-      const result = await saveBudget(data);
+      const result = await updateBudget(data);
       navigate("/budgets")
       toast.success("Success", {
         description: result.message,
@@ -129,7 +124,7 @@ export default function BudgetEditPage() {
       </div>
 
       <div className="md:hidden">
-        <BudgetFormMobile defaultValues={budget} accounts={accounts} onSubmit={handleSubmit} loading={loading} />
+        {/* <BudgetFormMobile defaultValues={budget} accounts={accounts} onSubmit={handleSubmit} loading={loading} /> */}
       </div>
     </>
   );

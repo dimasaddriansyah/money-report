@@ -6,27 +6,20 @@ import {
   deleteBudget as deleteBudgetService,
 } from "../services/BudgetService";
 import { generateId } from "../../../shared/utils/generateId.helper";
-import type { BudgetCreateData, BudgetUpdateData } from "../utils/budget.form.helper";
+import type { FormData } from "../utils/budget.form.helper";
 
-function buildBudgetTimestamp(
-  date: string | Timestamp,
-): Timestamp {
-  if (date instanceof Timestamp) {
-    return date;
-  }
-
+function buildBudgetTimestamp(date: string): Timestamp {
   const now = new Date();
-  const budgetDate = new Date(
-    `${date}T${now.toTimeString().slice(0, 8)}`,
-  );
 
-  return Timestamp.fromDate(budgetDate);
+  return Timestamp.fromDate(
+    new Date(`${date}T${now.toTimeString().slice(0, 8)}`)
+  );
 }
 
 export function useBudgetActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
 
-  async function createBudget(data: BudgetCreateData) {
+  async function createBudget(data: FormData) {
     try {
       setLoading(true);
 
@@ -38,7 +31,7 @@ export function useBudgetActions(refetch?: () => Promise<void>) {
       await createBudgetService({
         id,
         date: buildBudgetTimestamp(data.date),
-        accountId: data.accountId ?? null,
+        accountId: data.accountId,
         remark: data.remark,
         amount: data.amount,
       });
@@ -56,7 +49,7 @@ export function useBudgetActions(refetch?: () => Promise<void>) {
     }
   }
 
-  async function updateBudget(data: BudgetUpdateData) {
+  async function updateBudget(data: FormData) {
     try {
       setLoading(true);
 
@@ -67,7 +60,7 @@ export function useBudgetActions(refetch?: () => Promise<void>) {
       await updateBudgetService({
         id: data.id,
         date: buildBudgetTimestamp(data.date),
-        accountId: data.accountId ?? null,
+        accountId: data.accountId,
         remark: data.remark,
         amount: data.amount,
       });

@@ -3,25 +3,25 @@ import type { Budget } from "../types/budget";
 
 export function getBudgetByPeriod(
   budgets: Budget[],
-  period: Date
+  start: Date,
+  end: Date,
 ) {
-  const month = period.getMonth();
-  const year = period.getFullYear();
-
-  const isSamePeriod = (date: Date | null) =>
+  const isInPeriod = (date: Date | null) =>
     !!date &&
-    date.getMonth() === month &&
-    date.getFullYear() === year;
+    date >= start &&
+    date <= end;
 
-  const primary = budgets.find((budget) =>
-    !budget.accountId &&
-    budget.remark === "Budget" &&
-    isSamePeriod(toDate(budget.date))
+  const primary = budgets.find(
+    (budget) =>
+      !budget.accountId &&
+      budget.remark === "Budget" &&
+      isInPeriod(toDate(budget.date)),
   );
 
-  const details = budgets.filter((budget) =>
-    budget.accountId &&
-    isSamePeriod(toDate(budget.date))
+  const details = budgets.filter(
+    (budget) =>
+      !!budget.accountId &&
+      isInPeriod(toDate(budget.date)),
   );
 
   return {

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 function getPeriod(date: Date) {
   const year = date.getFullYear();
@@ -41,23 +41,24 @@ export function useTransactionPeriod(allowFuture = false) {
     start.getTime() === nextPeriod.start.getTime() &&
     end.getTime() === nextPeriod.end.getTime();
 
-  // ⏭ next period
+  // ⏭ Next Period
   const next = () => {
     if (!allowFuture && isCurrentPeriod) return;
-
     if (allowFuture && isMaxPeriod) return;
 
-    setCurrentDate(prev => {
-      const d = new Date(prev);
-      return new Date(d.getFullYear(), d.getMonth() + 1, 25);
+    setCurrentDate(() => {
+      const d = new Date(start);
+      d.setMonth(d.getMonth() + 1);
+      return d;
     });
   };
 
-  // ⏮ prev period
+  // ⏮ Previous Period
   const prev = () => {
-    setCurrentDate(prev => {
-      const d = new Date(prev);
-      return new Date(d.getFullYear(), d.getMonth() - 1, 25)
+    setCurrentDate(() => {
+      const d = new Date(start);
+      d.setMonth(d.getMonth() - 1);
+      return d;
     });
   };
 
@@ -67,6 +68,6 @@ export function useTransactionPeriod(allowFuture = false) {
     next,
     prev,
     isCurrentPeriod,
-    isMaxPeriod
+    isMaxPeriod,
   };
 }

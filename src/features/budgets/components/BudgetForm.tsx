@@ -10,18 +10,12 @@ import BottomSheet from "../../../shared/ui/BottomSheet";
 import { useBudgetActions } from "../hooks/useBudgetActions";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import type { FormData } from "../utils/budget.form.helper";
 
 type Props = {
   defaultValues?: Budget;
   accounts: Account[];
-  onSubmit: (
-    data: {
-      id?: string;
-      date: string;
-      accountId?: string;
-      remark: string;
-      amount: number;
-    }) => void;
+  onSubmit: (data: FormData) => void;
   loading?: boolean;
 };
 
@@ -45,7 +39,10 @@ export default function BudgetForm({
   const [openDeleteBudget, setOpenDeleteBudget] = useState(false);
   const amountInput = amount ? formatNumber(amount) : "";
 
-  const { deleteBudget } = useBudgetActions();
+  const {
+    deleteBudget,
+    loading: deleteLoading,
+  } = useBudgetActions();
 
   const [dropdownStyle, setDropdownStyle] = useState<{
     top: number;
@@ -101,30 +98,20 @@ export default function BudgetForm({
 
   async function handleDelete() {
     if (!defaultValues) return;
-
     try {
       const result = await deleteBudget(defaultValues.id);
-
-      toast.success("Deleted", {
-        description: result.message,
-      });
-
+      toast.success("Deleted", { description: result.message })
       navigate("/budgets");
     } catch (error: unknown) {
       let message = "Failed to delete budget";
-
-      if (error instanceof Error) {
-        message = error.message;
-      }
-
-      toast.error("Failed to delete", {
-        description: message,
-      });
+      if (error instanceof Error) { message = error.message }
+      toast.error("Failed to delete", { description: message })
     }
   }
 
   function handleReset() {
     reset();
+    setOpenAccount(false);
   }
 
   return (
@@ -135,7 +122,7 @@ export default function BudgetForm({
             <div id="date" className="flex-1">
               <label className="block text-sm font-medium text-black mb-1">Date</label>
               <div
-                onClick={() => dateRef.current?.showPicker()}
+                onClick={() => dateRef.current?.showPicker?.()}
                 className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
                 <div className="flex items-center gap-4">
                   <Calendar03Icon className="text-slate-400" size={20} />
@@ -181,7 +168,7 @@ export default function BudgetForm({
                           ${accountId === acc.id
                               ? "bg-slate-50 text-black font-medium"
                               : "text-slate-400 hover:bg-slate-50 hover:text-black"}`}>
-                          <img src={getAccountsImg(acc.name)} className="w-8 h-8" />
+                          <img src={getAccountsImg(acc.name)} alt={acc.name} className="w-8 h-8" />
                           <span>{acc.name}</span>
                         </div>
                       ))}
@@ -213,7 +200,7 @@ export default function BudgetForm({
                   <NoteEditIcon className="text-slate-400" size={20} />
                 </div>
                 <input
-                  inputMode="numeric"
+                  type="text"
                   value={remark}
                   onChange={(e) => setField("remark", e.target.value)}
                   className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${remark ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}
@@ -243,7 +230,7 @@ export default function BudgetForm({
             type="submit"
             disabled={loading}
             className={`order-1 px-5 py-2.5 text-sm font-semibold text-white rounded-lg cursor-pointer
-            ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-slate-900 hover:bg-slate-800"}`}>
+              ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-slate-900 hover:bg-slate-800"}`}>
             {loading ? "Saving..." : isEdit ? "Update Budget" : "Create Budget"}
           </button>
         </div>
@@ -258,11 +245,11 @@ export default function BudgetForm({
             <div className="flex gap-2">
               <button
                 onClick={handleDelete}
-                disabled={loading}
+                disabled={deleteLoading}
                 className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-sm text-white font-semibold disabled:opacity-50 cursor-pointer">
                 <div className="flex items-center justify-center gap-2">
                   <Delete02Icon size={16} />
-                  {loading ? "Deleting..." : "Delete Budget"}
+                  {deleteLoading ? "Deleting..." : "Delete Budget"}
                 </div>
               </button>
             </div>

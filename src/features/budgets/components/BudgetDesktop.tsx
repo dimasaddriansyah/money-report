@@ -13,7 +13,7 @@ import { getAccountsImg } from "../../../shared/utils/style.helper";
 import { getBudgetSpendingMap } from "../utils/getBudgetSpendingMap.helper";
 import EmptyState from "../../../shared/ui/EmptyState";
 import { createLookup } from "../../../shared/utils/lookup.helper";
-import { formatBalance, formatCurrency, formatNumber, toDate } from "../../../shared/utils/format.helper";
+import { formatBalance, formatCurrency, formatNumber, normalizeDate, toDate } from "../../../shared/utils/format.helper";
 import ComponentBudgetTransferModal from "./ComponentBudgetTransferModal";
 import ComponentBudgetEditModal from "./ComponentBudgetEditModal";
 import { Add01Icon, MoneySavingJarIcon, NoteEditIcon } from "hugeicons-react";
@@ -30,6 +30,15 @@ type ModalState =
   | { type: "listTransfer"; data: GroupedBudget }
   | { type: "editBudget"; data: Budget }
   | null;
+
+const COLORS = [
+  "bg-blue-500",
+  "bg-green-500",
+  "bg-amber-500",
+  "bg-purple-500",
+  "bg-pink-500",
+  "bg-cyan-500",
+];
 
 export default function BudgetDesktop({
   budgets,
@@ -64,8 +73,8 @@ export default function BudgetDesktop({
     primary: budgetPrimary,
     details: budgetDetails,
   } = useMemo(
-    () => getBudgetByPeriod(budgets, start),
-    [budgets, start],
+    () => getBudgetByPeriod(budgets, start, end),
+    [budgets, start, end],
   );
 
   const groupedBudgets = useMemo(
@@ -100,12 +109,61 @@ export default function BudgetDesktop({
 
   const isEmpty = groupedBudgets.length === 0;
 
+  const remainingBudget = Math.max(0, budgetAmount - totalAllocation);
+
+  const accountAllocations = groupedBudgets.map((budget) => ({
+    ...budget,
+    percent:
+      budgetAmount > 0
+        ? (budget.total / budgetAmount) * 100
+        : 0,
+  }));
+
+  const remainingPercent =
+    budgetAmount > 0
+      ? (remainingBudget / budgetAmount) * 100
+      : 0;
+
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, "");
     const numeric = Number(raw);
 
     setAmount(numeric);
     setAmountInput(formatNumber(numeric));
+  }
+
+  async function handleUpdateBudget() {
+    if (!budgetPrimary) {
+      return;
+    }
+
+    if (!amount || amount <= 0) {
+      toast.error("Amount must be greater than 0");
+      return;
+    }
+
+    try {
+      const result = await updateBudget({
+        id: budgetPrimary.id,
+        date: normalizeDate(budgetPrimary.date),
+        accountId: budgetPrimary.accountId,
+        remark: budgetPrimary.remark,
+        amount,
+      });
+
+      toast.success("Updated", {
+        description: result.message,
+      });
+
+      handleCloseEditModal();
+    } catch (error) {
+      toast.error("Failed to update", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong",
+      });
+    }
   }
 
   function handleOpenEditModal() {
@@ -138,51 +196,18 @@ export default function BudgetDesktop({
     setAmountInput("");
   }
 
-  async function handleUpdateBudget() {
-    if (!budgetPrimary) {
-      return;
-    }
 
-    if (!amount || amount <= 0) {
-      toast.error("Amount must be greater than 0");
-      return;
-    }
-
-    try {
-      const result = await updateBudget({
-        id: budgetPrimary.id,
-        date: budgetPrimary.date,
-        accountId: budgetPrimary.accountId,
-        remark: budgetPrimary.remark,
-        amount,
-      });
-
-      toast.success("Updated", {
-        description: result.message,
-      });
-
-      handleCloseEditModal();
-    } catch (error) {
-      toast.error("Failed to update", {
-        description:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong",
-      });
-    }
-  }
 
   return (
     <>
       <div className="grid grid-cols-1 gap-4">
-        <div className="space-y-4">
-          {/* FILTER DATE PERIOD */}
-          <div className="bg-white border border-slate-200 rounded-lg">
-            <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod, isMaxPeriod }} allowFuture />
-          </div>
-          <div className="bg-white border border-slate-200 rounded-lg">
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between p-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
+            <div className="bg-white border border-slate-200 rounded-lg">
+              <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod, isMaxPeriod }} allowFuture />
+            </div>
+            <div className="flex flex-col bg-white border border-slate-200 rounded-lg">
+              <div className="flex items-center justify-between p-4 border-b border-slate-100">
                 <div className="flex flex-col">
                   <span className="text-sm text-slate-400">Budget This Month</span>
                   <span className="text-base font-semibold text-black">{formatBalance(
@@ -197,36 +222,92 @@ export default function BudgetDesktop({
                   <span className="font-semibold">Edit</span>
                 </button>
               </div>
-              <button
-                onClick={() => navigate(`/budget/create`)}
-                className="flex w-full justify-center py-3 bg-black hover:bg-slate-900 text-white text-sm gap-2 transition cursor-pointer">
-                <Add01Icon size={20} />
-                <span className="font-semibold">Create Budget</span>
-              </button>
-              <div className="flex flex-col">
-                {groupedBudgets.map((budget) => (
-                  <div
-                    key={budget.accountId}
-                    onClick={() => handleOpenTransferModal(budget)}
-                    className="flex items-center justify-between p-4 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
-                    <div className="flex items-center gap-4">
-                      <img src={getAccountsImg(budget.accountName)} alt={budget.accountName} className="w-8 h-8" />
-                      <span className="text-sm text-slate-600">{budget.accountName}</span>
-                    </div>
-                    <span className="text-sm text-slate-600">
-                      {formatBalance(formatCurrency(budget.total), hideBalance)}
-                    </span>
+              <div className="p-4">
+                <div className="p-4 space-y-3">
+
+                  <div className="flex h-6 overflow-hidden rounded-full bg-slate-200">
+                    {accountAllocations.map((item, index) => (
+                      <div
+                        key={item.accountId}
+                        style={{ width: `${item.percent}%` }}
+                        className={`flex items-center justify-center text-[10px] font-semibold text-white ${COLORS[index % COLORS.length]}`}
+                      >
+                        {item.percent >= 8 && `${Math.round(item.percent)}%`}
+                      </div>
+                    ))}
+
+                    {remainingBudget > 0 && (
+                      <div
+                        style={{ width: `${remainingPercent}%` }}
+                        className="flex items-center justify-center bg-slate-300 text-[10px] font-semibold text-slate-700"
+                      >
+                        {remainingPercent >= 8 && `${Math.round(remainingPercent)}%`}
+                      </div>
+                    )}
                   </div>
-                ))}
-                <div className="flex items-center justify-between px-4 py-3 bg-slate-100">
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold">Budget Allocation</span>
-                    <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{isOverBudget ? "Over Budget!" : "Safe Budget"}</span>
+
+                  {/* Legend */}
+                  <div className="flex flex-wrap gap-x-6 gap-y-2">
+                    {accountAllocations.map((item, index) => (
+                      <div
+                        key={item.accountId}
+                        className="flex items-center gap-2"
+                      >
+                        <div
+                          className={`w-3 h-3 rounded-full ${COLORS[index % COLORS.length]}`}
+                        />
+
+                        <span className="text-sm text-slate-600">
+                          {item.accountName}
+                        </span>
+                      </div>
+                    ))}
+
+                    {remainingBudget > 0 && (
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-slate-300" />
+                        <span className="text-sm text-slate-600">
+                          Remaining
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{formatBalance(formatCurrency(totalAllocation), hideBalance)}</span>
                 </div>
               </div>
+              <div className="flex items-center justify-between px-4 py-3 bg-slate-100">
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold">Budget Allocation</span>
+                  <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{isOverBudget ? "Over Budget!" : "Safe Budget"}</span>
+                </div>
+                <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{formatBalance(formatCurrency(totalAllocation), hideBalance)}</span>
+              </div>
             </div >
+          </div>
+          <div className="space-y-4">
+            <button
+              onClick={() => navigate(`/budget/create`)}
+              className="flex w-full justify-center items-center h-15.5 bg-black hover:bg-slate-900 gap-2 rounded-lg transition cursor-pointer">
+              <Add01Icon size={20} className="text-white" />
+              <span className="text-white text-sm font-semibold">Create Budget</span>
+            </button>
+            <div className="bg-white border border-slate-200 rounded-lg">
+              <div className="flex flex-col">
+                {groupedBudgets.map((budget) => {
+                  return (
+                    <div
+                      key={budget.accountId}
+                      onClick={() => handleOpenTransferModal(budget)}
+                      className="flex items-center justify-between p-4 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
+                      <div className="flex items-center gap-4">
+                        <img src={getAccountsImg(budget.accountName)} alt={budget.accountName} className="w-8 h-8" />
+                        <span className="text-sm text-slate-600">{budget.accountName}</span>
+                      </div>
+                      <span className="text-sm text-black font-medium">{formatBalance(formatCurrency(budget.total), hideBalance)}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
         {isEmpty ? (

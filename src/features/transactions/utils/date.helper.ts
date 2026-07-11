@@ -1,6 +1,6 @@
 export function formatPeriod(start: Date, end: Date) {
   const formatDate = (date: Date) =>
-    date.toLocaleDateString("id-ID", {
+    date.toLocaleDateString("en-GB", {
       day: "numeric",
       month: "long",
     });

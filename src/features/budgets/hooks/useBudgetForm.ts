@@ -13,16 +13,13 @@ type FormState = {
 export function useBudgetForm(defaultValues?: Budget) {
   const [form, setForm] = useState<FormState>(() => ({
     id: defaultValues?.id || "",
-    date: normalizeDate(defaultValues?.date),
+    date: normalizeDate(defaultValues?.date ?? new Date()),
     accountId: defaultValues?.accountId || "",
     remark: defaultValues?.remark || "",
-    amount: defaultValues?.amount || 0
+    amount: defaultValues?.amount || 0,
   }));
 
-  function setField<K extends keyof FormState>(
-    key: K,
-    value: FormState[K]
-  ) {
+  function setField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({
       ...prev,
       [key]: value,
@@ -42,10 +39,10 @@ export function useBudgetForm(defaultValues?: Budget) {
   function reset() {
     setForm({
       id: defaultValues?.id || "",
-      date: normalizeDate(defaultValues?.date),
+      date: normalizeDate(defaultValues?.date ?? new Date()),
       accountId: defaultValues?.accountId || "",
       remark: defaultValues?.remark || "",
-      amount: defaultValues?.amount || 0
+      amount: defaultValues?.amount || 0,
     });
   }
 
@@ -55,5 +52,5 @@ export function useBudgetForm(defaultValues?: Budget) {
     setField,
     getPayload,
     reset,
-  }
+  };
 }

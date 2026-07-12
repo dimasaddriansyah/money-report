@@ -3,7 +3,7 @@ import {
   doc,
   setDoc,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../shared/config/firebase";
 
 interface Budget {
   id: string;

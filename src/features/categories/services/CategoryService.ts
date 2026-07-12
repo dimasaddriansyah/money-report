@@ -1,5 +1,5 @@
 import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../../firebase";
+import { db } from "../../../shared/config/firebase";
 import type { Category } from "../types/category";
 
 const COLLECTION_NAME = "categories";

@@ -1,6 +1,6 @@
 import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import type { Account } from "../types/account";
-import { db } from "../../../firebase";
+import { db } from "../../../shared/config/firebase";
 
 const COLLECTION_NAME = "accounts";
 

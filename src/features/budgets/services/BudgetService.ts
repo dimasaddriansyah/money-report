@@ -1,5 +1,5 @@
 import { collection, deleteDoc, doc, getDocs, setDoc } from "firebase/firestore";
-import { db } from "../../../firebase";
+import { db } from "../../../shared/config/firebase";
 import type { Budget } from "../types/budget";
 
 const COLLECTION_NAME = "budgets";

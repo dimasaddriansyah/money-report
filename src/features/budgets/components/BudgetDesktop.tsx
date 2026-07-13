@@ -196,8 +196,6 @@ export default function BudgetDesktop({
     setAmountInput("");
   }
 
-
-
   return (
     <>
       <div className="grid grid-cols-1 gap-4">

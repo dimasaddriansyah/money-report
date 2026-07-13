@@ -1,91 +1,77 @@
-import { useNavigate } from "react-router-dom";
 import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
 import { getAccountsImg } from "../../../shared/utils/style.helper";
-import type { Budget } from "../types/budget";
+
+type BudgetItem = {
+  id: string;
+  accountId: string | null;
+  accountName: string;
+  remark: string;
+  amount: number;
+  spent: number;
+  remaining: number;
+  progress: number;
+  isOverBudget: boolean;
+};
 
 type Props = {
-  budgets: Budget[];
-  spendingMap: Map<string, number>;
-  accountMap: Map<string, string>;
+  items: BudgetItem[];
   hideBalance: boolean;
 };
 
-export default function ComponentListBudgetDetail({ budgets, spendingMap, accountMap, hideBalance }: Props) {
-  const navigate = useNavigate();
-
+export default function ComponentListBudgetDetail({
+  items,
+  hideBalance,
+}: Props) {
   return (
-    <div className="p-4 grid grid-cols-1 gap-4">
-      {budgets.map((item) => {
-        const spending = spendingMap.get(item.id) ?? 0;
-        const isCappedBudget = item.accountId === "ACC005" && item.remark === "Uang Bersama";
-        const displaySpending = isCappedBudget ? Math.min(spending, item.amount) : spending;
-        const saving = item.amount - displaySpending;
-        const percent =
-          item.amount > 0
-            ? Math.round((displaySpending / item.amount) * 100)
-            : 0;
-
-        const isOverBudget = spending > item.amount;
-        const accountName = accountMap.get(item.accountId) ?? "Unknown Account";
-
-        return (
-          <div
-            key={item.id}
-            onClick={() => navigate(`/budget/edit/${item.id}`)}
-            className="bg-white border border-slate-200 hover:bg-slate-100 rounded-lg p-4 flex flex-col transition cursor-pointer">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <img src={getAccountsImg(accountName)} alt={accountName} className="w-8 h-8" />
-                <div className="flex flex-col min-w-0">
-                  <span className="text-xs text-slate-400">{accountName}</span>
-                  <div className="text-sm font-semibold text-black truncate">{item.remark}</div>
-                </div>
+    <div className="m-4 flex flex-col gap-3">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="p-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl space-y-4 cursor-pointer">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <img src={getAccountsImg(item.accountName)} alt={item.accountName} className="w-10 h-10 object-contain" />
+              <div className="flex flex-col">
+                <p className="text-xs text-slate-600">{item.accountName}</p>
+                <p className="text-sm font-medium text-black ">{item.remark}</p>
               </div>
-              <span className={`px-3 py-1 text-xs font-semibold rounded-full border 
-                ${isOverBudget
-                  ? "bg-red-50 text-red-500 border-red-200"
-                  : "bg-green-50 text-green-500 border-green-200"
-                }`}>
-                {isOverBudget ? "Over Budget" : "Safe"}
-              </span>
             </div>
-            <div className="my-3 h-px bg-slate-100" />
-            <div className="flex flex-col gap-4">
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-xs text-slate-500">Budgeting</span>
-                  <span className="text-xs text-slate-500">{formatBalance(formatCurrency(item.amount), hideBalance)}
-                  </span>
-                </div>
+            <span className={`rounded-lg px-2 py-1 text-xs font-semibold 
+              ${item.isOverBudget
+                ? "bg-red-100 text-red-600 border border-red-200"
+                : "bg-green-100 text-green-600 border border-green-200"}`}>
+              {item.isOverBudget ? "Over Budget" : "Safe"}
+            </span>
+          </div>
 
-                <div className="flex justify-between">
-                  <span className="text-xs text-slate-500">Spending</span>
-                  <span className={`text-xs ${isOverBudget ? "text-red-500 font-semibold" : "text-slate-500"}`}>
-                    {formatBalance(formatCurrency(displaySpending), hideBalance)}
-                  </span>
-                </div>
+          <div className="my-3 h-px bg-slate-100" />
 
-                <div className="flex justify-between">
-                  <span className="text-xs text-slate-500">Saving</span>
-                  <span className={`text-xs ${saving < 0 ? "text-red-500 font-semibold" : "text-slate-500"}`}>
-                    {formatBalance(formatCurrency(saving), hideBalance)}
-                  </span>
-                </div>
-              </div>
-              <div className="relative">
-                <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${isOverBudget ? "bg-red-500" : "bg-green-600"}`}
-                    style={{ width: `${Math.min(percent, 100)}%` }} />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className={`text-[10px] font-bold ${percent > 55 ? "text-white" : "text-black"}`}>{percent}%</span>
-                </div>
-              </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-600">Budget</span>
+              <span>{formatBalance(formatCurrency(item.amount), hideBalance)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-600">Spent</span>
+              <span className="text-red-500">{formatBalance(formatCurrency(item.spent), hideBalance)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-600">Remaining</span>
+              <span>{formatBalance(formatCurrency(item.remaining), hideBalance)}</span>
             </div>
           </div>
-        )
-      })}
+
+          <div className="relative h-5 overflow-hidden rounded-full bg-slate-100">
+            <div className={`absolute left-0 top-0 h-full ${item.isOverBudget ? "bg-red-300" : "bg-green-300"}`}
+              style={{ width: `${item.progress}%` }} />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xs font-semibold text-black">
+                {item.progress.toFixed(0)}%
+              </span>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

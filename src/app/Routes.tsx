@@ -14,7 +14,6 @@ import BudgetCreatePage from "../features/budgets/pages/BudgetCreatePage";
 import BudgetEditPage from "../features/budgets/pages/BudgetEditPage";
 import BudgetPage from "../features/budgets/pages/BudgetPage";
 import TransactionGenerateFormPage from "../features/transactions/pages/TransactionGenerateFormPage";
-import PortfolioPage from "../features/portfolios/pages/PortfolioPage";
 import MigratePage from "../migrate/MigratePage";
 
 const DashboardPage = lazy(() => import("../features/dashboards/pages/DashboardPage"));
@@ -37,7 +36,6 @@ export default function AppRoutes() {
       <Route path="/categories" element={<CategoryPage />} />
       <Route path="/category/create" element={<CategoryCreatePage />} />
       <Route path="/category/edit/:id" element={<CategoryEditPage />} />
-      <Route path="/portfolios" element={<PortfolioPage />} />
       {/* MIGRATE */}
       <Route path="/migrates" element={<MigratePage />} />
     </Routes>

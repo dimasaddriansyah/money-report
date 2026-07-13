@@ -4,7 +4,6 @@ import {
   Invoice01Icon,
   MoneySavingJarIcon,
   Note05Icon,
-  PieChart02Icon,
 } from "hugeicons-react";
 
 type IconType = typeof FireIcon;
@@ -66,16 +65,5 @@ export const NAV_MENUS_DESKTOP: NavItem[] = [
     path: "/budgets",
     matchPaths: ["/budgets", "/budget"],
     icon: MoneySavingJarIcon,
-  },
-  {
-    type: "label",
-    label: "INVESTMENT",
-  },
-  {
-    type: "menu",
-    labelDesktop: "Portfolios",
-    path: "/portfolios",
-    matchPaths: ["/portfolios", "/portfolio"],
-    icon: PieChart02Icon,
   }
 ];

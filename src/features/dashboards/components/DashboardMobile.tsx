@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import EmptyState from "../../../shared/ui/EmptyState";
 import { useGroupTransactionsByDate } from "../../transactions/hooks/useGroupTransactionsByDate";
-import TransactionGroupMobile from "../../transactions/components/TransactionGroupMobile";
+import TransactionGroupMobile from "../../transactions/components/mobile/TransactionGroupMobile";
 import { useBalance } from "../../../shared/context/BalanceContext";
 import type { Transaction } from "../../transactions/types/transaction";
 import { useNavigate } from "react-router-dom";

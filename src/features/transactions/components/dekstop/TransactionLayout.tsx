@@ -1,6 +1,6 @@
 import { ArrowLeft01Icon, PlusSignIcon } from "hugeicons-react";
-import Breadcrumb from "../../../shared/ui/Breadcrumb";
 import { useNavigate } from "react-router-dom";
+import Breadcrumb from "../../../../shared/ui/Breadcrumb";
 
 type Props = {
   title: string;

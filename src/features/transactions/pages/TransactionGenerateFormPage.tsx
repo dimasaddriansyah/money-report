@@ -1,4 +1,4 @@
-import TransactionLayout from "../components/TransactionLayout";
+import TransactionLayout from "../components/dekstop/TransactionLayout";
 import { TransactionFormGenerate } from "../components/TransactionFormGenerate";
 
 export default function TransactionGenerateFormPage() {

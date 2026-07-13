@@ -1,6 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-import TransactionForm from "../components/TransactionForm";
-import TransactionLayout from "../components/TransactionLayout";
 import { useTransactions } from "../hooks/useTransactions";
 import { useTransactionActions } from "../hooks/useTransactionActions";
 import { toast } from "sonner";
@@ -8,6 +6,8 @@ import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useCategories } from "../../categories/hooks/useCategories";
 import TransactionFormMobile from "../components/TransactionFormMobile";
 import type { FormData } from "../utils/transaction.form.helper";
+import TransactionLayout from "../components/dekstop/TransactionLayout";
+import TransactionForm from "../components/dekstop/TransactionForm";
 
 export default function TransactionEditPage() {
   const navigate = useNavigate();
@@ -67,8 +67,7 @@ export default function TransactionEditPage() {
             { label: "Transactions", path: "/transactions" },
             { label: "Edit Transaction" },
           ]}
-          showBack
-        >
+          showBack>
           <TransactionForm defaultValues={transaction} accounts={accounts} categories={categories} onSubmit={handleSubmit} loading={loading} />
         </TransactionLayout>
       </div>

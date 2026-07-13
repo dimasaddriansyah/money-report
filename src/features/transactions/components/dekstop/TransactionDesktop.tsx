@@ -1,23 +1,22 @@
-import { ArrowDown01Icon, Calendar03Icon, CreditCardIcon, Delete02Icon, Note05Icon, NoteEditIcon, Search01Icon } from "hugeicons-react";
-import EmptyState from "../../../shared/ui/EmptyState";
-import TablePagination from "../../../shared/ui/tables/TablePagination";
-import type { Transaction } from "../types/transaction";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { Account } from "../../../accounts/types/account";
+import type { Category } from "../../../categories/types/category";
+import type { Transaction } from "../../types/transaction";
+import { useBalance } from "../../../../shared/context/BalanceContext";
+import { useEffect, useRef, useState } from "react";
+import type { DateFilter } from "../../../../shared/utils/dateFilter.helper";
+import { useTransactionFilter } from "../../hooks/useTransactionFilter";
+import { useTransactionActions } from "../../hooks/useTransactionActions";
 import { toast } from "sonner";
-import { useTransactionActions } from "../hooks/useTransactionActions";
-import { getAccountDisplay, getAmountDisplay, getCategoryName, getTypeDisplay } from "../utils/ui.helpers";
-import type { Account } from "../../accounts/types/account";
-import type { Category } from "../../categories/types/category";
-import Modal from "../../../shared/ui/Modal";
-import { formatBalance, formatDateDay, formatDateTime } from "../../../shared/utils/format.helper";
-import { useBalance } from "../../../shared/context/BalanceContext";
-import TablePageSize from "../../../shared/ui/tables/TablePageSize";
-import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
-import { useTransactionFilter } from "../hooks/useTransactionFilter";
-import type { DateFilter } from "../../../shared/utils/dateFilter.helper";
+import EmptyState from "../../../../shared/ui/EmptyState";
+import TablePageSize from "../../../../shared/ui/tables/TablePageSize";
+import { ArrowDown01Icon, Calendar03Icon, CreditCardIcon, Note05Icon, Search01Icon } from "hugeicons-react";
+import { getAccountsImg, getCategoriesImg } from "../../../../shared/utils/style.helper";
 import TransactionTable from "./TransactionTable";
+import TransactionPagination from "./TransactionPagination";
 import TransactionDeleteModal from "./TransactionDeleteModal";
+import { useTransactionPagination } from "../../hooks/useTransactionPagination";
+import { useSortedTransactions } from "../../hooks/useSortedTransactions";
 
 type Props = {
   transactions: Transaction[];
@@ -34,7 +33,7 @@ export default function TransactionDesktop({
 }: Props) {
   const navigate = useNavigate();
   const { hideBalance } = useBalance();
-  const isEmpty = !transactions || transactions.length === 0;
+  const isEmpty = transactions.length === 0;
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -59,62 +58,21 @@ export default function TransactionDesktop({
       { label: "Last Year", value: "last_year" },
     ];
 
-  const {
-    filteredTransactions,
-    accountLookup,
-    categoryLookup,
-    search,
-    setSearch,
-    selectedAccount,
-    setSelectedAccount,
-    selectedCategory,
-    setSelectedCategory,
-    selectedDate,
-    setSelectedDate,
-  } = useTransactionFilter({
-    transactions,
-    accounts,
-    categories,
+  const { filteredTransactions, accountLookup, categoryLookup, search, setSearch,
+    selectedAccount, setSelectedAccount, selectedCategory, setSelectedCategory,
+    selectedDate, setSelectedDate } = useTransactionFilter({
+      transactions,
+      accounts,
+      categories,
+    });
+
+  const sortedTransactions = useSortedTransactions(filteredTransactions);
+
+  const { paginatedTransactions, totalItems, totalPages, startItem, endItem, pages, } = useTransactionPagination({
+    transactions: sortedTransactions,
+    page,
+    limit
   });
-
-  const sortedTransactions = useMemo(() => {
-    return [...filteredTransactions].sort((a, b) =>
-      b.id.localeCompare(a.id)
-    );
-  }, [filteredTransactions]);
-
-  const totalItems = sortedTransactions.length;
-  const totalPages = Math.ceil(totalItems / limit);
-  const startItem = totalItems === 0 ? 0 : (page - 1) * limit + 1;
-  const endItem = Math.min(page * limit, totalItems);
-
-  const pages = useMemo(() => {
-    const delta = 2;
-    const range: (number | string)[] = [];
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= page - delta && i <= page + delta)
-      ) {
-        range.push(i);
-      } else if (
-        i === page - delta - 1 ||
-        i === page + delta + 1
-      ) {
-        range.push("...");
-      }
-    }
-
-    return range;
-  }, [page, totalPages]);
-
-  const paginatedTransactions = useMemo(() => {
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    return sortedTransactions.slice(start, end);
-  }, [sortedTransactions, page, limit]);
 
   const [open, setOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
@@ -163,6 +121,15 @@ export default function TransactionDesktop({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [
+    search,
+    selectedDate,
+    selectedAccount,
+    selectedCategory,
+  ]);
 
   return (
     <>
@@ -347,9 +314,8 @@ export default function TransactionDesktop({
             onDelete={(transaction) => {
               setSelectedTransaction(transaction);
               setOpen(true);
-            }}
-          />
-          <TablePagination
+            }} />
+          <TransactionPagination
             currentPage={page}
             totalPages={totalPages}
             totalItems={totalItems}
@@ -367,8 +333,7 @@ export default function TransactionDesktop({
         onClose={() => {
           setOpen(false);
           setSelectedTransaction(null);
-        }}
-      />
+        }} />
     </>
   )
 }

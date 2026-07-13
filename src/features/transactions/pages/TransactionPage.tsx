@@ -1,8 +1,8 @@
 import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useCategories } from "../../categories/hooks/useCategories";
-import TransactionDesktop from "../components/TransactionDesktop";
-import TransactionLayout from "../components/TransactionLayout";
-import TransactionMobile from "../components/TransactionMobile";
+import TransactionDesktop from "../components/dekstop/TransactionDesktop";
+import TransactionLayout from "../components/dekstop/TransactionLayout";
+import TransactionMobile from "../components/mobile/TransactionMobile";
 import { useTransactions } from "../hooks/useTransactions";
 
 export default function TransactionPage() {

@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
 import {
   createAccount as createAccountService,
@@ -16,12 +17,14 @@ export function useAccountActions(refetch?: () => Promise<void>) {
 
       const id = await generateId({
         collection: "accounts",
-        prefix: "ACC"
+        prefix: "ACC",
       });
 
       await createAccountService({
         id,
         name: data.name,
+        createdAt: Timestamp.now(),
+        updatedAt: null,
       });
 
       await refetch?.();
@@ -73,7 +76,7 @@ export function useAccountActions(refetch?: () => Promise<void>) {
 
       return {
         message: "Account deleted successfully",
-      }
+      };
     } catch (error) {
       console.error("Delete account failed:", error);
       throw error;

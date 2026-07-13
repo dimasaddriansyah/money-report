@@ -29,11 +29,11 @@ export default function DashboardPage() {
       </div>
 
       <div className="md:hidden">
-        <DashboardMobile
+        {/* <DashboardMobile
           transactions={transactions}
           accounts={accounts}
           categories={categories}
-          refetch={refetch} />
+          refetch={refetch} /> */}
       </div>
     </>
   );

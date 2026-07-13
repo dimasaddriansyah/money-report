@@ -1,25 +1,24 @@
 import { useMemo } from "react";
 import type { Transaction } from "../../transactions/types/transaction";
-import { formatDateDayMonth } from "../../../shared/utils/format.helper";
+import { formatDateDayMonth, normalizeDate, } from "../../../shared/utils/format.helper";
 
 export function useDailyExpenseData(transactions: Transaction[]) {
   return useMemo(() => {
-    const map: Record<string, number> = {};
+    const dailyExpense = new Map<string, number>();
 
-    transactions.forEach((t) => {
-      if (t.typeId !== "TP002") return;
-
-      const date = new Date(t.date).toISOString().split("T")[0];
-      map[date] = (map[date] || 0) + t.amount;
+    transactions.forEach((transaction) => {
+      if (transaction.typeId !== "TP002") return;
+      const date = normalizeDate(transaction.date);
+      dailyExpense.set(date, (dailyExpense.get(date) ?? 0) + transaction.amount);
     });
 
-    const entries = Object.entries(map).sort(([a], [b]) =>
-      a.localeCompare(b)
+    const entries = [...dailyExpense.entries()].sort(
+      ([a], [b]) => a.localeCompare(b)
     );
 
     return {
-      dates: entries.map(([d]) => formatDateDayMonth(d)),
-      amounts: entries.map(([, v]) => v),
+      dates: entries.map(([date]) => formatDateDayMonth(date)),
+      amounts: entries.map(([, amount]) => amount),
     };
   }, [transactions]);
 }

@@ -1,39 +1,47 @@
 import { useMemo } from "react";
+import { toDate } from "../../../shared/utils/format.helper";
 import type { Transaction } from "../types/transaction";
 
-type GroupedTransactions = {
+export type TransactionGroup = {
   date: string;
   items: Transaction[];
   totalExpense: number;
 };
 
-export function useGroupTransactionsByDate(transactions: Transaction[]) {
+export function useGroupTransactionsByDate(
+  transactions: Transaction[]
+) {
   return useMemo(() => {
-    const map = new Map<string, Transaction[]>();
+    const groups = new Map<string, Transaction[]>();
 
-    transactions.forEach((trx) => {
-      const dateKey = new Date(trx.date).toISOString().split("T")[0];
-      if (!map.has(dateKey)) { map.set(dateKey, []) }
-      map.get(dateKey)!.push(trx);
-    });
+    for (const transaction of transactions) {
+      const date = toDate(transaction.date);
 
-    const result: GroupedTransactions[] = Array.from(map.entries())
-      .map(([date, items]) => {
-        const sortedItems = items
-        .sort((a, b) => new Date(b.date)
-        .getTime() - new Date(a.date)
-        .getTime());
-        const totalExpense = items
-          .filter((t) => t.typeId === "TP002")
-          .reduce((sum, t) => sum + t.amount, 0);
+      if (!date) continue;
 
-        return {
-          date,
-          items: sortedItems,
-          totalExpense,
-        };
-      })
+      const dateKey = date.toISOString().split("T")[0];
+
+      const items = groups.get(dateKey);
+
+      if (items) {
+        items.push(transaction);
+      } else {
+        groups.set(dateKey, [transaction]);
+      }
+    }
+
+    return Array.from(groups.entries())
+      .map(([date, items]) => ({
+        date,
+        items: [...items].sort(
+          (a, b) =>
+            (toDate(b.date)?.getTime() ?? 0) -
+            (toDate(a.date)?.getTime() ?? 0)
+        ),
+        totalExpense: items
+          .filter((item) => item.typeId === "TP002")
+          .reduce((sum, item) => sum + item.amount, 0),
+      }))
       .sort((a, b) => b.date.localeCompare(a.date));
-    return result;
   }, [transactions]);
 }

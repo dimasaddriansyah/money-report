@@ -8,7 +8,7 @@ import { getAccountDisplay, getAmountDisplay, getCategoryName, getTypeDisplay } 
 import { Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../../shared/ui/Modal";
-import { formatBalance, formatDateDayMonthYear } from "../../../shared/utils/format.helper";
+import { formatBalance, formatDateDay, formatDateTime } from "../../../shared/utils/format.helper";
 import { useBalance } from "../../../shared/context/BalanceContext";
 import EmptyState from "../../../shared/ui/EmptyState";
 import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
@@ -105,8 +105,8 @@ export default function DashboardSectionRecentTransactions({
                     <td className="text-slate-500 font-medium">{index + 1}</td>
                     <td>
                       <div className="flex flex-col">
-                        <span className="text-black font-medium">{row.day}</span>
-                        <span className="text-slate-400">{formatDateDayMonthYear(row.date) || "-"}</span>
+                        <span className="text-black font-medium">{formatDateDay(row.date)}</span>
+                        <span className="text-slate-400">{formatDateTime(row.date) || "-"}</span>
                       </div>
                     </td>
                     <td className="">
@@ -139,7 +139,7 @@ export default function DashboardSectionRecentTransactions({
                       <div className="flex gap-2">
                         <div
                           onClick={() => navigate(`/transaction/edit/${row.id}`)}
-                          className="bg-amber-50 hover:bg-amber-200 p-2 rounded-xl cursor-pointer">
+                          className="bg-amber-50 border border-amber-100 hover:bg-amber-200 p-2 rounded-xl cursor-pointer">
                           <NoteEditIcon className="w-5 h-5 text-amber-500" />
                         </div>
                         <div
@@ -147,7 +147,7 @@ export default function DashboardSectionRecentTransactions({
                             setSelectedTransaction(row);
                             setOpen(true);
                           }}
-                          className="bg-red-50 hover:bg-red-200 p-2 rounded-xl cursor-pointer">
+                          className="bg-red-50 border border-red-100 hover:bg-red-200 p-2 rounded-xl cursor-pointer">
                           <Delete02Icon className="w-5 h-5 text-red-500" />
                         </div>
                       </div>
@@ -162,13 +162,14 @@ export default function DashboardSectionRecentTransactions({
       {open && (
         <Modal
           title="Delete Transaction"
+          textButton="Delete"
           loading={loading}
           onSubmit={handleDelete}
           onClose={() => {
             setOpen(false);
             setSelectedTransaction(null);
           }}>
-          <p className="text-sm text-slate-500">
+          <p className="p-4 text-sm text-slate-500">
             Delete "<span className="text-black font-semibold">{selectedTransaction?.remark}</span>"? This cannot be undone.
           </p>
         </Modal>

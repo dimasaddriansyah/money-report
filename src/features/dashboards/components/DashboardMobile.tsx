@@ -15,6 +15,7 @@ import BottomSheet from "../../../shared/ui/BottomSheet";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import DashboardSectionLayoutCategoryExpense from "./DashboardSectionLayoutCategoryExpense";
+import { useDashboardFilter } from "../hooks/useDashboardFilter";
 
 type Props = {
   transactions: Transaction[];
@@ -26,6 +27,8 @@ type Props = {
 export default function DashboardMobile({ transactions, accounts, categories, refetch }: Props) {
   const navigate = useNavigate();
   const { hideBalance, setHideBalance } = useBalance();
+
+  const { period, setPeriod, filteredTransactions } = useDashboardFilter({ transactions });
 
   const latestTransactions = useMemo(() => {
     return [...transactions]
@@ -59,78 +62,8 @@ export default function DashboardMobile({ transactions, accounts, categories, re
     { label: "Yesterday", value: "yesterday" },
     { label: "Today", value: "today" },
   ];
-  const [period, setPeriod] = useState("month");
   const [openFilter, setOpenFilter] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const filteredTransactions = useMemo(() => {
-    const now = new Date();
-
-    return transactions.filter((trx) => {
-      const trxDate = new Date(trx.date);
-
-      switch (period) {
-        case "year":
-          return trxDate.getFullYear() === now.getFullYear();
-
-        case "month": {
-          const year = now.getFullYear();
-          const month = now.getMonth();
-          const day = now.getDate();
-
-          const startDate =
-            day >= 25
-              ? new Date(year, month, 25, 0, 0, 0, 0)
-              : new Date(year, month - 1, 25, 0, 0, 0, 0);
-
-          const endDate =
-            day >= 25
-              ? new Date(year, month + 1, 24, 23, 59, 59, 999)
-              : new Date(year, month, 24, 23, 59, 59, 999);
-
-          return trxDate >= startDate && trxDate <= endDate;
-        }
-
-        case "week": {
-          const startOfWeek = new Date(now);
-          const day = now.getDay();
-          const diff = day === 0 ? -6 : 1 - day;
-
-          startOfWeek.setDate(now.getDate() + diff);
-          startOfWeek.setHours(0, 0, 0, 0);
-
-          const endOfWeek = new Date(now);
-          endOfWeek.setHours(23, 59, 59, 999);
-
-          return trxDate >= startOfWeek && trxDate <= endOfWeek;
-        }
-
-        case "yesterday": {
-          const yesterday = new Date(now);
-          yesterday.setDate(now.getDate() - 1);
-
-          return (
-            trxDate.getFullYear() === yesterday.getFullYear() &&
-            trxDate.getMonth() === yesterday.getMonth() &&
-            trxDate.getDate() === yesterday.getDate()
-          );
-        }
-
-        case "today": {
-          const start = new Date(now);
-          start.setHours(0, 0, 0, 0);
-
-          const end = new Date(now);
-          end.setHours(23, 59, 59, 999);
-
-          return trxDate >= start && trxDate <= end;
-        }
-
-        default:
-          return true;
-      }
-    });
-  }, [transactions, period]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

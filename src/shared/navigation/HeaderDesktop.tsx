@@ -119,7 +119,7 @@ export default function HeaderDesktop({
                 onClick={handleLogout}
                 className="w-full flex items-center gap-4 p-4 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg cursor-pointer">
                 <Logout02Icon size={16} />
-                <span>Logout</span>
+                <span className="font-medium">Logout</span>
               </button>
             </div>
           )}

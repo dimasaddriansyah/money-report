@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import BudgetLayout from "../components/BudgetLayout";
 import BudgetForm from "../components/BudgetForm";
 import { useAccounts } from "../../accounts/hooks/useAccounts";
-// import BudgetFormMobile from "../components/BudgetFormMobile";
+import BudgetFormMobile from "../components/BudgetFormMobile";
 import type { FormData } from "../utils/budget.form.helper";
 
 export default function BudgetCreatePage() {
@@ -45,7 +45,7 @@ export default function BudgetCreatePage() {
       </div>
 
       <div className="md:hidden">
-        {/* <BudgetFormMobile onSubmit={handleSubmit} accounts={accounts} loading={loading} /> */}
+        <BudgetFormMobile onSubmit={handleSubmit} accounts={accounts} loading={loading} />
       </div>
     </>
   );

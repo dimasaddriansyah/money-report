@@ -13,7 +13,6 @@ type Props = {
   refetch: () => Promise<void>;
 };
 
-
 export default function CategoryMobile({
   categories, refetch
 }: Props) {

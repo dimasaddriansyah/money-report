@@ -61,8 +61,7 @@ export default function CategoryEditPage() {
             { label: "Categories", path: "/categories" },
             { label: "Edit Category" },
           ]}
-          showBack
-        >
+          showBack>
           <CategoryForm defaultValues={category} onSubmit={handleSubmit} loading={loading} />
         </CategoryLayout>
       </div>

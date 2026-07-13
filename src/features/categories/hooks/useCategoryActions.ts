@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
 import {
   createCategory as createCategoryService,
@@ -16,12 +17,14 @@ export function useCategoryActions(refetch?: () => Promise<void>) {
 
       const id = await generateId({
         collection: "categories",
-        prefix: "CAT"
+        prefix: "CAT",
       });
 
       await createCategoryService({
         id,
         name: data.name,
+        createdAt: Timestamp.now(),
+        updatedAt: null,
       });
 
       await refetch?.();
@@ -73,7 +76,7 @@ export function useCategoryActions(refetch?: () => Promise<void>) {
 
       return {
         message: "Category deleted successfully",
-      }
+      };
     } catch (error) {
       console.error("Delete category failed:", error);
       throw error;

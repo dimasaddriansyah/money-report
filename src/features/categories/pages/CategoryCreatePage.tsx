@@ -36,8 +36,7 @@ export default function CategoryCreatePage() {
             { label: "Categories", path: "/categories" },
             { label: "Create Category" },
           ]}
-          showBack
-        >
+          showBack>
           <CategoryForm onSubmit={handleSubmit} loading={loading} />
         </CategoryLayout>
       </div>

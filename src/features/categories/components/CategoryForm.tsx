@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Note05Icon } from "hugeicons-react";
 import type { Category } from "../types/category";
 import type { FormData } from "../utils/category.form.helper";
+import TextField from "../../../shared/ui/TextField";
 
 type Props = {
   defaultValues?: Category;
@@ -13,8 +14,28 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
   const isEdit = !!defaultValues;
   const [name, setName] = useState(defaultValues?.name || "");
 
+  const [errors, setErrors] = useState({
+    name: ""
+  });
+
+  function validate() {
+    const newErrors = {
+      name: ""
+    }
+
+    if (!name.trim()) {
+      newErrors.name = "Category name is required"
+    }
+
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some(Boolean);
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!validate()) return;
 
     onSubmit({
       id: defaultValues?.id,
@@ -28,33 +49,30 @@ export default function CategoryForm({ defaultValues, onSubmit, loading }: Props
 
   return (
     <form onSubmit={handleSubmit} className="p-4 md:p-0">
-      <div className="flex gap-4">
-        <div id="category" className="flex-1">
-          <label className="block text-sm font-medium text-gray-900 mb-1">Category Name</label>
-          <div className="relative flex items-center justify-center">
-            <div className="absolute left-4 pointer-events-none">
-              <Note05Icon className="text-slate-400" size={20} />
-            </div>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={`block w-full ps-13 pe-3 py-3 text-base rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none
-                ${name ? "text-black" : "text-slate-400"}`}
-              placeholder="Input account name" />
-          </div>
-        </div>
-      </div>
+      <TextField
+        label="Category Name"
+        type="text"
+        leftIcon={<Note05Icon size={20} className={errors.name ? "text-red-400" : "text-slate-400"} />}
+        value={name}
+        placeholder="Input category name"
+        error={errors.name}
+        onChange={(e) => {
+          setName(e.target.value);
+          setErrors((prev) => ({
+            ...prev,
+            name: "",
+          }));
+        }} />
       <div className="flex flex-col md:flex-row-reverse mt-4 gap-2">
         <button
           type="button"
           onClick={handleReset}
-          className="order-2 px-5 py-2.5 text-sm text-slate-400 rounded-lg cursor-pointer">Reset</button>
+          className="order-2 px-5 py-3 text-sm text-slate-400 rounded-xl cursor-pointer">Reset</button>
         <button
           type="submit"
           disabled={loading}
-          className={`order-1 px-5 py-2.5 text-sm font-semibold text-white rounded-lg cursor-pointer
-            ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-black hover:bg-black/80"}
-          `}>
+          className={`order-1 px-5 py-3 text-sm font-semibold text-white rounded-xl cursor-pointer
+            ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-black hover:bg-black/80"}`}>
           {loading ? "Saving..." : isEdit ? "Update Category" : "Create Category"}
         </button>
       </div>

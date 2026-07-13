@@ -19,10 +19,10 @@ export default function Sidebar({
   return (
     <aside
       className={`hidden md:flex flex-col h-screen sticky top-0 bg-white border-r border-slate-100 transition-[width] duration-300 ease-in-out
-        ${collapsed ? "w-19" : "w-56"}`}>
+        ${collapsed ? "w-19" : "w-60"}`}>
       {/* HEADER */}
-      <div className="px-4.5 h-18 flex items-center border-b border-slate-100 space-x-3">
-        <img src={CashflowLogo} alt="Logo" className="w-8 h-8" />
+      <div className="px-4 h-18 flex items-center border-b border-slate-100 space-x-3">
+        <img src={CashflowLogo} alt="Logo" className="w-7 h-7 object-contain" />
         {!collapsed && (
           <span className="text-base font-semibold">CASHFLOW</span>
         )}

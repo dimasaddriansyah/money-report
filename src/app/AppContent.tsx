@@ -5,6 +5,7 @@ import AppLayout from "../shared/layouts/AppLayout";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../features/auth/components/ProtectedRoute";
 import LoginPage from "../features/auth/pages/LoginPage";
+import RegisterPage from "../features/auth/pages/RegisterPage";
 
 export default function AppContent() {
   return (
@@ -16,6 +17,7 @@ export default function AppContent() {
       }>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/*"
           element={
@@ -24,7 +26,7 @@ export default function AppContent() {
                 <AppRoutes />
               </AppLayout>
             </ProtectedRoute>
-          }/>
+          } />
       </Routes>
 
       <Toaster position="top-center" richColors />

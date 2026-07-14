@@ -57,7 +57,7 @@ export default function CategoryEditPage() {
         <CategoryLayout
           title="Form Edit Category"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Categories", path: "/categories" },
             { label: "Edit Category" },
           ]}

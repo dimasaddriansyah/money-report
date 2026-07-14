@@ -9,10 +9,10 @@ interface SidebarProps {
   onOpenModal: () => void;
 }
 
-export default function Sidebar({ 
-  collapsed, 
+export default function Sidebar({
+  collapsed,
   // onOpenModal
- }: SidebarProps) {
+}: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ export default function Sidebar({
           // MENU ITEM
           const active =
             item.matchPaths?.some((p: string) =>
-              location.pathname === p || location.pathname.startsWith(p + "/")
+              location.pathname === p || location.pathname.startsWith(p + "/dashboard")
             );
 
           return (

@@ -7,6 +7,7 @@ import {
 } from "../services/AccountService";
 import { generateId } from "../../../shared/utils/generateId.helper";
 import type { FormData } from "../utils/account.form.helper";
+import { COLLECTIONS, ID_PREFIX } from "../../../shared/constants/firestore.constant";
 
 export function useAccountActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
@@ -16,8 +17,8 @@ export function useAccountActions(refetch?: () => Promise<void>) {
       setLoading(true);
 
       const id = await generateId({
-        collection: "accounts",
-        prefix: "ACC",
+        collection: COLLECTIONS.ACCOUNTS,
+        prefix: ID_PREFIX.ACCOUNT,
       });
 
       await createAccountService({

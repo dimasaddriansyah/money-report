@@ -20,7 +20,7 @@ export default function CategoryPage() {
       <div className="hidden md:block">
         <CategoryLayout
           title="List of Category"
-          breadcrumb={[{ label: "Dashboard", path: "/" }, { label: "Categories" }]}
+          breadcrumb={[{ label: "Dashboard", path: "/dashboard" }, { label: "Categories" }]}
           button={{ label: "Create Category", url: "/category/create" }}>
           <CategoryDesktop categories={categories} refetch={refetch} />
         </CategoryLayout>

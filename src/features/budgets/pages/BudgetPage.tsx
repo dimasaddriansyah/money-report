@@ -23,7 +23,7 @@ export default function BudgetPage() {
     <>
       <div className="hidden md:block">
         <section className="flex flex-col flex-1 px-6 py-8 gap-6 overflow-y-auto">
-          <Breadcrumb items={[{ label: "Dashboard", path: "/" }, { label: "Budgets" }]} />
+          <Breadcrumb items={[{ label: "Dashboard", path: "/dashboard" }, { label: "Budgets" }]} />
           <BudgetDesktop budgets={budgets} accounts={accounts} transactions={transactions} refetch={refetch} />
         </section>
       </div>

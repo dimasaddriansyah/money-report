@@ -1,5 +1,5 @@
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../config/firebase";
+import { getDocs } from "firebase/firestore";
+import { userCollection } from "./firestore.helper";
 
 interface GenerateIdOptions {
   collection: string;
@@ -8,32 +8,16 @@ interface GenerateIdOptions {
   date?: string;
 }
 
-/**
- * Generate next document ID.
- *
- * Examples:
- *
- * Accounts
- * generateId({
- *   collection: "accounts",
- *   prefix: "ACC"
- * }) => ACC001
- *
- * Transactions
- * generateId({
- *   collection: "transactions",
- *   prefix: "TRX",
- *   date: "2026-05-25"
- * }) => TRX20260525001
- */
-
 export async function generateId({
-  collection: collectionName,
+  collection,
   prefix,
   padding = 3,
   date,
 }: GenerateIdOptions): Promise<string> {
-  const snapshot = await getDocs(collection(db, collectionName));
+
+  const snapshot = await getDocs(
+    userCollection(collection)
+  );
 
   let maxNumber = 0;
 
@@ -41,7 +25,9 @@ export async function generateId({
     const dateKey = date.replaceAll("-", "");
 
     snapshot.forEach((doc) => {
-      const regex = new RegExp(`^${prefix}${dateKey}(\\d{${padding}})$`);
+      const regex = new RegExp(
+        `^${prefix}${dateKey}(\\d{${padding}})$`
+      );
 
       const match = doc.id.match(regex);
 
@@ -54,11 +40,16 @@ export async function generateId({
       }
     });
 
-    return `${prefix}${dateKey}${String(maxNumber + 1).padStart(padding, "0")}`;
+    return `${prefix}${dateKey}${String(maxNumber + 1).padStart(
+      padding,
+      "0"
+    )}`;
   }
 
   snapshot.forEach((doc) => {
-    const regex = new RegExp(`^${prefix}(\\d+)$`);
+    const regex = new RegExp(
+      `^${prefix}(\\d+)$`
+    );
 
     const match = doc.id.match(regex);
 
@@ -71,5 +62,8 @@ export async function generateId({
     }
   });
 
-  return `${prefix}${String(maxNumber + 1).padStart(padding, "0")}`;
+  return `${prefix}${String(maxNumber + 1).padStart(
+    padding,
+    "0"
+  )}`;
 }

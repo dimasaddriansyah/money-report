@@ -20,7 +20,7 @@ export default function AccountPage() {
       <div className="hidden md:block">
         <AccountLayout
           title="List of Account"
-          breadcrumb={[{ label: "Dashboard", path: "/" }, { label: "Accounts" }]}
+          breadcrumb={[{ label: "Dashboard", path: "/dashboard" }, { label: "Accounts" }]}
           button={{ label: "Create Account", url: "/account/create" }}>
           <AccountDesktop
             accounts={accounts}

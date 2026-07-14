@@ -32,7 +32,7 @@ export default function CategoryCreatePage() {
         <CategoryLayout
           title="Form Create Category"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Categories", path: "/categories" },
             { label: "Create Category" },
           ]}

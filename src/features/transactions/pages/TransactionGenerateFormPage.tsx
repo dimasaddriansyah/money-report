@@ -8,12 +8,12 @@ export default function TransactionGenerateFormPage() {
         <TransactionLayout
           title="Generate Form Transaction"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Transactions", path: "/transactions" },
             { label: "Generate Form Transaction" },
           ]}
           showBack>
-          <TransactionFormGenerate/>
+          <TransactionFormGenerate />
         </TransactionLayout>
       </div>
 

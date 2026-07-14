@@ -32,7 +32,7 @@ export default function AccountCreatePage() {
         <AccountLayout
           title="Form Create Account"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Accounts", path: "/accounts" },
             { label: "Create Account" },
           ]}

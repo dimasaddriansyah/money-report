@@ -63,7 +63,7 @@ export default function TransactionEditPage() {
         <TransactionLayout
           title="Form Edit Transaction"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Transactions", path: "/transactions" },
             { label: "Edit Transaction" },
           ]}

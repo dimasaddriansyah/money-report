@@ -89,7 +89,7 @@ export default function BudgetEditPage() {
         <BudgetLayout
           title="Form Edit Budget"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Budgets", path: "/budgets" },
             { label: "Edit Budget" },
           ]}

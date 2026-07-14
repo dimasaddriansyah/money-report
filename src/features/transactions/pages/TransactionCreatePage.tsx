@@ -38,7 +38,7 @@ export default function TransactionCreatePage() {
         <TransactionLayout
           title="Form Create Transaction"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Transactions", path: "/transactions" },
             { label: "Create Transaction" },
           ]}

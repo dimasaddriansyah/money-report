@@ -14,14 +14,20 @@ import BudgetCreatePage from "../features/budgets/pages/BudgetCreatePage";
 import BudgetEditPage from "../features/budgets/pages/BudgetEditPage";
 import BudgetPage from "../features/budgets/pages/BudgetPage";
 import TransactionGenerateFormPage from "../features/transactions/pages/TransactionGenerateFormPage";
-import MigratePage from "../migrate/MigratePage";
+import MigratePage from "../features/migrate/MigratePage";
+import RegisterPage from "../features/auth/pages/RegisterPage";
+import LoginPage from "../features/auth/pages/LoginPage";
 
 const DashboardPage = lazy(() => import("../features/dashboards/pages/DashboardPage"));
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<DashboardPage />} />
+      {/* AUTH */}
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      {/* CONTENT */}
+      <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/transactions" element={<TransactionPage />} />
       <Route path="/transaction/generate/form" element={<TransactionGenerateFormPage />} />

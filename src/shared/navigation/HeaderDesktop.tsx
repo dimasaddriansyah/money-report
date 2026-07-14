@@ -20,10 +20,10 @@ export default function HeaderDesktop({
   setHideBalance,
 }: Props) {
   const location = useLocation();
-  const SHOW_BALANCE_ROUTES = ["/", "/transactions", "/budgets"];
+  const SHOW_BALANCE_ROUTES = ["/dashboard", "/transactions", "/budgets"];
   const isShowBalancePage = SHOW_BALANCE_ROUTES.some((path) =>
     location.pathname === path ||
-    location.pathname.startsWith(path + "/")
+    location.pathname.startsWith(path + "/dashboard")
   );
 
   const { user } = useAuth();
@@ -98,8 +98,8 @@ export default function HeaderDesktop({
             </div>
 
             <div className="flex flex-col">
-              <span className="text-sm font-semibold">{user?.email}</span>
-              <span className="text-xs text-slate-400">Owner</span>
+              <span className="text-sm font-semibold">{user?.displayName}</span>
+              <span className="text-xs text-slate-400">{user?.email}</span>
             </div>
 
             <ArrowDown01Icon className={`text-neutral-400 transition-transform ${openProfile ? "rotate-180" : ""}`} size={20} />

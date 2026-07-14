@@ -1,30 +1,34 @@
+import { Mail01Icon, Key02Icon, ViewIcon, ViewOffSlashIcon, UserIcon, } from "hugeicons-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { login } from "../services/AuthService";
-import { useAuth } from "../hooks/useAuth";
-import cashflow from "../../../assets/cashflow.png"
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Key02Icon, Mail01Icon, ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import TextField from "../../../shared/ui/TextField";
+import cashflow from "../../../assets/cashflow.png"
+import { useAuth } from "../hooks/useAuth";
+import { register } from "../services/AuthService";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { user } = useAuth();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [errors, setErrors] = useState({
+    name: "",
     email: "",
     password: "",
   });
 
   useEffect(() => {
     if (user) {
-      navigate("/dashboard", { replace: true });
+      navigate("/dashboard", {
+        replace: true,
+      });
     }
   }, [user, navigate]);
 
@@ -36,18 +40,20 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      await login({
-        email,
-        password,
+      await register({ name, email, password });
+      
+      toast.success("Success", {
+        description: (`Hello, Welcome ${name} 👋`)
       });
 
       navigate("/dashboard", {
         replace: true,
       });
-    } catch (error) {
-      console.error(error);
-
-      toast.error("Login failed");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error", {
+        description: "Register failed!",
+      });
     } finally {
       setLoading(false);
     }
@@ -55,9 +61,14 @@ export default function LoginPage() {
 
   function validate() {
     const newErrors = {
+      name: "",
       email: "",
       password: "",
     };
+
+    if (!name.trim()) {
+      newErrors.name = "Full Name is required";
+    }
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
@@ -81,7 +92,22 @@ export default function LoginPage() {
         noValidate
         onSubmit={handleSubmit}
         className="w-full max-w-sm sm:max-w-lg rounded-xl bg-white p-8 shadow-lg space-y-4">
-        <h1 className="m-0 text-2xl font-bold text-center">Login</h1>
+        <h1 className="m-0 text-2xl font-bold text-center">Register</h1>
+
+        <TextField
+          label="Full Name"
+          type="text"
+          leftIcon={<UserIcon size={20} className={errors.name ? "text-red-400" : "text-slate-400"} />}
+          value={name}
+          placeholder="John Doe"
+          error={errors.name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setErrors((prev) => ({
+              ...prev,
+              name: "",
+            }));
+          }} />
 
         <TextField
           label="Email"
@@ -130,13 +156,13 @@ export default function LoginPage() {
             type="submit"
             disabled={loading}
             className="w-full bg-black text-sm font-semibold p-3 text-white hover:bg-black/80 rounded-xl disabled:opacity-50 cursor-pointer">
-            {loading ? "Loading..." : "Login"}
+            {loading ? "Loading..." : "Register"}
           </button>
-          <span className="text-sm text-slate-600">Doesn't have account ?
+          <span className="text-sm text-slate-600">Already have account ?
             <Link
-              to="/register"
+              to="/login"
               className="text-sm font-semibold text-blue-500 hover:text-blue-600 cursor-pointer pl-1">
-              Register Now
+              Login Now
             </Link>
           </span>
         </div>

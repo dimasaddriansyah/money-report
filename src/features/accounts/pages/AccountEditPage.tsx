@@ -57,7 +57,7 @@ export default function AccountEditPage() {
         <AccountLayout
           title="Form Edit Account"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Accounts", path: "/accounts" },
             { label: "Edit Account" },
           ]}

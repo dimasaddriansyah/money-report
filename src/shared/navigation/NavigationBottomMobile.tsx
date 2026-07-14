@@ -13,7 +13,7 @@ import {
 import BottomSheet from "../ui/BottomSheet";
 
 const menus = [
-  { path: "/", Icon: Home03Icon },
+  { path: "/dashboard", Icon: Home03Icon },
   { path: "/transactions", Icon: Invoice01Icon },
   { path: "/budgets", Icon: MoneySavingJarIcon },
   { path: "/settings", Icon: Settings02Icon },

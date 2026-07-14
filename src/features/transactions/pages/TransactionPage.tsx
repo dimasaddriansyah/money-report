@@ -24,7 +24,7 @@ export default function TransactionPage() {
       <div className="hidden md:block">
         <TransactionLayout
           title="List of Transaction"
-          breadcrumb={[{ label: "Dashboard", path: "/" }, { label: "Transactions" }]}
+          breadcrumb={[{ label: "Dashboard", path: "/dashboard" }, { label: "Transactions" }]}
           button={{ label: "Create Transaction", url: "/transaction/create" }}>
           <TransactionDesktop
             transactions={transactions}

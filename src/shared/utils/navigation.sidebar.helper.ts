@@ -25,8 +25,8 @@ export const NAV_MENUS_DESKTOP: NavItem[] = [
   {
     type: "menu",
     labelDesktop: "Dashboard",
-    path: "/",
-    matchPaths: ["/"],
+    path: "/dashboard",
+    matchPaths: ["/dashboard"],
     icon: FireIcon,
   },
 

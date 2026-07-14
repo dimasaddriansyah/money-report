@@ -10,7 +10,7 @@ import type { FormData } from "../utils/budget.form.helper";
 export default function BudgetCreatePage() {
   const navigate = useNavigate();
   const { createBudget, loading } = useBudgetActions();
-  const { accounts} = useAccounts();
+  const { accounts } = useAccounts();
 
   async function handleSubmit(data: FormData) {
     try {
@@ -35,7 +35,7 @@ export default function BudgetCreatePage() {
         <BudgetLayout
           title="Form Create Budget"
           breadcrumb={[
-            { label: "Dashboard", path: "/" },
+            { label: "Dashboard", path: "/dashboard" },
             { label: "Budgets", path: "/budgets" },
             { label: "Create Budget" },
           ]}

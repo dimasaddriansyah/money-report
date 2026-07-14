@@ -1,12 +1,12 @@
-import { collection, deleteDoc, doc, getDocs, setDoc} from "firebase/firestore";
-import { db } from "../../../shared/config/firebase";
+import { deleteDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import type { Transaction } from "../types/transaction";
+import { userCollection } from "../../../shared/utils/firestore.helper";
 
-const COLLECTION_NAME = "transactions";
+const transactionCollection = () => userCollection("transactions");
+const transactionDoc = (id: string) => doc(transactionCollection(), id);
 
-// GET TRANSACTIONS
 export async function getTransactions(): Promise<Transaction[]> {
-  const snapshot = await getDocs(collection(db, COLLECTION_NAME));
+  const snapshot = await getDocs(transactionCollection());
 
   return snapshot.docs.map((doc) => ({
     id: doc.id,
@@ -14,23 +14,16 @@ export async function getTransactions(): Promise<Transaction[]> {
   })) as Transaction[];
 }
 
-// CREATE TRANSACTION
-export async function createTransaction(
-  transaction: Transaction
-): Promise<void> {
+export async function createTransaction(transaction: Transaction): Promise<void> {
   const { id, ...data } = transaction;
-  await setDoc(doc(db, COLLECTION_NAME, id), data);
+  await setDoc(transactionDoc(id), data);
 }
 
-// UPDATE TRANSACTION
-export async function updateTransaction(
-  transaction: Transaction
-): Promise<void> {
+export async function updateTransaction(transaction: Transaction): Promise<void> {
   const { id, ...data } = transaction;
-  await setDoc(doc(db, COLLECTION_NAME, id), data);
+  await setDoc(transactionDoc(id), data);
 }
 
-// DELETE TRANSACTION
 export async function deleteTransaction(id: string): Promise<void> {
-  await deleteDoc(doc(db, COLLECTION_NAME, id));
+  await deleteDoc(transactionDoc(id));
 }

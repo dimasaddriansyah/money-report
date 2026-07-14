@@ -7,6 +7,7 @@ import {
 } from "../services/TransactionService";
 import { generateId } from "../../../shared/utils/generateId.helper";
 import type { FormData } from "../utils/transaction.form.helper";
+import { COLLECTIONS, ID_PREFIX } from "../../../shared/constants/firestore.constant";
 
 export function useTransactionActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
@@ -16,9 +17,9 @@ export function useTransactionActions(refetch?: () => Promise<void>) {
       setLoading(true);
 
       const id = await generateId({
-        collection: "transactions",
-        prefix: "TRX",
-        date: data.date,
+        collection: COLLECTIONS.TRANSACTIONS,
+        prefix: ID_PREFIX.TRANSACTION,
+        date: data.date
       });
 
       const now = new Date();

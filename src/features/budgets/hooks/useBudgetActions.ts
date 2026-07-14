@@ -7,6 +7,7 @@ import {
 } from "../services/BudgetService";
 import { generateId } from "../../../shared/utils/generateId.helper";
 import type { FormData } from "../utils/budget.form.helper";
+import { COLLECTIONS, ID_PREFIX } from "../../../shared/constants/firestore.constant";
 
 function buildBudgetTimestamp(date: string): Timestamp {
   const now = new Date();
@@ -24,8 +25,8 @@ export function useBudgetActions(refetch?: () => Promise<void>) {
       setLoading(true);
 
       const id = await generateId({
-        collection: "budgets",
-        prefix: "BUD",
+        collection: COLLECTIONS.BUDGETS,
+        prefix: ID_PREFIX.BUDGET,
       });
 
       await createBudgetService({

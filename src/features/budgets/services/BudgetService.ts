@@ -1,11 +1,12 @@
-import { collection, deleteDoc, doc, getDocs, setDoc } from "firebase/firestore";
-import { db } from "../../../shared/config/firebase";
+import { deleteDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import type { Budget } from "../types/budget";
+import { userCollection } from "../../../shared/utils/firestore.helper";
 
-const COLLECTION_NAME = "budgets";
+const budgetCollection = () => userCollection("budgets");
+const budgetDoc = (id: string) => doc(budgetCollection(), id);
 
 export async function getBudgets(): Promise<Budget[]> {
-  const snapshot = await getDocs(collection(db, COLLECTION_NAME));
+  const snapshot = await getDocs(budgetCollection());
 
   return snapshot.docs.map((doc) => ({
     id: doc.id,
@@ -15,8 +16,7 @@ export async function getBudgets(): Promise<Budget[]> {
 
 async function saveBudget(budget: Budget): Promise<void> {
   const { id, ...data } = budget;
-
-  await setDoc(doc(db, COLLECTION_NAME, id), data);
+  await setDoc(budgetDoc(id), data);
 }
 
 export async function createBudget(budget: Budget): Promise<void> {
@@ -28,5 +28,5 @@ export async function updateBudget(budget: Budget): Promise<void> {
 }
 
 export async function deleteBudget(id: string): Promise<void> {
-  await deleteDoc(doc(db, COLLECTION_NAME, id));
+  await deleteDoc(budgetDoc(id));
 }

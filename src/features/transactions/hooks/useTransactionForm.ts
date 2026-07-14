@@ -16,23 +16,17 @@ type FormState = {
 function getInitialForm(defaultValues?: Transaction): FormState {
   return {
     typeId: defaultValues?.typeId || "TP002",
-
     date:
       normalizeDate(defaultValues?.date) ||
       normalizeDate(new Date()),
-
     fromAccountId:
       defaultValues?.fromAccountId || "",
-
     toAccountId:
       defaultValues?.toAccountId || "",
-
     categoryId:
       defaultValues?.categoryId || "",
-
     remark:
       defaultValues?.remark || "",
-
     amount:
       defaultValues?.amount || 0,
   };
@@ -40,11 +34,9 @@ function getInitialForm(defaultValues?: Transaction): FormState {
 
 
 export function useTransactionForm(defaultValues?: Transaction) {
-
   const [form, setForm] = useState<FormState>(() =>
     getInitialForm(defaultValues)
   );
-
 
   function setField<K extends keyof FormState>(
     key: K,
@@ -56,72 +48,41 @@ export function useTransactionForm(defaultValues?: Transaction) {
     }));
   }
 
-
   function getPayload(): FormData {
-
     return {
       id: defaultValues?.id,
-
       date: form.date,
-
       typeId: form.typeId,
-
-
       categoryId:
-        form.typeId === "TP001" ||
-        form.typeId === "TP002"
-          ? form.categoryId || undefined
-          : undefined,
-
-
+        form.typeId === "TP001" || form.typeId === "TP002"
+          ? form.categoryId || null
+          : null,
       fromAccountId:
-        form.typeId === "TP002" ||
-        form.typeId === "TP003"
-          ? form.fromAccountId || undefined
-          : undefined,
-
-
+        form.typeId === "TP002" || form.typeId === "TP003"
+          ? form.fromAccountId || null
+          : null,
       toAccountId:
-        form.typeId === "TP001" ||
-        form.typeId === "TP003"
-          ? form.toAccountId || undefined
-          : undefined,
-
-
+        form.typeId === "TP001" || form.typeId === "TP003"
+          ? form.toAccountId || null
+          : null,
       amount: form.amount,
-
-      remark: form.remark,
+      remark: form.remark
     };
   }
 
-
   function handleTypeChange(newType: string) {
-
     setForm((prev) => ({
       ...prev,
-
       typeId: newType,
-
-      // reset account ketika tipe berubah
       fromAccountId: "",
-
       toAccountId: "",
-
-      // reset category
       categoryId: "",
     }));
-
   }
-
 
   function reset() {
-
-    setForm(
-      getInitialForm(defaultValues)
-    );
-
+    setForm(getInitialForm(defaultValues))
   }
-
 
   return {
     form,

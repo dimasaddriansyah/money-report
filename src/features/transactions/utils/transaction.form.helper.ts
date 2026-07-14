@@ -1,5 +1,5 @@
 export interface FormData {
-  id: string;
+  id?: string;
   date: string;
   typeId: string;
   categoryId: string | null;

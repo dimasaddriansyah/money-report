@@ -20,7 +20,7 @@ type Props = {
   transactions: Transaction[];
   accounts: Account[];
   categories: Category[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 }
 
 export default function DashboardDesktop({ transactions, accounts, categories, refetch }: Props) {

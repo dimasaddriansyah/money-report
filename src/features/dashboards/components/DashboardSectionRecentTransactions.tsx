@@ -21,7 +21,7 @@ export default function DashboardSectionRecentTransactions({
     transactions: Transaction[];
     accounts: Account[];
     categories: Category[];
-    refetch: () => void;
+    refetch: () => Promise<void>;
   }) {
   const navigate = useNavigate();
   const { hideBalance } = useBalance();

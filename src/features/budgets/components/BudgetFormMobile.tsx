@@ -9,18 +9,12 @@ import BottomSheet from "../../../shared/ui/BottomSheet";
 import { useBudgetActions } from "../hooks/useBudgetActions";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import type { FormData } from "../utils/budget.form.helper";
 
 type Props = {
   defaultValues?: Budget;
   accounts: Account[];
-  onSubmit: (
-    data: {
-      id?: string;
-      date: string;
-      accountId?: string;
-      remark: string;
-      amount: number;
-    }) => void;
+  onSubmit: (data: FormData) => void;
   loading?: boolean;
 };
 

@@ -16,12 +16,13 @@ import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import DashboardSectionLayoutCategoryExpense from "./DashboardSectionLayoutCategoryExpense";
 import { useDashboardFilter } from "../hooks/useDashboardFilter";
+import type { Period } from "../utils/period.helper";
 
 type Props = {
   transactions: Transaction[];
   accounts: Account[];
   categories: Category[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 }
 
 export default function DashboardMobile({ transactions, accounts, categories, refetch }: Props) {
@@ -55,13 +56,17 @@ export default function DashboardMobile({ transactions, accounts, categories, re
 
   const { summary, accountsWithBalance } = useDashboardData({ transactions, accounts, categories, refetch });
 
-  const periods = [
-    { label: "Year", value: "year" },
-    { label: "Month", value: "month" },
-    { label: "Week", value: "week" },
-    { label: "Yesterday", value: "yesterday" },
-    { label: "Today", value: "today" },
-  ];
+  const periods: {
+    label: string;
+    value: Period;
+  }[] = [
+      { label: "Year", value: "year" },
+      { label: "Month", value: "month" },
+      { label: "Week", value: "week" },
+      { label: "Yesterday", value: "yesterday" },
+      { label: "Today", value: "today" },
+    ];
+
   const [openFilter, setOpenFilter] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 

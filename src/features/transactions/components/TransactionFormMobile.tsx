@@ -8,21 +8,12 @@ import { getAccountFields, TYPE_OPTIONS } from "../utils/ui.helpers";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
 import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
 import { useLocation } from "react-router-dom";
-
+import type { FormData } from "../utils/transaction.form.helper";
 type Props = {
   defaultValues?: Transaction;
   accounts: Account[];
   categories: Category[];
-  onSubmit: (data: {
-    id?: string;
-    date: string;
-    typeId: string;
-    categoryId?: string;
-    fromAccountId?: string;
-    toAccountId?: string;
-    remark: string;
-    amount: number;
-  }) => void;
+  onSubmit: (data: FormData) => void;
   loading?: boolean;
   prefill?: {
     typeId?: string;

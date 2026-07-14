@@ -1,14 +1,7 @@
 import { useMemo, useState } from "react";
 import type { Transaction } from "../../transactions/types/transaction";
-import { isDateInPeriod } from "../utils/period.helper";
+import { isDateInPeriod, type Period } from "../utils/period.helper";
 import { toDate } from "../../../shared/utils/format.helper";
-
-export type Period =
-  | "year"
-  | "month"
-  | "week"
-  | "yesterday"
-  | "today";
 
 type Props = {
   transactions: Transaction[];

@@ -7,6 +7,7 @@ import {
 } from "../services/CategoryService";
 import { generateId } from "../../../shared/utils/generateId.helper";
 import type { FormData } from "../utils/category.form.helper";
+import { COLLECTIONS, ID_PREFIX } from "../../../shared/constants/firestore.constant";
 
 export function useCategoryActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
@@ -16,8 +17,8 @@ export function useCategoryActions(refetch?: () => Promise<void>) {
       setLoading(true);
 
       const id = await generateId({
-        collection: "categories",
-        prefix: "CAT",
+        collection: COLLECTIONS.CATEGORIES,
+        prefix: ID_PREFIX.CATEGORY,
       });
 
       await createCategoryService({

@@ -1,11 +1,12 @@
-import { collection, deleteDoc, doc, getDocs, setDoc, Timestamp, updateDoc } from "firebase/firestore";
-import { db } from "../../../shared/config/firebase";
+import { deleteDoc, doc, getDocs, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { userCollection } from "../../../shared/utils/firestore.helper";
 import type { Category } from "../types/category";
 
-const COLLECTION_NAME = "categories";
+const categoryCollection = () => userCollection("categories");
+const categoryDoc = (id: string) => doc(categoryCollection(), id);
 
 export async function getCategories(): Promise<Category[]> {
-  const snapshot = await getDocs(collection(db, COLLECTION_NAME));
+  const snapshot = await getDocs(categoryCollection());
 
   return snapshot.docs.map((doc) => ({
     id: doc.id,
@@ -13,18 +14,23 @@ export async function getCategories(): Promise<Category[]> {
   })) as Category[];
 }
 
-export async function createCategory(account: Category): Promise<void> {
-  const { id, ...data } = account;
-  await setDoc(doc(db, COLLECTION_NAME, id), data);
+export async function createCategory(category: Category): Promise<void> {
+  const { id, ...data } = category;
+  await setDoc(categoryDoc(id), data);
 }
 
-export async function updateCategory(data: { id: string; name: string }) {
-  await updateDoc(doc(db, COLLECTION_NAME, data.id), {
-    name: data.name,
+export async function updateCategory(data: {
+  id: string;
+  name: string;
+}) {
+  const { id, ...payload } = data;
+
+  await updateDoc(categoryDoc(id), {
+    ...payload,
     updatedAt: Timestamp.now(),
   });
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-  await deleteDoc(doc(db, COLLECTION_NAME, id));
+  await deleteDoc(categoryDoc(id));
 }

@@ -20,6 +20,7 @@ type Props = {
   transactions: Transaction[];
   accounts: Account[];
   categories: Category[];
+  loading: boolean;
   refetch: () => Promise<void>;
 }
 
@@ -157,7 +158,7 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
                       className={`flex items-center gap-4 px-4 py-3 text-sm border-b border-slate-50 cursor-pointer ${isSelected
                         ? "bg-slate-100 font-medium"
                         : "text-slate-400 hover:bg-slate-50"}`}>
-                      <img src={getAccountsImg(acc.name)} className="w-6 h-6" />
+                      <img src={getAccountsImg(acc.name)} className="w-6 h-6 object-contain" />
                       <span>{acc.name}</span>
                     </div>
                   );
@@ -210,7 +211,7 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
                       className={`flex items-center gap-4 px-4 py-3 text-sm border-b border-slate-50 cursor-pointer ${isSelected
                         ? "bg-slate-100 font-medium"
                         : "text-slate-400 hover:bg-slate-50"}`}>
-                      <img src={getCategoriesImg(cat.name)} className="w-6 h-6" />
+                      <img src={getCategoriesImg(cat.name)} className="w-6 h-6 object-contain" />
                       <span>{cat.name}</span>
                     </div>
                   );

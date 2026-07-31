@@ -78,7 +78,7 @@ export function DashboardComponentListCategoryExpense({ data }: Props) {
             </div>
 
             <div className="text-right">
-              <p className="text-sm font-semibold">
+              <p className="text-sm font-semibold tabular-nums">
                 {formatBalance(formatCurrency(item.total), hideBalance)}
               </p>
               <p className="text-xs text-slate-400">
@@ -147,7 +147,7 @@ export function DashboardComponentListCategoryExpense({ data }: Props) {
                     </div>
 
                     <div className="text-right">
-                      <p className="text-sm font-semibold">
+                      <p className="text-sm font-semibold tabular-nums">
                         {formatBalance(
                           formatCurrency(item.total),
                           hideBalance
@@ -203,7 +203,7 @@ export function DashboardComponentListCategoryExpense({ data }: Props) {
                       </div>
 
                       <div className="text-right">
-                        <p className="text-sm font-semibold">
+                        <p className="text-sm font-semibold tabular-nums">
                           {formatBalance(
                             formatCurrency(item.total),
                             hideBalance

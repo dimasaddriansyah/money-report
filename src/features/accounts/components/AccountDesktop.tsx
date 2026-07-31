@@ -14,6 +14,7 @@ import { getAccountsImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   accounts: Account[];
+  loading: boolean;
   refetch: () => Promise<void>;
 };
 

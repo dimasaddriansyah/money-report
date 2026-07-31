@@ -17,7 +17,7 @@ export default function TransactionComponentFilterAccount({ accounts, selectedAc
             ? "bg-slate-100 text-black font-semibold"
             : "hover:bg-slate-50 text-black"
           }`}>
-        <img src={getAccountsImg("default")} className="w-5 h-5" />
+        <img src={getAccountsImg("default")} className="w-5 h-5 object-contain" />
         <span className="text-sm">All Account</span>
       </div>
 
@@ -34,7 +34,7 @@ export default function TransactionComponentFilterAccount({ accounts, selectedAc
                 : "hover:bg-slate-50 text-black"
               }`}
           >
-            <img src={getAccountsImg(row.name)} className="w-5 h-5" />
+            <img src={getAccountsImg(row.name)} className="w-5 h-5 object-contain" />
             <span className="text-sm">{row.name}</span>
           </div>
         );

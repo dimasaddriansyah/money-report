@@ -28,7 +28,7 @@ export default function ComponentListBudgetDetail({
         <div
           key={item.id}
           className="p-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl space-y-4 cursor-pointer">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <img src={getAccountsImg(item.accountName)} alt={item.accountName} className="w-10 h-10 object-contain" />
               <div className="flex flex-col">
@@ -46,26 +46,26 @@ export default function ComponentListBudgetDetail({
 
           <div className="my-3 h-px bg-slate-100" />
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Budget</span>
-              <span>{formatBalance(formatCurrency(item.amount), hideBalance)}</span>
+              <span className="tabular-nums">{formatBalance(formatCurrency(item.amount), hideBalance)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Spent</span>
-              <span className="text-red-500">{formatBalance(formatCurrency(item.spent), hideBalance)}</span>
+              <span className="font-medium text-red-500 tabular-nums">{formatBalance(formatCurrency(item.spent), hideBalance)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Remaining</span>
-              <span>{formatBalance(formatCurrency(item.remaining), hideBalance)}</span>
+              <span className="tabular-nums">{formatBalance(formatCurrency(item.remaining), hideBalance)}</span>
             </div>
           </div>
 
-          <div className="relative h-5 overflow-hidden rounded-full bg-slate-100">
-            <div className={`absolute left-0 top-0 h-full ${item.isOverBudget ? "bg-red-300" : "bg-green-300"}`}
+          <div className="relative overflow-hidden rounded-full bg-slate-100">
+            <div className={`py-1.5 ${item.isOverBudget ? "bg-red-500" : "bg-green-500"}`}
               style={{ width: `${item.progress}%` }} />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-xs font-semibold text-black">
+              <span className={`text-[10px] font-semibold ${item.progress > 55 ? "text-white" :"text-black"}`}>
                 {item.progress.toFixed(0)}%
               </span>
             </div>

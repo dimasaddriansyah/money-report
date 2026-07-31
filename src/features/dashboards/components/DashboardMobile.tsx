@@ -17,15 +17,17 @@ import type { Category } from "../../categories/types/category";
 import DashboardSectionLayoutCategoryExpense from "./DashboardSectionLayoutCategoryExpense";
 import { useDashboardFilter } from "../hooks/useDashboardFilter";
 import type { Period } from "../utils/period.helper";
+import DashboardMobileSkeleton from "./DashboardMobileSkeleton";
 
 type Props = {
   transactions: Transaction[];
   accounts: Account[];
   categories: Category[];
+  loading: boolean;
   refetch: () => Promise<void>;
 }
 
-export default function DashboardMobile({ transactions, accounts, categories, refetch }: Props) {
+export default function DashboardMobile({ transactions, accounts, categories, loading, refetch }: Props) {
   const navigate = useNavigate();
   const { hideBalance, setHideBalance } = useBalance();
 
@@ -84,7 +86,7 @@ export default function DashboardMobile({ transactions, accounts, categories, re
     return () => { document.removeEventListener("mousedown", handleClickOutside) }
   }, []);
 
-  const { deleteTransaction, loading } = useTransactionActions(refetch);
+  const { deleteTransaction, loading: deleting } = useTransactionActions(refetch);
   async function handleDelete() {
     if (!selectedTransaction) return;
     try {
@@ -105,20 +107,23 @@ export default function DashboardMobile({ transactions, accounts, categories, re
     }
   }
 
+  if (loading) {
+    return <DashboardMobileSkeleton />;
+  }
+
   return (
     <>
       {isEmpty ? (
         <EmptyState
           title="No transactions"
-          subtitle="No recent transactions"
-        />
+          subtitle="No recent transactions" />
       ) : (
         <>
           <div className="px-4 py-10 bg-slate-50">
             <div className="flex flex-col">
               <span className="text-sm text-slate-500">Total Balance</span>
               <div className="flex items-center gap-4">
-                <span className="text-2xl text-black font-semibold">{formatBalance(formatCurrency(summary.balance), hideBalance)}</span>
+                <span className="text-2xl text-black font-semibold tabular-nums">{formatBalance(formatCurrency(summary.balance), hideBalance)}</span>
                 {hideBalance !== undefined && setHideBalance && (
                   hideBalance ? (
                     <ViewIcon
@@ -184,15 +189,13 @@ export default function DashboardMobile({ transactions, accounts, categories, re
               setActiveSwipeId={setActiveSwipeId}
               navigate={navigate}
               setSelectedTransaction={setSelectedTransaction}
-              setOpen={setOpen}
-            />
+              setOpen={setOpen} />
           ))}
 
           <div className="p-4">
             <button
               onClick={() => navigate("/transactions")}
-              className="w-full py-2 rounded-xl border border-slate-300 text-sm font-medium hover:bg-slate-50 cursor-pointer"
-            >
+              className="w-full py-2 rounded-xl border border-slate-300 text-sm font-medium hover:bg-slate-50 cursor-pointer">
               View all transactions
             </button>
           </div>
@@ -209,11 +212,11 @@ export default function DashboardMobile({ transactions, accounts, categories, re
               <div className="flex gap-2">
                 <button
                   onClick={handleDelete}
-                  disabled={loading}
+                  disabled={deleting}
                   className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-sm text-white font-semibold disabled:opacity-50 cursor-pointer">
                   <div className="flex items-center justify-center gap-2">
                     <Delete02Icon size={16} />
-                    {loading ? "Deleting..." : "Delete Budget"}
+                    {deleting ? "Deleting..." : "Delete Budget"}
                   </div>
                 </button>
               </div>

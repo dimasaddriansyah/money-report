@@ -18,11 +18,13 @@ import { useTransactionInfinite } from "../../hooks/useTransactionInfinite";
 import TransactionDeleteSheet from "./TransactionDeleteSheet";
 import { useTransactionMobileFilter } from "../../hooks/useTransactionMobileFilter";
 import { createLookup } from "../../../../shared/utils/lookup.helper";
+import TransactionMobileSkeleton from "./TransactionMobileSkeleton";
 
 type Props = {
   transactions: Transaction[];
   accounts: Account[];
   categories: Category[];
+  loading: boolean;
   refetch: () => Promise<void>;
 }
 
@@ -30,6 +32,7 @@ export default function TransactionMobile({
   transactions,
   accounts,
   categories,
+  loading,
   refetch
 }: Props) {
   const navigate = useNavigate();
@@ -64,7 +67,7 @@ export default function TransactionMobile({
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [activeSwipeId, setActiveSwipeId] = useState<string | null>(null);
 
-  const { deleteTransaction, loading } = useTransactionActions(refetch);
+  const { deleteTransaction, loading: deleting } = useTransactionActions(refetch);
   async function handleDelete() {
     if (!selectedTransaction) return;
     try {
@@ -83,6 +86,10 @@ export default function TransactionMobile({
         description: message,
       });
     }
+  }
+
+  if (loading) {
+    return <TransactionMobileSkeleton />;
   }
 
   return (
@@ -132,7 +139,7 @@ export default function TransactionMobile({
       </div>
       <TransactionDeleteSheet
         open={open}
-        loading={loading}
+        loading={deleting}
         transaction={selectedTransaction}
         onDelete={handleDelete}
         onClose={() => {

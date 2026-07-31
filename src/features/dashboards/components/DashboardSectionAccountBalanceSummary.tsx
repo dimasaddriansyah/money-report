@@ -39,9 +39,9 @@ export default function DashboardSectionAccountBalanceSummary({ accounts, autoSc
           <SwiperSlide key={row.id} className="w-auto!">
             <div className="min-w-60 p-4 bg-white hover:bg-slate-100 rounded-lg border border-slate-100 cursor-pointer">
               <div className="flex items-center gap-4">
-                <img src={getAccountsImg(row.name)} alt={row.name} className="w-8 h-8" />
+                <img src={getAccountsImg(row.name)} alt={row.name} className="w-8 h-8 object-contain" />
                 <div className="flex flex-col text-sm">
-                  <span className="font-medium">
+                  <span className="font-medium tabular-nums">
                     {formatBalance(formatCurrency(row.balance), hideBalance)}
                   </span>
                   <span className="text-slate-400">{row.name}</span>

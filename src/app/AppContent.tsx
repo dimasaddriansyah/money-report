@@ -10,11 +10,7 @@ import RegisterPage from "../features/auth/pages/RegisterPage";
 export default function AppContent() {
   return (
     <Suspense
-      fallback={
-        <div className="p-6 text-sm text-slate-400">
-          Loading...
-        </div>
-      }>
+      fallback={null}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

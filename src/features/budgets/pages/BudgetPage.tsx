@@ -10,26 +10,25 @@ export default function BudgetPage() {
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] gap-2">
-        <div className="w-6 h-6 rounded-full border-[2.5px] border-slate-200 border-t-slate-900 animate-spin" />
-        <span className="text-sm text-slate-400">Loading budgets...</span>
-      </div>
-    )
-  }
-
   return (
     <>
       <div className="hidden md:block">
         <section className="flex flex-col flex-1 px-6 py-8 gap-6 overflow-y-auto">
           <Breadcrumb items={[{ label: "Dashboard", path: "/dashboard" }, { label: "Budgets" }]} />
-          <BudgetDesktop budgets={budgets} accounts={accounts} transactions={transactions} refetch={refetch} />
+          <BudgetDesktop budgets={budgets}
+            accounts={accounts}
+            transactions={transactions}
+            refetch={refetch}
+            loading={loading} />
         </section>
       </div>
 
       <div className="md:hidden">
-        <BudgetMobile budgets={budgets} accounts={accounts} transactions={transactions} refetch={refetch} />
+        <BudgetMobile budgets={budgets}
+          accounts={accounts}
+          transactions={transactions}
+          refetch={refetch}
+          loading={loading} />
       </div>
     </>
   );

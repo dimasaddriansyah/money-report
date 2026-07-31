@@ -9,15 +9,6 @@ export default function DashboardPage() {
   const { accounts } = useAccounts();
   const { categories } = useCategories();
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] gap-2">
-        <div className="w-6 h-6 rounded-full border-[2.5px] border-slate-200 border-t-slate-900 animate-spin" />
-        <span className="text-sm text-slate-400">Loading transaction...</span>
-      </div>
-    );
-  }
-
   return (
     <>
       <div className="hidden md:block">
@@ -25,7 +16,8 @@ export default function DashboardPage() {
           transactions={transactions}
           accounts={accounts}
           categories={categories}
-          refetch={refetch} />
+          refetch={refetch}
+          loading={loading} />
       </div>
 
       <div className="md:hidden">
@@ -33,7 +25,8 @@ export default function DashboardPage() {
           transactions={transactions}
           accounts={accounts}
           categories={categories}
-          refetch={refetch} />
+          refetch={refetch}
+          loading={loading} />
       </div>
     </>
   );

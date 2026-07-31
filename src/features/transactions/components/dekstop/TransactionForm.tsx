@@ -181,7 +181,7 @@ export default function TransactionForm({
                               ? "bg-slate-50 text-black font-medium"
                               : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
                             }`}>
-                          <img src={getAccountsImg(acc.name)} alt={acc.name} className="w-8 h-8" />
+                          <img src={getAccountsImg(acc.name)} alt={acc.name} className="w-8 h-8 object-contain" />
                           <span>{acc.name}</span>
                         </div>
                       ))}
@@ -218,7 +218,7 @@ export default function TransactionForm({
                             ? "bg-slate-50 text-black font-medium"
                             : "text-slate-400 hover:bg-slate-50 hover:text-black hover:font-medium"
                           }`}>
-                        <img src={getCategoriesImg(row.name)} alt={row.name} className="w-8 h-8" />
+                        <img src={getCategoriesImg(row.name)} alt={row.name} className="w-8 h-8 object-contain" />
                         <span>{row.name}</span>
                       </div>
                     ))}

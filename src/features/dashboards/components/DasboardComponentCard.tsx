@@ -21,7 +21,7 @@ export default function DashboardComponentCard({ title, amount, icon, colorIcon,
         <Icon size={24} className={colorIcon}/>
       </div>
       <div className="flex flex-col">
-        <span className="text-lg text-black font-black">
+        <span className="text-lg text-black font-black tabular-nums">
           {formatBalance(isCurrency ? formatCurrency(amount) : String(amount), hideBalance)}
         </span>
         <span className="text-sm text-slate-400">{title}</span>

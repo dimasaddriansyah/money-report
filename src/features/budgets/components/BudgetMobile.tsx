@@ -14,11 +14,13 @@ import ComponentListBudgetDetail from "./ComponentListBudgetDetail";
 import type { Transaction } from "../../transactions/types/transaction";
 import BottomSheetEditBudget from "./BottomSheetEditBudget";
 import BudgetCreateButton from "./BudgetCreateButton";
+import BudgetMobileSkeleton from "./BudgetMobileSkeleton";
 
 type Props = {
   budgets: Budget[];
   accounts: Account[];
   transactions: Transaction[];
+  loading: boolean;
   refetch: () => Promise<void>;
 };
 
@@ -50,6 +52,10 @@ export default function BudgetMobile(props: Props) {
     budgetEdit.reset();
     setSelectedBudget(null);
     setOpenEditBudget(false);
+  }
+
+  if (props.loading) {
+    return <BudgetMobileSkeleton />;
   }
 
   return (

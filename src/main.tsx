@@ -8,6 +8,8 @@ import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
 import { AuthProvider } from './features/auth/context/AuthContext';
 
+import "react-loading-skeleton/dist/skeleton.css";
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <AuthProvider>
     <React.StrictMode>

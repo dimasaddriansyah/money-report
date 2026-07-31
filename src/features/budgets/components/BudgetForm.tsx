@@ -168,7 +168,7 @@ export default function BudgetForm({
                           ${accountId === acc.id
                               ? "bg-slate-50 text-black font-medium"
                               : "text-slate-400 hover:bg-slate-50 hover:text-black"}`}>
-                          <img src={getAccountsImg(acc.name)} alt={acc.name} className="w-8 h-8" />
+                          <img src={getAccountsImg(acc.name)} alt={acc.name} className="w-8 h-8 object-contain" />
                           <span>{acc.name}</span>
                         </div>
                       ))}

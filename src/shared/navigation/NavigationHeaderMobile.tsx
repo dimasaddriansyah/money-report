@@ -30,7 +30,7 @@ export default function NavigationHeaderMobile({
         )}
       </div>
 
-      <span className="font-medium">{title}</span>
+      <span className="font-semibold">{title}</span>
 
       <div>
         {rightIcon ? (

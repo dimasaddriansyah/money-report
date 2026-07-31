@@ -43,16 +43,16 @@ export default function ComponentBudgetTransferModal({
             key={item.accountId}
             className="flex items-center justify-between px-4 py-3 text-sm border-b border-slate-50 hover:bg-slate-50">
             <div className="flex items-center gap-4">
-              <img src={getAccountsImg(item.accountName)} alt={item.accountName} className="w-8 h-8" />
+              <img src={getAccountsImg(item.accountName)} alt={item.accountName} className="w-8 h-8 object-contain" />
               <span className="text-slate-500">{item.accountName}</span>
             </div>
-            <span className="font-medium text-slate-500">{formatBalance(formatCurrency(item.total), hideBalance)}</span>
+            <span className="font-medium text-slate-500 tabular-nums">{formatBalance(formatCurrency(item.total), hideBalance)}</span>
           </div>
         ))}
 
         <div className="flex justify-between bg-slate-50 p-4 text-sm font-semibold">
           <span>Total</span>
-          <span>{formatBalance(formatCurrency(budget.total), hideBalance)}</span>
+          <span className="tabular-nums">{formatBalance(formatCurrency(budget.total), hideBalance)}</span>
         </div>
       </div>
     </Modal>

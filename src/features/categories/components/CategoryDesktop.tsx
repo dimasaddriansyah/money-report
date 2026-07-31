@@ -14,6 +14,7 @@ import { getCategoriesImg } from "../../../shared/utils/style.helper";
 
 type Props = {
   categories: Category[];
+  loading: boolean;
   refetch: () => Promise<void>;
 };
 

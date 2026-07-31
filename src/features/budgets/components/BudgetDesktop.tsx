@@ -23,6 +23,7 @@ type Props = {
   budgets: Budget[];
   accounts: Account[];
   transactions: Transaction[];
+  loading: boolean;
   refetch: () => Promise<void>;
 };
 
@@ -208,7 +209,7 @@ export default function BudgetDesktop({
               <div className="flex items-center justify-between p-4 border-b border-slate-100">
                 <div className="flex flex-col">
                   <span className="text-sm text-slate-400">Budget This Month</span>
-                  <span className="text-base font-semibold text-black">{formatBalance(
+                  <span className="text-base font-semibold text-black tabular-nums">{formatBalance(
                     budgetPrimary ? formatCurrency(budgetPrimary.amount) : "-",
                     hideBalance)}
                   </span>
@@ -277,7 +278,7 @@ export default function BudgetDesktop({
                   <span className="text-sm font-semibold">Budget Allocation</span>
                   <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{isOverBudget ? "Over Budget!" : "Safe Budget"}</span>
                 </div>
-                <span className={`text-sm font-semibold ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{formatBalance(formatCurrency(totalAllocation), hideBalance)}</span>
+                <span className={`text-sm font-semibold tabular-nums ${isOverBudget ? "text-red-500" : "text-green-500"}`}>{formatBalance(formatCurrency(totalAllocation), hideBalance)}</span>
               </div>
             </div >
           </div>
@@ -297,10 +298,10 @@ export default function BudgetDesktop({
                       onClick={() => handleOpenTransferModal(budget)}
                       className="flex items-center justify-between p-4 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
                       <div className="flex items-center gap-4">
-                        <img src={getAccountsImg(budget.accountName)} alt={budget.accountName} className="w-8 h-8" />
+                        <img src={getAccountsImg(budget.accountName)} alt={budget.accountName} className="w-8 h-8 object-contain" />
                         <span className="text-sm text-slate-600">{budget.accountName}</span>
                       </div>
-                      <span className="text-sm text-black font-medium">{formatBalance(formatCurrency(budget.total), hideBalance)}</span>
+                      <span className="text-sm text-black font-medium tabular-nums">{formatBalance(formatCurrency(budget.total), hideBalance)}</span>
                     </div>
                   )
                 })}
@@ -358,20 +359,20 @@ export default function BudgetDesktop({
                     <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-xs text-slate-500">Budgeting</span>
-                        <span className="text-xs text-slate-500">{formatBalance(formatCurrency(item.amount), hideBalance)}
+                        <span className="text-xs text-slate-500 tabular-nums">{formatBalance(formatCurrency(item.amount), hideBalance)}
                         </span>
                       </div>
 
                       <div className="flex justify-between">
                         <span className="text-xs text-slate-500">Spending</span>
-                        <span className={`text-xs ${isOverBudget ? "text-red-500 font-semibold" : "text-slate-500"}`}>
+                        <span className={`text-xs tabular-nums ${isOverBudget ? "text-red-500 font-semibold" : "text-slate-500"}`}>
                           {formatBalance(formatCurrency(displaySpending), hideBalance)}
                         </span>
                       </div>
 
                       <div className="flex justify-between">
                         <span className="text-xs text-slate-500">Saving</span>
-                        <span className={`text-xs ${saving < 0 ? "text-red-500 font-semibold" : "text-slate-500"}`}>
+                        <span className={`text-xs tabular-nums ${saving < 0 ? "text-red-500 font-semibold" : "text-slate-500"}`}>
                           {formatBalance(formatCurrency(saving), hideBalance)}
                         </span>
                       </div>

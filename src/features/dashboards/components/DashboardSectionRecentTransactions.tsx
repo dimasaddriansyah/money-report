@@ -113,7 +113,7 @@ export default function DashboardSectionRecentTransactions({
                       <div className="flex items-center gap-1">
                         {getAccountDisplay(row, accountMap).map((name, index, arr) => (
                           <span key={index} className="flex items-center gap-2">
-                            <img src={getAccountsImg(name)} alt={name} className="w-8 h-8" />
+                            <img src={getAccountsImg(name)} alt={name} className="w-8 h-8 object-contain" />
                             <span className="font-medium">{name}</span>
                             {index < arr.length - 1 && (
                               <span className="text-slate-400 px-1.5">→</span>
@@ -123,7 +123,7 @@ export default function DashboardSectionRecentTransactions({
                       </div>
                     </td>
                     <td className="flex items-center gap-3">
-                      <img src={getCategoriesImg(categoryName)} alt={categoryName} className="w-8 h-8" />
+                      <img src={getCategoriesImg(categoryName)} alt={categoryName} className="w-8 h-8 object-contain" />
                       <div className="flex flex-col">
                         <span className="text-black font-medium">{row.remark || "-"}</span>
                         <span className="text-slate-400">{categoryName}</span>

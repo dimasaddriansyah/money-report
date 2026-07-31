@@ -67,7 +67,7 @@ export default function TransactionTable({
                           key={`${row.id}-${name}-${index}`}
                           className="flex items-center gap-1.5">
                           {index > 0 && (<span className="text-slate-400">→</span>)}
-                          <img src={getAccountsImg(name)} alt={name} className="w-8 h-8" />
+                          <img src={getAccountsImg(name)} alt={name} className="w-8 h-8 object-contain" />
                           <span className="font-medium">{name}</span>
                         </div>
                       )
@@ -77,7 +77,7 @@ export default function TransactionTable({
 
                 <td>
                   <div className="flex items-center gap-3.5">
-                    <img src={getCategoriesImg(categoryName)} alt={categoryName} className="w-8 h-8" />
+                    <img src={getCategoriesImg(categoryName)} alt={categoryName} className="w-8 h-8 object-contain" />
                     <div className="flex flex-col">
                       <span className="font-medium text-black">{row.remark || "-"}</span>
                       <span className="text-slate-400">{categoryName}</span>

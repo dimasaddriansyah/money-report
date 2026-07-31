@@ -51,7 +51,7 @@ export default function ComponentTransactionItem({
                 {getAccountDisplay(row, accountMap).map((name: string, i: number, arr: string[]) => (
                   <span key={i} className="flex items-center">
                     <span className={`flex items-center px-2 py-1 gap-2 rounded-full ${getAccountStyle(name)}`}>
-                      <img src={getAccountsImg(name)} className="w-4 h-4" />
+                      <img src={getAccountsImg(name)} className="w-4 h-4 object-contain" />
                       <span className="text-xs">{name}</span>
                     </span>
                     {i < arr.length - 1 && <ArrowRight01Icon size={14} />}

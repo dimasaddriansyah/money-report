@@ -111,7 +111,7 @@ export default function BudgetFormMobile({
                     ${active
                       ? "bg-black/90 text-white font-medium"
                       : "bg-white border border-slate-100 text-slate-500 hover:bg-slate-50"}`}>
-                  <img src={getAccountsImg(acc.name)} alt={acc.name} className="w-8 h-8" />
+                  <img src={getAccountsImg(acc.name)} alt={acc.name} className="w-8 h-8 object-contain" />
                   <span className="text-xs text-center leading-4">{acc.name}</span>
                 </button>
               )

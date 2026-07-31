@@ -1,11 +1,16 @@
-import { ArrowRight01Icon, CreditCardIcon, FileExportIcon, LicenseIcon, Male02Icon, Xls01Icon } from "hugeicons-react";
+import { ArrowRight01Icon, CreditCardIcon, FileExportIcon, LicenseIcon, Logout02Icon, Male02Icon, Xls01Icon } from "hugeicons-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomSheet from "../shared/ui/BottomSheet";
 import { ExportSpreedsheet } from "../shared/utils/export.helper";
 import { getGreeting } from "../shared/utils/style.helper";
+import { logout } from "../features/auth/services/AuthService";
+import { toast } from "sonner";
+import { useAuth } from "../features/auth/hooks/useAuth";
 
 export default function Settings() {
+  const { user } = useAuth();
+
   const navigate = useNavigate();
   const greeting = getGreeting();
 
@@ -28,58 +33,79 @@ export default function Settings() {
     }, 300);
   };
 
+  async function handleLogout() {
+    try {
+      await logout();
+      toast.success("Success", {
+        description: "You have been logged out.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Error", {
+        description: "Something went wrong!",
+      });
+    }
+  }
+
   return (
-    <div className="bg-red-900 flex flex-col">
-      <section className="flex flex-col items-center gap-4 pt-20 pb-6">
+    <div className="bg-slate-500 flex flex-col">
+      <section className="flex flex-col items-center gap-4 py-10">
         <div className="p-4 bg-white rounded-full flex items-center justify-center">
           <Male02Icon className="w-8 h-8" />
         </div>
         <div className="flex flex-col items-center text-white">
           <span className="text-sm text-white/60">{greeting},</span>
-          <span className="text-xl font-semibold">Dimas Addriansyah</span>
+          <span className="text-xl font-semibold">{user?.displayName}</span>
         </div>
       </section>
 
-      <section className="bg-slate-50 min-h-dvh p-4 space-y-6 pb-24">
+      <section className="bg-slate-50 p-4 space-y-6 pb-24">
         <section className="flex flex-col gap-2">
           <span className="">Master Data</span>
-          <div className="flex flex-col bg-white rounded-xl overflow-hidden">
+          <div className="flex flex-col bg-white border border-slate-100 rounded-xl overflow-hidden">
             <div
               onClick={() => navigate("/accounts")}
-              className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer"
-            >
+              className="flex justify-between items-center p-4 hover:bg-slate-100 transition cursor-pointer">
               <div className="flex items-center gap-4">
-                <CreditCardIcon className="h-5 w-5 text-slate-400" />
-                <span className="">Accounts</span>
+                <CreditCardIcon size={20} className="text-slate-400" />
+                <span className="text-black">Accounts</span>
               </div>
-              <ArrowRight01Icon className="h-5 w-5 text-slate-400" />
+              <ArrowRight01Icon size={20} className="text-slate-400" />
             </div>
             <div className="h-px bg-slate-100" />
             <div
               onClick={() => navigate("/categories")}
-              className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer"
-            >
+              className="flex justify-between items-center p-4 hover:bg-slate-100 transition cursor-pointer">
               <div className="flex items-center gap-4">
-                <LicenseIcon className="h-5 w-5 text-slate-400" />
-                <span className="">Categories</span>
+                <LicenseIcon size={20} className="text-slate-400" />
+                <span className="text-black">Categories</span>
               </div>
-              <ArrowRight01Icon className="h-5 w-5 text-slate-400" />
+              <ArrowRight01Icon size={20} className="text-slate-400" />
             </div>
           </div>
         </section>
 
         <section className="flex flex-col gap-2">
           <span className="">Others</span>
-          <div className="flex flex-col bg-white rounded-xl overflow-hidden">
+          <div className="flex flex-col bg-white border border-slate-100 rounded-xl overflow-hidden">
             <div
               onClick={() => setOpenExport(true)}
-              className="flex justify-between items-center p-4 hover:bg-slate-100 cursor-pointer"
-            >
+              className="flex justify-between items-center p-4 hover:bg-slate-100 transition cursor-pointer">
               <div className="flex items-center gap-4">
-                <FileExportIcon className="h-5 w-5 text-slate-400" />
-                <span className="">Backup Data</span>
+                <FileExportIcon size={20} className="text-slate-400" />
+                <span className="text-black">Backup Data</span>
               </div>
-              <ArrowRight01Icon className="h-5 w-5 text-slate-400" />
+              <ArrowRight01Icon size={20} className="text-slate-400" />
+            </div>
+            <div className="h-px bg-slate-100" />
+            <div
+              onClick={handleLogout}
+              className="flex justify-between items-center p-4 hover:bg-red-100 transition cursor-pointer">
+              <div className="flex items-center gap-4">
+                <Logout02Icon size={20} className="text-red-500" />
+                <span className="text-red-500 font-medium">Logout</span>
+              </div>
+              <ArrowRight01Icon size={20} className="text-red-500" />
             </div>
           </div>
         </section>

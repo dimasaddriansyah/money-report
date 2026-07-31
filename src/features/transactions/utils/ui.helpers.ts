@@ -83,25 +83,25 @@ export function getAmountDisplay(row: Transaction) {
     case "TP001":
       return {
         label: `+ ${formatted}`,
-        className: "text-green-500 font-semibold",
+        className: "text-green-500 font-semibold tabular-nums",
       };
 
     case "TP002":
       return {
         label: `- ${formatted}`,
-        className: "text-red-500 font-semibold",
+        className: "text-red-500 font-semibold tabular-nums",
       };
 
     case "TP003":
       return {
         label: formatted,
-        className: "text-slate-500 font-semibold",
+        className: "text-slate-500 font-semibold tabular-nums",
       };
 
     default:
       return {
         label: formatted,
-        className: "text-gray-500",
+        className: "text-gray-500 tabular-nums",
       };
   }
 }

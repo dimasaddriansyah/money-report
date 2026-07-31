@@ -35,7 +35,7 @@ export default function TransactionGroupMobile({
     <div>
       <div className="flex justify-between px-4 py-3 bg-slate-100">
         <span className="text-sm text-slate-500 font-semibold">{formatDateFull(group.date)}</span>
-        <span className="text-sm text-slate-500 font-semibold">{formatCurrency(group.totalExpense)}</span>
+        <span className="text-sm text-slate-500 font-semibold tabular-nums">{formatCurrency(group.totalExpense)}</span>
       </div>
       {group.items.map((row) => (
         <ComponentTransactionItem

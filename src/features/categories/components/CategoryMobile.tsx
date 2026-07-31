@@ -7,14 +7,16 @@ import EmptyState from "../../../shared/ui/EmptyState";
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import ComponentCategoryItem from "./ComponentCategoryItem";
 import { Delete02Icon } from "hugeicons-react";
+import ComponentCategoryItemSkeleton from "./ComponentCategoryItemSkeleton";
 
 type Props = {
   categories: Category[];
+  loading: boolean;
   refetch: () => Promise<void>;
 };
 
 export default function CategoryMobile({
-  categories, refetch
+  categories, loading, refetch
 }: Props) {
   const navigate = useNavigate();
   const isEmpty = categories.length === 0;
@@ -23,7 +25,7 @@ export default function CategoryMobile({
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [activeSwipeId, setActiveSwipeId] = useState<string | null>(null);
 
-  const { deleteCategory, loading } = useCategoryActions(refetch);
+  const { deleteCategory, loading: deleting } = useCategoryActions(refetch);
   async function handleDelete() {
     if (!selectedCategory) return;
     try {
@@ -41,6 +43,16 @@ export default function CategoryMobile({
         duration: 2000,
       });
     }
+  }
+
+  if (loading) {
+    return (
+      <>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <ComponentCategoryItemSkeleton key={index} />
+        ))}
+      </>
+    );
   }
 
   return (
@@ -85,9 +97,9 @@ export default function CategoryMobile({
           <div className="flex gap-2">
             <button
               onClick={handleDelete}
-              disabled={loading}
+              disabled={deleting}
               className="flex-1 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-sm text-white font-medium disabled:opacity-50 cursor-pointer">
-              {loading ? "Deleting..." : "Delete"}
+              {deleting ? "Deleting..." : "Delete"}
             </button>
           </div>
         </div>

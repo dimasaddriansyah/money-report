@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { auth, db } from "../../../shared/config/firebase";
-import type { LoginForm, RegisterForm } from "../types/Auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import type { LoginForm, RegisterForm } from "../types/auth";
 
 export async function register(data: RegisterForm) {
   const credential =

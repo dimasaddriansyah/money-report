@@ -17,7 +17,7 @@ export default function ComponentCardTotalBudget({ amount, onEdit }: Props) {
           <div className="flex flex-col">
             <span className="text-sm text-slate-400">Total Budget</span>
             <div className="flex items-center gap-4">
-              <span className="text-xl font-semibold">{formatBalance(formatCurrency(amount), hideBalance)}</span>
+              <span className="text-xl font-semibold tabular-nums">{formatBalance(formatCurrency(amount), hideBalance)}</span>
               {hideBalance !== undefined && setHideBalance && (
                 hideBalance ? (
                   <ViewIcon

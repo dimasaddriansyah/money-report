@@ -149,7 +149,7 @@ export default function TransactionComponentFilter({
                     : "bg-white text-slate-700 hover:bg-slate-50"
                   }`}>
                 <div className="flex item-center gap-4">
-                  <img src={getAccountsImg(account.name)} className="w-5 h-5" />
+                  <img src={getAccountsImg(account.name)} className="w-5 h-5 object-contain" />
                   <span className="text-sm font-medium">{account.name}</span>
                 </div>
                 {active && (
@@ -181,7 +181,7 @@ export default function TransactionComponentFilter({
                     : "bg-white text-slate-700 hover:bg-slate-50"
                   }`}>
                 <div className="flex item-center gap-4">
-                  <img src={getCategoriesImg(category.name)} className="w-5 h-5" />
+                  <img src={getCategoriesImg(category.name)} className="w-5 h-5 object-contain" />
                   <span className="text-sm font-medium">{category.name}</span>
                 </div>
                 {active && (

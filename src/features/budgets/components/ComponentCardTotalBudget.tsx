@@ -11,7 +11,7 @@ export default function ComponentCardTotalBudget({ amount, onEdit }: Props) {
   const { hideBalance, setHideBalance } = useBalance();
 
   return (
-    <div className="m-4 p-4 border border-slate-200 rounded-xl bg-white">
+    <div className="mt-4 mx-4 p-4 border border-slate-200 rounded-xl bg-white">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex flex-col">

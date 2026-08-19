@@ -8,7 +8,7 @@ import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useState } from "react";
 import Modal from "../../../shared/ui/Modal";
 import { Delete02Icon } from "hugeicons-react";
-// import BudgetFormMobile from "../components/BudgetFormMobile";
+import BudgetFormMobile from "../components/BudgetFormMobile";
 import type { FormData } from "../utils/budget.form.helper";
 
 export default function BudgetEditPage() {
@@ -124,7 +124,7 @@ export default function BudgetEditPage() {
       </div>
 
       <div className="md:hidden">
-        {/* <BudgetFormMobile defaultValues={budget} accounts={accounts} onSubmit={handleSubmit} loading={loading} /> */}
+        <BudgetFormMobile defaultValues={budget} accounts={accounts} onSubmit={handleSubmit} loading={loading} />
       </div>
     </>
   );

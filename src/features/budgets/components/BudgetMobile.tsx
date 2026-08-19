@@ -61,6 +61,11 @@ export default function BudgetMobile(props: Props) {
   return (
     <>
       <TransactionComponentFilterDate period={period} allowFuture />
+      <ComponentCardTotalBudget
+        amount={summary.summary.budgetAmount}
+        onEdit={handleOpenEdit} />
+
+      <BudgetCreateButton />
       {
         summary.isEmpty ? (
           <EmptyState
@@ -69,12 +74,6 @@ export default function BudgetMobile(props: Props) {
             icon={<MoneySavingJarIcon />} />
         ) : (
           <>
-            <ComponentCardTotalBudget
-              amount={summary.summary.budgetAmount}
-              onEdit={handleOpenEdit} />
-
-            <BudgetCreateButton />
-
             <ComponentCardListTransfer
               items={summary.allocationItems}
               summary={summary.summary}

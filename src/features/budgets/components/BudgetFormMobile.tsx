@@ -28,13 +28,13 @@ export default function BudgetFormMobile({
   const { deleteBudget } = useBudgetActions();
   const { form, setField, getPayload } = useBudgetForm(defaultValues);
   const { date, accountId, remark, amount } = form;
-  
+
   const [openDeleteBudget, setOpenDeleteBudget] = useState(false);
-  
+
   const accountContainerRef = useRef<HTMLDivElement | null>(null);
   const accountItemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const dateRef = useRef<HTMLInputElement | null>(null);
-  
+
   const isEdit = !!defaultValues;
 
   const amountInput = amount ? formatNumber(amount) : "";
@@ -42,7 +42,7 @@ export default function BudgetFormMobile({
   const isAmountValid = amount > 0;
   const isAccountValid = !!accountId;
   const isRemarkValid = remark.trim().length > 0;
-  const isFormValid = isAmountValid && isAccountValid && isRemarkValid;
+  const isFormValid = isAmountValid && (remark === "Budget" || isAccountValid) && isRemarkValid;
 
   const isReady = !!accountId;
 
@@ -146,7 +146,6 @@ export default function BudgetFormMobile({
                 <NoteEditIcon className="text-slate-400" size={20} />
               </div>
               <input
-                inputMode="numeric"
                 value={remark}
                 onChange={(e) => setField("remark", e.target.value)}
                 className={`block w-full ps-13 pe-3 py-2.5 text-base rounded-xl border ${remark ? "text-black" : "text-slate-400"} border-slate-300 focus:outline-none focus:ring-2 focus:ring-black placeholder:text-slate-400 transition appearance-none`}

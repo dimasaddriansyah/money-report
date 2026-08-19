@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
 import { getAccountsImg } from "../../../shared/utils/style.helper";
 
@@ -22,11 +23,13 @@ export default function ComponentListBudgetDetail({
   items,
   hideBalance,
 }: Props) {
+  const navigate = useNavigate();
   return (
     <div className="m-4 flex flex-col gap-3">
       {items.map((item) => (
         <div
           key={item.id}
+          onClick={() => navigate(`/budget/edit/${item.id}`)}
           className="p-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl space-y-4 cursor-pointer">
           <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-4">
@@ -65,7 +68,7 @@ export default function ComponentListBudgetDetail({
             <div className={`py-1.5 ${item.isOverBudget ? "bg-red-500" : "bg-green-500"}`}
               style={{ width: `${item.progress}%` }} />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`text-[10px] font-semibold ${item.progress > 55 ? "text-white" :"text-black"}`}>
+              <span className={`text-[10px] font-semibold ${item.progress > 55 ? "text-white" : "text-black"}`}>
                 {item.progress.toFixed(0)}%
               </span>
             </div>

@@ -8,6 +8,6 @@ export const COLLECTIONS = {
 export const ID_PREFIX = {
   ACCOUNT: "ACC",
   CATEGORY: "CAT",
-  BUDGET: "BDG",
+  BUDGET: "BUD",
   TRANSACTION: "TRX",
 } as const;

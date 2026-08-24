@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
 import { getAccountsImg } from "../../../shared/utils/style.helper";
+import { getAccountStyle } from "../../transactions/utils/ui.helpers";
 
 type BudgetItem = {
   id: string;
@@ -30,8 +31,8 @@ export default function ComponentListBudgetDetail({
         <div
           key={item.id}
           onClick={() => navigate(`/budget/edit/${item.id}`)}
-          className="p-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl space-y-4 cursor-pointer">
-          <div className="flex items-center justify-between gap-6">
+          className="bg-white hover:bg-slate-50 border border-slate-200 rounded-xl cursor-pointer overflow-hidden">
+          <div className={`flex items-center justify-between p-4 border-0 gap-6 ${getAccountStyle(item.accountName)}`}>
             <div className="flex items-center gap-4">
               <img src={getAccountsImg(item.accountName)} alt={item.accountName} className="w-10 h-10 object-contain" />
               <div className="flex flex-col">
@@ -46,13 +47,10 @@ export default function ComponentListBudgetDetail({
               {item.isOverBudget ? "Over Budget" : "Safe"}
             </span>
           </div>
-
-          <div className="my-3 h-px bg-slate-100" />
-
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col p-4 gap-2">
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Budget</span>
-              <span className="tabular-nums">{formatBalance(formatCurrency(item.amount), hideBalance)}</span>
+              <span className="text-slate-600 tabular-nums">{formatBalance(formatCurrency(item.amount), hideBalance)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Spent</span>
@@ -60,11 +58,10 @@ export default function ComponentListBudgetDetail({
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Remaining</span>
-              <span className="tabular-nums">{formatBalance(formatCurrency(item.remaining), hideBalance)}</span>
+              <span className="text-slate-600 tabular-nums">{formatBalance(formatCurrency(item.remaining), hideBalance)}</span>
             </div>
           </div>
-
-          <div className="relative overflow-hidden rounded-full bg-slate-100">
+          <div className="mx-4 mb-4 relative overflow-hidden rounded-full bg-slate-100">
             <div className={`py-1.5 ${item.isOverBudget ? "bg-red-500" : "bg-green-500"}`}
               style={{ width: `${item.progress}%` }} />
             <div className="absolute inset-0 flex items-center justify-center">

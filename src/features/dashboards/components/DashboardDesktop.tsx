@@ -52,7 +52,7 @@ export default function DashboardDesktop({ transactions, accounts, categories, r
   return (
     <DashboardLayout>
       <DashboardSectionSummary summary={dashboardAll.summary} />
-      <DashboardSectionAccountBalanceSummary accounts={dashboardAll.accountsWithBalance} autoScroll={true} />
+      <DashboardSectionAccountBalanceSummary accounts={dashboardAll.accountsWithBalance} />
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="flex flex-col gap-1 flex-1 min-w-60">
           <span className="text-slate-500 text-xs">

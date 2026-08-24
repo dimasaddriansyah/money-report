@@ -13,10 +13,10 @@ type Props = {
 export default function DashboardSectionSummary({ summary }: Props) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <DashboardComponentCard title="Total Balance" amount={summary.balance} icon={DollarCircleIcon} colorIcon="text-blue-500"/>
-      <DashboardComponentCard title="Total Income" amount={summary.totalIncome} icon={MoneyReceive01Icon} colorIcon="text-green-500"/>
-      <DashboardComponentCard title="Total Expense" amount={summary.totalExpense} icon={MoneySend01Icon} colorIcon="text-red-500"/>
-      <DashboardComponentCard title="Total Transaction" amount={summary.totalTransactions} isCurrency={false} icon={Invoice01Icon} colorIcon="text-slate-500"/>
+      <DashboardComponentCard title="Total Balance" amount={summary.balance} icon={DollarCircleIcon} colorIcon="blue"/>
+      <DashboardComponentCard title="Total Income" amount={summary.totalIncome} icon={MoneyReceive01Icon} colorIcon="green"/>
+      <DashboardComponentCard title="Total Expense" amount={summary.totalExpense} icon={MoneySend01Icon} colorIcon="red"/>
+      <DashboardComponentCard title="Total Transaction" amount={summary.totalTransactions} isCurrency={false} icon={Invoice01Icon} colorIcon="slate"/>
     </div>
   );
 }

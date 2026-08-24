@@ -3,6 +3,7 @@ import { parseTransaction, type ParsedTransaction, type TransactionType } from "
 import { useCategories } from "../../categories/hooks/useCategories";
 import { useAccounts } from "../../accounts/hooks/useAccounts";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft01Icon } from "hugeicons-react";
 
 const TRANSACTION_TYPE_MAP: Record<TransactionType, string> = {
   income: "TP001",
@@ -11,8 +12,8 @@ const TRANSACTION_TYPE_MAP: Record<TransactionType, string> = {
 };
 
 export function TransactionFormGenerate() {
- const navigate = useNavigate();
-  
+  const navigate = useNavigate();
+
   const { accounts } = useAccounts();
   const { categories } = useCategories();
 
@@ -64,24 +65,29 @@ export function TransactionFormGenerate() {
 
   return (
     <>
-      <div className="p-4">
-        <div className="flex flex-col gap-4">
-          <div>
-            <label className="block text-sm text-slate-500 mb-1">Describe Transaction</label>
-            <textarea
-              rows={3}
-              value={draft.raw}
-              onChange={(e) =>
-                setDraft((prev) => ({
-                  ...prev,
-                  raw: e.target.value,
-                }))
-              }
-              className="block w-full p-3 text-base rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder="e.g. makan siang 25 ribu kemarin"
-            />
-          </div>
+      <div className="relative flex items-center p-5 border-b border-slate-100">
+        <div
+          onClick={() => navigate(-1)}
+          className="flex p-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full cursor-pointer">
+          <ArrowLeft01Icon size={20} />
         </div>
+        <span className="absolute left-1/2 -translate-x-1/2 font-semibold">Generate Form</span>
+      </div>
+
+      <div className="m-4">
+        <label className="block text-sm text-black mb-1">Describe Transaction</label>
+        <textarea
+          rows={3}
+          value={draft.raw}
+          onChange={(e) =>
+            setDraft((prev) => ({
+              ...prev,
+              raw: e.target.value,
+            }))
+          }
+          className="block w-full p-3 text-base rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-black"
+          placeholder="e.g. makan siang 25 ribu kemarin"
+        />
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-100 px-4 py-3">

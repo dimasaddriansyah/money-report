@@ -96,46 +96,47 @@ export default function TransactionMobile({
     <>
       <div className="bg-white">
         <TransactionComponentFilterDate period={{ start, end, prev, next, isCurrentPeriod, isMaxPeriod }} />
+        <div className="mt-24">
+          <TransactionComponentFilter
+            accounts={accounts}
+            categories={categories}
+            selectedType={selectedType}
+            selectedAccount={selectedAccount}
+            selectedCategory={selectedCategory}
+            onChangeType={setSelectedType}
+            onChangeAccount={setSelectedAccount}
+            onChangeCategory={setSelectedCategory} />
 
-        <TransactionComponentFilter
-          accounts={accounts}
-          categories={categories}
-          selectedType={selectedType}
-          selectedAccount={selectedAccount}
-          selectedCategory={selectedCategory}
-          onChangeType={setSelectedType}
-          onChangeAccount={setSelectedAccount}
-          onChangeCategory={setSelectedCategory} />
-
-        {isEmpty ? (
-          <EmptyState
-            title="No transactions"
-            subtitle="No data in this period"
-            icon={<Invoice01Icon />} />
-        ) : (
-          grouped.map((group) => (
-            <TransactionGroupMobile
-              key={group.date}
-              group={group}
-              accountMap={accountLookup}
-              categoryMap={categoryLookup}
-              hideBalance={hideBalance}
-              activeSwipeId={activeSwipeId}
-              setActiveSwipeId={setActiveSwipeId}
-              navigate={navigate}
-              setSelectedTransaction={setSelectedTransaction}
-              setOpen={setOpen} />
-          ))
-        )}
-        {visibleCount < filteredTransactions.length && (
-          <div className="p-4">
-            <button
-              onClick={loadMore}
-              className="w-full py-2 rounded-xl border border-slate-300 text-sm font-medium hover:bg-slate-50 cursor-pointer">
-              Load more transaction
-            </button>
-          </div>
-        )}
+          {isEmpty ? (
+            <EmptyState
+              title="No transactions"
+              subtitle="No data in this period"
+              icon={<Invoice01Icon />} />
+          ) : (
+            grouped.map((group) => (
+              <TransactionGroupMobile
+                key={group.date}
+                group={group}
+                accountMap={accountLookup}
+                categoryMap={categoryLookup}
+                hideBalance={hideBalance}
+                activeSwipeId={activeSwipeId}
+                setActiveSwipeId={setActiveSwipeId}
+                navigate={navigate}
+                setSelectedTransaction={setSelectedTransaction}
+                setOpen={setOpen} />
+            ))
+          )}
+          {visibleCount < filteredTransactions.length && (
+            <div className="p-4">
+              <button
+                onClick={loadMore}
+                className="w-full py-2 rounded-xl border border-slate-300 text-sm font-medium hover:bg-slate-50 cursor-pointer">
+                Load more transaction
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <TransactionDeleteSheet
         open={open}

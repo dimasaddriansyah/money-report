@@ -38,7 +38,7 @@ export default function TablePagination({
             onClick={() => typeof p === "number" && onPageChange(p)}
             className={`px-3 py-2 border border-slate-100 rounded-lg transition cursor-pointer
               ${p === currentPage
-                ? "bg-slate-900 text-white font-semibold"
+                ? "bg-black/90 text-white font-semibold"
                 : "hover:bg-slate-100"}
               ${p === "..." ? "cursor-default opacity-50" : ""}`}>
             {p}

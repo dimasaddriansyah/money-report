@@ -16,7 +16,7 @@ export default function DashboardSectionLayout({ title, button, children }: Prop
         {button && (
           <button
             onClick={() => navigate(button.url)}
-            className="flex px-4 py-2.5 gap-2 border border-slate-200 hover:bg-slate-900 text-slate-400 hover:text-white text-sm font-medium rounded-lg transition cursor-pointer">
+            className="flex px-4 py-2.5 gap-2 border border-slate-200 hover:bg-black/90 text-slate-400 hover:text-white text-sm font-medium rounded-lg transition cursor-pointer">
             <span>{button.label}</span>
           </button>
         )}

@@ -2,11 +2,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { NAV_MENUS_DESKTOP } from "../utils/navigation.sidebar.helper";
 import CashflowLogo from "../../assets/cashflow.png";
-import { FileExportIcon } from "hugeicons-react";
+// import { FileExportIcon } from "hugeicons-react";
 
 interface SidebarProps {
   collapsed: boolean;
-  onOpenModal: () => void;
+  onOpenModal?: () => void;
 }
 
 export default function Sidebar({
@@ -59,7 +59,7 @@ export default function Sidebar({
               className={`flex items-center transition cursor-pointer rounded-xl font-medium relative
                 ${collapsed ? "w-full h-12 justify-center" : "gap-4 p-3"}
                 ${active
-                  ? "bg-black text-white font-semibold hover:bg-slate-900"
+                  ? "bg-black text-white font-semibold hover:bg-black/90"
                   : "text-black hover:bg-slate-50"
                 }`}>
               {/* ICON (optional) */}
@@ -81,21 +81,19 @@ export default function Sidebar({
       </nav>
 
       {/* BUTTON EXPORT */}
-      <div
+      {/* <div
         className={`bg-slate-50 border-t border-slate-100 py-4
           ${collapsed ? "flex justify-center px-3.5" : "px-4.5"}`}>
         <button
           // onClick={() => onOpenModal()}
           className={`flex items-center w-full rounded-xl text-sm font-medium transition border border-dashed border-slate-300 text-black hover:bg-black hover:text-white cursor-pointer
             ${collapsed ? "justify-center h-12" : "gap-3 p-3"}`}>
-          {/* ICON */}
           <div className="w-6 h-6 flex items-center justify-center">
             <FileExportIcon size={20} />
           </div>
-          {/* TEXT */}
           {!collapsed && <span>Backup Data</span>}
         </button>
-      </div>
+      </div> */}
     </aside>
   );
 }

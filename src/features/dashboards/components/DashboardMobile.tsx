@@ -6,7 +6,7 @@ import { useBalance } from "../../../shared/context/BalanceContext";
 import type { Transaction } from "../../transactions/types/transaction";
 import { useNavigate } from "react-router-dom";
 import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
-import { ArrowDown01Icon, Delete02Icon, ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
+import { ArrowDown01Icon, TradeUpIcon, Delete02Icon, ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import DashboardSectionAccountBalanceSummary from "./DashboardSectionAccountBalanceSummary";
 import { useDashboardData } from "../hooks/useDashboardData";
 import { toast } from "sonner";
@@ -57,6 +57,99 @@ export default function DashboardMobile({ transactions, accounts, categories, lo
   const [activeSwipeId, setActiveSwipeId] = useState<string | null>(null);
 
   const { summary, accountsWithBalance } = useDashboardData({ transactions, accounts, categories, refetch });
+
+  const periodComparison = useMemo(() => {
+    const now = new Date();
+
+    // Periode sekarang: 25 bulan sebelumnya - 24 bulan sekarang
+    const currentPeriodStart =
+      now.getDate() >= 25
+        ? new Date(now.getFullYear(), now.getMonth(), 25)
+        : new Date(now.getFullYear(), now.getMonth() - 1, 25);
+
+    const currentPeriodEnd = new Date(
+      currentPeriodStart.getFullYear(),
+      currentPeriodStart.getMonth() + 1,
+      25
+    );
+
+    // Periode sebelumnya
+    const previousPeriodStart = new Date(
+      currentPeriodStart.getFullYear(),
+      currentPeriodStart.getMonth() - 1,
+      25
+    );
+
+    const previousPeriodEnd = currentPeriodStart;
+
+    const calculateNet = (start: Date, end: Date) => {
+      const periodTransactions = transactions.filter((transaction) => {
+        const date = transaction.date.toDate();
+
+        return date >= start && date < end;
+      });
+
+      const income = periodTransactions
+        .filter((transaction) => transaction.typeId === "TP001")
+        .reduce(
+          (total, transaction) => total + transaction.amount,
+          0
+        );
+
+      const expense = periodTransactions
+        .filter((transaction) => transaction.typeId === "TP002")
+        .reduce(
+          (total, transaction) => total + transaction.amount,
+          0
+        );
+
+      return income - expense;
+    };
+
+    const previousNet = calculateNet(
+      previousPeriodStart,
+      previousPeriodEnd
+    );
+
+    const currentNet = calculateNet(
+      currentPeriodStart,
+      currentPeriodEnd
+    );
+
+    const difference = currentNet - previousNet;
+
+    const percentage =
+      previousNet !== 0
+        ? (difference / Math.abs(previousNet)) * 100
+        : 0;
+
+    return {
+      previousNet,
+      currentNet,
+      difference,
+      percentage,
+      previousPeriodStart,
+      previousPeriodEnd: new Date(
+        previousPeriodEnd.getFullYear(),
+        previousPeriodEnd.getMonth(),
+        previousPeriodEnd.getDate() - 1
+      ),
+    };
+  }, [transactions]);
+
+  const previousPeriodLabel = useMemo(() => {
+    const formatDate = (date: Date) =>
+      date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+      });
+
+    return `${formatDate(
+      periodComparison.previousPeriodStart
+    )} - ${formatDate(
+      periodComparison.previousPeriodEnd
+    )}`;
+  }, [periodComparison]);
 
   const periods: {
     label: string;
@@ -119,30 +212,61 @@ export default function DashboardMobile({ transactions, accounts, categories, lo
           subtitle="No recent transactions" />
       ) : (
         <>
-          <div className="px-4 py-10 bg-slate-50">
-            <div className="flex flex-col">
-              <span className="text-sm text-slate-500">Total Balance</span>
-              <div className="flex items-center gap-4">
-                <span className="text-2xl text-black font-semibold tabular-nums">{formatBalance(formatCurrency(summary.balance), hideBalance)}</span>
-                {hideBalance !== undefined && setHideBalance && (
-                  hideBalance ? (
-                    <ViewIcon
-                      onClick={() => setHideBalance(false)}
-                      className="text-slate-900 hover:text-slate-500 cursor-pointer" size={24} />
-                  ) : (
-                    <ViewOffSlashIcon
-                      onClick={() => setHideBalance(true)}
-                      className="text-slate-900 hover:text-slate-500 cursor-pointer" size={24} />
-                  )
-                )}
+          <div className="px-4 pt-16 pb-4 bg-black">
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col">
+                <span className="text-sm text-white/80">Total Balance</span>
+                <div className="flex items-center gap-4">
+                  <span className="text-2xl text-white font-bold tabular-nums">{formatBalance(formatCurrency(summary.balance), hideBalance)}</span>
+                  {hideBalance !== undefined && setHideBalance && (
+                    hideBalance ? (
+                      <ViewIcon
+                        onClick={() => setHideBalance(false)}
+                        className="text-white/70 hover:text-white cursor-pointer" size={24} />
+                    ) : (
+                      <ViewOffSlashIcon
+                        onClick={() => setHideBalance(true)}
+                        className="text-white/70 hover:text-white cursor-pointer" size={24} />
+                    )
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-xs text-white/60">Compare with last month</span>
+                  <span className="text-xs text-white">{previousPeriodLabel}</span>
+                </div>
+                <div
+                  className={`flex items-center text-xs font-medium tabular-nums px-2 py-1 rounded-full gap-1.5 ${periodComparison.difference >= 0
+                    ? "text-green-700 bg-green-50 border border-green-200"
+                    : "text-red-700 bg-red-50 border border-red-200"
+                    }`}
+                >
+                  <TradeUpIcon
+                    className={
+                      periodComparison.difference >= 0
+                        ? "text-green-600"
+                        : "text-red-600 rotate-180"
+                    }
+                    size={14}
+                  />
+
+                  <span>
+                    {formatCurrency(periodComparison.difference)}
+                  </span>
+
+                  <span className="text-[10px]">
+                    ({periodComparison.percentage.toFixed(2)}%)
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="px-4 py-2">
-            <div className="flex flex-col gap-1">
+          <div className="p-4">
+            <div className="flex flex-col gap-3">
               <span className="text-sm text-slate-400">Accounts Balance</span>
-              <DashboardSectionAccountBalanceSummary accounts={accountsWithBalance} autoScroll={false} />
+              <DashboardSectionAccountBalanceSummary accounts={accountsWithBalance} />
             </div>
           </div>
 

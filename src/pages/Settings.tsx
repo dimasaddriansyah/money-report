@@ -1,8 +1,11 @@
-import { ArrowRight01Icon, CreditCardIcon, FileExportIcon, LicenseIcon, Logout02Icon, Male02Icon, Xls01Icon } from "hugeicons-react";
-import { useState } from "react";
+import {
+  ArrowRight01Icon, CreditCardIcon, LicenseIcon, Logout02Icon, Male02Icon
+  //FileExportIcon, //Xls01Icon 
+} from "hugeicons-react";
+// import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomSheet from "../shared/ui/BottomSheet";
-import { ExportSpreedsheet } from "../shared/utils/export.helper";
+// import BottomSheet from "../shared/ui/BottomSheet";
+// import { ExportSpreedsheet } from "../shared/utils/export.helper";
 import { getGreeting } from "../shared/utils/style.helper";
 import { logout } from "../features/auth/services/AuthService";
 import { toast } from "sonner";
@@ -14,24 +17,24 @@ export default function Settings() {
   const navigate = useNavigate();
   const greeting = getGreeting();
 
-  const [openExport, setOpenExport] = useState(false);
-  const [LoadingExport, setLoadingExport] = useState(false);
+  // const [openExport, setOpenExport] = useState(false);
+  // const [LoadingExport, setLoadingExport] = useState(false);
 
-  const handleExport = async () => {
-    setLoadingExport(true);
+  // const handleExport = async () => {
+  //   setLoadingExport(true);
 
-    setTimeout(() => {
-      const url = ExportSpreedsheet("xlsx");
-      const link = document.createElement("a");
-      const year = new Date().getFullYear();
+  //   setTimeout(() => {
+  //     const url = ExportSpreedsheet("xlsx");
+  //     const link = document.createElement("a");
+  //     const year = new Date().getFullYear();
 
-      link.href = url;
-      link.download = `Cashflow_${year}.xlsx`;
-      link.click();
+  //     link.href = url;
+  //     link.download = `Cashflow_${year}.xlsx`;
+  //     link.click();
 
-      setLoadingExport(false);
-    }, 300);
-  };
+  //     setLoadingExport(false);
+  //   }, 300);
+  // };
 
   async function handleLogout() {
     try {
@@ -48,10 +51,10 @@ export default function Settings() {
   }
 
   return (
-    <div className="bg-slate-500 flex flex-col">
+    <div className="bg-black flex flex-col">
       <section className="flex flex-col items-center gap-4 py-10">
         <div className="p-4 bg-white rounded-full flex items-center justify-center">
-          <Male02Icon className="w-8 h-8" />
+          <Male02Icon size={32} />
         </div>
         <div className="flex flex-col items-center text-white">
           <span className="text-sm text-white/60">{greeting},</span>
@@ -88,7 +91,7 @@ export default function Settings() {
         <section className="flex flex-col gap-2">
           <span className="">Others</span>
           <div className="flex flex-col bg-white border border-slate-100 rounded-xl overflow-hidden">
-            <div
+            {/* <div
               onClick={() => setOpenExport(true)}
               className="flex justify-between items-center p-4 hover:bg-slate-100 transition cursor-pointer">
               <div className="flex items-center gap-4">
@@ -97,20 +100,20 @@ export default function Settings() {
               </div>
               <ArrowRight01Icon size={20} className="text-slate-400" />
             </div>
-            <div className="h-px bg-slate-100" />
+            <div className="h-px bg-slate-100" /> */}
             <div
               onClick={handleLogout}
-              className="flex justify-between items-center p-4 hover:bg-red-100 transition cursor-pointer">
+              className="flex justify-between items-center p-4 bg-red-600 hover:bg-red-700 transition cursor-pointer">
               <div className="flex items-center gap-4">
-                <Logout02Icon size={20} className="text-red-500" />
-                <span className="text-red-500 font-medium">Logout</span>
+                <Logout02Icon size={20} className="text-white" />
+                <span className="text-white font-medium">Logout</span>
               </div>
-              <ArrowRight01Icon size={20} className="text-red-500" />
+              <ArrowRight01Icon size={20} className="text-white" />
             </div>
           </div>
         </section>
       </section>
-      <BottomSheet
+      {/* <BottomSheet
         open={openExport}
         onClose={() => setOpenExport(false)}
         title="Backup Data"
@@ -135,7 +138,7 @@ export default function Settings() {
             </div>
           </button>
         </div>
-      </BottomSheet>
+      </BottomSheet> */}
     </div>
   );
 }

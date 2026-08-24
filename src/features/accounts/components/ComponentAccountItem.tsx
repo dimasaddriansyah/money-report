@@ -37,7 +37,7 @@ export default function ComponentAccountItem({
             <img src={getAccountsImg(row.name)} className="w-8 h-8 object-contain" />
             <div className="flex flex-col">
               <span className="text-xs text-slate-600">Account Name</span>
-              <span className="text-sm text-black">{row.name}</span>
+              <span className="text-sm text-black font-medium">{row.name}</span>
             </div>
           </div>
           <div className="flex flex-col text-right">

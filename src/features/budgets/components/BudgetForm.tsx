@@ -230,7 +230,7 @@ export default function BudgetForm({
             type="submit"
             disabled={loading}
             className={`order-1 px-5 py-2.5 text-sm font-semibold text-white rounded-lg cursor-pointer
-              ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-slate-900 hover:bg-slate-800"}`}>
+              ${loading ? "bg-slate-400 cursor-not-allowed" : "bg-black hover:bg-black/90"}`}>
             {loading ? "Saving..." : isEdit ? "Update Budget" : "Create Budget"}
           </button>
         </div>

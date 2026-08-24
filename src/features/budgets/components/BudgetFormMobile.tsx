@@ -1,4 +1,4 @@
-import { ArrowDown01Icon, Calendar03Icon, Delete02Icon, NoteEditIcon } from "hugeicons-react";
+import { ArrowDown01Icon, ArrowLeft01Icon, Calendar03Icon, Delete02Icon, NoteEditIcon } from "hugeicons-react";
 import { useEffect, useRef, useState } from "react";
 import type { Budget } from "../types/budget";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
@@ -82,6 +82,14 @@ export default function BudgetFormMobile({
 
   return (
     <>
+      <div className="relative flex items-center p-5 border-b border-slate-100">
+        <div
+          onClick={() => navigate(-1)}
+          className="flex p-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full cursor-pointer">
+          <ArrowLeft01Icon size={20} />
+        </div>
+        <span className="absolute left-1/2 -translate-x-1/2 font-semibold">Budget Form</span>
+      </div>
       <form>
         <div className="flex flex-col gap-3 p-4">
           {/* AMOUNT */}
@@ -131,7 +139,7 @@ export default function BudgetFormMobile({
                   type="date"
                   value={date}
                   onChange={(e) => setField("date", e.target.value)}
-                  className="absolute opacity-0 pointer-events-none" />
+                  className="absolute opacity-0" />
                 <span className="capitalize">{formatDateFull(date) || "Select date"}</span>
               </div>
               <ArrowDown01Icon className="text-slate-400" size={20} />

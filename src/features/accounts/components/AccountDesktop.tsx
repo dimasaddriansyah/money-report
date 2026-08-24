@@ -96,7 +96,7 @@ export default function AccountDesktop({
                         <img
                           src={getAccountsImg(row.name)}
                           alt={row.name}
-                          className="w-8 h-8" />
+                          className="w-8 h-8 object-contain" />
                         <span className="text-black font-medium">{row.name || "-"}</span>
                       </div>
                     </td>
@@ -106,7 +106,7 @@ export default function AccountDesktop({
                       <div className="flex gap-2">
                         <div
                           onClick={() => navigate(`/account/edit/${row.id}`)}
-                          className="bg-amber-50 hover:bg-amber-200 p-2 rounded-xl cursor-pointer">
+                          className="bg-amber-50 hover:bg-amber-200 border border-amber-100 p-2 rounded-xl cursor-pointer">
                           <NoteEditIcon className="w-5 h-5 text-amber-500" />
                         </div>
                         <div
@@ -114,7 +114,7 @@ export default function AccountDesktop({
                             setSelectedAccount(row);
                             setOpen(true);
                           }}
-                          className="bg-red-50 hover:bg-red-200 p-2 rounded-xl cursor-pointer">
+                          className="bg-red-50 hover:bg-red-200 border border-red-100 p-2 rounded-xl cursor-pointer">
                           <Delete02Icon className="w-5 h-5 text-red-500" />
                         </div>
                       </div>

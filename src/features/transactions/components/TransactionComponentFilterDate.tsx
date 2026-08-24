@@ -21,7 +21,7 @@ export default function TransactionComponentFilterDate({ period, allowFuture = f
     : period.isMaxPeriod;
 
   return (
-    <section className="flex items-center justify-between px-4 py-3">
+    <section className="fixed top-0 left-0 right-0 sm:static flex items-center justify-between px-4 py-6 sm:py-4 w-full bg-white border-b border-slate-50 z-10 overflow-hidden">
       <button
         onClick={prev}
         className="flex p-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full cursor-pointer">

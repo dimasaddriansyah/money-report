@@ -31,7 +31,7 @@ export default function TransactionLayout({ title, breadcrumb, button, showBack 
           {button && (
             <button
               onClick={() => navigate(button.url)}
-              className="flex items-center px-5 py-2.5 gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg cursor-pointer">
+              className="flex items-center px-5 py-2.5 gap-2 bg-black hover:bg-black/90 text-white text-sm font-medium rounded-lg cursor-pointer">
               <PlusSignIcon size={16} />
               <span>{button.label}</span>
             </button>

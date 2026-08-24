@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
-import { AiMagicIcon, ArrowDown01Icon, Calendar03Icon, NoteEditIcon } from "hugeicons-react";
+import { AiMagicIcon, ArrowDown01Icon, ArrowLeft01Icon, Calendar03Icon, NoteEditIcon } from "hugeicons-react";
 import type { Account } from "../../accounts/types/account";
 import type { Category } from "../../categories/types/category";
 import { useTransactionForm } from "../hooks/useTransactionForm";
@@ -7,7 +7,7 @@ import type { Transaction } from "../types/transaction";
 import { getAccountFields, TYPE_OPTIONS } from "../utils/ui.helpers";
 import { formatDateFull, formatNumber } from "../../../shared/utils/format.helper";
 import { getAccountsImg, getCategoriesImg } from "../../../shared/utils/style.helper";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import type { FormData } from "../utils/transaction.form.helper";
 type Props = {
   defaultValues?: Transaction;
@@ -33,6 +33,7 @@ export default function TransactionFormMobile({
   onSubmit,
   loading,
 }: Props) {
+  const navigate = useNavigate();
   const location = useLocation();
   const source = location.state?.source ?? "manual";
   const prefill = location.state?.prefill;
@@ -151,6 +152,14 @@ export default function TransactionFormMobile({
 
   return (
     <>
+      <div className="relative flex items-center p-5 border-b border-slate-50">
+        <div
+          onClick={() => navigate(-1)}
+          className="flex p-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full cursor-pointer">
+          <ArrowLeft01Icon size={20} />
+        </div>
+        <span className="absolute left-1/2 -translate-x-1/2 font-semibold">Transaction Form</span>
+      </div>
       <form>
         <div className="flex flex-col gap-3 p-4">
           {/* TYPE */}
@@ -251,7 +260,7 @@ export default function TransactionFormMobile({
 
           {/* DATE */}
           <div id="date" className="flex-1">
-            <label className="block text-sm text-slate-500 mb-1">Date</label>
+            <label className="block text-sm text-black mb-1">Date</label>
             <div
               onClick={() => dateRef.current?.showPicker()}
               className="flex items-center justify-between w-full ps-3 pe-3 py-2.5 text-base rounded-xl border border-slate-300 cursor-pointer">
@@ -271,7 +280,7 @@ export default function TransactionFormMobile({
 
           {/* REMARK */}
           <div id="remark" className="flex-1">
-            <label className="block text-sm text-slate-500 mb-1">Remark <small className="text-red-500">*</small></label>
+            <label className="block text-sm text-black mb-1">Remark <small className="text-red-500">*</small></label>
             <div className="relative flex items-center justify-center">
               <div className="absolute left-4 pointer-events-none">
                 <NoteEditIcon className="text-slate-400" size={20} />

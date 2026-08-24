@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import EmptyState from "../../../shared/ui/EmptyState";
 import BottomSheet from "../../../shared/ui/BottomSheet";
 import ComponentCategoryItem from "./ComponentCategoryItem";
-import { Delete02Icon } from "hugeicons-react";
+import { ArrowLeft01Icon, Delete02Icon } from "hugeicons-react";
 import ComponentCategoryItemSkeleton from "./ComponentCategoryItemSkeleton";
 
 type Props = {
@@ -57,6 +57,14 @@ export default function CategoryMobile({
 
   return (
     <>
+      <div className="relative flex items-center p-5 border-b border-slate-100">
+        <div
+          onClick={() => navigate(-1)}
+          className="flex p-2 bg-white hover:bg-slate-50 border border-slate-100 rounded-full cursor-pointer">
+          <ArrowLeft01Icon size={20} />
+        </div>
+        <span className="absolute left-1/2 -translate-x-1/2 font-semibold">Category List</span>
+      </div>
       {isEmpty ? (
         <EmptyState
           title="No categories yet"

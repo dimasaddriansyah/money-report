@@ -94,13 +94,13 @@ export default function TransactionTable({
                   <div className="flex gap-2">
                     <button
                       onClick={() => onEdit(row.id)}
-                      className="p-2 cursor-pointer rounded-xl bg-amber-50 hover:bg-amber-200">
+                      className="p-2 cursor-pointer rounded-xl bg-amber-50 hover:bg-amber-200 border border-amber-100">
                       <NoteEditIcon className="h-5 w-5 text-amber-500" />
                     </button>
 
                     <button
                       onClick={() => onDelete(row)}
-                      className="p-2 cursor-pointer rounded-xl bg-red-50 hover:bg-red-200">
+                      className="p-2 cursor-pointer rounded-xl bg-red-50 hover:bg-red-200 border border-red-100">
                       <Delete02Icon className="h-5 w-5 text-red-500" />
                     </button>
                   </div>

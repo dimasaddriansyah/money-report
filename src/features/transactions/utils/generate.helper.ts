@@ -32,7 +32,7 @@ const ACCOUNT_RULES: Record<string, string[]> = {
 };
 
 const CATEGORY_RULES: Record<string, string[]> = {
-  "Foods and Beverages": ["fnb", "kopi", "warung", "makan", "foodcourt", "cafe", "ayam", "warmindo"],
+  "Foods and Beverages": ["fnb", "kopi", "warung", "makan", "foodcourt", "cafe", "ayam", "warmindo", "nasi"],
   Grocery: ["grocery", "indomaret", "alfamidi", "alfamart"],
   "Top Up": ["top up"],
   Gasoline: ["gas", "gasoline", "bensin"],
@@ -55,7 +55,9 @@ const CATEGORY_RULES: Record<string, string[]> = {
   "Internal Transfer": ["itf"],
 };
 
-const REMARK_CATEGORY_EXCEPTIONS = ["kopi", "warung", "foodcourt", "indomaret", "ayam", "cafe", "payroll", "parkir", "top up", "warmindo"];
+const REMARK_CATEGORY_EXCEPTIONS = [
+  "kopi", "warung", "foodcourt", "indomaret", "ayam", "cafe", "payroll", "parkir", "top up", "warmindo", "nasi"
+];
 
 // ==========================================================================================
 // TYPE

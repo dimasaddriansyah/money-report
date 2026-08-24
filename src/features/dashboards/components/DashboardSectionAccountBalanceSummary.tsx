@@ -1,9 +1,8 @@
 import { useBalance } from "../../../shared/context/BalanceContext";
 import { formatBalance, formatCurrency } from "../../../shared/utils/format.helper";
 import type { Account } from "../../accounts/types/account";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
 import { getAccountsImg } from "../../../shared/utils/style.helper";
+import { getAccountStyle } from "../../transactions/utils/ui.helpers";
 
 type AccountWithBalance = Account & {
   balance: number;
@@ -11,46 +10,36 @@ type AccountWithBalance = Account & {
 
 type Props = {
   accounts: AccountWithBalance[];
-  autoScroll: boolean;
 };
 
-export default function DashboardSectionAccountBalanceSummary({ accounts, autoScroll }: Props) {
+export default function DashboardSectionAccountBalanceSummary({
+  accounts,
+}: Props) {
   const { hideBalance } = useBalance();
 
   return (
-    <div className="min-w-0">
-      <Swiper
-        modules={autoScroll ? [Autoplay] : []}
-        spaceBetween={12}
-        slidesPerView="auto"
-        loop={autoScroll}
-        speed={4000}
-        autoplay={
-          autoScroll
-            ? {
-              delay: 0,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true, // bonus UX
-            }
-            : false
-        }
-        allowTouchMove={true}>
+    <div className="min-w-0 overflow-x-auto no-scrollbar">
+      <div className="grid grid-rows-3 sm:grid-rows-2 grid-flow-col auto-cols-[240px] gap-4 w-max">
         {accounts.map((row) => (
-          <SwiperSlide key={row.id} className="w-auto!">
-            <div className="min-w-60 p-4 bg-white hover:bg-slate-100 rounded-lg border border-slate-100 cursor-pointer">
-              <div className="flex items-center gap-4">
-                <img src={getAccountsImg(row.name)} alt={row.name} className="w-8 h-8 object-contain" />
-                <div className="flex flex-col text-sm">
-                  <span className="font-medium tabular-nums">
-                    {formatBalance(formatCurrency(row.balance), hideBalance)}
-                  </span>
-                  <span className="text-slate-400">{row.name}</span>
-                </div>
-              </div>
+          <div
+            key={row.id}
+            className="h-full flex items-center bg-white hover:bg-slate-100 rounded-lg border border-slate-100 cursor-pointer overflow-hidden">
+            {/* Left - Image */}
+            <div
+              className={`w-16 h-full min-h-20 flex items-center justify-center shrink-0 border-0 ${getAccountStyle(row.name)}`}>
+              <img src={getAccountsImg(row.name)} alt={row.name} className="w-8 h-8 object-contain" />
             </div>
-          </SwiperSlide>
+
+            {/* Right - Balance & Account Name */}
+            <div className="flex flex-col text-sm p-4 min-w-0">
+              <span className="font-semibold tabular-nums truncate">
+                {formatBalance(formatCurrency(row.balance), hideBalance)}
+              </span>
+              <span className="text-slate-500 truncate">{row.name}</span>
+            </div>
+          </div>
         ))}
-      </Swiper>
+      </div>
     </div>
   );
 }

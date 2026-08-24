@@ -2,40 +2,41 @@ import { useState } from "react";
 import Sidebar from "../navigation/Sidebar";
 import HeaderDesktop from "../navigation/HeaderDesktop";
 import FooterDesktop from "../navigation/FooterDesktop";
-import Modal from "../ui/Modal";
-import { Xls02Icon } from "hugeicons-react";
-import { ExportSpreedsheet } from "../utils/export.helper";
+// import Modal from "../ui/Modal";
+// import { Xls02Icon } from "hugeicons-react";
+// import { ExportSpreedsheet } from "../utils/export.helper";
 import { useBalance } from "../context/BalanceContext";
 
 export default function DesktopShell({ children }: any) {
   const [collapsed, setCollapsed] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  // const [openModal, setOpenModal] = useState(false);
   const { hideBalance, setHideBalance } = useBalance();
 
-  const year = new Date().getFullYear();
-  const [LoadingExport, setLoadingExport] = useState(false);
-  const handleExport = async () => {
-    setLoadingExport(true);
+  // const year = new Date().getFullYear();
+  // const [LoadingExport, setLoadingExport] = useState(false);
+  // const handleExport = async () => {
+  //   setLoadingExport(true);
 
-    setTimeout(() => {
-      const url = ExportSpreedsheet("xlsx");
-      const link = document.createElement("a");
+  //   setTimeout(() => {
+  //     const url = ExportSpreedsheet("xlsx");
+  //     const link = document.createElement("a");
 
-      link.href = url;
-      link.download = `Cashflow_${year}.xlsx`;
-      link.click();
+  //     link.href = url;
+  //     link.download = `Cashflow_${year}.xlsx`;
+  //     link.click();
 
-      setLoadingExport(false);
-      setOpenModal(false);
-    }, 300);
-  }
+  //     setLoadingExport(false);
+  //     setOpenModal(false);
+  //   }, 300);
+  // }
 
   return (
     <div className="flex h-screen bg-slate-50">
       {/* SIDEBAR */}
       <Sidebar
         collapsed={collapsed}
-        onOpenModal={() => setOpenModal(true)} />
+        // onOpenModal={() => setOpenModal(true)} 
+        />
 
       {/* MAIN */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -50,7 +51,7 @@ export default function DesktopShell({ children }: any) {
       </div>
 
       {/* MODAL */}
-      {openModal && (
+      {/* {openModal && (
         <Modal
           title="Backup Data Transactions"
           textButton="Backup Data"
@@ -65,7 +66,7 @@ export default function DesktopShell({ children }: any) {
             </div>
           </div>
         </Modal>
-      )}
+      )} */}
     </div>
   );
 }
